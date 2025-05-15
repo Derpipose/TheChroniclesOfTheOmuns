@@ -3,31 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasyWorld", "FantasyWorld\FantasyWorld.csproj", "{AEEC33E9-8474-4B88-91AC-DFB3DF9E978E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerView", "PlayerView\PlayerView.csproj", "{E512251A-EC4A-46CC-BE0C-1D3311F5407F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChroniclerView", "ChroniclerView\ChroniclerView.csproj", "{4174471E-FA3D-40AD-928F-AB604E6DA7BD}"
-EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AEEC33E9-8474-4B88-91AC-DFB3DF9E978E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEEC33E9-8474-4B88-91AC-DFB3DF9E978E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEEC33E9-8474-4B88-91AC-DFB3DF9E978E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEEC33E9-8474-4B88-91AC-DFB3DF9E978E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E512251A-EC4A-46CC-BE0C-1D3311F5407F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E512251A-EC4A-46CC-BE0C-1D3311F5407F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E512251A-EC4A-46CC-BE0C-1D3311F5407F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E512251A-EC4A-46CC-BE0C-1D3311F5407F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4174471E-FA3D-40AD-928F-AB604E6DA7BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4174471E-FA3D-40AD-928F-AB604E6DA7BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4174471E-FA3D-40AD-928F-AB604E6DA7BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4174471E-FA3D-40AD-928F-AB604E6DA7BD}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
