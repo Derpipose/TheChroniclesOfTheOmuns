@@ -1,5 +1,8 @@
 *.vs
 *.vscode
+*bin/
+*obj/
+*.user
 AppPlan.md
 ImportedCode/
 Tree.txt
