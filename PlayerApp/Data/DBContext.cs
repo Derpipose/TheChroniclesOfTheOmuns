@@ -9,14 +9,5 @@ namespace PlayerApp.Data
         {
         }
 
-        // Add DbSet properties here
-        // public DbSet<YourEntity> YourEntities { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            // Configure entity relationships and constraints here
-        }
     }
 }
