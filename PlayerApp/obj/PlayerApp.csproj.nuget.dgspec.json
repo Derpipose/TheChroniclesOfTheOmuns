@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj": {}
+    "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\PlayerApp\\PlayerApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj": {
+    "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\PlayerApp\\PlayerApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
-        "projectName": "ChroniclesTest",
-        "projectPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
+        "projectUniqueName": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\PlayerApp\\PlayerApp.csproj",
+        "projectName": "PlayerApp",
+        "projectPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\PlayerApp\\PlayerApp.csproj",
         "packagesPath": "C:\\Users\\thefl\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\obj\\",
+        "outputPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\PlayerApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -22,7 +22,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -30,8 +30,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows7.0": {
+            "targetAlias": "net9.0-windows",
             "projectReferences": {}
           }
         },
@@ -48,32 +48,24 @@
         "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows7.0": {
+          "targetAlias": "net9.0-windows",
           "dependencies": {
-            "Microsoft.NET.Test.Sdk": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[17.11.1, )"
+              "version": "[9.0.10, )"
             },
-            "NSubstitute": {
+            "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[5.3.0, )"
+              "version": "[9.0.10, )"
             },
-            "NUnit": {
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[4.2.2, )"
-            },
-            "NUnit.Analyzers": {
-              "target": "Package",
-              "version": "[4.3.0, )"
-            },
-            "NUnit3TestAdapter": {
-              "target": "Package",
-              "version": "[4.6.0, )"
-            },
-            "coverlet.collector": {
-              "target": "Package",
-              "version": "[6.0.2, )"
+              "version": "[9.0.10, )"
             }
           },
           "imports": [
@@ -90,6 +82,9 @@
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WPF": {
+              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"

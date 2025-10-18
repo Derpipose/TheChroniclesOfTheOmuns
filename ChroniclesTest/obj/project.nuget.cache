@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wQipE/P6ohI=",
+  "dgSpecHash": "UCm39qrFK7E=",
   "success": true,
-  "projectFilePath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
+  "projectFilePath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\thefl\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\thefl\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
