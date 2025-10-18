@@ -943,11 +943,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
+      "projectUniqueName": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
       "projectName": "ChroniclesTest",
-      "projectPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
+      "projectPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\ChroniclesTest\\ChroniclesTest.csproj",
       "packagesPath": "C:\\Users\\thefl\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\TheChroniclesOfTheOmuns\\ChroniclesTest\\obj\\",
+      "outputPath": "C:\\Users\\thefl\\source\\repos\\TheChroniclesOfTheOmuns\\ChroniclesTest\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
