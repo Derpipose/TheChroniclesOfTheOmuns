@@ -6,6 +6,7 @@ public class Tests
     [SetUp]
     public void Setup()
     {
+
     }
 
     // Let's do TDD!
@@ -21,7 +22,9 @@ public class Tests
     [Test]
     public void CreateNewCharacter()
     {
+        Character character = new Character();
 
+        Assert.That(character, Is.TypeOf<Character>());
     }
 
 
