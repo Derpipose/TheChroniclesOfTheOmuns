@@ -10,7 +10,7 @@ public class Character
 {
 
     [Required]
-    public required string Name { get; set; } = "";
+    public string Name { get; set; } = "Tav";
     [Required]
     public int Level { get; set; } = 1;
     public CharacterStats? Stats { get; set; }
