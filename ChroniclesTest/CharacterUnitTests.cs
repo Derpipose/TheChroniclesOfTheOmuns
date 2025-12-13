@@ -25,9 +25,12 @@ public class Tests
         Character character = new();
 
         Assert.That(character, Is.TypeOf<Character>());
-        Assert.That(character.Name, Is.EqualTo("Tav"));
-        Assert.That(character.Level, Is.EqualTo(1));
-        Assert.That(character.Stats, Is.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(character.Name, Is.EqualTo("Tav"));
+            Assert.That(character.Level, Is.EqualTo(1));
+            Assert.That(character.Stats, Is.Null);
+        });
 
     }
 
