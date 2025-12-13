@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlayerApp.Models {
+namespace PlayerApp.Models;
     public class CharacterStats
     {
         [Required]
@@ -21,4 +21,3 @@ namespace PlayerApp.Models {
         [Required]
         public int Intelligence { get; set; } = 10;
     }
-}
