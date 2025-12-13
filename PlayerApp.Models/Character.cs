@@ -14,6 +14,6 @@ public class Character {
     public int Level { get; set; } = 1;
     public CharacterStats? Stats { get; set; } = new CharacterStats();
 
-    public CharacterRace? CharacterRace { get; set; } = new CharacterRace();
+    public CharacterRace? CharacterRace { get; set; }
 
 }

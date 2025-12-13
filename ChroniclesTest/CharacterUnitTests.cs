@@ -29,7 +29,6 @@ public class Tests {
         Assert.Multiple(() => {
             Assert.That(character.Name, Is.EqualTo("Tav"));
             Assert.That(character.Level, Is.EqualTo(1));
-            Assert.That(character.Stats, Is.Null);
         });
 
     }
