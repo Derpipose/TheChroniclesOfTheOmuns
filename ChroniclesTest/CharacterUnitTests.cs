@@ -33,6 +33,27 @@ public class Tests {
 
     }
 
+    [Test]
+    public void AddRaceToCharacter() {
+        Character character = new();
+
+        Assert.That(character.CharacterRace, Is.Null);
+
+        CharacterRace tiefling = new() {
+            Name = "Tiefling",
+            Description = "A demonic race spawned from the Hells themselves. " +
+            "According to popular playstyles, their skin can be any shade of red, " +
+            "purple, or normal skin tones. Some even are blue"
+        };
+
+        character.CharacterRace = tiefling;
+
+        Assert.Multiple(() => {
+            Assert.That(character.CharacterRace.Name, Is.EqualTo("Tiefling"));
+            Assert.That(character.CharacterRace.Description, Is.EqualTo(tiefling.Description));
+        });
+    }
+
 
 
 }
