@@ -1,6 +1,7 @@
-﻿using PlayerApp.Models;
+using PlayerApp.Models;
 
 namespace ChroniclesTest;
+
 public class StatsUnitTests {
     [SetUp]
     public void Setup() {
@@ -18,8 +19,7 @@ public class StatsUnitTests {
             Charisma = 10,
             Intelligence = 8
         };
-        Assert.Multiple(() =>
-        {
+        Assert.Multiple(() => {
             // Assert
             Assert.That(stats.Strength, Is.EqualTo(15));
             Assert.That(stats.Constitution, Is.EqualTo(14));
@@ -33,8 +33,7 @@ public class StatsUnitTests {
     [Test]
     public void BlankCreateCharacterStats() {
         CharacterStats stats = new();
-        Assert.Multiple(() =>
-        {
+        Assert.Multiple(() => {
             // Assert
             Assert.That(stats.Strength, Is.EqualTo(10));
             Assert.That(stats.Constitution, Is.EqualTo(10));
@@ -48,5 +47,5 @@ public class StatsUnitTests {
     }
 
 
-    
+
 }
