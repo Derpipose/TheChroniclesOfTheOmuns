@@ -45,7 +45,4 @@ public class StatsUnitTests {
             Assert.That(stats, Is.TypeOf<CharacterStats>());
         });
     }
-
-
-
 }
