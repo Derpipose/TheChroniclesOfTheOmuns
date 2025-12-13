@@ -54,6 +54,25 @@ public class Tests {
         });
     }
 
+    [Test]
+    public void AddClassToCharacter() {
+        Character character = new();
+
+        Assert.That(character.CharacterClass, Is.Null);
+
+        CharacterClass fighter = new() {
+            Name = "Fighter",
+            Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O"
+        };
+
+        character.CharacterClass= fighter;
+
+        Assert.Multiple(() => {
+            Assert.That(character.CharacterClass.Name, Is.EqualTo("Fighter"));
+            Assert.That(character.CharacterClass.Description, Is.EqualTo(fighter.Description));
+        });
+    }
+
 
 
 }
