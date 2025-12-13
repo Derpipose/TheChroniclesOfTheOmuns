@@ -13,8 +13,6 @@ public class Character
     public required string Name { get; set; } = "";
     [Required]
     public int Level { get; set; } = 1;
-    public CharacterStats? Stats { get; set; }
-
-
+    public CharacterStats? Stats { get; set; } = new CharacterStats();
 
 }
