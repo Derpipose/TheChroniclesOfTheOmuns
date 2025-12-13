@@ -6,8 +6,7 @@ using System.Text;
 
 namespace PlayerApp.Models;
 
-public class Character
-{
+public class Character {
 
     [Required]
     public string Name { get; set; } = "Tav";

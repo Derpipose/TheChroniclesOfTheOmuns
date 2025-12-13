@@ -5,8 +5,7 @@ using System.Text;
 
 namespace PlayerApp.Models;
 
-public class CharacterRace
-{
+public class CharacterRace {
 
     [Required]
     public string Name { get; set; } = "";

@@ -1,11 +1,10 @@
-﻿namespace ChroniclesTest;
+namespace ChroniclesTest;
+
 using PlayerApp.Models;
 
-public class Tests
-{
+public class Tests {
     [SetUp]
-    public void Setup()
-    {
+    public void Setup() {
 
     }
 
@@ -23,20 +22,18 @@ public class Tests
 
     // step 1: Build a character
     [Test]
-    public void CreateNewCharacter()
-    {
+    public void CreateNewCharacter() {
         Character character = new();
 
         Assert.That(character, Is.TypeOf<Character>());
-        Assert.Multiple(() =>
-        {
+        Assert.Multiple(() => {
             Assert.That(character.Name, Is.EqualTo("Tav"));
             Assert.That(character.Level, Is.EqualTo(1));
             Assert.That(character.Stats, Is.Null);
         });
 
     }
-    
+
 
 
 }

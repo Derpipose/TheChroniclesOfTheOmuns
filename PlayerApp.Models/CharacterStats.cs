@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace PlayerApp.Models;
 
-public class CharacterStats
-{
+public class CharacterStats {
     [Required]
     public int Strength { get; set; } = 10;
     [Required]
