@@ -21,4 +21,8 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PlayerApp.Models\PlayerApp.Models.csproj" />
+  </ItemGroup>
+
 </Project>

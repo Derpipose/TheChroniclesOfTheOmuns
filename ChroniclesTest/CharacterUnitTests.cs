@@ -1,4 +1,5 @@
 ﻿namespace ChroniclesTest;
+using PlayerApp.Models;
 
 public class Tests
 {
