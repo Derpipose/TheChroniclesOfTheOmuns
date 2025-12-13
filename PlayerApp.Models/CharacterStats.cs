@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PlayerApp.Models;
+
 public class CharacterStats
 {
     [Required]
