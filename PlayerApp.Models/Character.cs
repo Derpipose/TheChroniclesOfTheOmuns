@@ -15,5 +15,6 @@ public class Character {
     public CharacterStats? Stats { get; set; } = new CharacterStats();
 
     public CharacterRace? CharacterRace { get; set; }
+    public CharacterClass? CharacterClass { get; set; } 
 
 }
