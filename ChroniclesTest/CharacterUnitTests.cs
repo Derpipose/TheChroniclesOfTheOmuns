@@ -10,7 +10,7 @@ public class Tests
     }
 
     // Let's do TDD!
-    // step 1: Build a character
+
     // step 2: Assign stats to the character 
     // step 3: Validate the stats
     // step 4: Ensure invalid stats are caught
@@ -19,6 +19,9 @@ public class Tests
     // step 7: Ensure class features are correct
     // step 8: Ensure Mana and Health are calculated correctly based on stats
 
+
+
+    // step 1: Build a character
     [Test]
     public void CreateNewCharacter()
     {
@@ -33,6 +36,7 @@ public class Tests
         });
 
     }
+    
 
 
 }
