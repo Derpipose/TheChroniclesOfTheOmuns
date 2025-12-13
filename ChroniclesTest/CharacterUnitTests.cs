@@ -22,7 +22,7 @@ public class Tests
     [Test]
     public void CreateNewCharacter()
     {
-        Character character = new Character();
+        Character character = new Character { Name = "Josh"};
 
         Assert.That(character, Is.TypeOf<Character>());
     }
