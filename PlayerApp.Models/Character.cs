@@ -14,4 +14,7 @@ public class Character
     [Required]
     public int Level { get; set; } = 1;
     public CharacterStats? Stats { get; set; }
+
+
+
 }

@@ -22,9 +22,11 @@ public class Tests
     [Test]
     public void CreateNewCharacter()
     {
-        Character character = new Character { Name = "Josh"};
+        Character character = new() { Name = "Josh" };
 
         Assert.That(character, Is.TypeOf<Character>());
+        Assert.That(character.Name, Is.EqualTo("Josh"));
+
     }
 
 
