@@ -22,4 +22,12 @@ public class ClassUnitTests {
             Assert.That(charClass.Description, Is.EqualTo("A strong melee fighter"));
         });
     }
+
+    [Test]
+    public void TestClassPullWorks() {
+        List<CharacterClass> list = new List<CharacterClass>();
+        list = CharacterClass.AllClassesAsync().Result;
+
+        Assert.That(list.Count, Is.EqualTo(53));
+    }
 }
