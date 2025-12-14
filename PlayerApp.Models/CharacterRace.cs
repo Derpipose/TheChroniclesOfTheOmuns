@@ -6,6 +6,8 @@ using System.Text;
 namespace PlayerApp.Models;
 
 public class CharacterRace {
+    [Key]
+    public int Id { get; set; }
 
     [Required]
     public required string Name { get; set; }

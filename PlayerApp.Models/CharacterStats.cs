@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 namespace PlayerApp.Models;
 
 public class CharacterStats {
+    [Key]
+    public int Id { get; set; }
+    public Character? Character { get; set; }
+    public int CharacterId { get; set; }
     [Required]
     public int Strength { get; set; } = 10;
     [Required]
@@ -20,4 +24,7 @@ public class CharacterStats {
     public int Charisma { get; set; } = 10;
     [Required]
     public int Intelligence { get; set; } = 10;
+
+    public CharacterStats() {
+    }
 }

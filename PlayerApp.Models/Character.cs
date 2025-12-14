@@ -7,14 +7,19 @@ using System.Text;
 namespace PlayerApp.Models;
 
 public class Character {
+    [Key]
+    public int Id { get; set; }
 
     [Required]
     public string Name { get; set; } = "Tav";
     [Required]
     public int Level { get; set; } = 1;
-    public CharacterStats? Stats { get; set; } = new CharacterStats();
+    public CharacterStats? Stats { get; set; }
 
     public CharacterRace? CharacterRace { get; set; }
-    public CharacterClass? CharacterClass { get; set; } 
-
+    public CharacterClass? CharacterClass { get; set; }
+    
+    public Character() {
+        Stats = new CharacterStats();
+    }
 }
