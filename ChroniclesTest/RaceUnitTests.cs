@@ -19,4 +19,12 @@ public class RaceUnitTests {
             Assert.That(race.Description, Is.EqualTo("Your standard, vanilla humanoid"));
         });
     }
+
+    [Test]
+    public void TestRacePullWorks() {
+        List<CharacterRace> list = new List<CharacterRace>();
+        list = CharacterRace.AllRacesAsync().Result;
+
+        Assert.That(list.Count, Is.EqualTo(87));
+    }
 }
