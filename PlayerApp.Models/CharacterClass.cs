@@ -14,6 +14,8 @@ public class CharacterClass {
     [Required]
     public required string Name { get; set; }
     [Required]
+    public required string ClassType { get; set; }
+    [Required]
     public required string Description { get; set; }
     [Required]
     public required int HitDiceId { get; set; }
@@ -59,6 +61,7 @@ public class CharacterClass {
                 };
                 return new CharacterClass {
                     Name = dto.ClassName,
+                    ClassType = dto.ClassType,
                     Description = dto.Description,
                     HitDiceId = hitDiceId,
                     HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null, 
@@ -72,6 +75,7 @@ public class CharacterClass {
 
 public class CharacterClassDto {
     public string ClassName { get; set; } = "";
+    public string ClassType { get; set; } = "";
     public string Description { get; set; } = "";
     public object HitDie { get; set; } = "";
     public object ManaDie { get; set; } = "";

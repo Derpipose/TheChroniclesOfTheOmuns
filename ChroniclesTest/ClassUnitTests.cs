@@ -10,9 +10,9 @@ public class ClassUnitTests {
     [SetUp]
     public void SetUp() {
         ClassList = new List<CharacterClass> {
-            new CharacterClass(){ Name = "Mage", Description = "Magic Casting class for all sorts of fun", HitDiceId = 2 },
-            new CharacterClass(){ Name = "Warrior", Description = "Melee Fighting class for all sorts of bashing", HitDiceId = 5 },
-            new CharacterClass(){ Name = "Rogue", Description = "Stealth and trickery class for sneaky types", HitDiceId = 3 },
+            new CharacterClass(){ Name = "Mage", ClassType = "Magic", Description = "Magic Casting class for all sorts of fun", HitDiceId = 2 },
+            new CharacterClass(){ Name = "Warrior", ClassType = "Combat", Description = "Melee Fighting class for all sorts of bashing", HitDiceId = 5 },
+            new CharacterClass(){ Name = "Rogue", ClassType = "Specialization", Description = "Stealth and trickery class for sneaky types", HitDiceId = 3 },
         };
     }
 
@@ -21,6 +21,7 @@ public class ClassUnitTests {
     public void TestCharacterClassCreation() {
         CharacterClass charClass = new CharacterClass() {
             Name = "Warrior",
+            ClassType = "Combat",  
             Description = "A strong melee fighter",
             HitDiceId = 5
         };
@@ -47,11 +48,12 @@ public class ClassUnitTests {
         Character character = new Character();
         CharacterClass charClass = new CharacterClass() {
             Name = "Mage",
+            ClassType = "Magic",
             Description = "A master of arcane arts",
             HitDiceId = 2
         };
 
-        character.CharacterClass = charClass;
+        character.AssignCharacterClass(charClass);
 
         Assert.That(character.CharacterClass?.Name, Is.EqualTo("Mage"));
     }
@@ -60,7 +62,8 @@ public class ClassUnitTests {
     [Order(4)]
     public void TestCharacterWithClassMageHasCorrectHitDie() {
         Character character = new Character();
-        character.CharacterClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        CharacterClass? charClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        character.AssignCharacterClass(charClass);
         DiceType? hitDie = character.GetHitDice();
 
         Assert.That(character.CharacterClass, Is.Not.Null);
@@ -74,7 +77,8 @@ public class ClassUnitTests {
     [Order(5)]
     public void TestCharacterWithClassMageHasCorrectManaDie() {
         Character character = new Character();
-        character.CharacterClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        CharacterClass? charClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        character.AssignCharacterClass(charClass);
         DiceType? manaDie = character.GetManaDice();
 
         Assert.That(character.CharacterClass, Is.Not.Null);
