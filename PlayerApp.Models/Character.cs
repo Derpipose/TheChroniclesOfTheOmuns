@@ -18,8 +18,12 @@ public class Character {
 
     public CharacterRace? CharacterRace { get; set; }
     public CharacterClass? CharacterClass { get; set; }
-    
+
     public Character() {
         Stats = new CharacterStats();
+    }
+
+    public DiceType? GetHitDice() {
+        return CharacterClass?.HitDice;
     }
 }

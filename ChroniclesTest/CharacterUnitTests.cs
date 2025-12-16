@@ -62,10 +62,11 @@ public class Tests {
 
         CharacterClass fighter = new() {
             Name = "Fighter",
-            Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O"
+            Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O",
+            HitDiceId = 5
         };
 
-        character.CharacterClass= fighter;
+        character.CharacterClass = fighter;
 
         Assert.Multiple(() => {
             Assert.That(character.CharacterClass.Name, Is.EqualTo("Fighter"));

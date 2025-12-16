@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Net.Http;
 using System.Text.Json;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
@@ -14,6 +15,10 @@ public class CharacterClass {
     public required string Name { get; set; }
     [Required]
     public required string Description { get; set; }
+    [Required]
+    public required int HitDiceId { get; set; }
+    public DiceType? HitDice { get; set; }
+
 
 
     public static async Task<List<CharacterClass>> AllClassesAsync() {
@@ -28,10 +33,27 @@ public class CharacterClass {
         if (dtoList == null)
             return new List<CharacterClass>();
 
-        return dtoList.Select(dto => new CharacterClass {
-            Name = dto.ClassName,
-            Description = dto.Description
-        }).ToList();
+        var diceTypes = DiceType.GetStandardDice();
+
+        return dtoList
+            .Where(dto => dto.Classification != "Sci fi" && dto.Classification != "Eastern")
+            .Select(dto => {
+                var hitDiceId = dto.HitDie.ToString() switch {
+                    "4" => (int)DiceTypeEnum.D4,
+                    "6" => (int)DiceTypeEnum.D6,
+                    "8" => (int)DiceTypeEnum.D8,
+                    "10" => (int)DiceTypeEnum.D10,
+                    "12" => (int)DiceTypeEnum.D12,
+                    "20" => (int)DiceTypeEnum.D20,
+                    _ => 0
+                };
+                return new CharacterClass {
+                    Name = dto.ClassName,
+                    Description = dto.Description,
+                    HitDiceId = hitDiceId,
+                    HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null
+                };
+            }).ToList();
     }
 
 }
@@ -40,4 +62,6 @@ public class CharacterClass {
 public class CharacterClassDto {
     public string ClassName { get; set; } = "";
     public string Description { get; set; } = "";
+    public object HitDie { get; set; } = "";
+    public string Classification { get; set; } = "";
 }
