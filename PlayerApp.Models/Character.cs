@@ -26,4 +26,8 @@ public class Character {
     public DiceType? GetHitDice() {
         return CharacterClass?.HitDice;
     }
+
+    public DiceType? GetManaDice(){
+        return CharacterClass?.ManaDice;
+    }
 }

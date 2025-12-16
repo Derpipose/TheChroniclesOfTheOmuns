@@ -18,6 +18,7 @@ public class CharacterClass {
     [Required]
     public required int HitDiceId { get; set; }
     public DiceType? HitDice { get; set; }
+    public DiceType? ManaDice { get; set; }
 
 
 
@@ -47,11 +48,21 @@ public class CharacterClass {
                     "20" => (int)DiceTypeEnum.D20,
                     _ => 0
                 };
+                var manaDiceId = dto.ManaDie.ToString() switch {
+                    "4" => (int)DiceTypeEnum.D4,
+                    "6" => (int)DiceTypeEnum.D6,
+                    "8" => (int)DiceTypeEnum.D8,
+                    "10" => (int)DiceTypeEnum.D10,
+                    "12" => (int)DiceTypeEnum.D12,
+                    "20" => (int)DiceTypeEnum.D20,
+                    _ => 0
+                };
                 return new CharacterClass {
                     Name = dto.ClassName,
                     Description = dto.Description,
                     HitDiceId = hitDiceId,
-                    HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null
+                    HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null, 
+                    ManaDice = diceTypes.ContainsKey(manaDiceId) ? diceTypes[manaDiceId] : null
                 };
             }).ToList();
     }
@@ -63,5 +74,6 @@ public class CharacterClassDto {
     public string ClassName { get; set; } = "";
     public string Description { get; set; } = "";
     public object HitDie { get; set; } = "";
+    public object ManaDie { get; set; } = "";
     public string Classification { get; set; } = "";
 }

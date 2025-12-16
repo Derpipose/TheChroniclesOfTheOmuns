@@ -69,4 +69,17 @@ public class ClassUnitTests {
         Assert.That(hitDie?.Name, Is.EqualTo("D6"));
 
     }
+
+    [Test]
+    [Order(5)]
+    public void TestCharacterWithClassMageHasCorrectManaDie() {
+        Character character = new Character();
+        character.CharacterClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        DiceType? manaDie = character.GetManaDice();
+
+        Assert.That(character.CharacterClass, Is.Not.Null);
+        Assert.That(character.CharacterClass?.Name, Is.EqualTo("Mage"));
+        Assert.That(manaDie, Is.Not.Null);
+        Assert.That(manaDie?.Name, Is.EqualTo("D12"));
+    }
 }
