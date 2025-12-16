@@ -64,7 +64,7 @@ public class CharacterClass {
                     ClassType = dto.ClassType,
                     Description = dto.Description,
                     HitDiceId = hitDiceId,
-                    HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null, 
+                    HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null,
                     ManaDice = diceTypes.ContainsKey(manaDiceId) ? diceTypes[manaDiceId] : null
                 };
             }).ToList();

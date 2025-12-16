@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlayerApp.Models.Enums; 
+namespace PlayerApp.Models.Enums;
+
 public enum StatsType {
     Strength,
     Constitution,

@@ -14,7 +14,7 @@ public class Character {
     public string Name { get; set; } = "Tav";
     [Required]
     public int Level { get; set; } = 1;
-    public CharacterStats? Stats { get; set; }
+    public CharacterStats Stats { get; set; }
     public int Health { get; set; } = 0;
 
     public CharacterRace? CharacterRace { get; set; }
@@ -38,7 +38,7 @@ public class Character {
     }
 
     public void CalculateHitPoints() {
-        if( Stats == null || CharacterClass == null || CharacterClass.HitDice == null )
+        if (Stats.Constitution == 0 || CharacterClass == null || CharacterClass.HitDice == null)
             return;
 
         if (CharacterClass.ClassType == "Combat") {

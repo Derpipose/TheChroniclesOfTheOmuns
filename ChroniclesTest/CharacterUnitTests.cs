@@ -3,9 +3,16 @@ namespace ChroniclesTest;
 using PlayerApp.Models;
 
 public class Tests {
+    private CharacterClass mageClass;
     [SetUp]
     public void Setup() {
-
+        mageClass = new CharacterClass() {
+            Name = "Mage",
+            ClassType = "Magic",
+            Description = "A master of arcane arts",
+            HitDiceId = 2,
+            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
+        };
     }
 
     // Let's do TDD!
@@ -139,25 +146,61 @@ public class Tests {
         Assert.That(manaDie, Is.Null);
     }
 
-    [Test] 
+    [Test]
+    public void CharacterGetsCorrectBonusFromStats() {
+        Character character = new();
+        character.Stats = new CharacterStats() {
+            Strength = 18,
+            Dexterity = 14,
+            Constitution = 12,
+            Intelligence = 10,
+            Wisdom = 8,
+            Charisma = 16
+        };
+
+        Assert.Multiple(() => {
+            Assert.That(character.GetBonus("Strength"), Is.EqualTo(4));
+            Assert.That(character.GetBonus("Dexterity"), Is.EqualTo(2));
+            Assert.That(character.GetBonus("Constitution"), Is.EqualTo(1));
+            Assert.That(character.GetBonus("Intelligence"), Is.EqualTo(0));
+            Assert.That(character.GetBonus("Wisdom"), Is.EqualTo(-1));
+            Assert.That(character.GetBonus("Charisma"), Is.EqualTo(3));
+        });
+    }
+
+    [Test]
     public void CharacterHasCorrectHitPointsAtLevelOne() {
         Character character = new();
         character.Stats = new CharacterStats() {
-            Constitution = 16 
-        };
-
-        CharacterClass mageClass = new CharacterClass() {
-            Name = "Mage",
-            ClassType = "Magic",
-            Description = "A master of arcane arts",
-            HitDiceId = 2,
-            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
+            Constitution = 16
         };
 
         character.AssignCharacterClass(mageClass);
 
         int expectedHP = 31; // (2 * 6) + 12 + 3
+        int actualHP = character.Health;
 
+        Assert.That(actualHP, Is.EqualTo(expectedHP));
+    }
+
+    [Test]
+    public void CharacterHasCorrectHitPointsAtLevelOneForCombatClass() {
+        Character character = new();
+        character.Stats = new CharacterStats() {
+            Constitution = 16
+        };
+
+        CharacterClass fighterClass = new() {
+            Name = "Barbarian",
+            ClassType = "Combat",
+            Description = "A strong melee fighter",
+            HitDiceId = 5,
+            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
+        };
+
+        character.AssignCharacterClass(fighterClass);
+
+        int expectedHP = 47; // 2 * 16 + 12 + 3
         int actualHP = character.Health;
 
         Assert.That(actualHP, Is.EqualTo(expectedHP));

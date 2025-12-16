@@ -10,3 +10,25 @@ AppPlan.md
 Tree.txt
 DevelopmentNotes.md
 DICE_IMPLEMENTATION.md
+
+# Database files
+*.mdf
+*.ldf
+*.db
+*.sqlite3
+
+# Environment/Config files with secrets
+appsettings.local.json
+appsettings.Development.json
+
+# IDE solution files
+.vs/
+*.suo
+
+# Application logs
+logs/
+*.log
+
+# User/OS files
+Thumbs.db
+.DS_Store

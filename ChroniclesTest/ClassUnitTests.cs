@@ -21,7 +21,7 @@ public class ClassUnitTests {
     public void TestCharacterClassCreation() {
         CharacterClass charClass = new CharacterClass() {
             Name = "Warrior",
-            ClassType = "Combat",  
+            ClassType = "Combat",
             Description = "A strong melee fighter",
             HitDiceId = 5
         };
@@ -63,6 +63,7 @@ public class ClassUnitTests {
     public void TestCharacterWithClassMageHasCorrectHitDie() {
         Character character = new Character();
         CharacterClass? charClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        Assert.That(charClass, Is.Not.Null);
         character.AssignCharacterClass(charClass);
         DiceType? hitDie = character.GetHitDice();
 
@@ -78,6 +79,7 @@ public class ClassUnitTests {
     public void TestCharacterWithClassMageHasCorrectManaDie() {
         Character character = new Character();
         CharacterClass? charClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        Assert.That(charClass, Is.Not.Null);
         character.AssignCharacterClass(charClass);
         DiceType? manaDie = character.GetManaDice();
 

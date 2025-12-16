@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PlayerApp.Migrations; 
+namespace PlayerApp.Migrations;
+
 /// <inheritdoc />
 public partial class InitialCreate : Migration {
     /// <inheritdoc />
