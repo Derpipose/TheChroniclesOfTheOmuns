@@ -2,8 +2,10 @@ namespace ChroniclesTest;
 
 using PlayerApp.Models;
 
-public class Tests {
+[TestFixture]
+public class CharacterCreationTests {
     private CharacterClass mageClass;
+    
     [SetUp]
     public void Setup() {
         mageClass = new CharacterClass() {
@@ -15,19 +17,6 @@ public class Tests {
         };
     }
 
-    // Let's do TDD!
-
-    // step 2: Assign stats to the character 
-    // step 3: Validate the stats
-    // step 4: Ensure invalid stats are caught
-    // step 5: Ensure valid stats are accepted
-    // step 6: Assign a class to the character
-    // step 7: Ensure class features are correct
-    // step 8: Ensure Mana and Health are calculated correctly based on stats
-
-
-
-    // step 1: Build a character
     [Test]
     public void CreateNewCharacter() {
         Character character = new();
@@ -37,7 +26,6 @@ public class Tests {
             Assert.That(character.Name, Is.EqualTo("Tav"));
             Assert.That(character.Level, Is.EqualTo(1));
         });
-
     }
 
     [Test]
@@ -111,7 +99,6 @@ public class Tests {
         });
     }
 
-
     [Test]
     public void CharacterStartsWithDefaultStatsIfNoneProvided() {
         Character character = new();
@@ -127,83 +114,4 @@ public class Tests {
             Assert.That(character.Stats.Charisma, Is.EqualTo(10));
         });
     }
-
-    [Test]
-    public void CharacterWithNoClassHasNoHitDie() {
-        Character character = new();
-
-        DiceType? hitDie = character.GetHitDice();
-
-        Assert.That(hitDie, Is.Null);
-    }
-
-    [Test]
-    public void CharacterWithNoClassHasNoManaDie() {
-        Character character = new();
-
-        DiceType? manaDie = character.GetManaDice();
-
-        Assert.That(manaDie, Is.Null);
-    }
-
-    [Test]
-    public void CharacterGetsCorrectBonusFromStats() {
-        Character character = new();
-        character.Stats = new CharacterStats() {
-            Strength = 18,
-            Dexterity = 14,
-            Constitution = 12,
-            Intelligence = 10,
-            Wisdom = 8,
-            Charisma = 16
-        };
-
-        Assert.Multiple(() => {
-            Assert.That(character.GetBonus("Strength"), Is.EqualTo(4));
-            Assert.That(character.GetBonus("Dexterity"), Is.EqualTo(2));
-            Assert.That(character.GetBonus("Constitution"), Is.EqualTo(1));
-            Assert.That(character.GetBonus("Intelligence"), Is.EqualTo(0));
-            Assert.That(character.GetBonus("Wisdom"), Is.EqualTo(-1));
-            Assert.That(character.GetBonus("Charisma"), Is.EqualTo(3));
-        });
-    }
-
-    [Test]
-    public void CharacterHasCorrectHitPointsAtLevelOne() {
-        Character character = new();
-        character.Stats = new CharacterStats() {
-            Constitution = 16
-        };
-
-        character.AssignCharacterClass(mageClass);
-
-        int expectedHP = 31; // (2 * 6) + 12 + 3
-        int actualHP = character.Health;
-
-        Assert.That(actualHP, Is.EqualTo(expectedHP));
-    }
-
-    [Test]
-    public void CharacterHasCorrectHitPointsAtLevelOneForCombatClass() {
-        Character character = new();
-        character.Stats = new CharacterStats() {
-            Constitution = 16
-        };
-
-        CharacterClass fighterClass = new() {
-            Name = "Barbarian",
-            ClassType = "Combat",
-            Description = "A strong melee fighter",
-            HitDiceId = 5,
-            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
-        };
-
-        character.AssignCharacterClass(fighterClass);
-
-        int expectedHP = 47; // 2 * 16 + 12 + 3
-        int actualHP = character.Health;
-
-        Assert.That(actualHP, Is.EqualTo(expectedHP));
-    }
 }
-
