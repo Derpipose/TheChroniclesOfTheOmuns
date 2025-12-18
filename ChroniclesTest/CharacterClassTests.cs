@@ -10,7 +10,8 @@ public class CharacterClassTests {
             Name = "Warrior",
             ClassType = "Combat",
             Description = "A strong melee fighter",
-            HitDiceId = 5
+            HitDiceId = 5,
+            ManaDiceId = 1
         };
         Assert.Multiple(() => {
             Assert.That(charClass.Name, Is.EqualTo("Warrior"));
@@ -26,6 +27,7 @@ public class CharacterClassTests {
             ClassType = "Magic",
             Description = "A master of arcane arts",
             HitDiceId = 2,
+            ManaDiceId = 6,
             HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
         };
 

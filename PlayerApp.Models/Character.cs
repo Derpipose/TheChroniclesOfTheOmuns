@@ -16,8 +16,9 @@ public class Character {
     public int Level { get; set; } = 1;
     public CharacterStats Stats { get; set; }
     public int Health { get; set; } = 0;
+    public int Mana { get; set; } = 0;
 
-    public CharacterRace? CharacterRace { get; set; }
+    public CharacterRace? CharacterRace { get; private set; }
     public CharacterClass? CharacterClass { get; private set; }
 
     public Character() {
@@ -26,6 +27,13 @@ public class Character {
 
     public void AssignCharacterClass(CharacterClass characterClass) {
         CharacterClass = characterClass;
+        CalculateHitPoints();
+        CalculateManaPoints();
+    }
+
+    public void AssignCharacterRace(CharacterRace characterRace) {
+        CharacterRace = characterRace;
+        CalculateManaPoints();
         CalculateHitPoints();
     }
 
@@ -41,10 +49,23 @@ public class Character {
         if (Stats.Constitution == 0 || CharacterClass == null || CharacterClass.HitDice == null)
             return;
 
-        if (CharacterClass.ClassType == "Combat") {
-            Health = 2 * Stats.Constitution + CharacterClass.HitDice.Sides + GetBonus("Constitution");
+        {
+            if (CharacterClass.ClassType == "Combat") {
+                Health = (2 * Stats.Constitution + CharacterClass.HitDice.Sides + GetBonus("Constitution"));
+            } else {
+                Health = (2 * CharacterClass.HitDice.Sides) + Stats.Constitution + GetBonus("Constitution");
+            }
+        }
+    }
+
+    public void CalculateManaPoints() {
+        if (Stats.Intelligence == 0 || Stats.Wisdom == 0 || CharacterClass == null || CharacterClass.ManaDice == null || CharacterRace == null)
+            return;
+
+        if (Stats.Intelligence <= Stats.Wisdom) {
+            Mana = Stats.Intelligence + Stats.Wisdom + GetBonus("Wisdom") + CharacterRace.BonusMana + CharacterClass.ManaDice.Sides;
         } else {
-            Health = (2 * CharacterClass.HitDice.Sides) + Stats.Constitution + GetBonus("Constitution");
+            Mana = Stats.Intelligence + Stats.Wisdom + GetBonus("Intelligence") + CharacterRace.BonusMana + CharacterClass.ManaDice.Sides;
         }
     }
 
@@ -63,3 +84,4 @@ public class Character {
         };
     }
 }
+

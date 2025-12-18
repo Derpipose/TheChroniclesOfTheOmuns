@@ -13,7 +13,9 @@ public class CharacterHealthTests {
             ClassType = "Magic",
             Description = "A master of arcane arts",
             HitDiceId = 2,
-            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
+            ManaDiceId = 6,
+            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 },
+            ManaDice = new DiceType { Id = 6, Name = "D12", Sides = 12}
         };
     }
 
@@ -44,7 +46,9 @@ public class CharacterHealthTests {
             ClassType = "Combat",
             Description = "A strong melee fighter",
             HitDiceId = 5,
-            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
+            ManaDiceId = 1,
+            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 },
+            ManaDice = new DiceType { Id = 1, Name = "D4", Sides = 4 }
         };
 
         character.AssignCharacterClass(fighterClass);

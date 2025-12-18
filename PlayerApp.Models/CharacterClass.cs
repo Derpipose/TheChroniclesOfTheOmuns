@@ -19,6 +19,8 @@ public class CharacterClass {
     public required string Description { get; set; }
     [Required]
     public required int HitDiceId { get; set; }
+    [Required]
+    public required int ManaDiceId { get; set; }
     public DiceType? HitDice { get; set; }
     public DiceType? ManaDice { get; set; }
 
@@ -64,6 +66,7 @@ public class CharacterClass {
                     ClassType = dto.ClassType,
                     Description = dto.Description,
                     HitDiceId = hitDiceId,
+                    ManaDiceId = manaDiceId,
                     HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null,
                     ManaDice = diceTypes.ContainsKey(manaDiceId) ? diceTypes[manaDiceId] : null
                 };

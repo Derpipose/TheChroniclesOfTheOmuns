@@ -13,6 +13,7 @@ public class CharacterCreationTests {
             ClassType = "Magic",
             Description = "A master of arcane arts",
             HitDiceId = 2,
+            ManaDiceId = 6,
             HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
         };
     }
@@ -41,7 +42,9 @@ public class CharacterCreationTests {
             "purple, or normal skin tones. Some even are blue"
         };
 
-        character.CharacterRace = tiefling;
+        character.AssignCharacterRace(tiefling);
+
+        Assert.That(character.CharacterRace, Is.Not.Null);
 
         Assert.Multiple(() => {
             Assert.That(character.CharacterRace.Name, Is.EqualTo("Tiefling"));
@@ -60,6 +63,7 @@ public class CharacterCreationTests {
             ClassType = "Combat",
             Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O",
             HitDiceId = 5,
+            ManaDiceId = 2,
             HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
         };
 
