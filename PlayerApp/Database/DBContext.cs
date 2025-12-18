@@ -27,6 +27,8 @@ public class ApplicationDbContext : DbContext {
     public DbSet<CharacterStats> CharacterStats { get; set; }
     public DbSet<CharacterClass> CharacterClass { get; set; }
     public DbSet<CharacterRace> CharacterRace { get; set; }
+    public DbSet<Modifier> Modifiers { get; set; }
+    public DbSet<RacialModifier> RacialModifiers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
@@ -58,6 +60,19 @@ public class ApplicationDbContext : DbContext {
             .HasOne(c => c.HitDice)
             .WithMany()
             .HasForeignKey(c => c.HitDiceId);
+
+        // Configure RacialModifier relationship
+        modelBuilder.Entity<RacialModifier>()
+            .HasOne(rm => rm.Race)
+            .WithMany(r => r.Modifiers)
+            .HasForeignKey(rm => rm.RaceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RacialModifier>()
+            .HasOne(rm => rm.Modifier)
+            .WithMany(m => m.RacialModifiers)
+            .HasForeignKey(rm => rm.ModifierId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Seed DiceType data
         modelBuilder.Entity<DiceType>().HasData(

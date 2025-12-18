@@ -16,8 +16,8 @@ public class CharacterRace {
     [Required]
     public required string Description { get; set; }
 
-    public int BonusMana { get; set; }
-
+    // Navigation property
+    public ICollection<RacialModifier> Modifiers { get; set; } = new List<RacialModifier>();
 
     public static async Task<List<CharacterRace>> AllRacesAsync() {
         const string url = "https://derpipose.github.io/JsonFiles/Races.json";
