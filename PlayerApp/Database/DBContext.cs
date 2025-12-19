@@ -55,11 +55,18 @@ public class ApplicationDbContext : DbContext {
         modelBuilder.Entity<CharacterRace>()
             .HasKey(cr => cr.Id);
 
-        // Configure DiceType relationship
+        // Configure DiceType relationships for CharacterClass
         modelBuilder.Entity<CharacterClass>()
             .HasOne(c => c.HitDice)
             .WithMany()
-            .HasForeignKey(c => c.HitDiceId);
+            .HasForeignKey(c => c.HitDiceId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<CharacterClass>()
+            .HasOne(c => c.ManaDice)
+            .WithMany()
+            .HasForeignKey(c => c.ManaDiceId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         // Configure RacialModifier relationship
         modelBuilder.Entity<RacialModifier>()

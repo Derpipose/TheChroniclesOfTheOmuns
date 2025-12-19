@@ -11,7 +11,7 @@ using PlayerApp.Database;
 namespace PlayerApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251219055133_RefactorServices")]
+    [Migration("20251219234437_RefactorServices")]
     partial class RefactorServices
     {
         /// <inheritdoc />
@@ -276,13 +276,13 @@ namespace PlayerApp.Migrations
                     b.HasOne("PlayerApp.Models.DiceType", "HitDice")
                         .WithMany()
                         .HasForeignKey("HitDiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("PlayerApp.Models.DiceType", "ManaDice")
                         .WithMany()
                         .HasForeignKey("ManaDiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("HitDice");
