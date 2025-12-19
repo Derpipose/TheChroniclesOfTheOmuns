@@ -15,6 +15,5 @@ public class Modifier {
 
     public string? Description { get; set; }
 
-    // Navigation property
     public ICollection<RacialModifier> RacialModifiers { get; set; } = new List<RacialModifier>();
 }

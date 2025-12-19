@@ -10,9 +10,6 @@ public class DiceType {
     [Required]
     public int Sides { get; set; } // 4, 6, 8, 10, 12, 20
 
-    /// <summary>
-    /// Returns a dictionary of all standard D&D dice types
-    /// </summary>
     public static Dictionary<int, DiceType> GetStandardDice() {
         return new Dictionary<int, DiceType> {
             { 1, new DiceType { Id = 1, Name = "D4", Sides = 4 } },

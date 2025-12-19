@@ -15,8 +15,8 @@ public class RacialModifier {
 
     // Navigation properties
     [ForeignKey(nameof(RaceId))]
-    public CharacterRace Race { get; set; }
+    public required CharacterRace Race { get; set; }
 
     [ForeignKey(nameof(ModifierId))]
-    public Modifier Modifier { get; set; }
+    public required Modifier Modifier { get; set; }
 }

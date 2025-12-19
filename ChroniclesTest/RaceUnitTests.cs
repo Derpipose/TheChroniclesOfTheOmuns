@@ -6,6 +6,12 @@ using System.Text;
 namespace ChroniclesTest;
 
 public class RaceUnitTests {
+    private CharacterRaceService raceService;
+
+    [SetUp]
+    public void Setup() {
+        raceService = new CharacterRaceService();
+    }
 
     [Test]
     public void TestCharacterRace() {
@@ -22,8 +28,7 @@ public class RaceUnitTests {
 
     [Test]
     public void TestRacePullWorks() {
-        List<CharacterRace> list = new List<CharacterRace>();
-        list = CharacterRace.AllRacesAsync().Result;
+        List<CharacterRace> list = raceService.GetAllRacesAsync().Result;
 
         Assert.That(list.Count, Is.EqualTo(87));
     }

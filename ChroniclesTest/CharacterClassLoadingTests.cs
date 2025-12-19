@@ -4,11 +4,16 @@ namespace ChroniclesTest;
 
 [TestFixture]
 public class CharacterClassLoadingTests {
+    private CharacterClassService classService;
+
+    [SetUp]
+    public void Setup() {
+        classService = new CharacterClassService();
+    }
     [Test]
     [Order(1)]
     public void TestClassPullWorks() {
-        List<CharacterClass> list = new List<CharacterClass>();
-        list = CharacterClass.AllClassesAsync().Result;
+        List<CharacterClass> list = classService.GetAllClassesAsync().Result;
 
         Assert.That(list.Count, Is.EqualTo(32));
     }
@@ -17,7 +22,7 @@ public class CharacterClassLoadingTests {
     [Order(2)]
     public void TestCharacterWithClassMageHasCorrectHitDie() {
         Character character = new Character();
-        CharacterClass? charClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        CharacterClass? charClass = classService.GetAllClassesAsync().Result.Find(c => c.Name == "Mage");
         Assert.That(charClass, Is.Not.Null);
         character.AssignCharacterClass(charClass);
         DiceType? hitDie = character.GetHitDice();
@@ -32,7 +37,7 @@ public class CharacterClassLoadingTests {
     [Order(3)]
     public void TestCharacterWithClassMageHasCorrectManaDie() {
         Character character = new Character();
-        CharacterClass? charClass = CharacterClass.AllClassesAsync().Result.Find(c => c.Name == "Mage");
+        CharacterClass? charClass = classService.GetAllClassesAsync().Result.Find(c => c.Name == "Mage");
         Assert.That(charClass, Is.Not.Null);
         character.AssignCharacterClass(charClass);
         DiceType? manaDie = character.GetManaDice();

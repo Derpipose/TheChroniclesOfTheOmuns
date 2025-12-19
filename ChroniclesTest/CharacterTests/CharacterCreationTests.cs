@@ -5,7 +5,7 @@ using PlayerApp.Models;
 [TestFixture]
 public class CharacterCreationTests {
     private CharacterClass mageClass;
-    
+
     [SetUp]
     public void Setup() {
         mageClass = new CharacterClass() {

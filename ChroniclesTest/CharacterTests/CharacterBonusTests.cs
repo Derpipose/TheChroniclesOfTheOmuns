@@ -4,6 +4,13 @@ using PlayerApp.Models;
 
 [TestFixture]
 public class CharacterBonusTests {
+    private CharacterService characterService;
+
+    [SetUp]
+    public void Setup() {
+        characterService = new CharacterService();
+    }
+
     [Test]
     public void CharacterGetsCorrectBonusFromStats() {
         Character character = new();
@@ -17,12 +24,12 @@ public class CharacterBonusTests {
         };
 
         Assert.Multiple(() => {
-            Assert.That(character.GetBonus("Strength"), Is.EqualTo(4));
-            Assert.That(character.GetBonus("Dexterity"), Is.EqualTo(2));
-            Assert.That(character.GetBonus("Constitution"), Is.EqualTo(1));
-            Assert.That(character.GetBonus("Intelligence"), Is.EqualTo(0));
-            Assert.That(character.GetBonus("Wisdom"), Is.EqualTo(-1));
-            Assert.That(character.GetBonus("Charisma"), Is.EqualTo(3));
+            Assert.That(characterService.GetBonus(character, "Strength"), Is.EqualTo(4));
+            Assert.That(characterService.GetBonus(character, "Dexterity"), Is.EqualTo(2));
+            Assert.That(characterService.GetBonus(character, "Constitution"), Is.EqualTo(1));
+            Assert.That(characterService.GetBonus(character, "Intelligence"), Is.EqualTo(0));
+            Assert.That(characterService.GetBonus(character, "Wisdom"), Is.EqualTo(-1));
+            Assert.That(characterService.GetBonus(character, "Charisma"), Is.EqualTo(3));
         });
     }
 }
