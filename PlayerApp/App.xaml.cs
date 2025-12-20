@@ -1,5 +1,6 @@
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlayerApp.Database;
 using PlayerApp.Services;
@@ -13,11 +14,26 @@ public partial class App : Application
 
     public App()
     {
+        // Load configuration from appsettings.json
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
         var services = new ServiceCollection();
 
-        // Register DbContext
+        // Register DbContext with conditional database provider
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite("Data Source=chronicle.db"));
+        {
+#if DEBUG
+            // Development/Test: SQL Server LocalDB
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            options.UseSqlServer(connectionString);
+#else
+            // Production: SQLite
+            options.UseSqlite("Data Source=chronicles_of_omuns.db");
+#endif
+        });
 
         // Register Services
         services.AddScoped<AppCharacterService>();
@@ -35,10 +51,10 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Create DB if it doesn't exist
+        // Apply migrations if needed
         using (var context = _serviceProvider.GetRequiredService<ApplicationDbContext>())
         {
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
         }
 
         // Show MainWindow with MainViewModel
