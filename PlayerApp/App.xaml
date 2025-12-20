@@ -2,8 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PlayerApp"
-             StartupUri="Views/MainWindow.xaml">
+             xmlns:vm="clr-namespace:PlayerApp.ViewModels"
+             xmlns:v="clr-namespace:PlayerApp.Views">
     <Application.Resources>
-         
+        <!-- DataTemplates automatically bind ViewModels to Views -->
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <v:DashboardView />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vm:CharactersViewModel}">
+            <v:CharactersView />
+        </DataTemplate>
+
+        <!-- Global Styles -->
+        <Style TargetType="Window">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
     </Application.Resources>
 </Application>
