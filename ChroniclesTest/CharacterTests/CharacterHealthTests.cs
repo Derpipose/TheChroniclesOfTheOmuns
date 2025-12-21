@@ -30,7 +30,7 @@ public class CharacterHealthTests {
         CharacterRace humanRace = new() {
             Name = "Human",
             Description = "Versatile and ambitious race",
-            Modifiers = new List<RacialModifier> {}
+            Modifiers = new List<RacialModifier> { }
         };
         characterService.UpdateCharacterRaceAndCalculateAttributes(character, humanRace);
 
@@ -62,7 +62,7 @@ public class CharacterHealthTests {
         CharacterRace humanRace = new() {
             Name = "Human",
             Description = "Versatile and ambitious race",
-            Modifiers = new List<RacialModifier> {}
+            Modifiers = new List<RacialModifier> { }
         };
 
         characterService.UpdateCharacterClassAndCalculateAttributes(character, fighterClass);

@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace PlayerApp.Migrations; 
+namespace PlayerApp.Migrations;
+
 /// <inheritdoc />
 public partial class RefactorServices : Migration {
     /// <inheritdoc />

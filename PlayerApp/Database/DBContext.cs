@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Database;
 
@@ -83,12 +84,12 @@ public class ApplicationDbContext : DbContext {
 
         // Seed DiceType data
         modelBuilder.Entity<DiceType>().HasData(
-            new DiceType { Id = 1, Name = "D4", Sides = 4 },
-            new DiceType { Id = 2, Name = "D6", Sides = 6 },
-            new DiceType { Id = 3, Name = "D8", Sides = 8 },
-            new DiceType { Id = 4, Name = "D10", Sides = 10 },
-            new DiceType { Id = 5, Name = "D12", Sides = 12 },
-            new DiceType { Id = 6, Name = "D20", Sides = 20 }
+            new DiceType { Id = (int)DiceTypeEnum.D4, Name = "D4", Sides = 4 },
+            new DiceType { Id = (int)DiceTypeEnum.D6, Name = "D6", Sides = 6 },
+            new DiceType { Id = (int)DiceTypeEnum.D8, Name = "D8", Sides = 8 },
+            new DiceType { Id = (int)DiceTypeEnum.D10, Name = "D10", Sides = 10 },
+            new DiceType { Id = (int)DiceTypeEnum.D12, Name = "D12", Sides = 12 },
+            new DiceType { Id = (int)DiceTypeEnum.D20, Name = "D20", Sides = 20 }
         );
     }
 }

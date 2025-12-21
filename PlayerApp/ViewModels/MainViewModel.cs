@@ -3,17 +3,14 @@ using PlayerApp.Services;
 
 namespace PlayerApp.ViewModels;
 
-public class MainViewModel : BaseViewModel
-{
+public class MainViewModel : BaseViewModel {
     private readonly NavigationService _navigationService;
     private readonly DashboardViewModel _dashboardViewModel;
     private readonly CharactersViewModel _charactersViewModel;
 
-    public BaseViewModel CurrentViewModel
-    {
+    public BaseViewModel CurrentViewModel {
         get => _navigationService.CurrentViewModel;
-        set
-        {
+        set {
             _navigationService.CurrentViewModel = value;
             OnPropertyChanged();
         }
@@ -25,8 +22,7 @@ public class MainViewModel : BaseViewModel
     public MainViewModel(
         NavigationService navigationService,
         DashboardViewModel dashboardViewModel,
-        CharactersViewModel charactersViewModel)
-    {
+        CharactersViewModel charactersViewModel) {
         _navigationService = navigationService;
         _dashboardViewModel = dashboardViewModel;
         _charactersViewModel = charactersViewModel;

@@ -10,20 +10,26 @@
             <DataGrid ItemsSource="{Binding Characters}"
                       SelectedItem="{Binding SelectedCharacter}"
                       AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
                       Height="400"
                       Margin="0,0,0,20">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
-                    <DataGridTextColumn Header="Class" Binding="{Binding Class}" Width="150"/>
-                    <DataGridTextColumn Header="Race" Binding="{Binding Race}" Width="150"/>
+                    <DataGridTextColumn Header="Class" Binding="{Binding CharacterClass.Name}" Width="150"/>
+                    <DataGridTextColumn Header="Race" Binding="{Binding CharacterRace.Name}" Width="150"/>
                     <DataGridTextColumn Header="Level" Binding="{Binding Level}" Width="80"/>
                 </DataGrid.Columns>
             </DataGrid>
 
             <!-- Action Buttons -->
             <StackPanel Orientation="Horizontal">
-                <Button Content="New Character" Padding="15,8" FontSize="12" Margin="0,0,10,0"/>
-                <Button Content="Edit" Padding="15,8" FontSize="12" Margin="0,0,10,0"/>
+                <Button Content="New Character" 
+                        Command="{Binding NewCharacterCommand}"
+                        Padding="15,8" FontSize="12" Margin="0,0,10,0"/>
+                <Button Content="Edit" 
+                        Command="{Binding EditCharacterCommand}"
+                        Padding="15,8" FontSize="12" Margin="0,0,10,0"/>
                 <Button Content="Delete" 
                         Command="{Binding DeleteCharacterCommand}"
                         Padding="15,8" FontSize="12" 
