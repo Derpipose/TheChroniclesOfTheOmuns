@@ -54,8 +54,8 @@ public class CharactersViewModel : BaseViewModel {
         if (SelectedCharacter == null)
             return;
 
-        // TODO: Open edit character dialog/window
-        // This is a placeholder - implement the actual edit UI
+        var editCharViewModel = new EditCharacterViewModel(SelectedCharacter.Id, _characterService, _navigationService, this);
+        _navigationService.Navigate(editCharViewModel);
     }
 
     private async Task DeleteSelectedCharacter() {

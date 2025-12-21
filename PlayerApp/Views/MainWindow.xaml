@@ -19,6 +19,9 @@
         <DataTemplate DataType="{x:Type vm:NewCharacterViewModel}">
             <local:NewCharacterView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:EditCharacterViewModel}">
+            <local:EditCharacterView/>
+        </DataTemplate>
     </Window.Resources>
 
     <DockPanel>
