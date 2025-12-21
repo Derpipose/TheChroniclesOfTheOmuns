@@ -5,19 +5,25 @@
              xmlns:vm="clr-namespace:PlayerApp.ViewModels"
              xmlns:v="clr-namespace:PlayerApp.Views">
     <Application.Resources>
-        <!-- DataTemplates automatically bind ViewModels to Views -->
-        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
-            <v:DashboardView />
-        </DataTemplate>
-        
-        <DataTemplate DataType="{x:Type vm:CharactersViewModel}">
-            <v:CharactersView />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Themes/ModernTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- DataTemplates automatically bind ViewModels to Views -->
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                <v:DashboardView />
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type vm:CharactersViewModel}">
+                <v:CharactersView />
+            </DataTemplate>
 
-        <!-- Global Styles -->
-        <Style TargetType="Window">
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontSize" Value="12"/>
-        </Style>
+            <!-- Global Styles -->
+            <Style TargetType="Window">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

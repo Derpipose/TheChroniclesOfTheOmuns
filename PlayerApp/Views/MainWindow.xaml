@@ -6,7 +6,8 @@
         Title="Chronicles of the Omuns - Character Manager"
         Height="700"
         Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="#ECF0F1">
 
     <Window.Resources>
         <!-- ViewModel to View Mapping -->
@@ -24,9 +25,9 @@
         </DataTemplate>
     </Window.Resources>
 
-    <DockPanel>
+    <DockPanel Background="{StaticResource BackgroundBrush}">
         <!-- Menu Bar -->
-        <Menu DockPanel.Dock="Top" Height="30">
+        <Menu DockPanel.Dock="Top" Height="35" Padding="0,8,0,0">
             <MenuItem Header="View">
                 <MenuItem Header="Dashboard" Command="{Binding ShowDashboardCommand}"/>
                 <Separator/>

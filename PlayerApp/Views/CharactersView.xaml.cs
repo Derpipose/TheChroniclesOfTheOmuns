@@ -1,4 +1,6 @@
+using System.Windows;
 using System.Windows.Controls;
+using PlayerApp.Models;
 using PlayerApp.ViewModels;
 
 namespace PlayerApp.Views;
@@ -13,5 +15,13 @@ public partial class CharactersView : UserControl {
                 await vm.LoadCharacters();
             }
         };
+    }
+
+    private void CharacterCard_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+        if (sender is Border border && border.DataContext is Character character) {
+            if (DataContext is CharactersViewModel vm) {
+                vm.SelectedCharacter = character;
+            }
+        }
     }
 }
