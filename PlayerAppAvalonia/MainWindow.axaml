@@ -1,9 +1,25 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="PlayerAppAvalonia.MainWindow"
-        Title="PlayerAppAvalonia">
-    Welcome to Avalonia!
+        Title="Chronicles of the Omuns - Character Manager"
+        Height="700"
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
+
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top" Height="35">
+            <MenuItem Header="View">
+                <MenuItem Header="Dashboard" Click="MenuItem_Dashboard_Click"/>
+                <Separator/>
+                <MenuItem Header="Exit" Click="MenuItem_Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Main Content Area -->
+        <ContentControl Name="ContentArea" DockPanel.Dock="Bottom"/>
+    </DockPanel>
 </Window>
