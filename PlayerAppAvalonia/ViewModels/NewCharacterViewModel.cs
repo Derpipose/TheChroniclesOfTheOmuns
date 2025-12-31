@@ -26,17 +26,26 @@ public class NewCharacterViewModel : BaseViewModel {
 
     public string Name {
         get => _name;
-        set => SetProperty(ref _name, value);
+        set {
+            SetProperty(ref _name, value);
+            CreateCommand.RaiseCanExecuteChanged();
+        }
     }
 
     public CharacterClass? SelectedClass {
         get => _selectedClass;
-        set => SetProperty(ref _selectedClass, value);
+        set {
+            SetProperty(ref _selectedClass, value);
+            CreateCommand.RaiseCanExecuteChanged();
+        }
     }
 
     public CharacterRace? SelectedRace {
         get => _selectedRace;
-        set => SetProperty(ref _selectedRace, value);
+        set {
+            SetProperty(ref _selectedRace, value);
+            CreateCommand.RaiseCanExecuteChanged();
+        }
     }
 
     public int Strength {
