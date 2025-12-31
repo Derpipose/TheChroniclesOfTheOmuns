@@ -32,7 +32,5 @@ public class MainViewModel : BaseViewModel {
 
         // Start with dashboard
         CurrentViewModel = _dashboardViewModel;
-
-        _navigationService.OnNavigated += () => OnPropertyChanged(nameof(CurrentViewModel));
     }
 }

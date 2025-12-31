@@ -10,11 +10,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        var contentArea = this.FindControl<ContentControl>("ContentArea");
-        if (contentArea != null && DataContext is NavigationService navService)
-        {
-            contentArea.Bind(ContentControl.ContentProperty, new Avalonia.Data.Binding("CurrentViewModel") { Source = navService });
-        }
     }
 
     private void MenuItem_Dashboard_Click(object? sender, RoutedEventArgs e)

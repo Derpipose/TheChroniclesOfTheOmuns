@@ -26,7 +26,7 @@ public partial class App : Application
             .AddJsonFile("appsettings.json", optional: true)
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { "DefaultConnection", "Server=(localdb)\\ChroniclesDB;Database=chronicles_of_omuns;Trusted_Connection=true" }
+                { "ConnectionStrings:DefaultConnection", "Server=(localdb)\\ChroniclesDB;Database=chronicles_of_omuns;Trusted_Connection=true" }
             })
             .Build();
 

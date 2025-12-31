@@ -20,6 +20,6 @@
         </Menu>
 
         <!-- Main Content Area -->
-        <ContentControl Name="ContentArea" DockPanel.Dock="Bottom"/>
+        <ContentControl Name="ContentArea" DockPanel.Dock="Bottom" Background="White" Content="{Binding CurrentView}"/>
     </DockPanel>
 </Window>
