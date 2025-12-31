@@ -9,9 +9,10 @@
                        FontSize="32" FontWeight="Bold" 
                        Foreground="#2C3E50"
                        Margin="0,0,0,10"
-                       TextAlignment="Center"/>
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"/>
             
-            <TextBlock Text="Manage your D&amp;D characters with ease" 
+            <TextBlock Text="Manage your COTO characters with ease" 
                        FontSize="14" Foreground="#7F8C8D" 
                        Margin="0,0,0,40"
                        TextAlignment="Center"/>
@@ -28,7 +29,8 @@
                        Margin="0,20,0,15"/>
             <TextBlock Text="Load game data into the database" 
                        FontSize="12" Foreground="#7F8C8D" 
-                       Margin="0,0,0,10"/>
+                       Margin="0,0,0,10"
+                       TextWrapping="Wrap"/>
             <StackPanel Orientation="Vertical" Spacing="8">
                 <Button Content="Load All Classes" 
                         Command="{Binding LoadClassesCommand}"

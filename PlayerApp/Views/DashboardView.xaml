@@ -10,7 +10,7 @@
                        Margin="0,0,0,10"
                        TextAlignment="Center"/>
             
-            <TextBlock Text="Manage your D&amp;D characters with ease" 
+            <TextBlock Text="Manage your COTO characters with ease" 
                        FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" 
                        Margin="0,0,0,40"
                        TextAlignment="Center"/>

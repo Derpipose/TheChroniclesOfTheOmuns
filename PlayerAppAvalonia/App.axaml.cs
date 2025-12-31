@@ -57,12 +57,16 @@ public partial class App : Application
         {
             var navigationService = provider.GetRequiredService<NavigationService>();
             var dashboardVm = provider.GetRequiredService<DashboardViewModel>();
-            navigationService.Navigate(dashboardVm);
+            var charactersVm = provider.GetRequiredService<CharactersViewModel>();
+            navigationService.CurrentViewModel = dashboardVm;
 
-            desktop.MainWindow = new MainWindow
+            var mainWindow = new MainWindow
             {
                 DataContext = navigationService
             };
+            mainWindow.SetDependencies(navigationService, dashboardVm, charactersVm);
+
+            desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -19,7 +19,11 @@ public class CharactersViewModel : BaseViewModel {
 
     public Character? SelectedCharacter {
         get => _selectedCharacter;
-        set => SetProperty(ref _selectedCharacter, value);
+        set {
+            SetProperty(ref _selectedCharacter, value);
+            EditCharacterCommand.RaiseCanExecuteChanged();
+            DeleteCharacterCommand.RaiseCanExecuteChanged();
+        }
     }
 
     public RelayCommand LoadCharactersCommand { get; }

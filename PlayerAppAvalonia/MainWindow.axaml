@@ -11,6 +11,7 @@
         <Menu DockPanel.Dock="Top" Height="35">
             <MenuItem Header="View">
                 <MenuItem Header="Dashboard" Click="MenuItem_Dashboard_Click"/>
+                <MenuItem Header="Manage Characters" Click="MenuItem_Characters_Click"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="MenuItem_Exit_Click"/>
             </MenuItem>
