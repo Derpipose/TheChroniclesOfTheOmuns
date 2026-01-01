@@ -59,6 +59,7 @@ public class NavigationService : INotifyPropertyChanged {
         return viewModel switch {
             DashboardViewModel => new DashboardView { DataContext = viewModel },
             CharactersViewModel => new CharactersView { DataContext = viewModel },
+            CharacterViewModel => new CharacterView { DataContext = viewModel },
             NewCharacterViewModel => new NewCharacterView { DataContext = viewModel },
             EditCharacterViewModel => new EditCharacterView { DataContext = viewModel },
             _ => new TextBlock { Text = "Unknown View" }

@@ -22,12 +22,14 @@ public class CharactersViewModel : BaseViewModel {
         set {
             SetProperty(ref _selectedCharacter, value);
             EditCharacterCommand.RaiseCanExecuteChanged();
+            ViewCharacterCommand.RaiseCanExecuteChanged();
             DeleteCharacterCommand.RaiseCanExecuteChanged();
         }
     }
 
     public RelayCommand LoadCharactersCommand { get; }
     public RelayCommand NewCharacterCommand { get; }
+    public RelayCommand ViewCharacterCommand { get; }
     public RelayCommand EditCharacterCommand { get; }
     public RelayCommand DeleteCharacterCommand { get; }
 
@@ -36,6 +38,7 @@ public class CharactersViewModel : BaseViewModel {
         _navigationService = navigationService;
         LoadCharactersCommand = new RelayCommand(async _ => await LoadCharacters());
         NewCharacterCommand = new RelayCommand(_ => CreateNewCharacter());
+        ViewCharacterCommand = new RelayCommand(_ => ViewSelectedCharacter(), _ => SelectedCharacter != null);
         EditCharacterCommand = new RelayCommand(_ => EditSelectedCharacter(), _ => SelectedCharacter != null);
         DeleteCharacterCommand = new RelayCommand(async _ => await DeleteSelectedCharacter(), _ => SelectedCharacter != null);
 
@@ -50,6 +53,14 @@ public class CharactersViewModel : BaseViewModel {
     private void CreateNewCharacter() {
         var newCharViewModel = new NewCharacterViewModel(_characterService, _navigationService, this);
         _navigationService.Navigate(newCharViewModel);
+    }
+
+    private void ViewSelectedCharacter() {
+        if (SelectedCharacter == null)
+            return;
+
+        var viewCharViewModel = new CharacterViewModel(_characterService, SelectedCharacter.Id);
+        _navigationService.Navigate(viewCharViewModel);
     }
 
     private void EditSelectedCharacter() {

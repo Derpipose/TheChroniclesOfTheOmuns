@@ -22,7 +22,7 @@ public class CharacterClassService {
         var diceTypes = DiceType.GetStandardDice();
 
         return dtoList
-            .Where(dto => dto.Classification != "Sci fi" || dto.Classification != "Eastern")
+            .Where(dto => dto.Classification != "Sci fi" && dto.Classification != "Eastern")
             .Select(dto => {
                 var hitDiceId = dto.HitDie.ToString() switch {
                     "4" => (int)DiceTypeEnum.D4,

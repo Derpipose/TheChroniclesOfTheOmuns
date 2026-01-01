@@ -44,4 +44,16 @@ public partial class CharactersView : UserControl
             }
         }
     }
+
+    private void CharacterCard_DoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is Border border && border.DataContext is Character character)
+        {
+            if (DataContext is CharactersViewModel vm)
+            {
+                vm.SelectedCharacter = character;
+                vm.ViewCharacterCommand.Execute(null);
+            }
+        }
+    }
 }

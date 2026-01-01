@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PlayerAppAvalonia.Database;
@@ -9,30 +10,76 @@ namespace PlayerAppAvalonia.Services;
 
 public class AppCharacterService {
     private readonly ApplicationDbContext _dbContext;
+    private readonly CharacterService _characterService;
 
     public AppCharacterService(ApplicationDbContext dbContext) {
         _dbContext = dbContext;
+        _characterService = new CharacterService();
     }
 
-    public async Task<List<Character>> GetAllCharactersAsync()
-        => await _dbContext.Character
+    private IQueryable<Character> GetCharactersWithRelations(IQueryable<Character> query) 
+        => query
             .Include(c => c.CharacterClass)
+                .ThenInclude(cc => cc.HitDice)
+            .Include(c => c.CharacterClass)
+                .ThenInclude(cc => cc.ManaDice)
             .Include(c => c.CharacterRace)
-            .ToListAsync();
+                .ThenInclude(cr => cr.Modifiers)
+            .Include(c => c.Stats);
+
+    public async Task<List<Character>> GetAllCharactersAsync()
+        => await GetCharactersWithRelations(_dbContext.Character).ToListAsync();
 
     public async Task<Character?> GetCharacterByIdAsync(int id)
-        => await _dbContext.Character.FindAsync(id);
+        => await GetCharactersWithRelations(_dbContext.Character).FirstOrDefaultAsync(c => c.Id == id);
 
     public async Task<Character> CreateCharacterAsync(Character character) {
+        // Calculate health and mana before saving
+        _characterService.UpdateCharacterClassAndCalculateAttributes(character, character.CharacterClass!);
+        _characterService.UpdateCharacterRaceAndCalculateAttributes(character, character.CharacterRace!);
+        
         _dbContext.Character.Add(character);
         await _dbContext.SaveChangesAsync();
         return character;
     }
 
     public async Task<Character> UpdateCharacterAsync(Character character) {
-        _dbContext.Character.Update(character);
+        var fullCharacter = await GetCharactersWithRelations(_dbContext.Character)
+            .FirstOrDefaultAsync(c => c.Id == character.Id);
+
+        if (fullCharacter == null)
+            return character;
+
+        fullCharacter.Name = character.Name;
+        fullCharacter.Level = character.Level;
+
+        if (character.Stats != null) {
+            fullCharacter.Stats.Strength = character.Stats.Strength;
+            fullCharacter.Stats.Constitution = character.Stats.Constitution;
+            fullCharacter.Stats.Dexterity = character.Stats.Dexterity;
+            fullCharacter.Stats.Wisdom = character.Stats.Wisdom;
+            fullCharacter.Stats.Charisma = character.Stats.Charisma;
+            fullCharacter.Stats.Intelligence = character.Stats.Intelligence;
+        }
+
+        if (character.CharacterClass != null && character.CharacterClass.Id != fullCharacter.CharacterClass?.Id) {
+            fullCharacter.AssignCharacterClass(character.CharacterClass);
+        }
+
+        if (character.CharacterRace != null && character.CharacterRace.Id != fullCharacter.CharacterRace?.Id) {
+            fullCharacter.AssignCharacterRace(character.CharacterRace);
+        }
+
+        if (fullCharacter.CharacterClass != null) {
+            _characterService.UpdateCharacterClassAndCalculateAttributes(fullCharacter, fullCharacter.CharacterClass);
+        }
+        if (fullCharacter.CharacterRace != null) {
+            _characterService.UpdateCharacterRaceAndCalculateAttributes(fullCharacter, fullCharacter.CharacterRace);
+        }
+        
+        _dbContext.Character.Update(fullCharacter);
         await _dbContext.SaveChangesAsync();
-        return character;
+        return fullCharacter;
     }
 
     public async Task DeleteCharacterAsync(int id) {

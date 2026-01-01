@@ -24,7 +24,8 @@
                                     BorderThickness="1"
                                     CornerRadius="8"
                                     Cursor="Hand"
-                                    PointerPressed="CharacterCard_PointerPressed">
+                                    PointerPressed="CharacterCard_PointerPressed"
+                                    DoubleTapped="CharacterCard_DoubleTapped">
                                 <StackPanel Margin="20" Spacing="12">
                                     <!-- Character Name -->
                                     <TextBlock Text="{Binding Name}" 
@@ -92,6 +93,11 @@
                         Command="{Binding NewCharacterCommand}"
                         Padding="15,10" FontSize="12" 
                         Background="#27AE60"
+                        Foreground="White"/>
+                <Button Content="View Character" 
+                        Command="{Binding ViewCharacterCommand}"
+                        Padding="15,10" FontSize="12" 
+                        Background="#9B59B6"
                         Foreground="White"/>
                 <Button Content="Edit Selected" 
                         Command="{Binding EditCharacterCommand}"
