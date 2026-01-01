@@ -1,6 +1,7 @@
 namespace ChroniclesTest;
 
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 
 [TestFixture]
 public class CharacterHealthTests {
@@ -82,5 +83,46 @@ public class CharacterHealthTests {
         int actualHP = character.Health;
 
         Assert.That(actualHP, Is.EqualTo(expectedHP));
+    }
+
+    [Test]
+    public void DerpyJrKoboldKnightHealthAndManaAreCorrect() {
+        // DerpyJr: Kobold Knight
+        // Expected: Health 40, Mana 47
+        Character character = new();
+        character.Stats = new CharacterStats() {
+            Strength = 12,
+            Constitution = 14,
+            Dexterity = 13,
+            Intelligence = 12,
+            Wisdom = 14,
+            Charisma = 13
+        };
+
+        var knightClass = new CharacterClass {
+            Name = "Knight",
+            ClassType = "Combat",
+            Description = "A master of martial combat",
+            HitDiceId = 1,
+            ManaDiceId = 3,
+            HitDice = new DiceType { Id = 1, Name = "D10", Sides = 10 },
+            ManaDice = new DiceType { Id = 3, Name = "D8", Sides = 8 }
+        };
+
+        var koboldRace = new CharacterRace {
+            Name = "Kobold",
+            Description = "Small crafty creatures"
+        };
+        koboldRace.AddModifier(ModifierType.ManaBonus, 15);
+
+        characterService.UpdateCharacterRaceAndCalculateAttributes(character, koboldRace);
+        characterService.UpdateCharacterClassAndCalculateAttributes(character, knightClass);
+
+        // Health: 2*CON + HitDie + CON_bonus = 2*14 + 10 + 2 = 40
+        Assert.That(character.Health, Is.EqualTo(40), "Health calculation failed");
+
+        // Mana (Combat): mainStat + (2*ManaDie) + stat_bonus + race_bonus
+        // = WIS + (2*8) + WIS_bonus + 15 = 14 + 16 + 2 + 15 = 47
+        Assert.That(character.Mana, Is.EqualTo(47), "Mana calculation failed");
     }
 }

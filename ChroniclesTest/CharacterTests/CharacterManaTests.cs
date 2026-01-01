@@ -28,7 +28,7 @@ public class CharacterManaTests {
         TieflingRace = new CharacterRace() {
             Name = "Tiefling",
             Description = "A demonic race spawned from the Hells themselves. " +
-            "According to popular playstyles, their skin can be any shade of red, " +
+            "According to popular play styles, their skin can be any shade of red, " +
             "purple, or normal skin tones. Some even are blue",
             Modifiers = new List<RacialModifier> {
                 new RacialModifier {Modifier = manaBonusModifier,
