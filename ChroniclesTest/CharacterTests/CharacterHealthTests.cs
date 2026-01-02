@@ -13,7 +13,7 @@ public class CharacterHealthTests {
         characterService = new CharacterService();
         mageClass = new CharacterClass() {
             Name = "Mage",
-            ClassType = "Magic",
+            ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDiceId = 2,
             ManaDiceId = 6,
@@ -52,7 +52,7 @@ public class CharacterHealthTests {
 
         CharacterClass fighterClass = new() {
             Name = "Barbarian",
-            ClassType = "Combat",
+            ClassType = ClassTypeEnum.Combat,
             Description = "A strong melee fighter",
             HitDiceId = 5,
             ManaDiceId = 1,
@@ -101,7 +101,7 @@ public class CharacterHealthTests {
 
         var knightClass = new CharacterClass {
             Name = "Knight",
-            ClassType = "Combat",
+            ClassType = ClassTypeEnum.Combat,
             Description = "A master of martial combat",
             HitDiceId = 1,
             ManaDiceId = 3,

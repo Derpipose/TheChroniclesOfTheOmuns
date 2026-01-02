@@ -1,6 +1,7 @@
 namespace ChroniclesTest;
 
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 
 [TestFixture]
 public class CharacterCreationTests {
@@ -10,7 +11,7 @@ public class CharacterCreationTests {
     public void Setup() {
         mageClass = new CharacterClass() {
             Name = "Mage",
-            ClassType = "Magic",
+            ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDiceId = 2,
             ManaDiceId = 6,
@@ -60,7 +61,7 @@ public class CharacterCreationTests {
 
         CharacterClass fighter = new() {
             Name = "Fighter",
-            ClassType = "Combat",
+            ClassType = ClassTypeEnum.Combat,
             Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O",
             HitDiceId = 5,
             ManaDiceId = 2,

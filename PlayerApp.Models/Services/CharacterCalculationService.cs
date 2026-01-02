@@ -9,7 +9,7 @@ public class CharacterCalculationService {
             || character.CharacterRace == null)
             return;
 
-        if (character.CharacterClass.ClassType == "Combat") {
+        if (character.CharacterClass.ClassType == ClassTypeEnum.Combat) {
             character.Health = 2 * character.Stats.Constitution + character.CharacterClass.HitDice.Sides + GetBonus(character, "Constitution");
         } else {
             character.Health = (2 * character.CharacterClass.HitDice.Sides) + character.Stats.Constitution + GetBonus(character, "Constitution");
@@ -22,7 +22,7 @@ public class CharacterCalculationService {
             return;
 
         var (mainStat, secondaryStat, statName) = GetManaStatInfo(character);
-        bool isMagic = character.CharacterClass.ClassType == "Magic";
+        bool isMagic = character.CharacterClass.ClassType == ClassTypeEnum.Magic;
         int diceMultiplier = isMagic ? 1 : 2;
         character.Mana = ApplyManaFormula(character, mainStat, secondaryStat, statName, character.CharacterClass.ManaDice.Sides, diceMultiplier, isMagic);
     }

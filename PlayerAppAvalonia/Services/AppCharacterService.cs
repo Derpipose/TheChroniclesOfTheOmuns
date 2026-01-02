@@ -20,11 +20,12 @@ public class AppCharacterService {
     private IQueryable<Character> GetCharactersWithRelations(IQueryable<Character> query) 
         => query
             .Include(c => c.CharacterClass)
-                .ThenInclude(cc => cc.HitDice)
+                .ThenInclude(cc => cc!.HitDice)
             .Include(c => c.CharacterClass)
-                .ThenInclude(cc => cc.ManaDice)
+                .ThenInclude(cc => cc!.ManaDice)
             .Include(c => c.CharacterRace)
-                .ThenInclude(cr => cr.Modifiers)
+                .ThenInclude(cr => cr!.Modifiers)
+                    .ThenInclude(m => m.Modifier)
             .Include(c => c.Stats);
 
     public async Task<List<Character>> GetAllCharactersAsync()
@@ -34,7 +35,28 @@ public class AppCharacterService {
         => await GetCharactersWithRelations(_dbContext.Character).FirstOrDefaultAsync(c => c.Id == id);
 
     public async Task<Character> CreateCharacterAsync(Character character) {
-        // Calculate health and mana before saving
+        // Reload class and race with all relationships before calculating
+        if (character.CharacterClass != null) {
+            var classWithDice = await _dbContext.CharacterClass
+                .Include(c => c.HitDice)
+                .Include(c => c.ManaDice)
+                .FirstOrDefaultAsync(c => c.Id == character.CharacterClass.Id);
+            if (classWithDice != null) {
+                character.AssignCharacterClass(classWithDice);
+            }
+        }
+        
+        if (character.CharacterRace != null) {
+            var raceWithModifiers = await _dbContext.CharacterRace
+                .Include(r => r.Modifiers)
+                    .ThenInclude(m => m.Modifier)
+                .FirstOrDefaultAsync(r => r.Id == character.CharacterRace.Id);
+            if (raceWithModifiers != null) {
+                character.AssignCharacterRace(raceWithModifiers);
+            }
+        }
+        
+        // Now calculate with fully loaded objects
         _characterService.UpdateCharacterClassAndCalculateAttributes(character, character.CharacterClass!);
         _characterService.UpdateCharacterRaceAndCalculateAttributes(character, character.CharacterRace!);
         

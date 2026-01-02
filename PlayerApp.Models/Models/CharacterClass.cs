@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
@@ -9,7 +10,7 @@ public class CharacterClass {
     [Required]
     public required string Name { get; set; }
     [Required]
-    public required string ClassType { get; set; }
+    public required ClassTypeEnum ClassType { get; set; }
     [Required]
     public required string Description { get; set; }
     [Required]

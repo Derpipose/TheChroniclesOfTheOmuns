@@ -14,7 +14,7 @@ public class CharacterManaTests {
         characterService = new CharacterService();
         mageClass = new CharacterClass() {
             Name = "Mage",
-            ClassType = "Magic",
+            ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDiceId = 2,
             HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 },
@@ -71,7 +71,7 @@ public class CharacterManaTests {
 
         CharacterClass fighterClass = new() {
             Name = "Barbarian",
-            ClassType = "Combat",
+            ClassType = ClassTypeEnum.Combat,
             Description = "A strong melee fighter",
             HitDiceId = 5,
             ManaDiceId = 1,

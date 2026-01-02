@@ -44,7 +44,7 @@ public class CharacterClassService {
                 };
                 return new CharacterClass {
                     Name = dto.ClassName,
-                    ClassType = dto.ClassType,
+                    ClassType = ParseClassType(dto.ClassType),
                     Description = dto.Description,
                     HitDiceId = hitDiceId,
                     ManaDiceId = manaDiceId,
@@ -52,6 +52,15 @@ public class CharacterClassService {
                     ManaDice = diceTypes.ContainsKey(manaDiceId) ? diceTypes[manaDiceId] : null
                 };
             }).ToList();
+    }
+
+    private ClassTypeEnum ParseClassType(string classType) {
+        return classType.ToLower() switch {
+            "magic" => ClassTypeEnum.Magic,
+            "combat" => ClassTypeEnum.Combat,
+            "specialist" => ClassTypeEnum.Specialist,
+            _ => ClassTypeEnum.Specialist
+        };
     }
 }
 

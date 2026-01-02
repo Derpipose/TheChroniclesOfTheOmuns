@@ -4,11 +4,14 @@ using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PlayerApp.Models;
 using PlayerAppAvalonia.Database;
 using PlayerAppAvalonia.Services;
 using PlayerAppAvalonia.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PlayerAppAvalonia;
 
@@ -50,6 +53,38 @@ public partial class App : Application
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             dbContext.Database.Migrate();
+        }
+
+        // Seed races from JSON if database is empty
+        using (var scope = provider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            if (!dbContext.CharacterRace.Any())
+            {
+                var raceService = new CharacterRaceService();
+                var races = raceService.GetAllRacesAsync().Result;
+                foreach (var race in races)
+                {
+                    dbContext.CharacterRace.Add(race);
+                }
+                dbContext.SaveChanges();
+            }
+        }
+
+        // Seed classes from JSON if database is empty
+        using (var scope = provider.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            if (!dbContext.CharacterClass.Any())
+            {
+                var classService = new CharacterClassService();
+                var classes = classService.GetAllClassesAsync().Result;
+                foreach (var characterClass in classes)
+                {
+                    dbContext.CharacterClass.Add(characterClass);
+                }
+                dbContext.SaveChanges();
+            }
         }
 
         // Create main window

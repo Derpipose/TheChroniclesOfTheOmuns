@@ -1,4 +1,5 @@
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 
 namespace ChroniclesTest;
 
@@ -8,7 +9,7 @@ public class CharacterClassTests {
     public void TestCharacterClassCreation() {
         CharacterClass charClass = new CharacterClass() {
             Name = "Warrior",
-            ClassType = "Combat",
+            ClassType = ClassTypeEnum.Combat,
             Description = "A strong melee fighter",
             HitDiceId = 5,
             ManaDiceId = 1
@@ -24,7 +25,7 @@ public class CharacterClassTests {
         Character character = new Character();
         CharacterClass charClass = new CharacterClass() {
             Name = "Mage",
-            ClassType = "Magic",
+            ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDiceId = 2,
             ManaDiceId = 6,
