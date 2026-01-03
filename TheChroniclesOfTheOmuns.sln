@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerApp.Models", "PlayerA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerAppAvalonia", "PlayerAppAvalonia\PlayerAppAvalonia.csproj", "{5492626D-3ECF-138F-BEE9-EDA81081679D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerAppBlazor", "PlayerAppBlazor\PlayerAppBlazor.csproj", "{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{5492626D-3ECF-138F-BEE9-EDA81081679D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5492626D-3ECF-138F-BEE9-EDA81081679D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5492626D-3ECF-138F-BEE9-EDA81081679D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
