@@ -1,5 +1,6 @@
 using PlayerAppBlazor.Components;
 using PlayerAppBlazor.Database;
+using PlayerAppBlazor.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,9 @@ var dbPath = Path.Combine(appDataPath, "chronicles.db");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}")
 );
+
+// Register ViewModels
+builder.Services.AddScoped<CharacterViewModel>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
