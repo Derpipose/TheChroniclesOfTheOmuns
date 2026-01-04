@@ -23,9 +23,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register ViewModels
 builder.Services.AddScoped<CharacterViewModel>();
 builder.Services.AddScoped<RacesViewModel>();
+builder.Services.AddScoped<ClassesViewModel>();
 
 // Register Services
 builder.Services.AddScoped<RaceSyncService>();
+builder.Services.AddScoped<ClassSyncService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

@@ -44,7 +44,7 @@ public class CharacterClassService {
                 };
                 return new CharacterClass {
                     Name = dto.ClassName,
-                    ClassType = ParseClassType(dto.ClassType),
+                    ClassType = ParseClassType(dto.Classification),
                     Description = dto.Description,
                     HitDiceId = hitDiceId,
                     ManaDiceId = manaDiceId,
@@ -55,12 +55,15 @@ public class CharacterClassService {
     }
 
     private ClassTypeEnum ParseClassType(string classType) {
-        return classType.ToLower() switch {
+        Console.WriteLine($"Parsing ClassType: '{classType}'");
+        var result = classType.ToLower() switch {
             "magic" => ClassTypeEnum.Magic,
             "combat" => ClassTypeEnum.Combat,
-            "specialist" => ClassTypeEnum.Specialist,
+            "utility" => ClassTypeEnum.Utility,
             _ => ClassTypeEnum.Other
         };
+        Console.WriteLine($"  -> Mapped to: {result}");
+        return result;
     }
 }
 

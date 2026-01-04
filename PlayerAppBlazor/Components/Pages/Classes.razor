@@ -1,0 +1,105 @@
+@page "/classes"
+@using PlayerAppBlazor.ViewModels
+@inject ClassesViewModel Vm
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<PageTitle>Classes</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Classes</h1>
+        <button class="btn btn-success" @onclick="OnSyncClick" disabled="@Vm.IsLoading">
+            @if (Vm.IsLoading) { <span>Syncing...</span> } else { <span>Sync DB with Classes</span> }
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Vm.StatusMessage))
+    {
+        <div class="alert alert-info">@Vm.StatusMessage</div>
+    }
+
+    @if (Vm.IsLoading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (Vm.Classes.Count == 0)
+    {
+        <div class="alert alert-warning">
+            <p>No classes found. Click <strong>Sync DB with Classes</strong> to load them!</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Class Type</th>
+                        <th>Hit Dice</th>
+                        <th>Mana Dice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var charClass in Vm.Classes)
+                    {
+                        <tr>
+                            <td>@charClass.Id</td>
+                            <td>@charClass.Name</td>
+                            <td>@charClass.ClassType</td>
+                            <td>@(charClass.HitDice?.Name ?? "-")</td>
+                            <td>@(charClass.ManaDice?.Name ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Classes page initialized");
+        Vm.PropertyChanged += OnVmPropertyChanged;
+        await Vm.LoadClassesAsync();
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        Console.WriteLine($"Property changed: {e.PropertyName} = {(e.PropertyName == "StatusMessage" ? Vm.StatusMessage : "...")}");
+        StateHasChanged();
+    }
+
+    private async Task OnSyncClick(MouseEventArgs args)
+    {
+        Console.WriteLine("OnSyncClick fired");
+        await SyncClasses();
+    }
+
+    private async Task SyncClasses()
+    {
+        Console.WriteLine("SyncClasses called");
+        try
+        {
+            await Vm.SyncClassesAsync();
+            Console.WriteLine($"SyncClasses completed. StatusMessage: {Vm.StatusMessage}");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in SyncClasses: {ex.Message}");
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (Vm != null)
+        {
+            Vm.PropertyChanged -= OnVmPropertyChanged;
+        }
+        await ValueTask.CompletedTask;
+    }
+}
