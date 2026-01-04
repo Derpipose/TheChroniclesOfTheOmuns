@@ -27,6 +27,7 @@ public class CharacterManaTests {
 
         TieflingRace = new CharacterRace() {
             Name = "Tiefling",
+            RaceType = "Demonic",
             Description = "A demonic race spawned from the Hells themselves. " +
             "According to popular play styles, their skin can be any shade of red, " +
             "purple, or normal skin tones. Some even are blue",

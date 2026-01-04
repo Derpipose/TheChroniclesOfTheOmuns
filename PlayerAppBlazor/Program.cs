@@ -1,6 +1,7 @@
 using PlayerAppBlazor.Components;
 using PlayerAppBlazor.Database;
 using PlayerAppBlazor.ViewModels;
+using PlayerAppBlazor.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register ViewModels
 builder.Services.AddScoped<CharacterViewModel>();
+builder.Services.AddScoped<RacesViewModel>();
+
+// Register Services
+builder.Services.AddScoped<RaceSyncService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

@@ -15,6 +15,9 @@ public class CharacterRace {
     [Required]
     public required string Description { get; set; }
 
+    [Required]
+    public required string RaceType { get; set; }
+
     // Navigation property
     public ICollection<RacialModifier> Modifiers { get; set; } = new List<RacialModifier>();
 

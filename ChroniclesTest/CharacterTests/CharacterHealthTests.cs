@@ -30,6 +30,7 @@ public class CharacterHealthTests {
         };
         CharacterRace humanRace = new() {
             Name = "Human",
+            RaceType = "Versatile",
             Description = "Versatile and ambitious race",
             Modifiers = new List<RacialModifier> { }
         };
@@ -62,6 +63,7 @@ public class CharacterHealthTests {
 
         CharacterRace humanRace = new() {
             Name = "Human",
+            RaceType = "Versatile",
             Description = "Versatile and ambitious race",
             Modifiers = new List<RacialModifier> { }
         };
@@ -111,6 +113,7 @@ public class CharacterHealthTests {
 
         var koboldRace = new CharacterRace {
             Name = "Kobold",
+            RaceType = "Reptilian",
             Description = "Small crafty creatures"
         };
         koboldRace.AddModifier(ModifierType.ManaBonus, 15);

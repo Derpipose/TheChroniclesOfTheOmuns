@@ -17,7 +17,9 @@ public class CharacterRaceService {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var jsonRaces = JsonSerializer.Deserialize<List<CharacterRaceJsonDto>>(json, options);
             
-            var races = jsonRaces?.Select(MapToCharacterRace).ToList() 
+            var races = jsonRaces?
+                .Where(dto => dto.Campaign != "Scifi" && dto.Campaign != "Oriental")
+                .Select(MapToCharacterRace).ToList() 
                 ?? new List<CharacterRace>();
             
             return races;
@@ -30,7 +32,8 @@ public class CharacterRaceService {
     private static CharacterRace MapToCharacterRace(CharacterRaceJsonDto dto) {
         var race = new CharacterRace {
             Name = dto.Name,
-            Description = dto.Description
+            Description = dto.Description,
+            RaceType = dto.RaceType ?? "Unknown"
         };
 
         if (!string.IsNullOrEmpty(dto.BonusMana) && int.TryParse(dto.BonusMana, out int value) && value != 0) {
@@ -47,6 +50,12 @@ public class CharacterRaceService {
 public class CharacterRaceJsonDto {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    
+    [JsonPropertyName("SubType")]
+    public string RaceType { get; set; } = string.Empty;
+    
+    public string Campaign { get; set; } = string.Empty;
+    
     [JsonConverter(typeof(FlexibleStringConverter))]
     public string BonusMana { get; set; } = string.Empty;
     public string AddOrMultMana { get; set; } = string.Empty;

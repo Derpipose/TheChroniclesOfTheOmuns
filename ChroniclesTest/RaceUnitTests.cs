@@ -18,6 +18,7 @@ public class RaceUnitTests {
     public void TestCharacterRace() {
         CharacterRace race = new CharacterRace() {
             Name = "Human",
+            RaceType = "Versatile",
             Description = "Your standard, vanilla humanoid"
         };
 
@@ -31,12 +32,12 @@ public class RaceUnitTests {
     public void TestRacePullWorks() {
         List<CharacterRace> list = raceService.GetAllRacesAsync().Result;
 
-        Assert.That(list.Count, Is.EqualTo(87));
+        Assert.That(list.Count, Is.EqualTo(49));
     }
 
     [Test]
     public void CanAssignModifiersToRace() {
-        var race = new CharacterRace { Name = "TestRace", Description = "A test race" };
+        var race = new CharacterRace { Name = "TestRace", RaceType = "TestType", Description = "A test race" };
         race.AddModifier(ModifierType.ManaBonus, 10);
 
         var modifier = race.GetModifier(ModifierType.ManaBonus);

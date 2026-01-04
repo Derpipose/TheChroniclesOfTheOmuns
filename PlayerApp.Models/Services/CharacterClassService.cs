@@ -59,7 +59,7 @@ public class CharacterClassService {
             "magic" => ClassTypeEnum.Magic,
             "combat" => ClassTypeEnum.Combat,
             "specialist" => ClassTypeEnum.Specialist,
-            _ => ClassTypeEnum.Specialist
+            _ => ClassTypeEnum.Other
         };
     }
 }
