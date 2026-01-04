@@ -11,6 +11,7 @@ public class CharacterClass {
     public required string Name { get; set; }
     [Required]
     public required ClassTypeEnum ClassType { get; set; }
+    public bool IsVeteranLocked { get; set; } = false;
     [Required]
     public required string Description { get; set; }
     [Required]

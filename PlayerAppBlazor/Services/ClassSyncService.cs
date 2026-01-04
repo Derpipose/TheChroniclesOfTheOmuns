@@ -47,6 +47,7 @@ public class ClassSyncService
                     existingClass.Description = jsonClass.Description;
                     existingClass.HitDiceId = hitDice.Id;
                     existingClass.ManaDiceId = manaDice.Id;
+                    existingClass.IsVeteranLocked = jsonClass.IsVeteranLocked;
                     result.Updated++;
                 }
                 else
@@ -57,7 +58,8 @@ public class ClassSyncService
                         ClassType = jsonClass.ClassType,
                         Description = jsonClass.Description,
                         HitDiceId = hitDice.Id,
-                        ManaDiceId = manaDice.Id
+                        ManaDiceId = manaDice.Id,
+                        IsVeteranLocked = jsonClass.IsVeteranLocked
                     });
                     result.Inserted++;
                 }

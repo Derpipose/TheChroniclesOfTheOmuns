@@ -1,5 +1,6 @@
 @page "/classes"
 @using PlayerAppBlazor.ViewModels
+@using Microsoft.AspNetCore.Components.Web
 @inject ClassesViewModel Vm
 @implements IAsyncDisposable
 @rendermode InteractiveServer
@@ -40,6 +41,7 @@
                         <th>Class Type</th>
                         <th>Hit Dice</th>
                         <th>Mana Dice</th>
+                        <th>Is Veteran Locked</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +53,7 @@
                             <td>@charClass.ClassType</td>
                             <td>@(charClass.HitDice?.Name ?? "-")</td>
                             <td>@(charClass.ManaDice?.Name ?? "-")</td>
+                            <td>@(charClass.IsVeteranLocked ? "Yes" : "No")</td>
                         </tr>
                     }
                 </tbody>
