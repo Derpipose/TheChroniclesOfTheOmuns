@@ -20,35 +20,45 @@ public class ClassSyncService
 
         try
         {
-            Console.WriteLine("Starting class sync...");
             var jsonClasses = await _classService.GetAllClassesAsync();
-            Console.WriteLine($"Retrieved {jsonClasses.Count} classes from JSON");
+            var allDiceTypes = _db.DiceTypes.ToList();
+            
+            var diceIdToName = new Dictionary<int, string>
+            {
+                { 1, "D4" }, { 2, "D6" }, { 3, "D8" }, { 4, "D10" }, { 5, "D12" }, { 6, "D20" }
+            };
 
             foreach (var jsonClass in jsonClasses)
             {
                 var existingClass = _db.CharacterClasses
                     .FirstOrDefault(c => c.Name == jsonClass.Name && c.ClassType == jsonClass.ClassType);
 
+                var hitDiceName = diceIdToName.ContainsKey(jsonClass.HitDiceId) ? diceIdToName[jsonClass.HitDiceId] : null;
+                var manaDiceName = diceIdToName.ContainsKey(jsonClass.ManaDiceId) ? diceIdToName[jsonClass.ManaDiceId] : null;
+                
+                var hitDice = hitDiceName != null ? allDiceTypes.FirstOrDefault(d => d.Name == hitDiceName) : null;
+                var manaDice = manaDiceName != null ? allDiceTypes.FirstOrDefault(d => d.Name == manaDiceName) : null;
+
+                if (hitDice == null || manaDice == null)
+                    continue;
+
                 if (existingClass != null)
                 {
-                    // Update existing class
                     existingClass.Description = jsonClass.Description;
-                    existingClass.HitDiceId = jsonClass.HitDiceId;
-                    existingClass.ManaDiceId = jsonClass.ManaDiceId;
+                    existingClass.HitDiceId = hitDice.Id;
+                    existingClass.ManaDiceId = manaDice.Id;
                     result.Updated++;
                 }
                 else
                 {
-                    // Insert new class - only set IDs, don't attach navigation properties
-                    var newClass = new CharacterClass
+                    _db.CharacterClasses.Add(new CharacterClass
                     {
                         Name = jsonClass.Name,
                         ClassType = jsonClass.ClassType,
                         Description = jsonClass.Description,
-                        HitDiceId = jsonClass.HitDiceId,
-                        ManaDiceId = jsonClass.ManaDiceId
-                    };
-                    _db.CharacterClasses.Add(newClass);
+                        HitDiceId = hitDice.Id,
+                        ManaDiceId = manaDice.Id
+                    });
                     result.Inserted++;
                 }
             }
@@ -56,13 +66,11 @@ public class ClassSyncService
             await _db.SaveChangesAsync();
             result.Success = true;
             result.Message = $"Sync complete: {result.Inserted} inserted, {result.Updated} updated.";
-            Console.WriteLine(result.Message);
         }
         catch (Exception ex)
         {
             result.Success = false;
             result.Message = $"Sync failed: {ex.Message}";
-            Console.WriteLine($"Sync error: {ex}");
         }
 
         return result;
