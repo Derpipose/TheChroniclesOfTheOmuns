@@ -5,7 +5,7 @@ using PlayerAppBlazor.Database;
 
 namespace PlayerAppBlazor.ViewModels;
 
-public class CharacterViewModel : INotifyPropertyChanged
+public class CharactersViewModel : INotifyPropertyChanged
 {
     private readonly AppDbContext _db;
     private List<Character> _characters = new();
@@ -39,7 +39,7 @@ public class CharacterViewModel : INotifyPropertyChanged
         set => SetProperty(ref _newCharacterName, value);
     }
 
-    public CharacterViewModel(AppDbContext db)
+    public CharactersViewModel(AppDbContext db)
     {
         _db = db;
     }

@@ -21,9 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 // Register ViewModels
-builder.Services.AddScoped<CharacterViewModel>();
+builder.Services.AddScoped<CharactersViewModel>();
 builder.Services.AddScoped<RacesViewModel>();
 builder.Services.AddScoped<ClassesViewModel>();
+builder.Services.AddScoped<NewCharacterViewModel>();
+builder.Services.AddScoped<ViewCharacterViewModel>();
 
 // Register Services
 builder.Services.AddScoped<RaceSyncService>();

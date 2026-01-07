@@ -1,0 +1,140 @@
+@page "/character/{CharacterId:int}"
+@using PlayerAppBlazor.ViewModels
+@using Microsoft.AspNetCore.Components.Web
+@inject ViewCharacterViewModel Vm
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<PageTitle>@(Vm.Character?.Name ?? "Character")</PageTitle>
+
+<div class="container mt-4">
+    @if (Vm.IsLoading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!string.IsNullOrEmpty(Vm.StatusMessage))
+    {
+        <div class="alert alert-warning">@Vm.StatusMessage</div>
+        <a href="/characters" class="btn btn-secondary">Back to Characters</a>
+    }
+    else if (Vm.Character != null)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>@Vm.Character.Name</h1>
+            <a href="/characters" class="btn btn-secondary">Back to Characters</a>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Basic Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> @Vm.Character.Name</p>
+                        <p><strong>Level:</strong> @Vm.Character.Level</p>
+                        <p><strong>Race:</strong> @(Vm.Character.CharacterRace?.Name ?? "None")</p>
+                        <p><strong>Class:</strong> @(Vm.Character.CharacterClass?.Name ?? "None")</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health & Mana -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Vitality</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Health Points:</strong> @Vm.Character.Health</p>
+                        <p><strong>Mana Points:</strong> @Vm.Character.Mana</p>
+                        @if (Vm.Character.CharacterClass != null)
+                        {
+                            <p><strong>Hit Dice:</strong> @Vm.Character.CharacterClass.HitDice?.Name</p>
+                            <p><strong>Mana Dice:</strong> @Vm.Character.CharacterClass.ManaDice?.Name</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        @if (Vm.Character.Stats != null)
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Character Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <strong>Strength</strong>
+                                <div class="display-6">@Vm.Character.Stats.Strength</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <strong>Constitution</strong>
+                                <div class="display-6">@Vm.Character.Stats.Constitution</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <strong>Dexterity</strong>
+                                <div class="display-6">@Vm.Character.Stats.Dexterity</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <strong>Wisdom</strong>
+                                <div class="display-6">@Vm.Character.Stats.Wisdom</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <strong>Charisma</strong>
+                                <div class="display-6">@Vm.Character.Stats.Charisma</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <strong>Intelligence</strong>
+                                <div class="display-6">@Vm.Character.Stats.Intelligence</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int CharacterId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Vm.PropertyChanged += OnVmPropertyChanged;
+        await Vm.LoadCharacterAsync(CharacterId);
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (Vm != null)
+        {
+            Vm.PropertyChanged -= OnVmPropertyChanged;
+        }
+        await ValueTask.CompletedTask;
+    }
+}
