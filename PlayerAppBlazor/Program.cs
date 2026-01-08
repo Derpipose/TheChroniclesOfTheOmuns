@@ -26,6 +26,7 @@ builder.Services.AddScoped<RacesViewModel>();
 builder.Services.AddScoped<ClassesViewModel>();
 builder.Services.AddScoped<NewCharacterViewModel>();
 builder.Services.AddScoped<ViewCharacterViewModel>();
+builder.Services.AddScoped<EditCharacterViewModel>();
 
 // Register Services
 builder.Services.AddScoped<RaceSyncService>();

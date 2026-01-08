@@ -21,7 +21,10 @@
     {
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>@Vm.Character.Name</h1>
-            <a href="/characters" class="btn btn-secondary">Back to Characters</a>
+            <div class="btn-group">
+                <a href="/character/@Vm.Character.Id/edit" class="btn btn-warning">Edit</a>
+                <a href="/characters" class="btn btn-secondary">Back to Characters</a>
+            </div>
         </div>
 
         <!-- Basic Info -->

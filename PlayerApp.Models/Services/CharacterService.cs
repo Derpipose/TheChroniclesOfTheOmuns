@@ -16,8 +16,20 @@ public class CharacterService {
         _calculationService.CalculateManaPoints(character);
     }
 
+    public void RemoveCharacterClassAndCalculateAttributes(Character character) {
+        character.RemoveCharacterClass();
+        _calculationService.CalculateHitPoints(character);
+        _calculationService.CalculateManaPoints(character);
+    }
+
     public void UpdateCharacterRaceAndCalculateAttributes(Character character, CharacterRace characterRace) {
         character.AssignCharacterRace(characterRace);
+        _calculationService.CalculateManaPoints(character);
+        _calculationService.CalculateHitPoints(character);
+    }
+
+    public void RemoveCharacterRaceAndCalculateAttributes(Character character) {
+        character.RemoveCharacterRace();
         _calculationService.CalculateManaPoints(character);
         _calculationService.CalculateHitPoints(character);
     }

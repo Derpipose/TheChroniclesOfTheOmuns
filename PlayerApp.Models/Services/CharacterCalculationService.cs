@@ -6,8 +6,10 @@ namespace PlayerApp.Models;
 public class CharacterCalculationService {
     public void CalculateHitPoints(Character character) {
         if (character.Stats.Constitution == 0 || character.CharacterClass == null || character.CharacterClass.HitDice == null
-            || character.CharacterRace == null)
+            || character.CharacterRace == null) {
+            character.Health = 0;
             return;
+        }
 
         if (character.CharacterClass.ClassType == ClassTypeEnum.Combat) {
             character.Health = 2 * character.Stats.Constitution + character.CharacterClass.HitDice.Sides + GetBonus(character, "Constitution");
@@ -18,8 +20,10 @@ public class CharacterCalculationService {
 
     public void CalculateManaPoints(Character character) {
         if (character.Stats.Intelligence == 0 || character.Stats.Wisdom == 0 || character.CharacterClass == null ||
-            character.CharacterClass.ManaDice == null || character.CharacterRace == null)
+            character.CharacterClass.ManaDice == null || character.CharacterRace == null) {
+            character.Mana = 0;
             return;
+        }
 
         var (mainStat, secondaryStat, statName) = GetManaStatInfo(character);
         bool isMagic = character.CharacterClass.ClassType == ClassTypeEnum.Magic;

@@ -27,8 +27,16 @@ public class Character {
         CharacterClass = characterClass;
     }
 
+    public void RemoveCharacterClass() {
+        CharacterClass = null;
+    }
+
     public void AssignCharacterRace(CharacterRace characterRace) {
         CharacterRace = characterRace;
+    }
+
+    public void RemoveCharacterRace() {
+        CharacterRace = null;
     }
 
     public DiceType? GetHitDice() {

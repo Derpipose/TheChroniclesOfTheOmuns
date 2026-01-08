@@ -74,7 +74,7 @@
 
     private void EditCharacter(int id)
     {
-        // TODO: Implement edit character logic
+        Nav.NavigateTo($"/character/{id}/edit");
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
