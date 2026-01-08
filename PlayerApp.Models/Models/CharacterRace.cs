@@ -21,6 +21,7 @@ public class CharacterRace {
     // Navigation property
     public ICollection<RacialModifier> Modifiers { get; set; } = new List<RacialModifier>();
 
+    public ICollection<RaceStatBonus> RaceStatBonuses { get; set; } = new List<RaceStatBonus>();
     public RacialModifier? GetModifier(ModifierType type) {
         return Modifiers.FirstOrDefault(m => m.Modifier.Type == type);
     }
