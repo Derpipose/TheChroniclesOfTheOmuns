@@ -161,7 +161,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged
                     .ThenInclude(m => m.Modifier)
                     .FirstOrDefault(r => r.Id == SelectedRaceId.Value);
                 if (race != null)
-                    _characterService.UpdateCharacterRaceAndCalculateAttributes(character, race);
+                    _characterService.UpdateCharacterRace(character, race);
             }
 
             if (SelectedClassId.HasValue)
@@ -171,7 +171,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged
                     .Include(c => c.ManaDice)
                     .FirstOrDefault(c => c.Id == SelectedClassId.Value);
                 if (characterClass != null)
-                    _characterService.UpdateCharacterClassAndCalculateAttributes(character, characterClass);
+                    _characterService.UpdateCharacterClass(character, characterClass);
             }
 
             _db.Characters.Add(character);

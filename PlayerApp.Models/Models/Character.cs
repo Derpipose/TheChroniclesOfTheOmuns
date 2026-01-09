@@ -19,6 +19,13 @@ public class Character {
     public CharacterRace? CharacterRace { get; private set; }
     public CharacterClass? CharacterClass { get; private set; }
 
+    public List<CharacterStatBonus> CharacterStatBonuses { get; set; } = new List<CharacterStatBonus>();
+
+
+
+
+
+
     public Character() {
         Stats = new CharacterStats();
     }

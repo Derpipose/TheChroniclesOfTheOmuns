@@ -59,8 +59,8 @@ public class CharacterRemovalTests {
             Wisdom = 12
         };
 
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, humanRace);
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, mageClass);
+        characterService.UpdateCharacterRace(character, humanRace);
+        characterService.UpdateCharacterClass(character, mageClass);
 
         int healthBeforeRemoval = character.Health;
         int manaBeforeRemoval = character.Mana;
@@ -68,7 +68,7 @@ public class CharacterRemovalTests {
         Assert.That(healthBeforeRemoval, Is.GreaterThan(0));
         Assert.That(manaBeforeRemoval, Is.GreaterThan(0));
 
-        characterService.RemoveCharacterClassAndCalculateAttributes(character);
+        characterService.RemoveCharacterClass(character);
 
         Assert.That(character.CharacterClass, Is.Null);
         Assert.That(character.Health, Is.EqualTo(0));
@@ -84,15 +84,15 @@ public class CharacterRemovalTests {
             Wisdom = 12
         };
 
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, koboldRace);
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, mageClass);
+        characterService.UpdateCharacterRace(character, koboldRace);
+        characterService.UpdateCharacterClass(character, mageClass);
 
         int manaBeforeRemoval = character.Mana;
         int healthBeforeRemoval = character.Health; 
         Assert.That(manaBeforeRemoval, Is.GreaterThan(0));
         Assert.That(healthBeforeRemoval, Is.GreaterThan(0));
 
-        characterService.RemoveCharacterRaceAndCalculateAttributes(character);
+        characterService.RemoveCharacterRace(character);
 
         Assert.That(character.CharacterRace, Is.Null);
         Assert.That(character.Mana, Is.EqualTo(0));
@@ -108,14 +108,14 @@ public class CharacterRemovalTests {
             Wisdom = 12
         };
 
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, humanRace);
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, knightClass);
+        characterService.UpdateCharacterRace(character, humanRace);
+        characterService.UpdateCharacterClass(character, knightClass);
 
         int healthBeforeRemoval = character.Health;
         Assert.That(healthBeforeRemoval, Is.GreaterThan(0));
 
-        characterService.RemoveCharacterClassAndCalculateAttributes(character);
-        characterService.RemoveCharacterRaceAndCalculateAttributes(character);
+        characterService.RemoveCharacterClass(character);
+        characterService.RemoveCharacterRace(character);
 
         Assert.That(character.CharacterClass, Is.Null);
         Assert.That(character.CharacterRace, Is.Null);
@@ -132,18 +132,18 @@ public class CharacterRemovalTests {
             Wisdom = 12
         };
 
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, humanRace);
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, mageClass);
+        characterService.UpdateCharacterRace(character, humanRace);
+        characterService.UpdateCharacterClass(character, mageClass);
 
         int originalHealth = character.Health;
         int originalMana = character.Mana;
 
-        characterService.RemoveCharacterClassAndCalculateAttributes(character);
+        characterService.RemoveCharacterClass(character);
         Assert.That(character.Health, Is.EqualTo(0));
         Assert.That(character.Mana, Is.EqualTo(0));
 
         // Reassign with different class
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, knightClass);
+        characterService.UpdateCharacterClass(character, knightClass);
 
         Assert.That(character.Health, Is.GreaterThan(0));
         Assert.That(character.Health, Is.Not.EqualTo(originalHealth)); // Combat class has different calculation

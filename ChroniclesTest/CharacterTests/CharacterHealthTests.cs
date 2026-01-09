@@ -34,9 +34,9 @@ public class CharacterHealthTests {
             Description = "Versatile and ambitious race",
             Modifiers = new List<RacialModifier> { }
         };
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, humanRace);
+        characterService.UpdateCharacterRace(character, humanRace);
 
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, mageClass);
+        characterService.UpdateCharacterClass(character, mageClass);
 
         int expectedHP = 31; // (2 * 6) + 12 + 3
         int actualHP = character.Health;
@@ -68,8 +68,8 @@ public class CharacterHealthTests {
             Modifiers = new List<RacialModifier> { }
         };
 
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, fighterClass);
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, humanRace);
+        characterService.UpdateCharacterClass(character, fighterClass);
+        characterService.UpdateCharacterRace(character, humanRace);
 
         int expectedHP = 47; // 2 * 16 + 12 + 3
         int actualHP = character.Health;
@@ -118,8 +118,8 @@ public class CharacterHealthTests {
         };
         koboldRace.AddModifier(ModifierType.ManaBonus, 15);
 
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, koboldRace);
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, knightClass);
+        characterService.UpdateCharacterRace(character, koboldRace);
+        characterService.UpdateCharacterClass(character, knightClass);
 
         // Health: 2*CON + HitDie + CON_bonus = 2*14 + 10 + 2 = 40
         Assert.That(character.Health, Is.EqualTo(40), "Health calculation failed");

@@ -71,4 +71,6 @@ public class RaceStatBonusTests {
             Assert.That(bonus.BonusValue, Is.EqualTo(value));
         }
     }
+
+    
 }

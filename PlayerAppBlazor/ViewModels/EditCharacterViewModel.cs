@@ -185,11 +185,11 @@ public class EditCharacterViewModel : INotifyPropertyChanged
                     .ThenInclude(m => m.Modifier)
                     .FirstOrDefault(r => r.Id == SelectedRaceId.Value);
                 if (race != null)
-                    _characterService.UpdateCharacterRaceAndCalculateAttributes(Character, race);
+                    _characterService.UpdateCharacterRace(Character, race);
             }
             else if (!SelectedRaceId.HasValue && Character.CharacterRace != null)
             {
-                _characterService.RemoveCharacterRaceAndCalculateAttributes(Character);
+                _characterService.RemoveCharacterRace(Character);
             }
 
             // Update class if changed
@@ -200,11 +200,11 @@ public class EditCharacterViewModel : INotifyPropertyChanged
                     .Include(c => c.ManaDice)
                     .FirstOrDefault(c => c.Id == SelectedClassId.Value);
                 if (characterClass != null)
-                    _characterService.UpdateCharacterClassAndCalculateAttributes(Character, characterClass);
+                    _characterService.UpdateCharacterClass(Character, characterClass);
             }
             else if (!SelectedClassId.HasValue && Character.CharacterClass != null)
             {
-                _characterService.RemoveCharacterClassAndCalculateAttributes(Character);
+                _characterService.RemoveCharacterClass(Character);
             }
 
             _db.Characters.Update(Character);

@@ -10,26 +10,47 @@ public class CharacterService {
         _calculationService = new CharacterCalculationService();
     }
 
-    public void UpdateCharacterClassAndCalculateAttributes(Character character, CharacterClass characterClass) {
+    public void UpdateCharacterClass(Character character, CharacterClass characterClass) {
+        if (characterClass == null) {
+            character.RemoveCharacterClass();
+            return;
+        }
         character.AssignCharacterClass(characterClass);
         _calculationService.CalculateHitPoints(character);
         _calculationService.CalculateManaPoints(character);
     }
 
-    public void RemoveCharacterClassAndCalculateAttributes(Character character) {
+    public void RemoveCharacterClass(Character character) {
         character.RemoveCharacterClass();
         _calculationService.CalculateHitPoints(character);
         _calculationService.CalculateManaPoints(character);
     }
 
-    public void UpdateCharacterRaceAndCalculateAttributes(Character character, CharacterRace characterRace) {
+    public void UpdateCharacterRace(Character character, CharacterRace characterRace) {
+        if (characterRace == null) {
+            character.RemoveCharacterRace();
+            return;
+        }
+        if (character.CharacterRace != null) 
+            character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
+
+
         character.AssignCharacterRace(characterRace);
+        foreach (var bonus in characterRace.RaceStatBonuses) {
+            character.CharacterStatBonuses.Add(new CharacterStatBonus {
+                BonusValue = bonus.BonusValue,
+                BonusSource = "Race",
+                StatId = bonus.StatId,
+                IsSelectable = bonus.IsSelectable
+            });
+        }
         _calculationService.CalculateManaPoints(character);
         _calculationService.CalculateHitPoints(character);
     }
 
-    public void RemoveCharacterRaceAndCalculateAttributes(Character character) {
+    public void RemoveCharacterRace(Character character) {
         character.RemoveCharacterRace();
+        character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
         _calculationService.CalculateManaPoints(character);
         _calculationService.CalculateHitPoints(character);
     }
