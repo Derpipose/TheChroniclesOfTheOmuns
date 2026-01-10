@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 using PlayerAppBlazor.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +9,11 @@ namespace PlayerAppBlazor.ViewModels;
 
 public class ViewCharacterViewModel : INotifyPropertyChanged {
     private readonly AppDbContext _db;
+    private readonly CharacterService _characterService;
 
     public ViewCharacterViewModel(AppDbContext db) {
         _db = db;
+        _characterService = new CharacterService();
     }
 
     private Character? _character;
@@ -53,6 +56,10 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
         } finally {
             IsLoading = false;
         }
+    }
+
+    public int GetStat(Character character, StatType statType) {
+        return _characterService.GetStat(character, statType);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

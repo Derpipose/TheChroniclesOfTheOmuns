@@ -22,6 +22,7 @@ public class CharacterRaceService {
                 .Select(MapToCharacterRace).ToList()
                 ?? new List<CharacterRace>();
 
+
             return races;
         } catch (HttpRequestException ex) {
             Console.WriteLine($"Failed to fetch races from JSON: {ex.Message}");
@@ -43,7 +44,30 @@ public class CharacterRaceService {
             race.AddModifier(type, value);
         }
 
+        AddStatBonus(race, "Strength", dto.Str);
+        AddStatBonus(race, "Dexterity", dto.Dex);
+        AddStatBonus(race, "Constitution", dto.Con);
+        AddStatBonus(race, "Intelligence", dto.Int);
+        AddStatBonus(race, "Wisdom", dto.Wis);
+        AddStatBonus(race, "Charisma", dto.Cha);
+
+        // TODO: Handle Pick field for selectable bonuses
+        if (!string.IsNullOrEmpty(dto.Pick)) {
+            // Will be handled separately
+        }
+
         return race;
+    }
+
+    private static void AddStatBonus(CharacterRace race, string statName, int bonusValue) {
+        if (bonusValue != 0) {
+            var bonus = new RaceStatBonus {
+                BonusValue = bonusValue,
+                StatId = (int)Enum.Parse<StatType>(statName),
+                IsSelectable = false
+            };
+            race.RaceStatBonuses.Add(bonus);
+        }
     }
 }
 
@@ -59,6 +83,27 @@ public class CharacterRaceJsonDto {
     [JsonConverter(typeof(FlexibleStringConverter))]
     public string BonusMana { get; set; } = string.Empty;
     public string AddOrMultMana { get; set; } = string.Empty;
+
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int Str { get; set; }
+
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int Dex { get; set; }
+
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int Con { get; set; }
+
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int Int { get; set; }
+
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int Wis { get; set; }
+
+    [JsonConverter(typeof(FlexibleIntConverter))]
+    public int Cha { get; set; }
+
+    [JsonConverter(typeof(FlexibleStringConverter))]
+    public string Pick { get; set; } = string.Empty;
 }
 
 public class FlexibleStringConverter : JsonConverter<string> {
@@ -72,5 +117,19 @@ public class FlexibleStringConverter : JsonConverter<string> {
 
     public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options) {
         writer.WriteStringValue(value);
+    }
+}
+
+public class FlexibleIntConverter : JsonConverter<int> {
+    public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+        return reader.TokenType switch {
+            JsonTokenType.Number => reader.GetInt32(),
+            JsonTokenType.String => int.TryParse(reader.GetString(), out int value) ? value : 0,
+            _ => 0
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options) {
+        writer.WriteNumberValue(value);
     }
 }

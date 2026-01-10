@@ -1,5 +1,6 @@
 @page "/character/{CharacterId:int}"
 @using PlayerAppBlazor.ViewModels
+@using PlayerApp.Models.Enums
 @using Microsoft.AspNetCore.Components.Web
 @inject ViewCharacterViewModel Vm
 @implements IAsyncDisposable
@@ -74,19 +75,19 @@
                         <div class="col-md-4 mb-3">
                             <div class="p-3 bg-light rounded">
                                 <strong>Strength</strong>
-                                <div class="display-6">@Vm.Character.Stats.Strength</div>
+                                <div class="display-6">@Vm.GetStat(Vm.Character, StatType.Strength)</div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="p-3 bg-light rounded">
                                 <strong>Constitution</strong>
-                                <div class="display-6">@Vm.Character.Stats.Constitution</div>
+                                <div class="display-6">@Vm.GetStat(Vm.Character, StatType.Constitution)</div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="p-3 bg-light rounded">
                                 <strong>Dexterity</strong>
-                                <div class="display-6">@Vm.Character.Stats.Dexterity</div>
+                                <div class="display-6">@Vm.GetStat(Vm.Character, StatType.Dexterity)</div>
                             </div>
                         </div>
                     </div>
@@ -95,19 +96,19 @@
                         <div class="col-md-4 mb-3">
                             <div class="p-3 bg-light rounded">
                                 <strong>Wisdom</strong>
-                                <div class="display-6">@Vm.Character.Stats.Wisdom</div>
+                                <div class="display-6">@Vm.GetStat(Vm.Character, StatType.Wisdom)</div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="p-3 bg-light rounded">
                                 <strong>Charisma</strong>
-                                <div class="display-6">@Vm.Character.Stats.Charisma</div>
+                                <div class="display-6">@Vm.GetStat(Vm.Character, StatType.Charisma)</div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="p-3 bg-light rounded">
                                 <strong>Intelligence</strong>
-                                <div class="display-6">@Vm.Character.Stats.Intelligence</div>
+                                <div class="display-6">@Vm.GetStat(Vm.Character, StatType.Intelligence)</div>
                             </div>
                         </div>
                     </div>
