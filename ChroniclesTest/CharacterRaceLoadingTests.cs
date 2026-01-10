@@ -79,6 +79,10 @@ public class CharacterRaceLoadingTests {
         };
         CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kobold");
         Assert.That(charRace, Is.Not.Null);
+        Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
+        Assert.That(charRace.RaceStatBonuses.FirstOrDefault(b => b.StatId == (int)PlayerApp.Models.Enums.StatType.Wisdom)?.BonusValue, Is.EqualTo(2));
+        Assert.That(charRace.RaceStatBonuses.FirstOrDefault(b => b.StatId == (int)PlayerApp.Models.Enums.StatType.Dexterity)?.BonusValue, Is.EqualTo(1));
+
         characterService.UpdateCharacterRace(character, charRace);
 
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
@@ -92,5 +96,44 @@ public class CharacterRaceLoadingTests {
             Assert.That(characterService.GetStat(character, PlayerApp.Models.Enums.StatType.Wisdom), Is.EqualTo(12));
             Assert.That(characterService.GetStat(character, PlayerApp.Models.Enums.StatType.Dexterity), Is.EqualTo(11));
         });
+    }
+
+    [Test]
+    [Order(5)]
+    public void TestThatCharacterRaceIsLoadedWithChooseOneMod() {
+        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+        Assert.That(charRace, Is.Not.Null);
+        Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
+
+        Assert.That(charRace.RaceStatBonuses.Any(b => b.IsSelectable == true), Is.True);
+        Assert.That(charRace.RaceStatBonuses.Any(b => b.BonusValue == 1), Is.True);
+    }
+
+    [Test]
+    [Order(6)]
+    public void TestThatCharacterRaceIsLoadedWithChooseTwoMod() {
+        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kenku");
+        Assert.That(charRace, Is.Not.Null);
+        Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
+
+        Assert.That(charRace.RaceStatBonuses.Any(b => b.IsSelectable == true), Is.True);
+        Assert.That(charRace.RaceStatBonuses.Any(b => b.BonusValue == 2), Is.True);
+    }
+
+    [Test]
+    [Order(7)]
+    public void TestThatCharacterRaceIsLoadedWithChooseBothMods() {
+        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
+        Assert.That(charRace, Is.Not.Null);
+        Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
+
+        var selectableBonus1 = charRace.RaceStatBonuses.ElementAtOrDefault(0);
+        var selectableBonus2 = charRace.RaceStatBonuses.ElementAtOrDefault(1);
+
+        
+        Assert.That(selectableBonus1?.IsSelectable, Is.EqualTo(true));
+        Assert.That(selectableBonus2?.IsSelectable, Is.EqualTo(true));
+        Assert.That(charRace.RaceStatBonuses.Any(b => b.BonusValue == 1), Is.True);
+        Assert.That(charRace.RaceStatBonuses.Any(b => b.BonusValue == 2), Is.True);
     }
 }

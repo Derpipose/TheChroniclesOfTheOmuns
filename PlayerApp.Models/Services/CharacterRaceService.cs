@@ -54,8 +54,34 @@ public class CharacterRaceService {
         // TODO: Handle Pick field for selectable bonuses
         if (!string.IsNullOrEmpty(dto.Pick)) {
             // Will be handled separately
+            if (dto.Pick == 1.ToString()) {
+                var bonus = new RaceStatBonus {
+                    BonusValue = 1,
+                    IsSelectable = true
+                };
+                race.RaceStatBonuses.Add(bonus);
+            }else if (dto.Pick == 2.ToString()) {
+                var bonus = new RaceStatBonus {
+                    BonusValue = 2,
+                    IsSelectable = true
+                };
+                race.RaceStatBonuses.Add(bonus);
+            }else if (dto.Pick == "Both" || dto.Pick == "Race") {
+                var bonus1 = new RaceStatBonus {
+                    BonusValue = 1,
+                    IsSelectable = true
+                };
+                var bonus2 = new RaceStatBonus {
+                    BonusValue = 2,
+                    IsSelectable = true
+                };
+                race.RaceStatBonuses.Add(bonus1);
+                race.RaceStatBonuses.Add(bonus2);
+            } else {
+                // Handle other cases if necessary
+                throw new NotImplementedException($"Unhandled Pick value: {dto.Pick}");
+            }
         }
-
         return race;
     }
 
