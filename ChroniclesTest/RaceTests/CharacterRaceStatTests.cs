@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace ChroniclesTest;
 
+[TestFixture]
 public class CharacterRaceBonusTests {
 
     CharacterService characterService = new CharacterService();
@@ -28,7 +29,7 @@ public class CharacterRaceBonusTests {
                     Id = 1,
                     RaceId = 1,
                     BonusValue = 2,
-                    StatId = (int)StatsType.Constitution,
+                    StatId = (int)StatType.Constitution,
                     IsSelectable = false
                 }
             }
@@ -48,7 +49,7 @@ public class CharacterRaceBonusTests {
         var bonus = character.CharacterStatBonuses.First();
 
         Assert.Multiple(() => {
-            Assert.That(bonus.StatId, Is.EqualTo((int)StatsType.Constitution));
+            Assert.That(bonus.StatId, Is.EqualTo((int)StatType.Constitution));
             Assert.That(bonus.BonusValue, Is.EqualTo(2));
         });
     }
@@ -67,7 +68,7 @@ public class CharacterRaceBonusTests {
                     Id = 1,
                     RaceId = 1,
                     BonusValue = 2,
-                    StatId = (int)StatsType.Constitution,
+                    StatId = (int)StatType.Constitution,
                     IsSelectable = false
                 }
             }
@@ -103,7 +104,7 @@ public class CharacterRaceBonusTests {
                     Id = 1,
                     RaceId = 1,
                     BonusValue = 2,
-                    StatId = (int)StatsType.Constitution,
+                    StatId = (int)StatType.Constitution,
                     IsSelectable = false
                 }
             }
@@ -119,7 +120,7 @@ public class CharacterRaceBonusTests {
                     Id = 2,
                     RaceId = 2,
                     BonusValue = 2,
-                    StatId = (int)StatsType.Dexterity,
+                    StatId = (int)StatType.Dexterity,
                     IsSelectable = false
                 }
             }
@@ -133,7 +134,7 @@ public class CharacterRaceBonusTests {
         //Assign Dwarf Race
         characterService.UpdateCharacterRace(character, dwarfRace);
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(1));
-        Assert.That(character.CharacterStatBonuses.First().StatId, Is.EqualTo((int)StatsType.Constitution));
+        Assert.That(character.CharacterStatBonuses.First().StatId, Is.EqualTo((int)StatType.Constitution));
 
         // Act - Change to Elf Race
         characterService.UpdateCharacterRace(character, elfRace);
@@ -141,7 +142,7 @@ public class CharacterRaceBonusTests {
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(1));
         var bonus = character.CharacterStatBonuses.First();
         Assert.Multiple(() => {
-            Assert.That(bonus.StatId, Is.EqualTo((int)StatsType.Dexterity));
+            Assert.That(bonus.StatId, Is.EqualTo((int)StatType.Dexterity));
             Assert.That(bonus.BonusValue, Is.EqualTo(2));
         });
     }
@@ -160,14 +161,14 @@ public class CharacterRaceBonusTests {
                     Id = 1,
                     RaceId = 1,
                     BonusValue = 2,
-                    StatId = (int)StatsType.Strength,
+                    StatId = (int)StatType.Strength,
                     IsSelectable = false
                 },
                 new() {
                     Id = 2,
                     RaceId = 1,
                     BonusValue = 1,
-                    StatId = (int)StatsType.Constitution,
+                    StatId = (int)StatType.Constitution,
                     IsSelectable = false
                 }
             }

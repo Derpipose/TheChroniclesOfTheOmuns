@@ -75,7 +75,7 @@ public class CharacterClassDto {
     public string ClassName { get; set; } = "";
     public string ClassType { get; set; } = "";
     public string Description { get; set; } = "";
-    public string IsVeteranLocked { get; set; } = "False";      
+    public string IsVeteranLocked { get; set; } = "False";
     public object HitDie { get; set; } = "";
     public object ManaDie { get; set; } = "";
     public string Classification { get; set; } = "";

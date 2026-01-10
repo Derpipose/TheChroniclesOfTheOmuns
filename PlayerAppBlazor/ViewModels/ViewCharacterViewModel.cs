@@ -6,40 +6,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PlayerAppBlazor.ViewModels;
 
-public class ViewCharacterViewModel : INotifyPropertyChanged
-{
+public class ViewCharacterViewModel : INotifyPropertyChanged {
     private readonly AppDbContext _db;
 
-    public ViewCharacterViewModel(AppDbContext db)
-    {
+    public ViewCharacterViewModel(AppDbContext db) {
         _db = db;
     }
 
     private Character? _character;
-    public Character? Character
-    {
+    public Character? Character {
         get => _character;
         set { SetProperty(ref _character, value); }
     }
 
     private string _statusMessage = "";
-    public string StatusMessage
-    {
+    public string StatusMessage {
         get => _statusMessage;
         set { SetProperty(ref _statusMessage, value); }
     }
 
     private bool _isLoading;
-    public bool IsLoading
-    {
+    public bool IsLoading {
         get => _isLoading;
         set { SetProperty(ref _isLoading, value); }
     }
 
-    public async Task LoadCharacterAsync(int characterId)
-    {
-        try
-        {
+    public async Task LoadCharacterAsync(int characterId) {
+        try {
             IsLoading = true;
             StatusMessage = "";
 
@@ -52,30 +45,23 @@ public class ViewCharacterViewModel : INotifyPropertyChanged
                 .ThenInclude(cc => cc!.ManaDice)
                 .FirstOrDefaultAsync(c => c.Id == characterId);
 
-            if (Character == null)
-            {
+            if (Character == null) {
                 StatusMessage = "Character not found.";
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             StatusMessage = $"Error loading character: {ex.Message}";
-        }
-        finally
-        {
+        } finally {
             IsLoading = false;
         }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-    {
+    private void OnPropertyChanged([CallerMemberName] string? name = null) {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
+    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? name = null) {
         if (EqualityComparer<T>.Default.Equals(field, value))
             return false;
 

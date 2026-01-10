@@ -2,6 +2,7 @@ using PlayerApp.Models;
 
 namespace ChroniclesTest;
 
+[TestFixture]
 public class StatsUnitTests {
     [SetUp]
     public void Setup() {

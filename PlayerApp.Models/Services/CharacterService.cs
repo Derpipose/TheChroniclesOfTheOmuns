@@ -31,7 +31,7 @@ public class CharacterService {
             character.RemoveCharacterRace();
             return;
         }
-        if (character.CharacterRace != null) 
+        if (character.CharacterRace != null)
             character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
 
 
@@ -55,11 +55,23 @@ public class CharacterService {
         _calculationService.CalculateHitPoints(character);
     }
 
-    public int GetBonus(Character character, string statName) {
+    public void UpdateCharacterStats(Character character, CharacterStats newStats) {
+        character.Stats = newStats;
+        _calculationService.CalculateHitPoints(character);
+        _calculationService.CalculateManaPoints(character);
+    }
+
+    public int GetStat(Character character, StatType statName) {
+        return _calculationService.GetStat(character, statName);
+    }
+
+    public int GetBonus(Character character, StatType statName) {
         return _calculationService.GetBonus(character, statName);
     }
 
     public int GetRaceModifierValue(Character character, ModifierType type) {
         return _calculationService.GetRaceModifierValue(character, type);
     }
+
+    
 }

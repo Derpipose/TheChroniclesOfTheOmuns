@@ -1,4 +1,5 @@
 namespace PlayerApp.Models;
+
 public class CharacterStatBonus {
     public int Id { get; set; }
     public int CharacterId { get; set; }

@@ -5,13 +5,14 @@ using System.Collections.Generic;
 
 namespace ChroniclesTest;
 
+[TestFixture]
 public class RaceStatBonusTests {
 
     [Test]
     public void FixedBonus_MustHaveStatId_AndNotBeSelectable() {
         var bonus = new RaceStatBonus {
             BonusValue = 2,
-            StatId = (int)StatsType.Constitution,
+            StatId = (int)StatType.Constitution,
             IsSelectable = false
         };
 
@@ -46,7 +47,7 @@ public class RaceStatBonusTests {
 
         race.RaceStatBonuses.Add(new RaceStatBonus {
             BonusValue = 2,
-            StatId = (int)StatsType.Dexterity,
+            StatId = (int)StatType.Dexterity,
             IsSelectable = false
         });
 
@@ -72,5 +73,5 @@ public class RaceStatBonusTests {
         }
     }
 
-    
+
 }

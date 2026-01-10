@@ -1,6 +1,7 @@
 namespace ChroniclesTest;
 
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 
 [TestFixture]
 public class CharacterBonusTests {
@@ -24,12 +25,12 @@ public class CharacterBonusTests {
         };
 
         Assert.Multiple(() => {
-            Assert.That(characterService.GetBonus(character, "Strength"), Is.EqualTo(4));
-            Assert.That(characterService.GetBonus(character, "Dexterity"), Is.EqualTo(2));
-            Assert.That(characterService.GetBonus(character, "Constitution"), Is.EqualTo(1));
-            Assert.That(characterService.GetBonus(character, "Intelligence"), Is.EqualTo(0));
-            Assert.That(characterService.GetBonus(character, "Wisdom"), Is.EqualTo(-1));
-            Assert.That(characterService.GetBonus(character, "Charisma"), Is.EqualTo(3));
+            Assert.That(characterService.GetBonus(character, StatType.Strength), Is.EqualTo(4));
+            Assert.That(characterService.GetBonus(character, StatType.Dexterity), Is.EqualTo(2));
+            Assert.That(characterService.GetBonus(character, StatType.Constitution), Is.EqualTo(1));
+            Assert.That(characterService.GetBonus(character, StatType.Intelligence), Is.EqualTo(0));
+            Assert.That(characterService.GetBonus(character, StatType.Wisdom), Is.EqualTo(-1));
+            Assert.That(characterService.GetBonus(character, StatType.Charisma), Is.EqualTo(3));
         });
     }
 }

@@ -88,7 +88,7 @@ public class CharacterRemovalTests {
         characterService.UpdateCharacterClass(character, mageClass);
 
         int manaBeforeRemoval = character.Mana;
-        int healthBeforeRemoval = character.Health; 
+        int healthBeforeRemoval = character.Health;
         Assert.That(manaBeforeRemoval, Is.GreaterThan(0));
         Assert.That(healthBeforeRemoval, Is.GreaterThan(0));
 

@@ -6,6 +6,7 @@ using System.Text;
 
 namespace ChroniclesTest;
 
+[TestFixture]
 public class RaceUnitTests {
     private CharacterRaceService raceService;
 

@@ -3,11 +3,9 @@ using PlayerApp.Models;
 
 namespace PlayerAppBlazor.Database;
 
-public class AppDbContext : DbContext
-{
+public class AppDbContext : DbContext {
     public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-    {
+        : base(options) {
     }
 
     public DbSet<Character> Characters => Set<Character>();
@@ -18,8 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Modifier> Modifiers => Set<Modifier>();
     public DbSet<RacialModifier> RacialModifiers => Set<RacialModifier>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
         // Seed standard dice types
