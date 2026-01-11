@@ -73,5 +73,26 @@ public class CharacterService {
         return _calculationService.GetRaceModifierValue(character, type);
     }
 
-    
+    public List<CharacterStatBonus> GetSelectableRaceBonusesOnCharacter(Character character) {
+        return character.CharacterStatBonuses
+            .Where(b => b.BonusSource == "Race" && b.IsSelectable)
+            .ToList();
+    }
+
+    public void AssignSelectableRaceBonus(Character character, int v, StatType type) {
+        var alreadyAssigned = character.CharacterStatBonuses
+            .FirstOrDefault(b => b.BonusSource == "Race" && b.StatId == (int)type);
+        if (alreadyAssigned != null)
+            throw new Exception("Character already has such bonus assigned. Bonuses cannot be stacked.");
+
+        var selectableBonus = character.CharacterStatBonuses
+            .FirstOrDefault(b => b.BonusSource == "Race" && b.IsSelectable && b.BonusValue == v);
+        
+        if(selectableBonus == null) {
+            throw new Exception("Character does not have such selectable bonus available.");
+        }
+        if (selectableBonus != null) {
+            selectableBonus.StatId = (int)type;
+        }
+    }
 }

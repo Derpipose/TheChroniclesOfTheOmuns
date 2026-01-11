@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
 using PlayerAppBlazor.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,23 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
     private int? _selectedRaceId;
     public int? SelectedRaceId {
         get => _selectedRaceId;
-        set { SetProperty(ref _selectedRaceId, value); }
+        set {
+            if (SetProperty(ref _selectedRaceId, value)) {
+                LoadRaceStatBonusesForRace(value);
+            }
+        }
+    }
+
+    private Dictionary<int, int> _raceStatBonuses = new();
+    public Dictionary<int, int> RaceStatBonuses {
+        get => _raceStatBonuses;
+        private set { SetProperty(ref _raceStatBonuses, value); }
+    }
+
+    private CharacterRace? _selectedRace;
+    public CharacterRace? SelectedRace {
+        get => _selectedRace;
+        private set { SetProperty(ref _selectedRace, value); }
     }
 
     private int? _selectedClassId;
@@ -92,7 +109,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
     public List<CharacterClass> Classes { get; private set; } = new();
 
     private void LoadData() {
-        Races = _db.CharacterRaces.ToList();
+        Races = _db.CharacterRaces.Include(r => r.RaceStatBonuses).ToList();
         Classes = _db.CharacterClasses.Where(c => !c.IsVeteranLocked).ToList();
     }
 
@@ -107,6 +124,8 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         Charisma = 10;
         Intelligence = 10;
         StatusMessage = "";
+        RaceStatBonuses = new();
+        SelectedRace = null;
     }
 
     public async Task<bool> CreateCharacterAsync() {
@@ -163,6 +182,52 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         } finally {
             IsLoading = false;
         }
+    }
+
+    private void LoadRaceStatBonusesForRace(int? raceId) {
+        if (!raceId.HasValue) {
+            RaceStatBonuses = new();
+            SelectedRace = null;
+            return;
+        }
+
+        var race = _db.CharacterRaces
+            .Include(r => r.RaceStatBonuses)
+            .FirstOrDefault(r => r.Id == raceId.Value);
+
+        if (race != null) {
+            var bonuses = new Dictionary<int, int>();
+            foreach (var bonus in race.RaceStatBonuses) {
+                if (bonus.StatId.HasValue) {
+                    bonuses[bonus.StatId.Value] = bonus.BonusValue;
+                }
+            }
+            RaceStatBonuses = bonuses;
+            SelectedRace = race;
+        } else {
+            RaceStatBonuses = new();
+            SelectedRace = null;
+        }
+    }
+
+    public int GetRaceStatBonus(int statId) {
+        return RaceStatBonuses.TryGetValue(statId, out var bonus) ? bonus : 0;
+    }
+
+    public int GetCalculatedStatValue(int baseValue, int statId) {
+        return baseValue + GetRaceStatBonus(statId);
+    }
+
+    public int GetMaxStatForInput(int statId) {
+        const int maxStatValue = 18;
+        var bonus = GetRaceStatBonus(statId);
+        var maxInput = maxStatValue - bonus;
+        return Math.Max(1, maxInput);
+    }
+
+    public (bool isValid, int maxAllowed) ValidateStatInput(int value, int statId) {
+        var maxAllowed = GetMaxStatForInput(statId);
+        return (value <= maxAllowed, maxAllowed);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
