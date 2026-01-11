@@ -96,7 +96,7 @@ public class CharacterService {
         }
     }
 
-    public List<StatType> GetAvaliableStatSelectableBonusesOnCharacter(Character character){
+    public List<StatType> GetAvailableStatSelectableBonusesOnCharacter(Character character){
         // Get all race stat bonuses that have been assigned to a stat
         var assignedStatIds = character.CharacterStatBonuses
             .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)
