@@ -246,4 +246,19 @@ public class CharacterRaceBonusTests {
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 2, StatType.Strength), Throws.TypeOf<System.Exception>());
     }
+
+    [Test]
+    public void TestThatGetCharacterAvaliableStatPickWorks(){
+        var character = CreateCharacter("TestCharacter");
+        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+        Assert.That(charRace, Is.Not.Null);
+        Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
+
+        characterService.UpdateCharacterRace(character, charRace);
+        
+        var avaliablePicks = characterService.GetAvaliableStatSelectableBonusesOnCharacter(character);
+        Assert.That(avaliablePicks, Is.Not.Null);
+        Assert.That(avaliablePicks.Count, Is.EqualTo(5));
+        Assert.That(avaliablePicks.Any(b => b != StatType.Dexterity), Is.True);
+    }
 }

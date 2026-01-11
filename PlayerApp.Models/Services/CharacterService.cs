@@ -95,4 +95,19 @@ public class CharacterService {
             selectableBonus.StatId = (int)type;
         }
     }
+
+    public List<StatType> GetAvaliableStatSelectableBonusesOnCharacter(Character character){
+        // Get all race stat bonuses that have been assigned to a stat
+        var assignedStatIds = character.CharacterStatBonuses
+            .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)
+            .Select(b => (StatType)b.StatId!.Value)
+            .Distinct()
+            .ToList();
+
+        // Get all possible stat types
+        var allStatTypes = Enum.GetValues<StatType>().ToList();
+
+        // Return stats that are NOT yet assigned
+        return allStatTypes.Except(assignedStatIds).ToList();
+    }
 }
