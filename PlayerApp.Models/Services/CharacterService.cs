@@ -10,23 +10,104 @@ public class CharacterService {
         _calculationService = new CharacterCalculationService();
     }
 
-    public void UpdateCharacterClassAndCalculateAttributes(Character character, CharacterClass characterClass) {
+    public void UpdateCharacterClass(Character character, CharacterClass characterClass) {
+        if (characterClass == null) {
+            character.RemoveCharacterClass();
+            return;
+        }
         character.AssignCharacterClass(characterClass);
         _calculationService.CalculateHitPoints(character);
         _calculationService.CalculateManaPoints(character);
     }
 
-    public void UpdateCharacterRaceAndCalculateAttributes(Character character, CharacterRace characterRace) {
+    public void RemoveCharacterClass(Character character) {
+        character.RemoveCharacterClass();
+        _calculationService.CalculateHitPoints(character);
+        _calculationService.CalculateManaPoints(character);
+    }
+
+    public void UpdateCharacterRace(Character character, CharacterRace characterRace) {
+        if (characterRace == null) {
+            character.RemoveCharacterRace();
+            return;
+        }
+        if (character.CharacterRace != null)
+            character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
+
+
         character.AssignCharacterRace(characterRace);
+        foreach (var bonus in characterRace.RaceStatBonuses) {
+            character.CharacterStatBonuses.Add(new CharacterStatBonus {
+                BonusValue = bonus.BonusValue,
+                BonusSource = "Race",
+                StatId = bonus.StatId,
+                IsSelectable = bonus.IsSelectable
+            });
+        }
         _calculationService.CalculateManaPoints(character);
         _calculationService.CalculateHitPoints(character);
     }
 
-    public int GetBonus(Character character, string statName) {
+    public void RemoveCharacterRace(Character character) {
+        character.RemoveCharacterRace();
+        character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
+        _calculationService.CalculateManaPoints(character);
+        _calculationService.CalculateHitPoints(character);
+    }
+
+    public void UpdateCharacterStats(Character character, CharacterStats newStats) {
+        character.Stats = newStats;
+        _calculationService.CalculateHitPoints(character);
+        _calculationService.CalculateManaPoints(character);
+    }
+
+    public int GetStat(Character character, StatType statName) {
+        return _calculationService.GetStat(character, statName);
+    }
+
+    public int GetBonus(Character character, StatType statName) {
         return _calculationService.GetBonus(character, statName);
     }
 
     public int GetRaceModifierValue(Character character, ModifierType type) {
         return _calculationService.GetRaceModifierValue(character, type);
+    }
+
+    public List<CharacterStatBonus> GetSelectableRaceBonusesOnCharacter(Character character) {
+        return character.CharacterStatBonuses
+            .Where(b => b.BonusSource == "Race" && b.IsSelectable)
+            .ToList();
+    }
+
+    public void AssignSelectableRaceBonus(Character character, int v, StatType type) {
+        var alreadyAssigned = character.CharacterStatBonuses
+            .FirstOrDefault(b => b.BonusSource == "Race" && b.StatId == (int)type);
+        if (alreadyAssigned != null)
+            throw new Exception("Character already has such bonus assigned. Bonuses cannot be stacked.");
+
+        var selectableBonus = character.CharacterStatBonuses
+            .FirstOrDefault(b => b.BonusSource == "Race" && b.IsSelectable && b.BonusValue == v);
+        
+        if(selectableBonus == null) {
+            throw new Exception("Character does not have such selectable bonus available.");
+        }
+        if (selectableBonus != null) {
+            selectableBonus.StatId = (int)type;
+        }
+    }
+
+    public List<StatType> GetAvailableStatSelectableBonusesOnCharacter(Character character){
+        // Get all race stat bonuses that have been assigned to a stat
+        var assignedStatIds = character.CharacterStatBonuses
+            .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)
+            .Select(b => (StatType)b.StatId!.Value)
+            .Distinct()
+            .ToList();
+
+        // Get all possible stat types
+        var allStatTypes = Enum.GetValues<StatType>().ToList();
+
+        // Return stats that are NOT yet assigned
+        return allStatTypes.Except(assignedStatIds).ToList();
     }
 }

@@ -16,38 +16,41 @@ The current dev plan can be found: https://docs.google.com/document/d/1-_hxALgBB
 #### Prerequisites
 - .NET 10.0 SDK installed
 - Visual Studio 2022 or VS Code with C# extensions
-- SQL Server LocalDB (typically included with Visual Studio)
 
-#### Setting Up the Database
+#### Setting Up the Application
 
-1. **Open PowerShell** and navigate to the PlayerApp directory:
+1. **Open PowerShell** and navigate to the PlayerAppBlazor directory:
    ```powershell
-   cd PlayerApp
+   cd PlayerAppBlazor
    ```
 
 2. **Apply Entity Framework migrations**:
    ```powershell
    dotnet ef database update
    ```
-   This will create the LocalDB instance and apply all migrations to initialize the database schema.
+   This will create the SQLite database at `%LOCALAPPDATA%\TheChroniclesOfTheOmuns\chronicles.db` and apply all migrations.
 
 3. **Build and run the app**:
    ```powershell
    dotnet run
    ```
+   The app will be available at `https://localhost:5001`
 
 #### First Time Setup in the App
 
-When the app first loads, you'll see the Dashboard. To fully populate the database with classes and races:
+When the app first loads, navigate to sync the game data:
 
-1. Click **"Load All Classes"** - This fetches D&D classes from the remote JSON API and stores them in the database
-2. Click **"Load All Races"** - This fetches races from the remote JSON API and stores them in the database
+1. Go to **Races** page and click **"Sync DB with Races"** - This fetches races from the remote JSON API and stores them in the database
+2. Go to **Classes** page and click **"Sync DB with Classes"** - This fetches classes from the remote JSON API and stores them in the database
 
-After this, you're ready to start creating characters!
+After this, you can:
+- Go to **New Character** to create a character
+- Select a race and class (both optional)
+- Set character stats (default base 10, max 18)
+- View created characters and their details
 
 #### Database Details
-- **Connection String**: `Server=(localdb)\ChroniclesDB;Database=chronicles_of_omuns;Trusted_Connection=true`
-- **Dev Provider**: SQL Server (Debug configuration)
-- **Release Provider**: SQLite (Production configuration)
-- **Migrations**: Auto-applied on app startup from `PlayerApp/Migrations/`
+- **Location**: `%LOCALAPPDATA%\TheChroniclesOfTheOmuns\chronicles.db` (cross-platform SQLite)
+- **Provider**: SQLite with Entity Framework Core 10.0.1
+- **Migrations**: Auto-applied on app startup from `PlayerAppBlazor/Migrations/`
 

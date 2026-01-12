@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using PlayerApp.Models.Enums;
 
@@ -15,8 +13,12 @@ public class CharacterRace {
     [Required]
     public required string Description { get; set; }
 
-    // Navigation property
+    [Required]
+    public required string RaceType { get; set; }
+
     public ICollection<RacialModifier> Modifiers { get; set; } = new List<RacialModifier>();
+
+    public ICollection<RaceStatBonus> RaceStatBonuses { get; set; } = new List<RaceStatBonus>();
 
     public RacialModifier? GetModifier(ModifierType type) {
         return Modifiers.FirstOrDefault(m => m.Modifier.Type == type);

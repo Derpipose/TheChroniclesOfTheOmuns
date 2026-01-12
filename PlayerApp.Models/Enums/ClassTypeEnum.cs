@@ -1,8 +1,8 @@
 namespace PlayerApp.Models.Enums;
 
-public enum ClassTypeEnum
-{
+public enum ClassTypeEnum {
     Combat = 0,
     Magic = 1,
-    Specialist = 2
+    Utility = 2,
+    Other = 3
 }

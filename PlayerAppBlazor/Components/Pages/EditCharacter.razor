@@ -1,0 +1,150 @@
+@page "/character/{CharacterId:int}/edit"
+@using PlayerAppBlazor.ViewModels
+@using Microsoft.AspNetCore.Components.Web
+@inject EditCharacterViewModel Vm
+@inject NavigationManager Nav
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<PageTitle>Edit @(Vm.Character?.Name ?? "Character")</PageTitle>
+
+<div class="container mt-4">
+    @if (Vm.IsLoading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!string.IsNullOrEmpty(Vm.StatusMessage) && !Vm.StatusMessage.Contains("successfully"))
+    {
+        <div class="alert alert-warning">@Vm.StatusMessage</div>
+        <a href="/characters" class="btn btn-secondary">Back to Characters</a>
+    }
+    else if (Vm.Character != null)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Edit Character</h1>
+            <a href="/character/@Vm.Character.Id" class="btn btn-secondary">Back to Character</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Vm.StatusMessage))
+        {
+            <div class="alert alert-info">@Vm.StatusMessage</div>
+        }
+
+        <form>
+            <!-- Character Name -->
+            <div class="mb-3">
+                <label for="characterName" class="form-label">Character Name</label>
+                <input type="text" class="form-control" id="characterName" 
+                       @bind="Vm.CharacterName" placeholder="Enter character name" />
+            </div>
+
+            <!-- Race Selection -->
+            <div class="mb-3">
+                <label for="raceSelect" class="form-label">Race (Optional)</label>
+                <select class="form-select" id="raceSelect" @bind="Vm.SelectedRaceId">
+                    <option value="">-- Select a Race --</option>
+                    @foreach (var race in Vm.Races)
+                    {
+                        <option value="@race.Id">@race.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Class Selection -->
+            <div class="mb-3">
+                <label for="classSelect" class="form-label">Class (Optional)</label>
+                <select class="form-select" id="classSelect" @bind="Vm.SelectedClassId">
+                    <option value="">-- Select a Class --</option>
+                    @foreach (var charClass in Vm.Classes)
+                    {
+                        <option value="@charClass.Id">@charClass.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Stats -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Character Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="strength" class="form-label">Strength</label>
+                            <input type="number" class="form-control" id="strength" min="1" max="18" @bind="Vm.Strength" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="constitution" class="form-label">Constitution</label>
+                            <input type="number" class="form-control" id="constitution" min="1" max="18" @bind="Vm.Constitution" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dexterity" class="form-label">Dexterity</label>
+                            <input type="number" class="form-control" id="dexterity" min="1" max="18" @bind="Vm.Dexterity" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="wisdom" class="form-label">Wisdom</label>
+                            <input type="number" class="form-control" id="wisdom" min="1" max="18" @bind="Vm.Wisdom" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="charisma" class="form-label">Charisma</label>
+                            <input type="number" class="form-control" id="charisma" min="1" max="18" @bind="Vm.Charisma" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="intelligence" class="form-label">Intelligence</label>
+                            <input type="number" class="form-control" id="intelligence" min="1" max="18" @bind="Vm.Intelligence" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-primary" @onclick="OnSaveClick" disabled="@(Vm.IsLoading || string.IsNullOrWhiteSpace(Vm.CharacterName))">
+                    @if (Vm.IsLoading) { <span>Saving...</span> } else { <span>Save Changes</span> }
+                </button>
+                <a href="/character/@Vm.Character.Id" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int CharacterId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Vm.PropertyChanged += OnVmPropertyChanged;
+        await Vm.LoadCharacterAsync(CharacterId);
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    private async Task OnSaveClick(MouseEventArgs args)
+    {
+        var success = await Vm.SaveCharacterAsync();
+        if (success)
+        {
+            await Task.Delay(1500);
+            Nav.NavigateTo($"/character/{CharacterId}");
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (Vm != null)
+        {
+            Vm.PropertyChanged -= OnVmPropertyChanged;
+        }
+        await ValueTask.CompletedTask;
+    }
+}

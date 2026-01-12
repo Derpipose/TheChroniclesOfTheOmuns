@@ -1,0 +1,225 @@
+@page "/new-character"
+@using PlayerAppBlazor.ViewModels
+@using Microsoft.AspNetCore.Components.Web
+@using PlayerApp.Models.Enums
+@inject NewCharacterViewModel Vm
+@inject NavigationManager Nav
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<PageTitle>New Character</PageTitle>
+
+<div class="container mt-4">
+    <h1>Create A New Character</h1>
+
+    @if (!string.IsNullOrEmpty(Vm.StatusMessage))
+    {
+        <div class="alert alert-info">@Vm.StatusMessage</div>
+    }
+
+    <form>
+        <!-- Character Name -->
+        <div class="mb-3">
+            <label for="characterName" class="form-label">Character Name</label>
+            <input type="text" class="form-control" id="characterName" 
+                   @bind="Vm.CharacterName" placeholder="Enter character name" />
+        </div>
+
+        <!-- Race Selection -->
+        <div class="mb-3">
+            <label for="raceSelect" class="form-label">Race (Optional)</label>
+            <select class="form-select" id="raceSelect" @bind="Vm.SelectedRaceId">
+                <option value="">-- Select a Race --</option>
+                @foreach (var race in Vm.Races)
+                {
+                    <option value="@race.Id">@race.Name</option>
+                }
+            </select>
+        </div>
+
+        <!-- Class Selection -->
+        <div class="mb-3">
+            <label for="classSelect" class="form-label">Class (Optional)</label>
+            <select class="form-select" id="classSelect" @bind="Vm.SelectedClassId">
+                <option value="">-- Select a Class --</option>
+                @foreach (var charClass in Vm.Classes)
+                {
+                    <option value="@charClass.Id">@charClass.Name</option>
+                }
+            </select>
+        </div>
+
+        <!-- Stats -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Character Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="strength" class="form-label">
+                            Strength
+                            @if (Vm.GetRaceStatBonus((int)StatType.Strength) > 0)
+                            {
+                                <span class="badge bg-success">+@Vm.GetRaceStatBonus((int)StatType.Strength)</span>
+                            }
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="strength" min="1" max="@Vm.GetMaxStatForInput((int)StatType.Strength)" @bind="Vm.Strength" />
+                            <span class="input-group-text" id="strength-calc">= @Vm.GetCalculatedStatValue(Vm.Strength, (int)StatType.Strength)</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="constitution" class="form-label">
+                            Constitution
+                            @if (Vm.GetRaceStatBonus((int)StatType.Constitution) > 0)
+                            {
+                                <span class="badge bg-success">+@Vm.GetRaceStatBonus((int)StatType.Constitution)</span>
+                            }
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="constitution" min="1" max="@Vm.GetMaxStatForInput((int)StatType.Constitution)" @bind="Vm.Constitution" />
+                            <span class="input-group-text" id="constitution-calc">= @Vm.GetCalculatedStatValue(Vm.Constitution, (int)StatType.Constitution)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="dexterity" class="form-label">
+                            Dexterity
+                            @if (Vm.GetRaceStatBonus((int)StatType.Dexterity) > 0)
+                            {
+                                <span class="badge bg-success">+@Vm.GetRaceStatBonus((int)StatType.Dexterity)</span>
+                            }
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="dexterity" min="1" max="@Vm.GetMaxStatForInput((int)StatType.Dexterity)" @bind="Vm.Dexterity" />
+                            <span class="input-group-text" id="dexterity-calc">= @Vm.GetCalculatedStatValue(Vm.Dexterity, (int)StatType.Dexterity)</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="wisdom" class="form-label">
+                            Wisdom
+                            @if (Vm.GetRaceStatBonus((int)StatType.Wisdom) > 0)
+                            {
+                                <span class="badge bg-success">+@Vm.GetRaceStatBonus((int)StatType.Wisdom)</span>
+                            }
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="wisdom" min="1" max="@Vm.GetMaxStatForInput((int)StatType.Wisdom)" @bind="Vm.Wisdom" />
+                            <span class="input-group-text" id="wisdom-calc">= @Vm.GetCalculatedStatValue(Vm.Wisdom, (int)StatType.Wisdom)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="charisma" class="form-label">
+                            Charisma
+                            @if (Vm.GetRaceStatBonus((int)StatType.Charisma) > 0)
+                            {
+                                <span class="badge bg-success">+@Vm.GetRaceStatBonus((int)StatType.Charisma)</span>
+                            }
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="charisma" min="1" max="@Vm.GetMaxStatForInput((int)StatType.Charisma)" @bind="Vm.Charisma" />
+                            <span class="input-group-text" id="charisma-calc">= @Vm.GetCalculatedStatValue(Vm.Charisma, (int)StatType.Charisma)</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="intelligence" class="form-label">
+                            Intelligence
+                            @if (Vm.GetRaceStatBonus((int)StatType.Intelligence) > 0)
+                            {
+                                <span class="badge bg-success">+@Vm.GetRaceStatBonus((int)StatType.Intelligence)</span>
+                            }
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="intelligence" min="1" max="@Vm.GetMaxStatForInput((int)StatType.Intelligence)" @bind="Vm.Intelligence" />
+                            <span class="input-group-text" id="intelligence-calc">= @Vm.GetCalculatedStatValue(Vm.Intelligence, (int)StatType.Intelligence)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Race Stat Bonuses Summary -->
+        @if (Vm.SelectedRace != null && Vm.RaceStatBonuses.Any(b => b.Value > 0))
+        {
+            <div class="card mb-4 bg-light">
+                <div class="card-header">
+                    <h6 class="mb-0">Race Stat Bonuses - @Vm.SelectedRace.Name</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var bonus in Vm.RaceStatBonuses.Where(b => b.Value > 0).OrderBy(b => b.Key))
+                        {
+                            <div class="col-md-6 col-lg-4 mb-2">
+                                <span class="badge bg-success">
+                                    @GetStatName(bonus.Key): +@bonus.Value
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" @onclick="OnCreateClick" disabled="@(Vm.IsLoading || string.IsNullOrWhiteSpace(Vm.CharacterName))">
+                @if (Vm.IsLoading) { <span>Creating...</span> } else { <span>Create Character</span> }
+            </button>
+            <a href="/characters" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Vm.PropertyChanged += OnVmPropertyChanged;
+        Vm.ResetForm();
+        await Task.CompletedTask;
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    private async Task OnCreateClick(MouseEventArgs args)
+    {
+        var success = await Vm.CreateCharacterAsync();
+        if (success)
+        {
+            await Task.Delay(1500);
+            Nav.NavigateTo($"/character/{Vm.CreatedCharacterId}");
+        }
+    }
+
+    private string GetStatName(int statId)
+    {
+        return (StatType)statId switch
+        {
+            StatType.Strength => "Strength",
+            StatType.Constitution => "Constitution",
+            StatType.Dexterity => "Dexterity",
+            StatType.Wisdom => "Wisdom",
+            StatType.Charisma => "Charisma",
+            StatType.Intelligence => "Intelligence",
+            _ => "Unknown"
+        };
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (Vm != null)
+        {
+            Vm.PropertyChanged -= OnVmPropertyChanged;
+        }
+        await ValueTask.CompletedTask;
+    }
+}
+

@@ -1,0 +1,85 @@
+@page "/characters"
+@using PlayerAppBlazor.ViewModels
+@inject CharactersViewModel Vm
+@inject NavigationManager Nav
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<PageTitle>Characters</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Characters</h1>
+        <a href="/new-character" class="btn btn-success">New Character</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Vm.StatusMessage))
+    {
+        <div class="alert alert-info">@Vm.StatusMessage</div>
+    }
+
+    @if (Vm.IsLoading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (Vm.Characters.Count == 0)
+    {
+        <div class="alert alert-warning">
+            <p>No characters yet. Click <strong>New Character</strong> to create one!</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Race</th>
+                        <th>Class</th>
+                        <th>Level</th>
+                        <th style="width: 150px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var character in Vm.Characters)
+                    {
+                        <tr>
+                            <td>@character.Name</td>
+                            <td>@(character.CharacterRace?.Name ?? "-")</td>
+                            <td>@(character.CharacterClass?.Name ?? "-")</td>
+                            <td>@character.Level</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" @onclick="() => ViewCharacter(character.Id)">View</button>
+                                <button class="btn btn-sm btn-warning" @onclick="() => EditCharacter(character.Id)">Edit</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await Vm.LoadCharactersAsync();
+    }
+
+    private void ViewCharacter(int id)
+    {
+        Nav.NavigateTo($"/character/{id}");
+    }
+
+    private void EditCharacter(int id)
+    {
+        Nav.NavigateTo($"/character/{id}/edit");
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        await ValueTask.CompletedTask;
+    }
+}
+

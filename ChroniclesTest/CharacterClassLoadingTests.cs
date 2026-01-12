@@ -15,7 +15,7 @@ public class CharacterClassLoadingTests {
     public void TestClassPullWorks() {
         List<CharacterClass> list = classService.GetAllClassesAsync().Result;
 
-        Assert.That(list.Count, Is.EqualTo(32));
+        Assert.That(list.Count, Is.EqualTo(33));
     }
 
     [Test]

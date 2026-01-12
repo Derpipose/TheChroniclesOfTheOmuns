@@ -19,6 +19,13 @@ public class Character {
     public CharacterRace? CharacterRace { get; private set; }
     public CharacterClass? CharacterClass { get; private set; }
 
+    public List<CharacterStatBonus> CharacterStatBonuses { get; set; } = new List<CharacterStatBonus>();
+
+
+
+
+
+
     public Character() {
         Stats = new CharacterStats();
     }
@@ -27,8 +34,16 @@ public class Character {
         CharacterClass = characterClass;
     }
 
+    public void RemoveCharacterClass() {
+        CharacterClass = null;
+    }
+
     public void AssignCharacterRace(CharacterRace characterRace) {
         CharacterRace = characterRace;
+    }
+
+    public void RemoveCharacterRace() {
+        CharacterRace = null;
     }
 
     public DiceType? GetHitDice() {

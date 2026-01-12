@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace PlayerApp.Models;
 
 public class RacialModifier {
+    // Racial modifier is for things like bonus mana or bonus health
     [Key]
     public int Id { get; set; }
 

@@ -4,6 +4,8 @@ using PlayerApp.Models.Enums;
 namespace PlayerApp.Models;
 
 public class Modifier {
+    // Modifiers are used to define specific changes applied to characters, 
+    // such as bonus health, mana or AC provided by a race
     [Key]
     public int Id { get; set; }
 

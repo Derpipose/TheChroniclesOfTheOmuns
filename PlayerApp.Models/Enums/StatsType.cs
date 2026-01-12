@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlayerApp.Models.Enums;
 
-public enum StatsType {
+public enum StatType {
     Strength,
     Constitution,
     Dexterity,

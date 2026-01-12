@@ -27,6 +27,7 @@ public class CharacterManaTests {
 
         TieflingRace = new CharacterRace() {
             Name = "Tiefling",
+            RaceType = "Demonic",
             Description = "A demonic race spawned from the Hells themselves. " +
             "According to popular play styles, their skin can be any shade of red, " +
             "purple, or normal skin tones. Some even are blue",
@@ -45,8 +46,8 @@ public class CharacterManaTests {
             Wisdom = 18
         };
 
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, mageClass);
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, TieflingRace);
+        characterService.UpdateCharacterClass(character, mageClass);
+        characterService.UpdateCharacterRace(character, TieflingRace);
 
         int expectedMP = 60;
         int actualMP = character.Mana;
@@ -79,8 +80,8 @@ public class CharacterManaTests {
             HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
         };
 
-        characterService.UpdateCharacterClassAndCalculateAttributes(character, fighterClass);
-        characterService.UpdateCharacterRaceAndCalculateAttributes(character, TieflingRace);
+        characterService.UpdateCharacterClass(character, fighterClass);
+        characterService.UpdateCharacterRace(character, TieflingRace);
 
         int expectedMP = 40;
         int actualMP = character.Mana;
