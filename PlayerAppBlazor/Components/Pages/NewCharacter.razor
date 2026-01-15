@@ -145,23 +145,85 @@
         </div>
 
         <!-- Race Stat Bonuses Summary -->
-        @if (Vm.SelectedRace != null && Vm.RaceStatBonuses.Any(b => b.Value > 0))
+        @if (Vm.DraftCharacter?.CharacterRace != null)
         {
-            <div class="card mb-4 bg-light">
+            var raceStatBonuses = Vm.DraftCharacter.CharacterStatBonuses
+                .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)
+                .GroupBy(b => b.StatId)
+                .ToDictionary(g => g.Key!.Value, g => g.Sum(b => b.BonusValue));
+            
+            @if (raceStatBonuses.Any())
+            {
+                <div class="card mb-4 bg-light">
+                    <div class="card-header">
+                        <h6 class="mb-0">Race Stat Bonuses - @Vm.DraftCharacter.CharacterRace.Name</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var bonus in raceStatBonuses.OrderBy(b => b.Key))
+                            {
+                                <div class="col-md-6 col-lg-4 mb-2">
+                                    <span class="badge bg-success">
+                                        @GetStatName(bonus.Key): +@bonus.Value
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        <!-- Stat Picking for Selectable Bonuses -->
+        @if (Vm.SelectableBonuses.Count > 0)
+        {
+            <div class="card mb-4">
                 <div class="card-header">
-                    <h6 class="mb-0">Race Stat Bonuses - @Vm.SelectedRace.Name</h6>
+                    <h6 class="mb-0">Select Stats for Race Bonuses</h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        @foreach (var bonus in Vm.RaceStatBonuses.Where(b => b.Value > 0).OrderBy(b => b.Key))
-                        {
-                            <div class="col-md-6 col-lg-4 mb-2">
-                                <span class="badge bg-success">
-                                    @GetStatName(bonus.Key): +@bonus.Value
-                                </span>
+                    <p class="text-muted">Choose which stats to apply the bonus points to. You cannot apply multiple bonuses to the same stat.</p>
+                    
+                    @for (int i = 0; i < Vm.SelectableBonuses.Count; i++)
+                    {
+                        var bonusValue = Vm.SelectableBonuses[i].BonusValue;
+                        var pickNumber = i + 1;
+                        var pickName = $"pick{pickNumber}";
+                        var allStats = Enum.GetValues(typeof(StatType)).Cast<StatType>();
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Pick @pickNumber <span class="badge bg-primary">+@bonusValue</span></label>
+                            <div class="row">
+                                @foreach (var stat in allStats)
+                                {
+                                    var isDisabled = (pickNumber == 1 && Vm.SelectedPick2 == stat) || 
+                                                    (pickNumber == 2 && Vm.SelectedPick1 == stat);
+                                    var radioId = $"{pickName}_{stat}";
+                                    <div class="col-md-6 col-lg-4 mb-2">
+                                        <div class="form-check @(isDisabled ? "opacity-50" : "")">
+                                            @if (pickNumber == 1)
+                                            {
+                                                <input class="form-check-input" type="radio" name="@pickName" 
+                                                       id="@radioId" value="@stat" 
+                                                       @onchange="@((ChangeEventArgs e) => Vm.SelectedPick1 = (StatType)Enum.Parse(typeof(StatType), e.Value?.ToString() ?? ""))"
+                                                       disabled="@isDisabled" />
+                                            }
+                                            else if (pickNumber == 2)
+                                            {
+                                                <input class="form-check-input" type="radio" name="@pickName" 
+                                                       id="@radioId" value="@stat" 
+                                                       @onchange="@((ChangeEventArgs e) => Vm.SelectedPick2 = (StatType)Enum.Parse(typeof(StatType), e.Value?.ToString() ?? ""))"
+                                                       disabled="@isDisabled" />
+                                            }
+                                            <label class="form-check-label @(isDisabled ? "text-muted" : "")" for="@radioId">
+                                                @GetStatName((int)stat)
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
             </div>
         }

@@ -28,27 +28,31 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         get => _selectedRaceId;
         set {
             if (SetProperty(ref _selectedRaceId, value)) {
-                LoadRaceStatBonusesForRace(value);
+                UpdateDraftCharacter();
             }
         }
-    }
-
-    private Dictionary<int, int> _raceStatBonuses = new();
-    public Dictionary<int, int> RaceStatBonuses {
-        get => _raceStatBonuses;
-        private set { SetProperty(ref _raceStatBonuses, value); }
-    }
-
-    private CharacterRace? _selectedRace;
-    public CharacterRace? SelectedRace {
-        get => _selectedRace;
-        private set { SetProperty(ref _selectedRace, value); }
     }
 
     private int? _selectedClassId;
     public int? SelectedClassId {
         get => _selectedClassId;
-        set { SetProperty(ref _selectedClassId, value); }
+        set {
+            if (SetProperty(ref _selectedClassId, value)) {
+                UpdateDraftCharacter();
+            }
+        }
+    }
+
+    private Character? _draftCharacter;
+    public Character? DraftCharacter {
+        get => _draftCharacter;
+        private set { SetProperty(ref _draftCharacter, value); }
+    }
+
+    private List<CharacterStatBonus> _selectableBonuses = new();
+    public List<CharacterStatBonus> SelectableBonuses {
+        get => _selectableBonuses;
+        private set { SetProperty(ref _selectableBonuses, value); }
     }
 
     private int _strength = 10;
@@ -105,6 +109,38 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         set { SetProperty(ref _createdCharacterId, value); }
     }
 
+    private StatType? _selectedPick1;
+    public StatType? SelectedPick1 {
+        get => _selectedPick1;
+        set {
+            if (SetProperty(ref _selectedPick1, value)) {
+                UpdateAvailableStats();
+            }
+        }
+    }
+
+    private StatType? _selectedPick2;
+    public StatType? SelectedPick2 {
+        get => _selectedPick2;
+        set {
+            if (SetProperty(ref _selectedPick2, value)) {
+                UpdateAvailableStats();
+            }
+        }
+    }
+
+    private List<StatType> _availableStatsForPick1 = new();
+    public List<StatType> AvailableStatsForPick1 {
+        get => _availableStatsForPick1;
+        private set { SetProperty(ref _availableStatsForPick1, value); }
+    }
+
+    private List<StatType> _availableStatsForPick2 = new();
+    public List<StatType> AvailableStatsForPick2 {
+        get => _availableStatsForPick2;
+        private set { SetProperty(ref _availableStatsForPick2, value); }
+    }
+
     public List<CharacterRace> Races { get; private set; } = new();
     public List<CharacterClass> Classes { get; private set; } = new();
 
@@ -124,8 +160,11 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         Charisma = 10;
         Intelligence = 10;
         StatusMessage = "";
-        RaceStatBonuses = new();
-        SelectedRace = null;
+        DraftCharacter = null;
+        SelectableBonuses = new();
+        SelectedPick1 = null;
+        SelectedPick2 = null;
+        UpdateAvailableStats();
     }
 
     public async Task<bool> CreateCharacterAsync() {
@@ -184,34 +223,11 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         }
     }
 
-    private void LoadRaceStatBonusesForRace(int? raceId) {
-        if (!raceId.HasValue) {
-            RaceStatBonuses = new();
-            SelectedRace = null;
-            return;
-        }
-
-        var race = _db.CharacterRaces
-            .Include(r => r.RaceStatBonuses)
-            .FirstOrDefault(r => r.Id == raceId.Value);
-
-        if (race != null) {
-            var bonuses = new Dictionary<int, int>();
-            foreach (var bonus in race.RaceStatBonuses) {
-                if (bonus.StatId.HasValue) {
-                    bonuses[bonus.StatId.Value] = bonus.BonusValue;
-                }
-            }
-            RaceStatBonuses = bonuses;
-            SelectedRace = race;
-        } else {
-            RaceStatBonuses = new();
-            SelectedRace = null;
-        }
-    }
-
     public int GetRaceStatBonus(int statId) {
-        return RaceStatBonuses.TryGetValue(statId, out var bonus) ? bonus : 0;
+        if (DraftCharacter?.CharacterStatBonuses == null) return 0;
+        return DraftCharacter.CharacterStatBonuses
+            .Where(b => b.StatId == statId && b.BonusSource == "Race")
+            .Sum(b => b.BonusValue);
     }
 
     public int GetCalculatedStatValue(int baseValue, int statId) {
@@ -228,6 +244,85 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
     public (bool isValid, int maxAllowed) ValidateStatInput(int value, int statId) {
         var maxAllowed = GetMaxStatForInput(statId);
         return (value <= maxAllowed, maxAllowed);
+    }
+
+    private void UpdateDraftCharacter() {
+        // Create a fresh draft character
+        var character = new Character {
+            Name = CharacterName,
+            Level = 1,
+            Health = 0,
+            Mana = 0,
+            Stats = new CharacterStats {
+                Strength = Strength,
+                Constitution = Constitution,
+                Dexterity = Dexterity,
+                Wisdom = Wisdom,
+                Charisma = Charisma,
+                Intelligence = Intelligence
+            }
+        };
+
+        // Apply race if selected
+        if (SelectedRaceId.HasValue) {
+            var race = _db.CharacterRaces
+                .Include(r => r.Modifiers)
+                .ThenInclude(m => m.Modifier)
+                .FirstOrDefault(r => r.Id == SelectedRaceId.Value);
+            if (race != null) {
+                _characterService.UpdateCharacterRace(character, race);
+            }
+        }
+
+        // Apply class if selected
+        if (SelectedClassId.HasValue) {
+            var characterClass = _db.CharacterClasses
+                .Include(c => c.HitDice)
+                .Include(c => c.ManaDice)
+                .FirstOrDefault(c => c.Id == SelectedClassId.Value);
+            if (characterClass != null) {
+                _characterService.UpdateCharacterClass(character, characterClass);
+            }
+        }
+
+        DraftCharacter = character;
+        
+        // Update selectable bonuses
+        SelectableBonuses = _characterService.GetSelectableRaceBonusesOnCharacter(character);
+        
+        // Reset picks
+        SelectedPick1 = null;
+        SelectedPick2 = null;
+        UpdateAvailableStats();
+    }
+
+    private void UpdateAvailableStats() {
+        // Get all stat types
+        var allStats = Enum.GetValues<StatType>().ToList();
+        
+        // If Pick1 is selected, Remove it from both lists
+        // If Pick2 is selected, Remove it from both lists
+        var selectedStats = new List<StatType>();
+        if (SelectedPick1.HasValue) {
+            selectedStats.Add(SelectedPick1.Value);
+        }
+        if (SelectedPick2.HasValue) {
+            selectedStats.Add(SelectedPick2.Value);
+        }
+
+        // Available for Pick1 = all stats except Pick2 (if selected)
+        if (SelectedPick2.HasValue) {
+            AvailableStatsForPick1 = allStats.Where(s => s != SelectedPick2.Value).ToList();
+        } else {
+            AvailableStatsForPick1 = allStats;
+        }
+
+        // Available for Pick2 = all stats except Pick1 (if selected)
+        if (SelectedPick1.HasValue) {
+            AvailableStatsForPick2 = allStats.Where(s => s != SelectedPick1.Value).ToList();
+        } else {
+            AvailableStatsForPick2 = allStats;
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
