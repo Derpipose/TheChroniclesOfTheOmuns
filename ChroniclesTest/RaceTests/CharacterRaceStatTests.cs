@@ -56,7 +56,7 @@ public class CharacterRaceBonusTests {
 
     [Test]
     public void ApplyRaceBonuses_WithFixedBonus_AppliesStatBonus() {
-        var race = CreateRace(1, "Dwarf", "Stout", "Short and sturdy", 
+        var race = CreateRace(1, "Dwarf", "Stout", "Short and sturdy",
             new List<RaceStatBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
         var character = CreateCharacter("Gimli");
 
@@ -117,7 +117,7 @@ public class CharacterRaceBonusTests {
         var character = CreateCharacter("Gorg");
 
         characterService.UpdateCharacterRace(character, race);
-        
+
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(2));
     }
 
@@ -156,7 +156,7 @@ public class CharacterRaceBonusTests {
         characterService.UpdateCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 2, StatType.Strength), Throws.TypeOf<System.Exception>());
-        
+
         var selectableBonusAssigned = characterService.GetSelectableRaceBonusesOnCharacter(character);
         Assert.That(selectableBonusAssigned, Is.Not.Null);
         Assert.That(selectableBonusAssigned.Count, Is.EqualTo(1));
@@ -177,7 +177,7 @@ public class CharacterRaceBonusTests {
         characterService.UpdateCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 2, StatType.Strength);
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength), Throws.TypeOf<System.Exception>());
-        
+
         var selectableBonusAssigned = characterService.GetSelectableRaceBonusesOnCharacter(character);
         Assert.That(selectableBonusAssigned, Is.Not.Null);
         Assert.That(selectableBonusAssigned.Count, Is.EqualTo(1));
@@ -199,10 +199,10 @@ public class CharacterRaceBonusTests {
         // Aarakocra have a +2 in dexterity fixed bonus
         // This means that they cannot assign the +1 selectable bonus to dexterity
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 1, StatType.Dexterity), Throws.TypeOf<System.Exception>());
-        
+
         // This should pass though
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
-        
+
         var selectableBonusAssigned = characterService.GetSelectableRaceBonusesOnCharacter(character);
         Assert.That(selectableBonusAssigned, Is.Not.Null);
         Assert.That(selectableBonusAssigned.Count, Is.EqualTo(1));
@@ -219,7 +219,7 @@ public class CharacterRaceBonusTests {
         characterService.UpdateCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
         characterService.AssignSelectableRaceBonus(character, 2, StatType.Dexterity);
-        
+
         var selectableBonusAssigned = characterService.GetSelectableRaceBonusesOnCharacter(character);
         Assert.That(selectableBonusAssigned, Is.Not.Null);
         Assert.That(selectableBonusAssigned.Count, Is.EqualTo(2));
@@ -248,14 +248,14 @@ public class CharacterRaceBonusTests {
     }
 
     [Test]
-    public void TestThatGetCharacterAvailableStatPickWorks(){
+    public void TestThatGetCharacterAvailableStatPickWorks() {
         var character = CreateCharacter("TestCharacter");
         CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
         characterService.UpdateCharacterRace(character, charRace);
-        
+
         var availablePicks = characterService.GetAvailableStatSelectableBonusesOnCharacter(character);
         Assert.That(availablePicks, Is.Not.Null);
         Assert.That(availablePicks.Count, Is.EqualTo(5));

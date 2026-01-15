@@ -87,8 +87,8 @@ public class CharacterService {
 
         var selectableBonus = character.CharacterStatBonuses
             .FirstOrDefault(b => b.BonusSource == "Race" && b.IsSelectable && b.BonusValue == v);
-        
-        if(selectableBonus == null) {
+
+        if (selectableBonus == null) {
             throw new Exception("Character does not have such selectable bonus available.");
         }
         if (selectableBonus != null) {
@@ -96,7 +96,7 @@ public class CharacterService {
         }
     }
 
-    public List<StatType> GetAvailableStatSelectableBonusesOnCharacter(Character character){
+    public List<StatType> GetAvailableStatSelectableBonusesOnCharacter(Character character) {
         // Get all race stat bonuses that have been assigned to a stat
         var assignedStatIds = character.CharacterStatBonuses
             .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)

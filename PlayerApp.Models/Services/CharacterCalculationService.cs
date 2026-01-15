@@ -78,7 +78,7 @@ public class CharacterCalculationService {
     }
 
     internal int GetStat(Character character, StatType statName) {
-        int baseValue =  statName switch {
+        int baseValue = statName switch {
             StatType.Strength => character.Stats.Strength,
             StatType.Constitution => character.Stats.Constitution,
             StatType.Dexterity => character.Stats.Dexterity,
@@ -87,7 +87,7 @@ public class CharacterCalculationService {
             StatType.Intelligence => character.Stats.Intelligence,
             _ => 0
         };
-        
+
         int statTypeId = statName switch {
             StatType.Strength => (int)StatType.Strength,
             StatType.Constitution => (int)StatType.Constitution,
@@ -97,7 +97,7 @@ public class CharacterCalculationService {
             StatType.Intelligence => (int)StatType.Intelligence,
             _ => 0
         };
-        
+
         int bonusValue = character.CharacterStatBonuses
             .Where(b => b.StatId == statTypeId)
             .Sum(b => b.BonusValue);

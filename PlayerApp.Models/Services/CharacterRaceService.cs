@@ -60,13 +60,13 @@ public class CharacterRaceService {
                     IsSelectable = true
                 };
                 race.RaceStatBonuses.Add(bonus);
-            }else if (dto.Pick == 2.ToString()) {
+            } else if (dto.Pick == 2.ToString()) {
                 var bonus = new RaceStatBonus {
                     BonusValue = 2,
                     IsSelectable = true
                 };
                 race.RaceStatBonuses.Add(bonus);
-            }else if (dto.Pick == "Both" || dto.Pick == "Race") {
+            } else if (dto.Pick == "Both" || dto.Pick == "Race") {
                 var bonus1 = new RaceStatBonus {
                     BonusValue = 1,
                     IsSelectable = true

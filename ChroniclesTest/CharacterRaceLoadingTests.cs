@@ -29,7 +29,7 @@ public class CharacterRaceLoadingTests {
         Character character = new Character();
         CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault();
         Assert.That(charRace, Is.Not.Null);
-        
+
         character.AssignCharacterRace(charRace);
 
         Assert.That(character.CharacterRace, Is.Not.Null);
@@ -39,7 +39,7 @@ public class CharacterRaceLoadingTests {
     [Test]
     [Order(3)]
     public void TestCharacterRaceHasStatBonuses() {
-        Character character = new Character{
+        Character character = new Character {
             Name = "TestCharacter",
             Level = 1,
             Stats = new CharacterStats {
@@ -55,7 +55,7 @@ public class CharacterRaceLoadingTests {
         Assert.That(charRace, Is.Not.Null);
 
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
-        
+
         character.AssignCharacterRace(charRace);
 
         Assert.That(character.CharacterRace, Is.Not.Null);
@@ -65,7 +65,7 @@ public class CharacterRaceLoadingTests {
     [Test]
     [Order(4)]
     public void TestCharacterRaceStatBonusesAreCorrect() {
-        Character character = new Character{
+        Character character = new Character {
             Name = "TestCharacter",
             Level = 1,
             Stats = new CharacterStats {
@@ -130,7 +130,7 @@ public class CharacterRaceLoadingTests {
         var selectableBonus1 = charRace.RaceStatBonuses.ElementAtOrDefault(0);
         var selectableBonus2 = charRace.RaceStatBonuses.ElementAtOrDefault(1);
 
-        
+
         Assert.That(selectableBonus1?.IsSelectable, Is.EqualTo(true));
         Assert.That(selectableBonus2?.IsSelectable, Is.EqualTo(true));
         Assert.That(charRace.RaceStatBonuses.Any(b => b.BonusValue == 1), Is.True);

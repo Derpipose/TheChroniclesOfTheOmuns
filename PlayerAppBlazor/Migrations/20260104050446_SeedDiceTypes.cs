@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace PlayerAppBlazor.Migrations; 
+namespace PlayerAppBlazor.Migrations;
+
 /// <inheritdoc />
 public partial class SeedDiceTypes : Migration {
     /// <inheritdoc />
