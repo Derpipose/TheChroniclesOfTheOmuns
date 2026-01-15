@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Character</title>
+    <link rel="stylesheet" href="Navbar.css">
+    <link rel="stylesheet" href="Final.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="BuildCharacter.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="Navbar.js"></script>
+    <script src="BuildCharacter.js"></script>
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+    <script>
+    $(function(){
+        $("#nav-placeholder").load("navbar.html");
+    });
+    </script>
+
+    <div id="CharacterBuilderHead">
+        <h1 id="Warning">None of what you do here will be saved!</h1>
+        <h3>This is simply to show you a preview of what your character will look like, stat wise. </h3>
+
+    </div>
+
+    <div id="CharacterBuilderBody">
+        <div id="BuildCharacter">
+            <label for="PlayerName">Player Name</label>
+            <input type="text" id="PlayerName" name="PlayerName" required>
+            
+            <p>Are you a new or returning player?</p>
+            <input type="radio" id="Newb" name = "select" value="Newb">
+            <label for="Newb" id="Newb">Newby</label>
+            <input type="radio" id="Vet" name = "select" value="Vet">
+            <label for="Vet" id = "Vet">Veteran</label>
+
+            <label for="Character">Character Name</label>
+            <input type="text" id="CharacterName" name="CharacterName">
+
+            <label for="Campaign">Campaign Setting</label>
+            <select id="Campaign">
+                <option value="NOTCAMPAIGN">Select A Campaign Setting</option>
+                <option value="Fantasy" id="campaignFantasy">Fantasy</option>
+                <option value="Oriental" id="campaignOriental">Oriental</option>
+            </select>
+
+
+            <div id="CampaignSelected">
+
+                <div id="WarnRace"><p>You have not selected a race yet!!!</p></div>
+                <label for="RaceType">Race Type</label>
+                <select id="RaceType">
+                    <option value="NOTRACETYPE">Select A Race Type</option>
+                    <div id="RaceTypeOptions"></div>
+                </select>
+                
+                <div id="RaceSelector">
+                    <label for="RaceSelect">Race</label>
+                    <select id="RaceSelect">
+                        <option value="NOTRACE">Select A Race</option>
+                        <div id="RaceSelectOptions"></div>
+                    </select>
+                </div>
+                
+                
+                <div id="RaceInfo">
+                    <!-- This will include a race description and special section -->
+                </div>
+                
+                <div id="WarnClass"><p>You have not selected a class yet!!!</p></div>
+                <label for="Class">Class</label>
+                <select id="Class">
+                    <option value="NOTCLASS">Select A Class</option>
+                    <div id="ClassOptions"></div>
+                </select>
+
+                <div id="ClassInfo">
+                    <p>Type: <span id="ClassType"></span></p>
+                    <!-- This will include a description and show the different hit and mana dies avaliable -->
+                </div>
+                
+                <div id="Age">
+                    <label for="age"> Age (Usually <span id="age-range"></span> for <span id="chosenRace"></span>) </label>
+                    <input type="number" id="age" min="0" name="Age">
+                </div>
+                
+                <div id="Stats">
+                    <p>Please enter your stats. These are made from rolling 6 d8s and ones are allowed to be rerolled.</p>
+                    <p>Two lower stats may be rerolled once if desired but the outcome MUST be kept, unless it is a one.</p>
+                    <p>Enter just the number, we will do the calculations for you.</p>
+                    <p>Don't add any of the bonuses to the numbers rolled. Numbers may not exceed 8 with bonuses added.</p>
+                    
+                    <label for="Str">Str:</label>
+                    <input type="number" id="Str" min="0" max="8" name="Str"> <span id="Str-add"></span><span id="Str-final"></span><span id="Str-prefer"></span><br>
+                    <label for="Dex">Dex:</label>
+                    <input type="number" id="Dex" min="0" max="8" name="Dex"> <span id="Dex-add"></span><span id="Dex-final"></span><span id="Dex-prefer"></span><br>
+                    <label for="Con">Con:</label>
+                    <input type="number" id="Con" min="0" max="8" name="Con"> <span id="Con-add"></span><span id="Con-final"></span><span id="Con-prefer"></span><br>
+                    <label for="Int">Int:</label>
+                    <input type="number" id="Int" min="0" max="8" name="Int"> <span id="Int-add"></span><span id="Int-final"></span><span id="Int-prefer"></span><br>
+                    <label for="Wis">Wis:</label>
+                    <input type="number" id="Wis" min="0" max="8" name="Wis"> <span id="Wis-add"></span><span id="Wis-final"></span><span id="Wis-prefer"></span><br>
+                    <label for="Cha">Cha:</label>
+                    <input type="number" id="Cha" min="0" max="8" name="Cha"> <span id="Cha-add"></span><span id="Cha-final"></span><span id="Cha-prefer"></span><br>
+                    <div id="WarnStats"><p>Stats are not completed!!!!!</p></div>
+                </div>
+
+                <br>
+                <div id="pick1-container">
+                    <p>Pick 1:</p>
+                </div>
+                <div id="pick2-container">
+                    <p>Pick 2:</p>
+                </div>
+
+                <button id="CreateCharacter">Create Character</button>
+            </div>
+
+        </div>
+        <div id="FinishedCharacter">
+            <!-- Have a button push in order for this to show that will calculate everything and hide the builder if possible.  -->
+
+            <h3>Character: <span id="Charname-show"></span></h3>
+            <p>Player: <span id="PlayerName-show"></span></p>
+            <p>Class: <span id="CharClass-show"></span></p>
+            <p>Race: <span id="Race-show"></span></p>
+            <p>Magic Books: <span id="Books-show"></span></p>
+            <p>Speed: <span id="Speed-show"></span></p>
+            <p>Languages: <span id="Languages-show"></span></p>
+            <p>Hit Die: <span id="Hit-Die-show"></span></p>
+            <p>Mana Die: <span id="Mana-Die-show"></span></p>
+            <p>Skills: <span id="Skills-show"></span></p>
+            <p>Str: <span id="Str-show"></span></p>
+            <p>Con: <span id="Con-show"></span></p>
+            <p>Dex: <span id="Dex-show"></span></p>
+            <p>Int: <span id="Int-show"></span></p>
+            <p>Wis: <span id="Wis-show"></span></p>
+            <p>Cha: <span id="Cha-show"></span></p>
+            <p>Initive: <span id="Initive-show"></span></p>
+            <p>AC: <span id="AC-show"></span></p>
+            <p>Health: <span id="Health-show"></span></p>
+            <p>Mana: <span id="Mana-show"></span></p>
+            <button id="BackToBuild">Return to Build</button>
+        </div>
+        
+    </div>
+
+
+</body>

@@ -286,10 +286,10 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         }
 
         DraftCharacter = character;
-        
+
         // Update selectable bonuses
         SelectableBonuses = _characterService.GetSelectableRaceBonusesOnCharacter(character);
-        
+
         // Reset picks
         SelectedPick1 = null;
         SelectedPick2 = null;
@@ -299,7 +299,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
     private void UpdateAvailableStats() {
         // Get all stat types
         var allStats = Enum.GetValues<StatType>().ToList();
-        
+
         // If Pick1 is selected, Remove it from both lists
         // If Pick2 is selected, Remove it from both lists
         var selectedStats = new List<StatType>();

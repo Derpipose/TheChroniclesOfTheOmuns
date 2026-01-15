@@ -101,6 +101,6 @@ public class CharacterStatsUnitTests {
         Assert.That(StrengthWithBonus, Is.EqualTo(12)); // 10 + 2
         int DexterityWithBonus = characterService.GetStat(thisCharacter, StatType.Dexterity);
         Assert.That(DexterityWithBonus, Is.EqualTo(11)); // 10 + 1
-        
+
     }
 }
