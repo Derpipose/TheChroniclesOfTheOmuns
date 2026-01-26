@@ -9,5 +9,5 @@ Current dev timeline is that I hope to have a working version by the end of 2025
 May 2026 for the Game Master, or Chronicler, side. 
 Both will have local databases at first, with online databases to be added later.
 
-The current dev plan can be found: https://docs.google.com/document/d/1-_hxALgBB9ue5jpOuSIECTwRzIaqAatZP465uhR4I44/edit?usp=sharing
+The current dev plan can be found: [https://docs.google.com/document/d/1-_hxALgBB9ue5jpOuSIECTwRzIaqAatZP465uhR4I44/edit?usp=sharing](https://docs.google.com/document/d/1kHt8aTOYBO9ikv3AfFeUJ_B-ZeSJlld_mo9rzK_wiqk/edit?usp=sharing)
 
