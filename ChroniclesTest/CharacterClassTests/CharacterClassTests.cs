@@ -11,8 +11,8 @@ public class CharacterClassTests {
             Name = "Warrior",
             ClassType = ClassTypeEnum.Combat,
             Description = "A strong melee fighter",
-            HitDiceId = 5,
-            ManaDiceId = 1
+            HitDice = DiceType.D12,
+            ManaDice = DiceType.D4
         };
         Assert.Multiple(() => {
             Assert.That(charClass.Name, Is.EqualTo("Warrior"));
@@ -27,9 +27,8 @@ public class CharacterClassTests {
             Name = "Mage",
             ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
-            HitDiceId = 2,
-            ManaDiceId = 6,
-            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
+            HitDice = DiceType.D6,
+            ManaDice = DiceType.D12
         };
 
         character.AssignCharacterClass(charClass);

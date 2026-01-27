@@ -15,9 +15,7 @@ public class CharacterClass {
     [Required]
     public required string Description { get; set; }
     [Required]
-    public required int HitDiceId { get; set; }
+    public required DiceType HitDice { get; set; }
     [Required]
-    public required int ManaDiceId { get; set; }
-    public DiceType? HitDice { get; set; }
-    public DiceType? ManaDice { get; set; }
+    public required DiceType ManaDice { get; set; }
 }

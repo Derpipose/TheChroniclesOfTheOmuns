@@ -19,41 +19,39 @@ public class CharacterClassService {
         if (dtoList == null)
             return new List<CharacterClass>();
 
-        var diceTypes = DiceType.GetStandardDice();
-
         return dtoList
             .Where(dto => dto.Classification != "Sci fi" && dto.Classification != "Eastern")
             .Select(dto => {
                 var isVeteran = dto.Classification == "Veteran";
                 var classificationToUse = isVeteran ? dto.VeteranTag : dto.Classification;
 
-                var hitDiceId = dto.HitDie.ToString() switch {
-                    "4" => (int)DiceTypeEnum.D4,
-                    "6" => (int)DiceTypeEnum.D6,
-                    "8" => (int)DiceTypeEnum.D8,
-                    "10" => (int)DiceTypeEnum.D10,
-                    "12" => (int)DiceTypeEnum.D12,
-                    "20" => (int)DiceTypeEnum.D20,
-                    _ => 0
+                var hitDice = dto.HitDie.ToString() switch {
+                    "4" => DiceType.D4,
+                    "6" => DiceType.D6,
+                    "8" => DiceType.D8,
+                    "10" => DiceType.D10,
+                    "12" => DiceType.D12,
+                    "20" => DiceType.D20,
+                    _ => DiceType.D6
                 };
-                var manaDiceId = dto.ManaDie.ToString() switch {
-                    "4" => (int)DiceTypeEnum.D4,
-                    "6" => (int)DiceTypeEnum.D6,
-                    "8" => (int)DiceTypeEnum.D8,
-                    "10" => (int)DiceTypeEnum.D10,
-                    "12" => (int)DiceTypeEnum.D12,
-                    "20" => (int)DiceTypeEnum.D20,
-                    _ => 0
+
+                var manaDice = dto.ManaDie.ToString() switch {
+                    "4" => DiceType.D4,
+                    "6" => DiceType.D6,
+                    "8" => DiceType.D8,
+                    "10" => DiceType.D10,
+                    "12" => DiceType.D12,
+                    "20" => DiceType.D20,
+                    _ => DiceType.D6
                 };
+
                 return new CharacterClass {
                     Name = dto.ClassName,
                     ClassType = ParseClassType(classificationToUse),
                     Description = dto.Description,
-                    HitDiceId = hitDiceId,
-                    ManaDiceId = manaDiceId,
                     IsVeteranLocked = isVeteran,
-                    HitDice = diceTypes.ContainsKey(hitDiceId) ? diceTypes[hitDiceId] : null,
-                    ManaDice = diceTypes.ContainsKey(manaDiceId) ? diceTypes[manaDiceId] : null
+                    HitDice = hitDice,
+                    ManaDice = manaDice
                 };
             }).ToList();
     }

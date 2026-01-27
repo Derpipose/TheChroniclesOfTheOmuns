@@ -13,9 +13,8 @@ public class CharacterCreationTests {
             Name = "Mage",
             ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
-            HitDiceId = 2,
-            ManaDiceId = 6,
-            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
+            HitDice = DiceType.D6,
+            ManaDice = DiceType.D12
         };
     }
 
@@ -64,9 +63,8 @@ public class CharacterCreationTests {
             Name = "Fighter",
             ClassType = ClassTypeEnum.Combat,
             Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O",
-            HitDiceId = 5,
-            ManaDiceId = 2,
-            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
+            HitDice = DiceType.D12,
+            ManaDice = DiceType.D6
         };
 
         character.AssignCharacterClass(fighter);
