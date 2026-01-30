@@ -1,6 +1,7 @@
-namespace ChroniclesTest;
-
 using PlayerApp.Models;
+using PlayerApp.Models.Enums;
+
+namespace ChroniclesTest;
 
 [TestFixture]
 public class CharacterDiceTests {

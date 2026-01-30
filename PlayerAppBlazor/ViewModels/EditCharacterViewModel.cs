@@ -99,9 +99,6 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 .Include(c => c.Stats)
                 .Include(c => c.CharacterRace)
                 .Include(c => c.CharacterClass)
-                .ThenInclude(cc => cc!.HitDice)
-                .Include(c => c.CharacterClass)
-                .ThenInclude(cc => cc!.ManaDice)
                 .FirstOrDefaultAsync(c => c.Id == characterId);
 
             if (Character == null) {
@@ -164,8 +161,6 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
 
             if (SelectedClassId.HasValue && (Character.CharacterClass == null || Character.CharacterClass.Id != SelectedClassId.Value)) {
                 var characterClass = _db.CharacterClasses
-                    .Include(c => c.HitDice)
-                    .Include(c => c.ManaDice)
                     .FirstOrDefault(c => c.Id == SelectedClassId.Value);
                 if (characterClass != null)
                     _characterService.UpdateCharacterClass(Character, characterClass);

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 

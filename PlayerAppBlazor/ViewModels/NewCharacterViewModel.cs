@@ -202,8 +202,6 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
             if (SelectedClassId.HasValue) {
                 var characterClass = _db.CharacterClasses
-                    .Include(c => c.HitDice)
-                    .Include(c => c.ManaDice)
                     .FirstOrDefault(c => c.Id == SelectedClassId.Value);
                 if (characterClass != null)
                     _characterService.UpdateCharacterClass(character, characterClass);
@@ -277,8 +275,6 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         // Apply class if selected
         if (SelectedClassId.HasValue) {
             var characterClass = _db.CharacterClasses
-                .Include(c => c.HitDice)
-                .Include(c => c.ManaDice)
                 .FirstOrDefault(c => c.Id == SelectedClassId.Value);
             if (characterClass != null) {
                 _characterService.UpdateCharacterClass(character, characterClass);

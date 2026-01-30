@@ -1,4 +1,4 @@
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Enums;
 
 public static class DiceTypeExtensions
 {

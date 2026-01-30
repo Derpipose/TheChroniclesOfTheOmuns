@@ -1,5 +1,7 @@
 @page "/classes"
 @using PlayerAppBlazor.ViewModels
+@using PlayerApp.Models
+@using PlayerApp.Models.Enums
 @using Microsoft.AspNetCore.Components.Web
 @inject ClassesViewModel Vm
 @implements IAsyncDisposable
@@ -51,8 +53,8 @@
                             <td>@charClass.Id</td>
                             <td>@charClass.Name</td>
                             <td>@charClass.ClassType</td>
-                            <td>@(charClass.HitDice?.Name ?? "-")</td>
-                            <td>@(charClass.ManaDice?.Name ?? "-")</td>
+                            <td>@charClass.HitDice.DisplayName()</td>
+                            <td>@charClass.ManaDice.DisplayName()</td>
                             <td>@(charClass.IsVeteranLocked ? "Yes" : "No")</td>
                         </tr>
                     }
