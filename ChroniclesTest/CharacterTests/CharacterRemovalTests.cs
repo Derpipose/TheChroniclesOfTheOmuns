@@ -19,20 +19,16 @@ public class CharacterRemovalTests {
             Name = "Mage",
             ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
-            HitDiceId = 2,
-            ManaDiceId = 6,
-            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 },
-            ManaDice = new DiceType { Id = 6, Name = "D12", Sides = 12 }
+            HitDice = DiceType.D6,
+            ManaDice = DiceType.D12
         };
 
         knightClass = new CharacterClass() {
             Name = "Knight",
             ClassType = ClassTypeEnum.Combat,
             Description = "A master of combat",
-            HitDiceId = 4,
-            ManaDiceId = 2,
-            HitDice = new DiceType { Id = 4, Name = "D10", Sides = 10 },
-            ManaDice = new DiceType { Id = 2, Name = "D6", Sides = 6 }
+            HitDice = DiceType.D10,
+            ManaDice = DiceType.D6
         };
 
         humanRace = new CharacterRace() {

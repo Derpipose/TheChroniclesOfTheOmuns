@@ -31,10 +31,8 @@ public class CharacterStatsUnitTests {
             Name = "TestClass",
             ClassType = PlayerApp.Models.Enums.ClassTypeEnum.Combat,
             Description = "A test class",
-            HitDiceId = 5,
-            ManaDiceId = 1,
-            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 },
-            ManaDice = new DiceType { Id = 1, Name = "D4", Sides = 4 }
+            HitDice = DiceType.D12,
+            ManaDice = DiceType.D4
         };
         character = new Character {
             Name = "TestCharacter",

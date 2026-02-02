@@ -1,5 +1,6 @@
 @page "/character/{CharacterId:int}"
 @using PlayerAppBlazor.ViewModels
+@using PlayerApp.Models
 @using PlayerApp.Models.Enums
 @using Microsoft.AspNetCore.Components.Web
 @inject ViewCharacterViewModel Vm
@@ -55,8 +56,8 @@
                         <p><strong>Mana Points:</strong> @Vm.Character.Mana</p>
                         @if (Vm.Character.CharacterClass != null)
                         {
-                            <p><strong>Hit Dice:</strong> @Vm.Character.CharacterClass.HitDice?.Name</p>
-                            <p><strong>Mana Dice:</strong> @Vm.Character.CharacterClass.ManaDice?.Name</p>
+                            <p><strong>Hit Dice:</strong> @Vm.Character.CharacterClass.HitDice.DisplayName()</p>
+                            <p><strong>Mana Dice:</strong> @Vm.Character.CharacterClass.ManaDice.DisplayName()</p>
                         }
                     </div>
                 </div>

@@ -16,10 +16,8 @@ public class CharacterManaTests {
             Name = "Mage",
             ClassType = ClassTypeEnum.Magic,
             Description = "A master of arcane arts",
-            HitDiceId = 2,
-            HitDice = new DiceType { Id = 2, Name = "D6", Sides = 6 },
-            ManaDiceId = 6,
-            ManaDice = new DiceType { Id = 6, Name = "D12", Sides = 12 }
+            HitDice = DiceType.D6,
+            ManaDice = DiceType.D12
         };
 
         // Create modifiers for the Tiefling race
@@ -57,7 +55,6 @@ public class CharacterManaTests {
         Assert.That(character.CharacterClass, Is.Not.Null);
         Assert.That(character.CharacterRace, Is.Not.Null);
         Assert.That(characterService.GetRaceModifierValue(character, ModifierType.ManaBonus), Is.EqualTo(10));
-        Assert.That(character.CharacterClass.ManaDice, Is.Not.Null);
 
         Assert.That(actualMP, Is.EqualTo(expectedMP));
     }
@@ -74,10 +71,8 @@ public class CharacterManaTests {
             Name = "Barbarian",
             ClassType = ClassTypeEnum.Combat,
             Description = "A strong melee fighter",
-            HitDiceId = 5,
-            ManaDiceId = 1,
-            ManaDice = new DiceType { Id = 1, Name = "D4", Sides = 4 },
-            HitDice = new DiceType { Id = 5, Name = "D12", Sides = 12 }
+            ManaDice = DiceType.D4,
+            HitDice = DiceType.D12
         };
 
         characterService.UpdateCharacterClass(character, fighterClass);

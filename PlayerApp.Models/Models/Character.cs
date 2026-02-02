@@ -21,11 +21,6 @@ public class Character {
 
     public List<CharacterStatBonus> CharacterStatBonuses { get; set; } = new List<CharacterStatBonus>();
 
-
-
-
-
-
     public Character() {
         Stats = new CharacterStats();
     }

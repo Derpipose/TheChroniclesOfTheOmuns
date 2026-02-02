@@ -43,9 +43,6 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
                 .Include(c => c.Stats)
                 .Include(c => c.CharacterRace)
                 .Include(c => c.CharacterClass)
-                .ThenInclude(cc => cc!.HitDice)
-                .Include(c => c.CharacterClass)
-                .ThenInclude(cc => cc!.ManaDice)
                 .FirstOrDefaultAsync(c => c.Id == characterId);
 
             if (Character == null) {

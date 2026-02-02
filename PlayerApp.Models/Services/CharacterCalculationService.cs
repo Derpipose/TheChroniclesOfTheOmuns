@@ -5,22 +5,22 @@ namespace PlayerApp.Models;
 
 public class CharacterCalculationService {
     public void CalculateHitPoints(Character character) {
-        if (character.Stats.Constitution == 0 || character.CharacterClass == null || character.CharacterClass.HitDice == null
+        if (character.Stats.Constitution == 0 || character.CharacterClass == null
             || character.CharacterRace == null) {
             character.Health = 0;
             return;
         }
 
         if (character.CharacterClass.ClassType == ClassTypeEnum.Combat) {
-            character.Health = 2 * GetStat(character, StatType.Constitution) + character.CharacterClass.HitDice.Sides + GetBonus(character, StatType.Constitution);
+            character.Health = 2 * GetStat(character, StatType.Constitution) + character.CharacterClass.HitDice.Sides() + GetBonus(character, StatType.Constitution);
         } else {
-            character.Health = (2 * character.CharacterClass.HitDice.Sides) + GetStat(character, StatType.Constitution) + GetBonus(character, StatType.Constitution);
+            character.Health = (2 * character.CharacterClass.HitDice.Sides()) + GetStat(character, StatType.Constitution) + GetBonus(character, StatType.Constitution);
         }
     }
 
     public void CalculateManaPoints(Character character) {
         if (character.Stats.Intelligence == 0 || character.Stats.Wisdom == 0 || character.CharacterClass == null ||
-            character.CharacterClass.ManaDice == null || character.CharacterRace == null) {
+            character.CharacterRace == null) {
             character.Mana = 0;
             return;
         }
@@ -28,7 +28,7 @@ public class CharacterCalculationService {
         var (mainStat, secondaryStat, statName) = GetManaStatInfo(character);
         bool isMagic = character.CharacterClass.ClassType == ClassTypeEnum.Magic;
         int diceMultiplier = isMagic ? 1 : 2;
-        character.Mana = ApplyManaFormula(character, mainStat, secondaryStat, statName, character.CharacterClass.ManaDice.Sides, diceMultiplier, isMagic);
+        character.Mana = ApplyManaFormula(character, mainStat, secondaryStat, statName, character.CharacterClass.ManaDice.Sides(), diceMultiplier, isMagic);
     }
 
     public int GetBonus(Character character, StatType statName) {

@@ -14,10 +14,6 @@ public class CharacterClass {
     public bool IsVeteranLocked { get; set; } = false;
     [Required]
     public required string Description { get; set; }
-    [Required]
-    public required int HitDiceId { get; set; }
-    [Required]
-    public required int ManaDiceId { get; set; }
-    public DiceType? HitDice { get; set; }
-    public DiceType? ManaDice { get; set; }
+    public DiceType HitDice { get; set; }
+    public DiceType ManaDice { get; set; }
 }

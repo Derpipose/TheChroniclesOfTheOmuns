@@ -41,7 +41,7 @@ public class ClassesViewModel : INotifyPropertyChanged {
         StatusMessage = "Loading classes...";
 
         try {
-            Classes = await Task.Run(() => _db.CharacterClasses.Include(c => c.HitDice).Include(c => c.ManaDice).ToList());
+            Classes = await Task.Run(() => _db.CharacterClasses.ToList());
             StatusMessage = $"Loaded {Classes.Count} class(es).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading classes: {ex.Message}";
