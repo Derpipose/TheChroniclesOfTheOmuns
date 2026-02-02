@@ -18,6 +18,7 @@ public class Spell {
     public int? ManaCostId { get; set; }
     [Required]
     public required ManaCost ManaCost { get; set; }
+    public int? DamageProfileId { get; set; }
+    public required DamageProfile DamageProfile { get; set; }
     public string? Range { get; set; }
-    public DiceType? HitDie { get; set; }
 }
