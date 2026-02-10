@@ -15,3 +15,7 @@ The current dev plan can be found: [https://docs.google.com/document/d/1-_hxALgB
 Currently, there's a project that details everything that is being worked on actively. Each component has been broken down and made
 into small bite-sized tasks. Since this is itterative development, there may be some tasks that go through and touch up the work of 
 previous tasks. 
+
+### License Notice
+This project is source-available for viewing and learning purposes.
+Contributions and reuse of ideas require explicit permission.
