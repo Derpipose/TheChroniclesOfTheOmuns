@@ -21,7 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 // Register ViewModels
-builder.Services.AddScoped<CharactersViewModel>();
+var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException("ApiSettings:BaseUrl not configured");
+builder.Services.AddHttpClient<CharactersViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 builder.Services.AddScoped<RacesViewModel>();
 builder.Services.AddScoped<ClassesViewModel>();
 builder.Services.AddScoped<NewCharacterViewModel>();
