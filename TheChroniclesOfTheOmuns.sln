@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerApp.Models", "PlayerA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerAppBlazor", "PlayerAppBlazor\PlayerAppBlazor.csproj", "{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChroniclesAPI", "ChroniclesAPI\ChroniclesAPI.csproj", "{442D8C7C-8355-4673-8B22-C02341B107AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFA1D23C-FFEE-9578-1322-99CF2EBC186A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{442D8C7C-8355-4673-8B22-C02341B107AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442D8C7C-8355-4673-8B22-C02341B107AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442D8C7C-8355-4673-8B22-C02341B107AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{442D8C7C-8355-4673-8B22-C02341B107AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
