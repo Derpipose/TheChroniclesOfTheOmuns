@@ -34,10 +34,7 @@ public class CharactersController : ControllerBase {
 
     [HttpPost]
     public async Task<ActionResult<Character>> CreateCharacter([FromBody] Character character) {
-        if (!VerifyCharacter.IsValid(character, out var errorMessage)) {
-            return BadRequest(errorMessage);
-        }
-        if (!_characterService.VerifyCharacterDB(character, out errorMessage)) {
+        if (!_characterService.VerifyCharacterDB(character, out var errorMessage)) {
             return BadRequest(errorMessage);
         }
         if (!string.IsNullOrEmpty(errorMessage)) {
