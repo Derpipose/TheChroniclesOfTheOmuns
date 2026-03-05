@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}")
 );
 builder.Services.AddScoped<ChroniclesAPI.Services.CharacterService>();
+builder.Services.AddScoped<ChroniclesAPI.Services.ClassSyncService>();
 
 // Add services to the container.
 

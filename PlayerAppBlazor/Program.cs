@@ -27,14 +27,20 @@ builder.Services.AddHttpClient<CharactersViewModel>(client =>
     client.BaseAddress = new Uri(apiBaseUrl);
 });
 builder.Services.AddScoped<RacesViewModel>();
-builder.Services.AddScoped<ClassesViewModel>();
+// (client =>
+// {
+//     client.BaseAddress = new Uri(apiBaseUrl);
+// });
+builder.Services.AddHttpClient<ClassesViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 builder.Services.AddScoped<NewCharacterViewModel>();
 builder.Services.AddScoped<ViewCharacterViewModel>();
 builder.Services.AddScoped<EditCharacterViewModel>();
 
 // Register Services
 builder.Services.AddScoped<RaceSyncService>();
-builder.Services.AddScoped<ClassSyncService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
