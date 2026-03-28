@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using PlayerApp.Models;
 using PlayerApp.Models.Verification;
+using PlayerApp.Models.DTOs;
 using ChroniclesAPI.Database;
 using ChroniclesAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChroniclesAPI.Controllers;
 
@@ -24,12 +26,32 @@ public class CharactersController : ControllerBase {
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Character>> GetCharacterById(int id) {
-        var character = await _db.Characters.FindAsync(id);
+    public async Task<ActionResult<CharacterDto>> GetCharacterById(int id) {
+        var character = await _db.Characters
+            .Include(c => c.Stats)
+            .Include(c => c.CharacterRace)
+            .Include(c => c.CharacterClass)
+            .FirstOrDefaultAsync(c => c.Id == id);
+        
         if (character == null) {
             return NotFound();
         }
-        return Ok(character);
+
+        var dto = new CharacterDto {
+            Id = character.Id,
+            Name = character.Name,
+            Level = character.Level,
+            Health = character.Health,
+            Mana = character.Mana,
+            CharacterRaceId = character.CharacterRace?.Id,
+            CharacterRace = character.CharacterRace,
+            CharacterClassId = character.CharacterClass?.Id,
+            CharacterClass = character.CharacterClass,
+            Stats = character.Stats,
+            CharacterStatBonuses = character.CharacterStatBonuses
+        };
+
+        return Ok(dto);
     }
 
     [HttpPost]
@@ -41,13 +63,71 @@ public class CharactersController : ControllerBase {
             return BadRequest(errorMessage);
         }
         if (character.Level < 1) {
-            character.Level = 1; // Default to level 1 if invalid level provided
+            character.Level = 1; 
         }
 
         Character verifiedCharacter = _characterService.BuildVerifiedCharacter(character);
         _db.Characters.Add(verifiedCharacter);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCharacterById), new { id = verifiedCharacter.Id }, verifiedCharacter);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCharacter(int id, [FromBody] CharacterUpdateDto updateDto) {
+        if (updateDto.Id != id) {
+            return BadRequest("Character ID mismatch");
+        }
+
+        var existingCharacter = await _db.Characters
+            .Include(c => c.Stats)
+            .Include(c => c.CharacterRace)
+            .Include(c => c.CharacterClass)
+            .FirstOrDefaultAsync(c => c.Id == id);
+        if (existingCharacter == null) {
+            return NotFound();
+        }
+
+        var characterForVerification = new Character {
+            Name = updateDto.Name,
+            Level = updateDto.Level,
+            Stats = updateDto.Stats ?? existingCharacter.Stats
+        };
+
+        // Add race if provided
+        if (updateDto.CharacterRaceId.HasValue) {
+            var race = await _db.CharacterRaces.FirstOrDefaultAsync(r => r.Id == updateDto.CharacterRaceId.Value);
+            if (race != null) {
+                characterForVerification.AssignCharacterRace(race);
+            }
+        }
+
+        // Add class if provided
+        if (updateDto.CharacterClassId.HasValue) {
+            var characterClass = await _db.CharacterClasses.FirstOrDefaultAsync(c => c.Id == updateDto.CharacterClassId.Value);
+            if (characterClass != null) {
+                characterForVerification.AssignCharacterClass(characterClass);
+            }
+        }
+
+        // Verify the character
+        if (!_characterService.VerifyCharacterDB(characterForVerification, out var errorMessage)) {
+            return BadRequest(errorMessage);
+        }
+
+        _characterService.UpdateCharacter(existingCharacter, characterForVerification);
+        await _db.SaveChangesAsync();
+
+        // Return minimal DTO to avoid circular references in JSON serialization
+        var resultDto = new CharacterUpdateDto {
+            Id = existingCharacter.Id,
+            Name = existingCharacter.Name,
+            Level = existingCharacter.Level,
+            CharacterRaceId = existingCharacter.CharacterRace?.Id,
+            CharacterClassId = existingCharacter.CharacterClass?.Id,
+            Stats = existingCharacter.Stats
+        };
+
+        return Ok(resultDto);
     }
 
     [HttpDelete("{id}")]

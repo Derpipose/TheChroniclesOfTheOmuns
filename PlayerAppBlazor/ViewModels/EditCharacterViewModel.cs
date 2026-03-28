@@ -1,22 +1,20 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using PlayerApp.Models;
-using PlayerAppBlazor.Database;
-using Microsoft.EntityFrameworkCore;
+using PlayerApp.Models.DTOs;
 
 namespace PlayerAppBlazor.ViewModels;
 
 public class EditCharacterViewModel : INotifyPropertyChanged {
-    private readonly AppDbContext _db;
-    private readonly CharacterService _characterService;
+    private readonly HttpClient _httpClient;
 
-    public EditCharacterViewModel(AppDbContext db) {
-        _db = db;
-        _characterService = new CharacterService();
+    public EditCharacterViewModel(HttpClient httpClient) {
+        _httpClient = httpClient;
     }
 
     private Character? _character;
-    public Character? Character {
+    public Character? character {
         get => _character;
         set { SetProperty(ref _character, value); }
     }
@@ -95,31 +93,48 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
             IsLoading = true;
             StatusMessage = "";
 
-            Character = await _db.Characters
-                .Include(c => c.Stats)
-                .Include(c => c.CharacterRace)
-                .Include(c => c.CharacterClass)
-                .FirstOrDefaultAsync(c => c.Id == characterId);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            
+            // Deserialize into DTO which has public properties
+            var characterJson = await _httpClient.GetStringAsync($"api/characters/{characterId}");
+            var characterDto = JsonSerializer.Deserialize<CharacterDto>(characterJson, options);
 
-            if (Character == null) {
+            if (characterDto == null) {
                 StatusMessage = "Character not found.";
                 return;
             }
 
-            // Load dropdown options
-            Races = _db.CharacterRaces.ToList();
-            Classes = _db.CharacterClasses.Where(c => !c.IsVeteranLocked).ToList();
+            var racesJson = await _httpClient.GetStringAsync("api/races");
+            Races = JsonSerializer.Deserialize<List<CharacterRace>>(racesJson, options) ?? new List<CharacterRace>();
+            
+            var classesJson = await _httpClient.GetStringAsync("api/classes/non-veteran");
+            Classes = JsonSerializer.Deserialize<List<CharacterClass>>(classesJson, options) ?? new List<CharacterClass>();
 
-            // Populate form fields
-            CharacterName = Character.Name;
-            SelectedRaceId = Character.CharacterRace?.Id;
-            SelectedClassId = Character.CharacterClass?.Id;
-            Strength = Character.Stats?.Strength ?? 10;
-            Constitution = Character.Stats?.Constitution ?? 10;
-            Dexterity = Character.Stats?.Dexterity ?? 10;
-            Wisdom = Character.Stats?.Wisdom ?? 10;
-            Charisma = Character.Stats?.Charisma ?? 10;
-            Intelligence = Character.Stats?.Intelligence ?? 10;
+            // Create a minimal character object for display/editing
+            character = new Character {
+                Id = characterDto.Id,
+                Name = characterDto.Name,
+                Level = characterDto.Level,
+                Health = characterDto.Health,
+                Mana = characterDto.Mana,
+                Stats = characterDto.Stats
+            };
+            if (characterDto.CharacterRace != null) {
+                character.AssignCharacterRace(characterDto.CharacterRace);
+            }
+            if (characterDto.CharacterClass != null) {
+                character.AssignCharacterClass(characterDto.CharacterClass);
+            }
+
+            CharacterName = character.Name;
+            SelectedRaceId = characterDto.CharacterRaceId;
+            SelectedClassId = characterDto.CharacterClassId;
+            Strength = character.Stats?.Strength ?? 10;
+            Constitution = character.Stats?.Constitution ?? 10;
+            Dexterity = character.Stats?.Dexterity ?? 10;
+            Wisdom = character.Stats?.Wisdom ?? 10;
+            Charisma = character.Stats?.Charisma ?? 10;
+            Intelligence = character.Stats?.Intelligence ?? 10;
         } catch (Exception ex) {
             StatusMessage = $"Error loading character: {ex.Message}";
         } finally {
@@ -128,7 +143,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
     }
 
     public async Task<bool> SaveCharacterAsync() {
-        if (string.IsNullOrWhiteSpace(CharacterName) || Character == null) {
+        if (string.IsNullOrWhiteSpace(CharacterName) || character == null) {
             StatusMessage = "Character name is required.";
             return false;
         }
@@ -136,40 +151,29 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
         try {
             IsLoading = true;
 
-            Character.Name = CharacterName;
+            // Build DTO for the update
+            var updateDto = new CharacterUpdateDto {
+                Id = character.Id,
+                Name = CharacterName,
+                Level = character.Level,
+                CharacterRaceId = SelectedRaceId,
+                CharacterClassId = SelectedClassId,
+                Stats = new CharacterStats {
+                    Strength = Strength,
+                    Constitution = Constitution,
+                    Dexterity = Dexterity,
+                    Wisdom = Wisdom,
+                    Charisma = Charisma,
+                    Intelligence = Intelligence
+                }
+            };
 
-            if (Character.Stats != null) {
-                Character.Stats.Strength = Strength;
-                Character.Stats.Constitution = Constitution;
-                Character.Stats.Dexterity = Dexterity;
-                Character.Stats.Wisdom = Wisdom;
-                Character.Stats.Charisma = Charisma;
-                Character.Stats.Intelligence = Intelligence;
-                _characterService.UpdateCharacterStats(Character, Character.Stats);
+            var response = await _httpClient.PutAsJsonAsync($"api/characters/{character.Id}", updateDto);
+            
+            if (!response.IsSuccessStatusCode) {
+                StatusMessage = $"Error saving character: {response.StatusCode}";
+                return false;
             }
-
-            if (SelectedRaceId.HasValue && (Character.CharacterRace == null || Character.CharacterRace.Id != SelectedRaceId.Value)) {
-                var race = _db.CharacterRaces
-                    .Include(r => r.Modifiers)
-                    .ThenInclude(m => m.Modifier)
-                    .FirstOrDefault(r => r.Id == SelectedRaceId.Value);
-                if (race != null)
-                    _characterService.UpdateCharacterRace(Character, race);
-            } else if (!SelectedRaceId.HasValue && Character.CharacterRace != null) {
-                _characterService.RemoveCharacterRace(Character);
-            }
-
-            if (SelectedClassId.HasValue && (Character.CharacterClass == null || Character.CharacterClass.Id != SelectedClassId.Value)) {
-                var characterClass = _db.CharacterClasses
-                    .FirstOrDefault(c => c.Id == SelectedClassId.Value);
-                if (characterClass != null)
-                    _characterService.UpdateCharacterClass(Character, characterClass);
-            } else if (!SelectedClassId.HasValue && Character.CharacterClass != null) {
-                _characterService.RemoveCharacterClass(Character);
-            }
-
-            _db.Characters.Update(Character);
-            await _db.SaveChangesAsync();
 
             StatusMessage = $"Character '{CharacterName}' updated successfully!";
             return true;

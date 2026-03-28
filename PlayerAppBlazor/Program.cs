@@ -37,7 +37,10 @@ builder.Services.AddHttpClient<ClassesViewModel>(client =>
 });
 builder.Services.AddScoped<NewCharacterViewModel>();
 builder.Services.AddScoped<ViewCharacterViewModel>();
-builder.Services.AddScoped<EditCharacterViewModel>();
+builder.Services.AddHttpClient<EditCharacterViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 
 // Register Services
 builder.Services.AddScoped<RaceSyncService>();

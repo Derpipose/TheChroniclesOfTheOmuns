@@ -22,6 +22,12 @@ public class ClassesController : ControllerBase {
         return Ok(classes);
     }
 
+    [HttpGet("non-veteran")]
+    public async Task<ActionResult<List<CharacterClass>>> GetNonVeteranClasses() {
+        var classes = await Task.Run(() => _db.CharacterClasses.Where(c => !c.IsVeteranLocked).ToList());
+        return Ok(classes);
+    }
+
     [HttpPost("sync")]
     public async Task<ActionResult<SyncResult>> SyncClasses() {
         var syncService = new ClassSyncService(_db);
