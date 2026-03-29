@@ -2,6 +2,7 @@ namespace ChroniclesTest;
 
 using PlayerApp.Models;
 using PlayerApp.Models.Enums;
+using PlayerApp.Models.Dice;
 
 [TestFixture]
 public class CharacterRemovalTests {

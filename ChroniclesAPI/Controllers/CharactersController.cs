@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PlayerApp.Models;
-using PlayerApp.Models.Verification;
 using PlayerApp.Models.DTOs;
 using ChroniclesAPI.Database;
-using ChroniclesAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChroniclesAPI.Controllers;
@@ -93,7 +91,6 @@ public class CharactersController : ControllerBase {
             Stats = updateDto.Stats ?? existingCharacter.Stats
         };
 
-        // Add race if provided
         if (updateDto.CharacterRaceId.HasValue) {
             var race = await _db.CharacterRaces.FirstOrDefaultAsync(r => r.Id == updateDto.CharacterRaceId.Value);
             if (race != null) {
@@ -101,7 +98,6 @@ public class CharactersController : ControllerBase {
             }
         }
 
-        // Add class if provided
         if (updateDto.CharacterClassId.HasValue) {
             var characterClass = await _db.CharacterClasses.FirstOrDefaultAsync(c => c.Id == updateDto.CharacterClassId.Value);
             if (characterClass != null) {
@@ -109,7 +105,6 @@ public class CharactersController : ControllerBase {
             }
         }
 
-        // Verify the character
         if (!_characterService.VerifyCharacterDB(characterForVerification, out var errorMessage)) {
             return BadRequest(errorMessage);
         }
@@ -117,7 +112,6 @@ public class CharactersController : ControllerBase {
         _characterService.UpdateCharacter(existingCharacter, characterForVerification);
         await _db.SaveChangesAsync();
 
-        // Return minimal DTO to avoid circular references in JSON serialization
         var resultDto = new CharacterUpdateDto {
             Id = existingCharacter.Id,
             Name = existingCharacter.Name,

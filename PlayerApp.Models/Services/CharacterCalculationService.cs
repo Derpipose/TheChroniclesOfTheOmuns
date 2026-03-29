@@ -1,5 +1,6 @@
 using System;
 using PlayerApp.Models.Enums;
+using PlayerApp.Models.Dice;
 
 namespace PlayerApp.Models;
 

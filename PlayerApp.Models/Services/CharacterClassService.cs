@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using PlayerApp.Models.Enums;
+using PlayerApp.Models.Dice;
 
 namespace PlayerApp.Models;
 
