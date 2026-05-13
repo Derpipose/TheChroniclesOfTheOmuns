@@ -1,20 +1,19 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using PlayerApp.Models;
+using PlayerApp.Models.DTOs;
 using PlayerApp.Models.Enums;
-using PlayerAppBlazor.Database;
-using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Json;
 
 namespace PlayerAppBlazor.ViewModels;
 
 public class NewCharacterViewModel : INotifyPropertyChanged {
-    private readonly AppDbContext _db;
-    private readonly CharacterService _characterService;
+    private readonly HttpClient _httpClient;
+    private readonly CharacterService _characterService = new CharacterService();
 
-    public NewCharacterViewModel(AppDbContext db) {
-        _db = db;
-        _characterService = new CharacterService();
-        LoadData();
+    public NewCharacterViewModel(HttpClient httpClient) {
+        _httpClient = httpClient;
     }
 
     private string _characterName = "";
@@ -144,9 +143,24 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
     public List<CharacterRace> Races { get; private set; } = new();
     public List<CharacterClass> Classes { get; private set; } = new();
 
-    private void LoadData() {
-        Races = _db.CharacterRaces.Include(r => r.RaceStatBonuses).ToList();
-        Classes = _db.CharacterClasses.Where(c => !c.IsVeteranLocked).ToList();
+    public async Task LoadDataAsync() {
+        IsLoading = true;
+        StatusMessage = "Loading races and classes...";
+        try {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            var racesJson = await _httpClient.GetStringAsync("api/races");
+            Races = JsonSerializer.Deserialize<List<CharacterRace>>(racesJson, options) ?? new List<CharacterRace>();
+
+            var classesJson = await _httpClient.GetStringAsync("api/classes/non-veteran");
+            Classes = JsonSerializer.Deserialize<List<CharacterClass>>(classesJson, options) ?? new List<CharacterClass>();
+
+            StatusMessage = $"Loaded {Races.Count} race(s) and {Classes.Count} class(es).";
+        } catch (Exception ex) {
+            StatusMessage = $"Error loading data: {ex.Message}";
+        } finally {
+            IsLoading = false;
+        }
     }
 
     public void ResetForm() {
@@ -175,7 +189,6 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
         try {
             IsLoading = true;
-
             var character = new Character {
                 Name = CharacterName,
                 Level = 1,
@@ -190,27 +203,32 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
                     Intelligence = Intelligence
                 }
             };
-
             if (SelectedRaceId.HasValue) {
-                var race = _db.CharacterRaces
-                    .Include(r => r.Modifiers)
-                    .ThenInclude(m => m.Modifier)
-                    .FirstOrDefault(r => r.Id == SelectedRaceId.Value);
+                var race = Races.FirstOrDefault(r => r.Id == SelectedRaceId.Value);
                 if (race != null)
                     _characterService.UpdateCharacterRace(character, race);
             }
 
             if (SelectedClassId.HasValue) {
-                var characterClass = _db.CharacterClasses
-                    .FirstOrDefault(c => c.Id == SelectedClassId.Value);
+                var characterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
                 if (characterClass != null)
                     _characterService.UpdateCharacterClass(character, characterClass);
             }
 
-            _db.Characters.Add(character);
-            await _db.SaveChangesAsync();
+            var response = await _httpClient.PostAsJsonAsync("api/characters", character);
+            if (!response.IsSuccessStatusCode) {
+                StatusMessage = $"Error creating character: {response.ReasonPhrase}";
+                return false;
+            }
 
-            CreatedCharacterId = character.Id;
+            // Attempt to read created character id if returned
+            try {
+                var created = await response.Content.ReadFromJsonAsync<CharacterDto>();
+                if (created != null) CreatedCharacterId = created.Id;
+            } catch {
+                // ignore if not returned
+            }
+
             StatusMessage = $"Character '{CharacterName}' created successfully!";
             return true;
         } catch (Exception ex) {
@@ -261,21 +279,17 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
             }
         };
 
-        // Apply race if selected
+        // Apply race if selected (use loaded Races)
         if (SelectedRaceId.HasValue) {
-            var race = _db.CharacterRaces
-                .Include(r => r.Modifiers)
-                .ThenInclude(m => m.Modifier)
-                .FirstOrDefault(r => r.Id == SelectedRaceId.Value);
+            var race = Races.FirstOrDefault(r => r.Id == SelectedRaceId.Value);
             if (race != null) {
                 _characterService.UpdateCharacterRace(character, race);
             }
         }
 
-        // Apply class if selected
+        // Apply class if selected (use loaded Classes)
         if (SelectedClassId.HasValue) {
-            var characterClass = _db.CharacterClasses
-                .FirstOrDefault(c => c.Id == SelectedClassId.Value);
+            var characterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
             if (characterClass != null) {
                 _characterService.UpdateCharacterClass(character, characterClass);
             }

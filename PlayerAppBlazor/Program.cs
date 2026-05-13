@@ -21,16 +21,33 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 // Register ViewModels
-builder.Services.AddScoped<CharactersViewModel>();
-builder.Services.AddScoped<RacesViewModel>();
-builder.Services.AddScoped<ClassesViewModel>();
-builder.Services.AddScoped<NewCharacterViewModel>();
-builder.Services.AddScoped<ViewCharacterViewModel>();
-builder.Services.AddScoped<EditCharacterViewModel>();
+var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException("ApiSettings:BaseUrl not configured");
+builder.Services.AddHttpClient<CharactersViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<RacesViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<ClassesViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<NewCharacterViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<ViewCharacterViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<EditCharacterViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 
-// Register Services
-builder.Services.AddScoped<RaceSyncService>();
-builder.Services.AddScoped<ClassSyncService>();
+// Register Services (sync services moved to API)
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

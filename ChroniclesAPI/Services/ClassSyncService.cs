@@ -1,7 +1,7 @@
+using ChroniclesAPI.Database;
 using PlayerApp.Models;
-using PlayerAppBlazor.Database;
 
-namespace PlayerAppBlazor.Services;
+namespace ChroniclesAPI.Services;
 
 public class ClassSyncService {
     private readonly AppDbContext _db;
@@ -51,4 +51,6 @@ public class ClassSyncService {
 
         return result;
     }
+
+    
 }

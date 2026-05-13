@@ -1,5 +1,6 @@
 using PlayerApp.Models;
 using PlayerApp.Models.Enums;
+using PlayerApp.Models.Dice;
 
 namespace ChroniclesTest;
 

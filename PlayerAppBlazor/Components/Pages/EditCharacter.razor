@@ -6,7 +6,7 @@
 @implements IAsyncDisposable
 @rendermode InteractiveServer
 
-<PageTitle>Edit @(Vm.Character?.Name ?? "Character")</PageTitle>
+<PageTitle>Edit @(Vm.character?.Name ?? "Character")</PageTitle>
 
 <div class="container mt-4">
     @if (Vm.IsLoading)
@@ -18,11 +18,11 @@
         <div class="alert alert-warning">@Vm.StatusMessage</div>
         <a href="/characters" class="btn btn-secondary">Back to Characters</a>
     }
-    else if (Vm.Character != null)
+    else if (Vm.character != null)
     {
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Edit Character</h1>
-            <a href="/character/@Vm.Character.Id" class="btn btn-secondary">Back to Character</a>
+            <a href="/character/@Vm.character.Id" class="btn btn-secondary">Back to Character</a>
         </div>
 
         @if (!string.IsNullOrEmpty(Vm.StatusMessage))
@@ -108,7 +108,7 @@
                 <button type="button" class="btn btn-primary" @onclick="OnSaveClick" disabled="@(Vm.IsLoading || string.IsNullOrWhiteSpace(Vm.CharacterName))">
                     @if (Vm.IsLoading) { <span>Saving...</span> } else { <span>Save Changes</span> }
                 </button>
-                <a href="/character/@Vm.Character.Id" class="btn btn-secondary">Cancel</a>
+                <a href="/character/@Vm.character.Id" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     }

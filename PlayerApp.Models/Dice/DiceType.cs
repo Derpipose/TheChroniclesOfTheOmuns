@@ -1,4 +1,4 @@
-namespace PlayerApp.Models.Enums;
+namespace PlayerApp.Models.Dice;
 
 public enum DiceType
 {

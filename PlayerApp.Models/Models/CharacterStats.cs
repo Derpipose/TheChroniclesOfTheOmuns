@@ -10,7 +10,6 @@ namespace PlayerApp.Models;
 public class CharacterStats {
     [Key]
     public int Id { get; set; }
-    public Character? Character { get; set; }
     public int CharacterId { get; set; }
     [Required]
     public int Strength { get; set; } = 10;

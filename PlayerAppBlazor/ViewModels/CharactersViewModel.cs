@@ -1,20 +1,20 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using PlayerApp.Models;
-using PlayerAppBlazor.Database;
+using PlayerApp.Models.DTOs;
 
 namespace PlayerAppBlazor.ViewModels;
 
 public class CharactersViewModel : INotifyPropertyChanged {
-    private readonly AppDbContext _db;
-    private List<Character> _characters = new();
+    private List<CharacterDto> _characters = new();
     private bool _isLoading;
     private string _statusMessage = "";
     private string _newCharacterName = "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public List<Character> Characters {
+    public List<CharacterDto> Characters {
         get => _characters;
         set => SetProperty(ref _characters, value);
     }
@@ -34,16 +34,22 @@ public class CharactersViewModel : INotifyPropertyChanged {
         set => SetProperty(ref _newCharacterName, value);
     }
 
-    public CharactersViewModel(AppDbContext db) {
-        _db = db;
-    }
+    private readonly HttpClient _httpClient;
 
+    public CharactersViewModel(HttpClient httpClient) {
+        _httpClient = httpClient;
+    }
+    
     public async Task LoadCharactersAsync() {
         IsLoading = true;
         StatusMessage = "Loading characters...";
 
         try {
-            Characters = await Task.Run(() => _db.Characters.ToList());
+            var response = await _httpClient.GetAsync("api/characters");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            Characters = JsonSerializer.Deserialize<List<CharacterDto>>(json, options) ?? new();
             StatusMessage = $"Loaded {Characters.Count} character(s).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading characters: {ex.Message}";
@@ -60,8 +66,7 @@ public class CharactersViewModel : INotifyPropertyChanged {
 
         try {
             var character = new Character { Name = name.Trim() };
-            _db.Characters.Add(character);
-            await _db.SaveChangesAsync();
+            await _httpClient.PostAsJsonAsync("api/characters", character);
             StatusMessage = $"Character '{name}' created!";
             await LoadCharactersAsync();
         } catch (Exception ex) {
@@ -71,13 +76,9 @@ public class CharactersViewModel : INotifyPropertyChanged {
 
     public async Task DeleteCharacterAsync(int id) {
         try {
-            var character = _db.Characters.Find(id);
-            if (character != null) {
-                _db.Characters.Remove(character);
-                await _db.SaveChangesAsync();
-                StatusMessage = "Character deleted.";
-                await LoadCharactersAsync();
-            }
+            await _httpClient.DeleteAsync($"api/characters/{id}");
+            StatusMessage = "Character deleted.";
+            await LoadCharactersAsync();
         } catch (Exception ex) {
             StatusMessage = $"Error deleting character: {ex.Message}";
         }
