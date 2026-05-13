@@ -19,7 +19,10 @@ public class CharactersController : ControllerBase {
 
     [HttpGet]
     public async Task<ActionResult<List<Character>>> GetAllCharacters() {
-        var characters = await Task.Run(() => _db.Characters.ToList());
+        var characters = await _db.Characters
+            .Include(c => c.CharacterRace)
+            .Include(c => c.CharacterClass)
+            .ToListAsync();
         return Ok(characters);
     }
 

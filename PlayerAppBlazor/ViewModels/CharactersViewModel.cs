@@ -2,18 +2,19 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using PlayerApp.Models;
+using PlayerApp.Models.DTOs;
 
 namespace PlayerAppBlazor.ViewModels;
 
 public class CharactersViewModel : INotifyPropertyChanged {
-    private List<Character> _characters = new();
+    private List<CharacterDto> _characters = new();
     private bool _isLoading;
     private string _statusMessage = "";
     private string _newCharacterName = "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public List<Character> Characters {
+    public List<CharacterDto> Characters {
         get => _characters;
         set => SetProperty(ref _characters, value);
     }
@@ -48,7 +49,7 @@ public class CharactersViewModel : INotifyPropertyChanged {
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            Characters = JsonSerializer.Deserialize<List<Character>>(json, options) ?? new();
+            Characters = JsonSerializer.Deserialize<List<CharacterDto>>(json, options) ?? new();
             StatusMessage = $"Loaded {Characters.Count} character(s).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading characters: {ex.Message}";

@@ -1,19 +1,18 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using PlayerApp.Models;
+using PlayerApp.Models.DTOs;
 using PlayerApp.Models.Enums;
-using PlayerAppBlazor.Database;
-using Microsoft.EntityFrameworkCore;
 
 namespace PlayerAppBlazor.ViewModels;
 
 public class ViewCharacterViewModel : INotifyPropertyChanged {
-    private readonly AppDbContext _db;
-    private readonly CharacterService _characterService;
+    private readonly HttpClient _httpClient;
+    private readonly CharacterService _characterService = new CharacterService();
 
-    public ViewCharacterViewModel(AppDbContext db) {
-        _db = db;
-        _characterService = new CharacterService();
+    public ViewCharacterViewModel(HttpClient httpClient) {
+        _httpClient = httpClient;
     }
 
     private Character? _character;
@@ -39,14 +38,29 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
             IsLoading = true;
             StatusMessage = "";
 
-            Character = await _db.Characters
-                .Include(c => c.Stats)
-                .Include(c => c.CharacterRace)
-                .Include(c => c.CharacterClass)
-                .FirstOrDefaultAsync(c => c.Id == characterId);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var characterJson = await _httpClient.GetStringAsync($"api/characters/{characterId}");
+            var characterDto = JsonSerializer.Deserialize<CharacterDto>(characterJson, options);
 
-            if (Character == null) {
+            if (characterDto == null) {
                 StatusMessage = "Character not found.";
+                return;
+            }
+
+            // Create a minimal character object for display
+            Character = new Character {
+                Id = characterDto.Id,
+                Name = characterDto.Name,
+                Level = characterDto.Level,
+                Health = characterDto.Health,
+                Mana = characterDto.Mana,
+                Stats = characterDto.Stats ?? new CharacterStats()
+            };
+            if (characterDto.CharacterRace != null) {
+                Character.AssignCharacterRace(characterDto.CharacterRace);
+            }
+            if (characterDto.CharacterClass != null) {
+                Character.AssignCharacterClass(characterDto.CharacterClass);
             }
         } catch (Exception ex) {
             StatusMessage = $"Error loading character: {ex.Message}";

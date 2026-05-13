@@ -36,4 +36,11 @@ public class RacesController : ControllerBase {
         }   
         return Ok(race);
     }
+
+    [HttpPost("sync")]
+    public async Task<ActionResult<SyncResult>> SyncRaces() {
+        var syncService = new RaceSyncService(_db);
+        var result = await syncService.SyncRacesAsync();
+        return Ok(result);
+    }
 }

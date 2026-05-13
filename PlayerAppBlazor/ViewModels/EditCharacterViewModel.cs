@@ -117,7 +117,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 Level = characterDto.Level,
                 Health = characterDto.Health,
                 Mana = characterDto.Mana,
-                Stats = characterDto.Stats
+                Stats = characterDto.Stats ?? new CharacterStats()
             };
             if (characterDto.CharacterRace != null) {
                 character.AssignCharacterRace(characterDto.CharacterRace);

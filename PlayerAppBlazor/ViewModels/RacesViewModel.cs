@@ -1,15 +1,12 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using PlayerApp.Models;
-using PlayerAppBlazor.Database;
-using PlayerAppBlazor.Services;
 
 namespace PlayerAppBlazor.ViewModels;
 
 public class RacesViewModel : INotifyPropertyChanged {
-    private readonly AppDbContext _db;
-    private readonly RaceSyncService _syncService;
+    private readonly HttpClient _httpClient;
     private List<CharacterRace> _races = new();
     private bool _isLoading;
     private string _statusMessage = "";
@@ -31,9 +28,8 @@ public class RacesViewModel : INotifyPropertyChanged {
         set => SetProperty(ref _statusMessage, value);
     }
 
-    public RacesViewModel(AppDbContext db) {
-        _db = db;
-        _syncService = new RaceSyncService(db);
+    public RacesViewModel(HttpClient httpClient) {
+        _httpClient = httpClient;
     }
 
     public async Task LoadRacesAsync() {
@@ -41,7 +37,9 @@ public class RacesViewModel : INotifyPropertyChanged {
         StatusMessage = "Loading races...";
 
         try {
-            Races = await Task.Run(() => _db.CharacterRaces.Include(r => r.Modifiers).ThenInclude(m => m.Modifier).ToList());
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var racesJson = await _httpClient.GetStringAsync("api/races");
+            Races = JsonSerializer.Deserialize<List<CharacterRace>>(racesJson, options) ?? new List<CharacterRace>();
             StatusMessage = $"Loaded {Races.Count} race(s).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading races: {ex.Message}";
@@ -55,8 +53,13 @@ public class RacesViewModel : INotifyPropertyChanged {
         StatusMessage = "Syncing races from JSON...";
 
         try {
-            var result = await _syncService.SyncRacesAsync();
-            StatusMessage = result.Message;
+            var result = await _httpClient.PostAsync("api/races/sync", null);
+            if (!result.IsSuccessStatusCode) {
+                StatusMessage = $"Sync failed: {result.ReasonPhrase}";
+                return;
+            }
+            var syncResult = await result.Content.ReadFromJsonAsync<PlayerApp.Models.SyncResult>();
+            StatusMessage = syncResult?.Message ?? "Sync completed.";
             await LoadRacesAsync();
         } catch (Exception ex) {
             StatusMessage = $"Sync error: {ex.Message}";

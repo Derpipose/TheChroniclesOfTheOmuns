@@ -26,24 +26,28 @@ builder.Services.AddHttpClient<CharactersViewModel>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
 });
-builder.Services.AddScoped<RacesViewModel>();
-// (client =>
-// {
-//     client.BaseAddress = new Uri(apiBaseUrl);
-// });
+builder.Services.AddHttpClient<RacesViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 builder.Services.AddHttpClient<ClassesViewModel>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
 });
-builder.Services.AddScoped<NewCharacterViewModel>();
-builder.Services.AddScoped<ViewCharacterViewModel>();
+builder.Services.AddHttpClient<NewCharacterViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<ViewCharacterViewModel>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 builder.Services.AddHttpClient<EditCharacterViewModel>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
 });
 
-// Register Services
-builder.Services.AddScoped<RaceSyncService>();
+// Register Services (sync services moved to API)
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
