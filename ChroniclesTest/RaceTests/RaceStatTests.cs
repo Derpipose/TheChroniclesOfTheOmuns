@@ -10,7 +10,7 @@ public class RaceStatBonusTests {
 
     [Test]
     public void FixedBonus_MustHaveStatId_AndNotBeSelectable() {
-        var bonus = new RaceStatBonus {
+        var bonus = new FantasyRaceBonus {
             BonusValue = 2,
             StatId = (int)StatType.Constitution,
             IsSelectable = false
@@ -24,7 +24,7 @@ public class RaceStatBonusTests {
 
     [Test]
     public void SelectableBonus_MayHaveNullStatId() {
-        var bonus = new RaceStatBonus {
+        var bonus = new FantasyRaceBonus {
             BonusValue = 1,
             StatId = null,
             IsSelectable = true
@@ -38,20 +38,20 @@ public class RaceStatBonusTests {
 
     [Test]
     public void Race_CanHaveMultipleBonuses_WithDifferentRules() {
-        var race = new CharacterRace {
+        var race = new FantasyCharacterRace {
             Name = "Elf",
             RaceType = "Magical",
             Description = "Graceful and intelligent",
-            RaceStatBonuses = new List<RaceStatBonus>()
+            RaceStatBonuses = new List<FantasyRaceBonus>()
         };
 
-        race.RaceStatBonuses.Add(new RaceStatBonus {
+        race.RaceStatBonuses.Add(new FantasyRaceBonus {
             BonusValue = 2,
             StatId = (int)StatType.Dexterity,
             IsSelectable = false
         });
 
-        race.RaceStatBonuses.Add(new RaceStatBonus {
+        race.RaceStatBonuses.Add(new FantasyRaceBonus {
             BonusValue = 1,
             IsSelectable = true
         });
@@ -68,7 +68,7 @@ public class RaceStatBonusTests {
         var bonusValues = new[] { 1, 2, 3, 4 };
 
         foreach (var value in bonusValues) {
-            var bonus = new RaceStatBonus { BonusValue = value };
+            var bonus = new FantasyRaceBonus { BonusValue = value };
             Assert.That(bonus.BonusValue, Is.EqualTo(value));
         }
     }

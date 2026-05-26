@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ChroniclesAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/fantasy/[controller]")]
 public class CharactersController : ControllerBase {
     private readonly AppDbContext _db;
     private readonly Services.CharacterService _characterService;
@@ -18,36 +18,36 @@ public class CharactersController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Character>>> GetAllCharacters() {
+    public async Task<ActionResult<List<FantasyCharacter>>> GetAllCharacters() {
         var characters = await _db.Characters
-            .Include(c => c.CharacterRace)
-            .Include(c => c.CharacterClass)
+            .Include(c => c.FantasyCharacterRace)
+            .Include(c => c.FantasyCharacterClass)
             .ToListAsync();
         return Ok(characters);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CharacterDto>> GetCharacterById(int id) {
+    public async Task<ActionResult<FantasyCharacterDto>> GetCharacterById(int id) {
         var character = await _db.Characters
             .Include(c => c.Stats)
-            .Include(c => c.CharacterRace)
-            .Include(c => c.CharacterClass)
+            .Include(c => c.FantasyCharacterRace)
+            .Include(c => c.FantasyCharacterClass)
             .FirstOrDefaultAsync(c => c.Id == id);
         
         if (character == null) {
             return NotFound();
         }
 
-        var dto = new CharacterDto {
+        var dto = new FantasyCharacterDto {
             Id = character.Id,
             Name = character.Name,
             Level = character.Level,
             Health = character.Health,
             Mana = character.Mana,
-            CharacterRaceId = character.CharacterRace?.Id,
-            CharacterRace = character.CharacterRace,
-            CharacterClassId = character.CharacterClass?.Id,
-            CharacterClass = character.CharacterClass,
+            FantasyCharacterRaceId = character.FantasyCharacterRace?.Id,
+            FantasyCharacterRace = character.FantasyCharacterRace,
+            FantasyCharacterClassId = character.FantasyCharacterClass?.Id,
+            FantasyCharacterClass = character.FantasyCharacterClass,
             Stats = character.Stats,
             CharacterStatBonuses = character.CharacterStatBonuses
         };
@@ -56,7 +56,7 @@ public class CharactersController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult<Character>> CreateCharacter([FromBody] Character character) {
+    public async Task<ActionResult<FantasyCharacter>> CreateCharacter([FromBody] FantasyCharacter character) {
         if (!_characterService.VerifyCharacterDB(character, out var errorMessage)) {
             return BadRequest(errorMessage);
         }
@@ -67,7 +67,7 @@ public class CharactersController : ControllerBase {
             character.Level = 1; 
         }
 
-        Character verifiedCharacter = _characterService.BuildVerifiedCharacter(character);
+        FantasyCharacter verifiedCharacter = _characterService.BuildVerifiedCharacter(character);
         _db.Characters.Add(verifiedCharacter);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCharacterById), new { id = verifiedCharacter.Id }, verifiedCharacter);
@@ -76,35 +76,35 @@ public class CharactersController : ControllerBase {
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCharacter(int id, [FromBody] CharacterUpdateDto updateDto) {
         if (updateDto.Id != id) {
-            return BadRequest("Character ID mismatch");
+            return BadRequest("FantasyCharacter ID mismatch");
         }
 
         var existingCharacter = await _db.Characters
             .Include(c => c.Stats)
-            .Include(c => c.CharacterRace)
-            .Include(c => c.CharacterClass)
+            .Include(c => c.FantasyCharacterRace)
+            .Include(c => c.FantasyCharacterClass)
             .FirstOrDefaultAsync(c => c.Id == id);
         if (existingCharacter == null) {
             return NotFound();
         }
 
-        var characterForVerification = new Character {
+        var characterForVerification = new FantasyCharacter {
             Name = updateDto.Name,
             Level = updateDto.Level,
             Stats = updateDto.Stats ?? existingCharacter.Stats
         };
 
-        if (updateDto.CharacterRaceId.HasValue) {
-            var race = await _db.CharacterRaces.FirstOrDefaultAsync(r => r.Id == updateDto.CharacterRaceId.Value);
+        if (updateDto.FantasyCharacterRaceId.HasValue) {
+            var race = await _db.FantasyCharacterRaces.FirstOrDefaultAsync(r => r.Id == updateDto.FantasyCharacterRaceId.Value);
             if (race != null) {
-                characterForVerification.AssignCharacterRace(race);
+                characterForVerification.AssignFantasyCharacterRace(race);
             }
         }
 
-        if (updateDto.CharacterClassId.HasValue) {
-            var characterClass = await _db.CharacterClasses.FirstOrDefaultAsync(c => c.Id == updateDto.CharacterClassId.Value);
-            if (characterClass != null) {
-                characterForVerification.AssignCharacterClass(characterClass);
+        if (updateDto.FantasyCharacterClassId.HasValue) {
+            var FantasyCharacterClass = await _db.FantasyCharacterClasses.FirstOrDefaultAsync(c => c.Id == updateDto.FantasyCharacterClassId.Value);
+            if (FantasyCharacterClass != null) {
+                characterForVerification.AssignFantasyCharacterClass(FantasyCharacterClass);
             }
         }
 
@@ -119,8 +119,8 @@ public class CharactersController : ControllerBase {
             Id = existingCharacter.Id,
             Name = existingCharacter.Name,
             Level = existingCharacter.Level,
-            CharacterRaceId = existingCharacter.CharacterRace?.Id,
-            CharacterClassId = existingCharacter.CharacterClass?.Id,
+            FantasyCharacterRaceId = existingCharacter.FantasyCharacterRace?.Id,
+            FantasyCharacterClassId = existingCharacter.FantasyCharacterClass?.Id,
             Stats = existingCharacter.Stats
         };
 

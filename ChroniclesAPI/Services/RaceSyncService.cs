@@ -5,11 +5,11 @@ namespace ChroniclesAPI.Services;
 
 public class RaceSyncService {
     private readonly AppDbContext _db;
-    private readonly CharacterRaceService _raceService;
+    private readonly FantasyCharacterRaceService _raceService;
 
     public RaceSyncService(AppDbContext db) {
         _db = db;
-        _raceService = new CharacterRaceService();
+        _raceService = new FantasyCharacterRaceService();
     }
 
     public async Task<SyncResult> SyncRacesAsync() {
@@ -19,7 +19,7 @@ public class RaceSyncService {
             var jsonRaces = await _raceService.GetAllRacesAsync();
 
             foreach (var jsonRace in jsonRaces) {
-                var existingRace = _db.CharacterRaces
+                var existingRace = _db.FantasyCharacterRaces
                     .FirstOrDefault(r => r.Name == jsonRace.Name && r.RaceType == jsonRace.RaceType);
 
                 if (existingRace != null) {
@@ -34,7 +34,7 @@ public class RaceSyncService {
                     }
                     result.Updated++;
                 } else {
-                    _db.CharacterRaces.Add(jsonRace);
+                    _db.FantasyCharacterRaces.Add(jsonRace);
                     result.Inserted++;
                 }
             }

@@ -7,31 +7,31 @@ using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
-public class CharacterRaceService {
-    public async Task<List<CharacterRace>> GetAllRacesAsync() {
+public class FantasyCharacterRaceService {
+    public async Task<List<FantasyCharacterRace>> GetAllRacesAsync() {
         const string url = "https://derpipose.github.io/JsonFiles/RacesExpounded.json";
         using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
 
         try {
             var json = await http.GetStringAsync(url);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var jsonRaces = JsonSerializer.Deserialize<List<CharacterRaceJsonDto>>(json, options);
+            var jsonRaces = JsonSerializer.Deserialize<List<FantasyCharacterRaceJsonDto>>(json, options);
 
             var races = jsonRaces?
                 .Where(dto => dto.Campaign != "Scifi" && dto.Campaign != "Oriental")
-                .Select(MapToCharacterRace).ToList()
-                ?? new List<CharacterRace>();
+                .Select(MapToFantasyCharacterRace).ToList()
+                ?? new List<FantasyCharacterRace>();
 
 
             return races;
         } catch (HttpRequestException ex) {
             Console.WriteLine($"Failed to fetch races from JSON: {ex.Message}");
-            return new List<CharacterRace>();
+            return new List<FantasyCharacterRace>();
         }
     }
 
-    private static CharacterRace MapToCharacterRace(CharacterRaceJsonDto dto) {
-        var race = new CharacterRace {
+    private static FantasyCharacterRace MapToFantasyCharacterRace(FantasyCharacterRaceJsonDto dto) {
+        var race = new FantasyCharacterRace {
             Name = dto.Name,
             Description = dto.Description,
             RaceType = dto.RaceType ?? "Unknown"
@@ -55,23 +55,23 @@ public class CharacterRaceService {
         if (!string.IsNullOrEmpty(dto.Pick)) {
             // Will be handled separately
             if (dto.Pick == 1.ToString()) {
-                var bonus = new RaceStatBonus {
+                var bonus = new FantasyRaceBonus {
                     BonusValue = 1,
                     IsSelectable = true
                 };
                 race.RaceStatBonuses.Add(bonus);
             } else if (dto.Pick == 2.ToString()) {
-                var bonus = new RaceStatBonus {
+                var bonus = new FantasyRaceBonus {
                     BonusValue = 2,
                     IsSelectable = true
                 };
                 race.RaceStatBonuses.Add(bonus);
             } else if (dto.Pick == "Both" || dto.Pick == "Race") {
-                var bonus1 = new RaceStatBonus {
+                var bonus1 = new FantasyRaceBonus {
                     BonusValue = 1,
                     IsSelectable = true
                 };
-                var bonus2 = new RaceStatBonus {
+                var bonus2 = new FantasyRaceBonus {
                     BonusValue = 2,
                     IsSelectable = true
                 };
@@ -85,9 +85,9 @@ public class CharacterRaceService {
         return race;
     }
 
-    private static void AddStatBonus(CharacterRace race, string statName, int bonusValue) {
+    private static void AddStatBonus(FantasyCharacterRace race, string statName, int bonusValue) {
         if (bonusValue != 0) {
-            var bonus = new RaceStatBonus {
+            var bonus = new FantasyRaceBonus {
                 BonusValue = bonusValue,
                 StatId = (int)Enum.Parse<StatType>(statName),
                 IsSelectable = false
@@ -97,7 +97,7 @@ public class CharacterRaceService {
     }
 }
 
-public class CharacterRaceJsonDto {
+public class FantasyCharacterRaceJsonDto {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
 

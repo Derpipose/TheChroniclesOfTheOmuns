@@ -7,35 +7,35 @@ namespace ChroniclesTest;
 [TestFixture]
 public class CharacterStatsUnitTests {
     CharacterService characterService = new CharacterService();
-    CharacterRace race;
-    CharacterRace raceWithBonuses;
-    CharacterClass charClass;
-    Character character;
+    FantasyCharacterRace race;
+    FantasyCharacterRace raceWithBonuses;
+    FantasyCharacterClass charClass;
+    FantasyCharacter character;
 
     [SetUp]
     public void Setup() {
-        race = new CharacterRace {
+        race = new FantasyCharacterRace {
             Name = "TestRace",
             RaceType = "TestType",
             Description = "A test race"
         };
-        raceWithBonuses = new CharacterRace {
+        raceWithBonuses = new FantasyCharacterRace {
             Name = "BonusRace",
             RaceType = "TestType",
             Description = "A test race with bonuses",
-            RaceStatBonuses = new List<RaceStatBonus> {
+            RaceStatBonuses = new List<FantasyRaceBonus> {
                 new() { BonusValue = 2, StatId = (int)PlayerApp.Models.Enums.StatType.Strength, IsSelectable = false },
                 new() { BonusValue = 1, StatId = (int)PlayerApp.Models.Enums.StatType.Dexterity, IsSelectable = false }
             }
         };
-        charClass = new CharacterClass {
+        charClass = new FantasyCharacterClass {
             Name = "TestClass",
-            ClassType = PlayerApp.Models.Enums.ClassTypeEnum.Combat,
+            FantasyClassType = PlayerApp.Models.Enums.FantasyClassTypeEnum.Combat,
             Description = "A test class",
             HitDice = DiceType.D12,
             ManaDice = DiceType.D4
         };
-        character = new Character {
+        character = new FantasyCharacter {
             Name = "TestCharacter",
             Level = 1,
             Stats = new CharacterStats {
@@ -52,9 +52,9 @@ public class CharacterStatsUnitTests {
 
     [Test]
     public void UpdateCharacterStats() {
-        Character thisCharacter = character;
-        characterService.UpdateCharacterRace(thisCharacter, race);
-        characterService.UpdateCharacterClass(thisCharacter, charClass);
+        FantasyCharacter thisCharacter = character;
+        characterService.UpdateFantasyCharacterRace(thisCharacter, race);
+        characterService.UpdateFantasyCharacterClass(thisCharacter, charClass);
         Assert.Multiple(() => {
             Assert.That(thisCharacter.Stats.Strength, Is.EqualTo(10));
             Assert.That(thisCharacter.Stats.Dexterity, Is.EqualTo(10));
@@ -85,9 +85,9 @@ public class CharacterStatsUnitTests {
 
     [Test]
     public void UpdateCharacterStatsWithRaceBonuses() {
-        Character thisCharacter = character;
-        characterService.UpdateCharacterRace(thisCharacter, raceWithBonuses);
-        characterService.UpdateCharacterClass(thisCharacter, charClass);
+        FantasyCharacter thisCharacter = character;
+        characterService.UpdateFantasyCharacterRace(thisCharacter, raceWithBonuses);
+        characterService.UpdateFantasyCharacterClass(thisCharacter, charClass);
         Assert.Multiple(() => {
             Assert.That(thisCharacter.Stats.Strength, Is.EqualTo(10));
             Assert.That(thisCharacter.Stats.Dexterity, Is.EqualTo(10));

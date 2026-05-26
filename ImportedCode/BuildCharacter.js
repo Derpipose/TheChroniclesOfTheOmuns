@@ -334,8 +334,8 @@ function LoadClasses(Campaign, playerStatus){
 
 
             wipeDiv(myDiv);
-            var classtype = document.getElementById("ClassType");
-            classtype.textContent = "";
+            var FantasyClassType = document.getElementById("FantasyClassType");
+            FantasyClassType.textContent = "";
             
 
 
@@ -365,9 +365,9 @@ function classInfo(){
                 
                 wipeDiv(myDiv);
 
-                let type = document.getElementById("ClassType");
+                let type = document.getElementById("FantasyClassType");
                 if(element.Classification == "Eastern"){
-                    type.textContent = element.EasternClassType;
+                    type.textContent = element.EasternFantasyClassType;
                     // myDiv.appendChild(type);
                 }else if(element.Classification == "Veteran"){
                     // let type = document.createElement("p");
@@ -547,7 +547,7 @@ function checkBuildConditions(){
     }
 
     if(race.value != "NOTRACETYPE" && playerclass.value != "NOTCLASS" && stats){
-        console.log("Character ready to build captain!!!");
+        console.log("FantasyCharacter ready to build captain!!!");
         hideRaceWarn();
         hideClassWarn();
         BuildTheCharacter();
@@ -654,7 +654,7 @@ function BuildTheCharacter(){
     document.getElementById("PlayerName-show").textContent = document.getElementById("PlayerName").value;
     document.getElementById("CharClass-show").textContent = document.getElementById("Class").value;
 
-    var classtype = document.getElementById("ClassType").value;
+    var FantasyClassType = document.getElementById("FantasyClassType").value;
     var race = document.getElementById("RaceSelect").value;
 
     // var intelegence = document.getElementById("Int-final").value;
@@ -720,14 +720,14 @@ function BuildTheCharacter(){
         console.log("manamod = " + manamod);
         
         // Calculate health
-        if (classtype == "Combat") {
+        if (FantasyClassType == "Combat") {
             health = 2 * constitution + 10 + hitdie + Math.floor((constitution - 10) / 2);
         } else {
             health = 2 * hitdie + constitution + 10 + Math.floor((constitution - 10) / 2);
         }
 
         // Calculate mana
-        if (classtype == "Magic") {
+        if (FantasyClassType == "Magic") {
             console.log ("Magic class selected");
             if (manamod != "Mult") {
                 if (intelegence <= wisdom) {

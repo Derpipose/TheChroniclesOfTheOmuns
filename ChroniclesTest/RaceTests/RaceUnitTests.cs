@@ -8,16 +8,16 @@ namespace ChroniclesTest;
 
 [TestFixture]
 public class RaceUnitTests {
-    private CharacterRaceService raceService;
+    private FantasyCharacterRaceService raceService;
 
     [SetUp]
     public void Setup() {
-        raceService = new CharacterRaceService();
+        raceService = new FantasyCharacterRaceService();
     }
 
     [Test]
-    public void TestCharacterRace() {
-        CharacterRace race = new CharacterRace() {
+    public void TestFantasyCharacterRace() {
+        FantasyCharacterRace race = new FantasyCharacterRace() {
             Name = "Human",
             RaceType = "Versatile",
             Description = "Your standard, vanilla humanoid"
@@ -31,14 +31,14 @@ public class RaceUnitTests {
 
     [Test]
     public void TestRacePullWorks() {
-        List<CharacterRace> list = raceService.GetAllRacesAsync().Result;
+        List<FantasyCharacterRace> list = raceService.GetAllRacesAsync().Result;
 
         Assert.That(list.Count, Is.EqualTo(49));
     }
 
     [Test]
     public void CanAssignModifiersToRace() {
-        var race = new CharacterRace { Name = "TestRace", RaceType = "TestType", Description = "A test race" };
+        var race = new FantasyCharacterRace { Name = "TestRace", RaceType = "TestType", Description = "A test race" };
         race.AddModifier(ModifierType.ManaBonus, 10);
 
         var modifier = race.GetModifier(ModifierType.ManaBonus);
@@ -48,8 +48,8 @@ public class RaceUnitTests {
 
     [Test]
     public void KoboldHasManaBonusModifierOf15() {
-        List<CharacterRace> races = raceService.GetAllRacesAsync().Result;
-        CharacterRace? kobold = races.FirstOrDefault(r => r.Name == "Kobold");
+        List<FantasyCharacterRace> races = raceService.GetAllRacesAsync().Result;
+        FantasyCharacterRace? kobold = races.FirstOrDefault(r => r.Name == "Kobold");
 
         Assert.That(kobold, Is.Not.Null);
 
@@ -61,8 +61,8 @@ public class RaceUnitTests {
 
     [Test]
     public void HumanHasNoManaBonus() {
-        List<CharacterRace> races = raceService.GetAllRacesAsync().Result;
-        CharacterRace? human = races.FirstOrDefault(r => r.Name == "Human");
+        List<FantasyCharacterRace> races = raceService.GetAllRacesAsync().Result;
+        FantasyCharacterRace? human = races.FirstOrDefault(r => r.Name == "Human");
 
         Assert.That(human, Is.Not.Null);
 

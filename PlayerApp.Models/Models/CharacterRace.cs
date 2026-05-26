@@ -3,7 +3,7 @@ using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
-public class CharacterRace {
+public class FantasyCharacterRace {
     [Key]
     public int Id { get; set; }
 
@@ -18,7 +18,7 @@ public class CharacterRace {
 
     public ICollection<RacialModifier> Modifiers { get; set; } = new List<RacialModifier>();
 
-    public ICollection<RaceStatBonus> RaceStatBonuses { get; set; } = new List<RaceStatBonus>();
+    public ICollection<FantasyRaceBonus> RaceStatBonuses { get; set; } = new List<FantasyRaceBonus>();
 
     public RacialModifier? GetModifier(ModifierType type) {
         return Modifiers.FirstOrDefault(m => m.Modifier.Type == type);

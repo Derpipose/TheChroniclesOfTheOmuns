@@ -5,13 +5,13 @@ using PlayerApp.Models.Dice;
 
 namespace PlayerApp.Models;
 
-public class CharacterClass {
+public class FantasyCharacterClass {
     [Key]
     public int Id { get; set; }
     [Required]
     public required string Name { get; set; }
     [Required]
-    public required ClassTypeEnum ClassType { get; set; }
+    public required FantasyClassTypeEnum FantasyClassType { get; set; }
     public bool IsVeteranLocked { get; set; } = false;
     [Required]
     public required string Description { get; set; }

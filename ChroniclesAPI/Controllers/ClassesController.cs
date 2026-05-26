@@ -7,7 +7,7 @@ using ChroniclesAPI.Services;
 namespace ChroniclesAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/fantasy/[controller]")]
 
 public class ClassesController : ControllerBase {
     private readonly AppDbContext _db;
@@ -17,14 +17,14 @@ public class ClassesController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CharacterClass>>> GetAllClasses() {
-        var classes = await Task.Run(() => _db.CharacterClasses.ToList());
+    public async Task<ActionResult<List<FantasyCharacterClass>>> GetAllClasses() {
+        var classes = await Task.Run(() => _db.FantasyCharacterClasses.ToList());
         return Ok(classes);
     }
 
     [HttpGet("non-veteran")]
-    public async Task<ActionResult<List<CharacterClass>>> GetNonVeteranClasses() {
-        var classes = await Task.Run(() => _db.CharacterClasses.Where(c => !c.IsVeteranLocked).ToList());
+    public async Task<ActionResult<List<FantasyCharacterClass>>> GetNonVeteranClasses() {
+        var classes = await Task.Run(() => _db.FantasyCharacterClasses.Where(c => !c.IsVeteranLocked).ToList());
         return Ok(classes);
     }
 

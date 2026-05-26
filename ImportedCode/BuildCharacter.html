@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Character</title>
+    <title>Fantasy Character</title>
     <link rel="stylesheet" href="Navbar.css">
     <link rel="stylesheet" href="Final.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
@@ -36,7 +36,7 @@
             <input type="radio" id="Vet" name = "select" value="Vet">
             <label for="Vet" id = "Vet">Veteran</label>
 
-            <label for="Character">Character Name</label>
+            <label for="FantasyCharacter">FantasyCharacter Name</label>
             <input type="text" id="CharacterName" name="CharacterName">
 
             <label for="Campaign">Campaign Setting</label>
@@ -77,7 +77,7 @@
                 </select>
 
                 <div id="ClassInfo">
-                    <p>Type: <span id="ClassType"></span></p>
+                    <p>Type: <span id="FantasyClassType"></span></p>
                     <!-- This will include a description and show the different hit and mana dies avaliable -->
                 </div>
                 
@@ -115,14 +115,14 @@
                     <p>Pick 2:</p>
                 </div>
 
-                <button id="CreateCharacter">Create Character</button>
+                <button id="CreateCharacter">Create FantasyCharacter</button>
             </div>
 
         </div>
         <div id="FinishedCharacter">
             <!-- Have a button push in order for this to show that will calculate everything and hide the builder if possible.  -->
 
-            <h3>Character: <span id="Charname-show"></span></h3>
+            <h3>FantasyCharacter: <span id="Charname-show"></span></h3>
             <p>Player: <span id="PlayerName-show"></span></p>
             <p>Class: <span id="CharClass-show"></span></p>
             <p>Race: <span id="Race-show"></span></p>

@@ -4,7 +4,7 @@ using PlayerApp.Models.Dice;
 
 namespace PlayerApp.Models;
 
-public class Character {
+public class FantasyCharacter {
     [Key]
     public int Id { get; set; }
 
@@ -16,37 +16,37 @@ public class Character {
     public int Health { get; set; } = 0;
     public int Mana { get; set; } = 0;
 
-    public CharacterRace? CharacterRace { get; private set; }
-    public CharacterClass? CharacterClass { get; private set; }
+    public FantasyCharacterRace? FantasyCharacterRace { get; private set; }
+    public FantasyCharacterClass? FantasyCharacterClass { get; private set; }
 
     public List<CharacterStatBonus> CharacterStatBonuses { get; set; } = new List<CharacterStatBonus>();
 
-    public Character() {
+    public FantasyCharacter() {
         Stats = new CharacterStats();
     }
 
-    public void AssignCharacterClass(CharacterClass characterClass) {
-        CharacterClass = characterClass;
+    public void AssignFantasyCharacterClass(FantasyCharacterClass FantasyCharacterClass) {
+        FantasyCharacterClass = FantasyCharacterClass;
     }
 
-    public void RemoveCharacterClass() {
-        CharacterClass = null;
+    public void RemoveFantasyCharacterClass() {
+        FantasyCharacterClass = null;
     }
 
-    public void AssignCharacterRace(CharacterRace characterRace) {
-        CharacterRace = characterRace;
+    public void AssignFantasyCharacterRace(FantasyCharacterRace FantasyCharacterRace) {
+        FantasyCharacterRace = FantasyCharacterRace;
     }
 
-    public void RemoveCharacterRace() {
-        CharacterRace = null;
+    public void RemoveFantasyCharacterRace() {
+        FantasyCharacterRace = null;
     }
 
     public DiceType? GetHitDice() {
-        return CharacterClass?.HitDice;
+        return FantasyCharacterClass?.HitDice;
     }
 
     public DiceType? GetManaDice() {
-        return CharacterClass?.ManaDice;
+        return FantasyCharacterClass?.ManaDice;
     }
 }
 

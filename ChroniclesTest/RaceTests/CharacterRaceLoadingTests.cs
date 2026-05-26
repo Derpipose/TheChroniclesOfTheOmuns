@@ -4,20 +4,20 @@ using PlayerApp.Models;
 namespace ChroniclesTest;
 
 [TestFixture]
-public class CharacterRaceLoadingTests {
-    private CharacterRaceService raceService;
+public class FantasyCharacterRaceLoadingTests {
+    private FantasyCharacterRaceService raceService;
     private CharacterService characterService;
 
     [SetUp]
     public void Setup() {
-        raceService = new CharacterRaceService();
+        raceService = new FantasyCharacterRaceService();
         characterService = new CharacterService();
     }
 
     [Test]
     [Order(1)]
     public void TestRacePullWorks() {
-        List<CharacterRace> list = raceService.GetAllRacesAsync().Result;
+        List<FantasyCharacterRace> list = raceService.GetAllRacesAsync().Result;
 
         Assert.That(list.Count, Is.GreaterThan(0));
         Assert.That(list.Count, Is.EqualTo(49));
@@ -26,20 +26,20 @@ public class CharacterRaceLoadingTests {
     [Test]
     [Order(2)]
     public void TestCharacterWithRaceCanBeAssigned() {
-        Character character = new Character();
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault();
+        FantasyCharacter character = new FantasyCharacter();
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault();
         Assert.That(charRace, Is.Not.Null);
 
-        character.AssignCharacterRace(charRace);
+        character.AssignFantasyCharacterRace(charRace);
 
-        Assert.That(character.CharacterRace, Is.Not.Null);
-        Assert.That(character.CharacterRace?.Name, Is.EqualTo(charRace?.Name));
+        Assert.That(character.FantasyCharacterRace, Is.Not.Null);
+        Assert.That(character.FantasyCharacterRace?.Name, Is.EqualTo(charRace?.Name));
     }
 
     [Test]
     [Order(3)]
-    public void TestCharacterRaceHasStatBonuses() {
-        Character character = new Character {
+    public void TestFantasyCharacterRaceHasStatBonuses() {
+        FantasyCharacter character = new FantasyCharacter {
             Name = "TestCharacter",
             Level = 1,
             Stats = new CharacterStats {
@@ -51,21 +51,21 @@ public class CharacterRaceLoadingTests {
                 Charisma = 10
             }
         };
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kobold");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kobold");
         Assert.That(charRace, Is.Not.Null);
 
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
-        character.AssignCharacterRace(charRace);
+        character.AssignFantasyCharacterRace(charRace);
 
-        Assert.That(character.CharacterRace, Is.Not.Null);
-        Assert.That(character.CharacterRace?.RaceStatBonuses.Count, Is.EqualTo(2));
+        Assert.That(character.FantasyCharacterRace, Is.Not.Null);
+        Assert.That(character.FantasyCharacterRace?.RaceStatBonuses.Count, Is.EqualTo(2));
     }
 
     [Test]
     [Order(4)]
-    public void TestCharacterRaceStatBonusesAreCorrect() {
-        Character character = new Character {
+    public void TestFantasyCharacterRaceStatBonusesAreCorrect() {
+        FantasyCharacter character = new FantasyCharacter {
             Name = "TestCharacter",
             Level = 1,
             Stats = new CharacterStats {
@@ -77,13 +77,13 @@ public class CharacterRaceLoadingTests {
                 Charisma = 10
             }
         };
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kobold");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kobold");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
         Assert.That(charRace.RaceStatBonuses.FirstOrDefault(b => b.StatId == (int)PlayerApp.Models.Enums.StatType.Wisdom)?.BonusValue, Is.EqualTo(2));
         Assert.That(charRace.RaceStatBonuses.FirstOrDefault(b => b.StatId == (int)PlayerApp.Models.Enums.StatType.Dexterity)?.BonusValue, Is.EqualTo(1));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
 
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
         var wisBonus = charRace.RaceStatBonuses.FirstOrDefault(b => b.StatId == (int)PlayerApp.Models.Enums.StatType.Wisdom);
@@ -100,8 +100,8 @@ public class CharacterRaceLoadingTests {
 
     [Test]
     [Order(5)]
-    public void TestThatCharacterRaceIsLoadedWithChooseOneMod() {
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+    public void TestThatFantasyCharacterRaceIsLoadedWithChooseOneMod() {
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
@@ -111,8 +111,8 @@ public class CharacterRaceLoadingTests {
 
     [Test]
     [Order(6)]
-    public void TestThatCharacterRaceIsLoadedWithChooseTwoMod() {
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kenku");
+    public void TestThatFantasyCharacterRaceIsLoadedWithChooseTwoMod() {
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kenku");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
@@ -122,8 +122,8 @@ public class CharacterRaceLoadingTests {
 
     [Test]
     [Order(7)]
-    public void TestThatCharacterRaceIsLoadedWithChooseBothMods() {
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
+    public void TestThatFantasyCharacterRaceIsLoadedWithChooseBothMods() {
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 

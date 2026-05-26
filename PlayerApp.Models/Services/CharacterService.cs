@@ -10,33 +10,33 @@ public class CharacterService {
         _calculationService = new CharacterCalculationService();
     }
 
-    public void UpdateCharacterClass(Character character, CharacterClass characterClass) {
-        if (characterClass == null) {
-            character.RemoveCharacterClass();
+    public void UpdateFantasyCharacterClass(FantasyCharacter character, FantasyCharacterClass FantasyCharacterClass) {
+        if (FantasyCharacterClass == null) {
+            character.RemoveFantasyCharacterClass();
             return;
         }
-        character.AssignCharacterClass(characterClass);
+        character.AssignFantasyCharacterClass(FantasyCharacterClass);
         _calculationService.CalculateHitPoints(character);
         _calculationService.CalculateManaPoints(character);
     }
 
-    public void RemoveCharacterClass(Character character) {
-        character.RemoveCharacterClass();
+    public void RemoveFantasyCharacterClass(FantasyCharacter character) {
+        character.RemoveFantasyCharacterClass();
         _calculationService.CalculateHitPoints(character);
         _calculationService.CalculateManaPoints(character);
     }
 
-    public void UpdateCharacterRace(Character character, CharacterRace characterRace) {
-        if (characterRace == null) {
-            character.RemoveCharacterRace();
+    public void UpdateFantasyCharacterRace(FantasyCharacter character, FantasyCharacterRace FantasyCharacterRace) {
+        if (FantasyCharacterRace == null) {
+            character.RemoveFantasyCharacterRace();
             return;
         }
-        if (character.CharacterRace != null)
+        if (character.FantasyCharacterRace != null)
             character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
 
 
-        character.AssignCharacterRace(characterRace);
-        foreach (var bonus in characterRace.RaceStatBonuses) {
+        character.AssignFantasyCharacterRace(FantasyCharacterRace);
+        foreach (var bonus in FantasyCharacterRace.RaceStatBonuses) {
             character.CharacterStatBonuses.Add(new CharacterStatBonus {
                 BonusValue = bonus.BonusValue,
                 BonusSource = "Race",
@@ -48,55 +48,55 @@ public class CharacterService {
         _calculationService.CalculateHitPoints(character);
     }
 
-    public void RemoveCharacterRace(Character character) {
-        character.RemoveCharacterRace();
+    public void RemoveFantasyCharacterRace(FantasyCharacter character) {
+        character.RemoveFantasyCharacterRace();
         character.CharacterStatBonuses.RemoveAll(b => b.BonusSource == "Race");
         _calculationService.CalculateManaPoints(character);
         _calculationService.CalculateHitPoints(character);
     }
 
-    public void UpdateCharacterStats(Character character, CharacterStats newStats) {
+    public void UpdateCharacterStats(FantasyCharacter character, CharacterStats newStats) {
         character.Stats = newStats;
         _calculationService.CalculateHitPoints(character);
         _calculationService.CalculateManaPoints(character);
     }
 
-    public int GetStat(Character character, StatType statName) {
+    public int GetStat(FantasyCharacter character, StatType statName) {
         return _calculationService.GetStat(character, statName);
     }
 
-    public int GetBonus(Character character, StatType statName) {
+    public int GetBonus(FantasyCharacter character, StatType statName) {
         return _calculationService.GetBonus(character, statName);
     }
 
-    public int GetRaceModifierValue(Character character, ModifierType type) {
+    public int GetRaceModifierValue(FantasyCharacter character, ModifierType type) {
         return _calculationService.GetRaceModifierValue(character, type);
     }
 
-    public List<CharacterStatBonus> GetSelectableRaceBonusesOnCharacter(Character character) {
+    public List<CharacterStatBonus> GetSelectableRaceBonusesOnCharacter(FantasyCharacter character) {
         return character.CharacterStatBonuses
             .Where(b => b.BonusSource == "Race" && b.IsSelectable)
             .ToList();
     }
 
-    public void AssignSelectableRaceBonus(Character character, int v, StatType type) {
+    public void AssignSelectableRaceBonus(FantasyCharacter character, int v, StatType type) {
         var alreadyAssigned = character.CharacterStatBonuses
             .FirstOrDefault(b => b.BonusSource == "Race" && b.StatId == (int)type);
         if (alreadyAssigned != null)
-            throw new Exception("Character already has such bonus assigned. Bonuses cannot be stacked.");
+            throw new Exception("FantasyCharacter already has such bonus assigned. Bonuses cannot be stacked.");
 
         var selectableBonus = character.CharacterStatBonuses
             .FirstOrDefault(b => b.BonusSource == "Race" && b.IsSelectable && b.BonusValue == v);
 
         if (selectableBonus == null) {
-            throw new Exception("Character does not have such selectable bonus available.");
+            throw new Exception("FantasyCharacter does not have such selectable bonus available.");
         }
         if (selectableBonus != null) {
             selectableBonus.StatId = (int)type;
         }
     }
 
-    public List<StatType> GetAvailableStatSelectableBonusesOnCharacter(Character character) {
+    public List<StatType> GetAvailableStatSelectableBonusesOnCharacter(FantasyCharacter character) {
         // Get all race stat bonuses that have been assigned to a stat
         var assignedStatIds = character.CharacterStatBonuses
             .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)
