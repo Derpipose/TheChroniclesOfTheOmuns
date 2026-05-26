@@ -189,11 +189,11 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
         try {
             IsLoading = true;
-            var character = new FantasyCharacter {
+            var createDto = new FantasyCharacterCreateDto {
                 Name = CharacterName,
                 Level = 1,
-                Health = 0,
-                Mana = 0,
+                FantasyCharacterRaceId = SelectedRaceId,
+                FantasyCharacterClassId = SelectedClassId,
                 Stats = new CharacterStats {
                     Strength = Strength,
                     Constitution = Constitution,
@@ -203,19 +203,8 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
                     Intelligence = Intelligence
                 }
             };
-            if (SelectedRaceId.HasValue) {
-                var race = Races.FirstOrDefault(r => r.Id == SelectedRaceId.Value);
-                if (race != null)
-                    _characterService.UpdateFantasyCharacterRace(character, race);
-            }
 
-            if (SelectedClassId.HasValue) {
-                var FantasyCharacterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
-                if (FantasyCharacterClass != null)
-                    _characterService.UpdateFantasyCharacterClass(character, FantasyCharacterClass);
-            }
-
-            var response = await _httpClient.PostAsJsonAsync("api/fantasy/characters", character);
+            var response = await _httpClient.PostAsJsonAsync("api/fantasy/characters", createDto);
             if (!response.IsSuccessStatusCode) {
                 StatusMessage = $"Error creating character: {response.ReasonPhrase}";
                 return false;
@@ -223,7 +212,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
             // Attempt to read created character id if returned
             try {
-                var created = await response.Content.ReadFromJsonAsync<FantasyCharacterDto>();
+                var created = await response.Content.ReadFromJsonAsync<FantasyFantasyCharacterDto>();
                 if (created != null) CreatedCharacterId = created.Id;
             } catch {
                 // ignore if not returned

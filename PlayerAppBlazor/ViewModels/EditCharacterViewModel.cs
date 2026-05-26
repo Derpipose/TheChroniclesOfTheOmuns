@@ -97,9 +97,9 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
             
             // Deserialize into DTO which has public properties
             var characterJson = await _httpClient.GetStringAsync($"api/fantasy/characters/{characterId}");
-            var characterDto = JsonSerializer.Deserialize<FantasyCharacterDto>(characterJson, options);
+            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyFantasyCharacterDto>(characterJson, options);
 
-            if (characterDto == null) {
+            if (FantasyCharacterDto == null) {
                 StatusMessage = "FantasyCharacter not found.";
                 return;
             }
@@ -112,23 +112,23 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
 
             // Create a minimal character object for display/editing
             character = new FantasyCharacter {
-                Id = characterDto.Id,
-                Name = characterDto.Name,
-                Level = characterDto.Level,
-                Health = characterDto.Health,
-                Mana = characterDto.Mana,
-                Stats = characterDto.Stats ?? new CharacterStats()
+                Id = FantasyCharacterDto.Id,
+                Name = FantasyCharacterDto.Name,
+                Level = FantasyCharacterDto.Level,
+                Health = FantasyCharacterDto.Health,
+                Mana = FantasyCharacterDto.Mana,
+                Stats = FantasyCharacterDto.Stats ?? new CharacterStats()
             };
-            if (characterDto.FantasyCharacterRace != null) {
-                character.AssignFantasyCharacterRace(characterDto.FantasyCharacterRace);
+            if (FantasyCharacterDto.FantasyCharacterRace != null) {
+                character.AssignFantasyCharacterRace(FantasyCharacterDto.FantasyCharacterRace);
             }
-            if (characterDto.FantasyCharacterClass != null) {
-                character.AssignFantasyCharacterClass(characterDto.FantasyCharacterClass);
+            if (FantasyCharacterDto.FantasyCharacterClass != null) {
+                character.AssignFantasyCharacterClass(FantasyCharacterDto.FantasyCharacterClass);
             }
 
             CharacterName = character.Name;
-            SelectedRaceId = characterDto.FantasyCharacterRaceId;
-            SelectedClassId = characterDto.FantasyCharacterClassId;
+            SelectedRaceId = FantasyCharacterDto.FantasyCharacterRaceId;
+            SelectedClassId = FantasyCharacterDto.FantasyCharacterClassId;
             Strength = character.Stats?.Strength ?? 10;
             Constitution = character.Stats?.Constitution ?? 10;
             Dexterity = character.Stats?.Dexterity ?? 10;

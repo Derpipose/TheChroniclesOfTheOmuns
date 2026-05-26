@@ -26,7 +26,7 @@ public class FantasyCharacter {
     }
 
     public void AssignFantasyCharacterClass(FantasyCharacterClass FantasyCharacterClass) {
-        FantasyCharacterClass = FantasyCharacterClass;
+        this.FantasyCharacterClass = FantasyCharacterClass;
     }
 
     public void RemoveFantasyCharacterClass() {
@@ -34,7 +34,7 @@ public class FantasyCharacter {
     }
 
     public void AssignFantasyCharacterRace(FantasyCharacterRace FantasyCharacterRace) {
-        FantasyCharacterRace = FantasyCharacterRace;
+        this.FantasyCharacterRace = FantasyCharacterRace;
     }
 
     public void RemoveFantasyCharacterRace() {

@@ -40,27 +40,27 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var characterJson = await _httpClient.GetStringAsync($"api/fantasy/characters/{characterId}");
-            var characterDto = JsonSerializer.Deserialize<FantasyCharacterDto>(characterJson, options);
+            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyFantasyCharacterDto>(characterJson, options);
 
-            if (characterDto == null) {
+            if (FantasyCharacterDto == null) {
                 StatusMessage = "FantasyCharacter not found.";
                 return;
             }
 
             // Create a minimal character object for display
             FantasyCharacter = new FantasyCharacter {
-                Id = characterDto.Id,
-                Name = characterDto.Name,
-                Level = characterDto.Level,
-                Health = characterDto.Health,
-                Mana = characterDto.Mana,
-                Stats = characterDto.Stats ?? new CharacterStats()
+                Id = FantasyCharacterDto.Id,
+                Name = FantasyCharacterDto.Name,
+                Level = FantasyCharacterDto.Level,
+                Health = FantasyCharacterDto.Health,
+                Mana = FantasyCharacterDto.Mana,
+                Stats = FantasyCharacterDto.Stats ?? new CharacterStats()
             };
-            if (characterDto.FantasyCharacterRace != null) {
-                FantasyCharacter.AssignFantasyCharacterRace(characterDto.FantasyCharacterRace);
+            if (FantasyCharacterDto.FantasyCharacterRace != null) {
+                FantasyCharacter.AssignFantasyCharacterRace(FantasyCharacterDto.FantasyCharacterRace);
             }
-            if (characterDto.FantasyCharacterClass != null) {
-                FantasyCharacter.AssignFantasyCharacterClass(characterDto.FantasyCharacterClass);
+            if (FantasyCharacterDto.FantasyCharacterClass != null) {
+                FantasyCharacter.AssignFantasyCharacterClass(FantasyCharacterDto.FantasyCharacterClass);
             }
         } catch (Exception ex) {
             StatusMessage = $"Error loading character: {ex.Message}";

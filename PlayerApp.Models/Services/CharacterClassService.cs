@@ -15,7 +15,7 @@ public class FantasyCharacterClassService {
 
         var json = await http.GetStringAsync(url);
 
-        var dtoList = JsonSerializer.Deserialize<List<FantasyCharacterClassDto>>(json);
+        var dtoList = JsonSerializer.Deserialize<List<FantasyCharacterFantasyClassDto>>(json);
 
         if (dtoList == null)
             return new List<FantasyCharacterClass>();
@@ -70,7 +70,7 @@ public class FantasyCharacterClassService {
     }
 }
 
-public class FantasyCharacterClassDto {
+public class FantasyCharacterFantasyClassDto {
     public string ClassName { get; set; } = "";
     public string FantasyClassType { get; set; } = "";
     public string Description { get; set; } = "";

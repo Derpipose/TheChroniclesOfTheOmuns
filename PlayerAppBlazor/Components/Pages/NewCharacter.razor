@@ -243,7 +243,7 @@
     {
         Vm.PropertyChanged += OnVmPropertyChanged;
         Vm.ResetForm();
-        await Task.CompletedTask;
+        await Vm.LoadDataAsync();
     }
 
     private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

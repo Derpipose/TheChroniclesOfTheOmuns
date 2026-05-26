@@ -1,7 +1,7 @@
 namespace PlayerApp.Models.DTOs;
 
 
-public class FantasyCharacterDto {
+public class FantasyFantasyCharacterDto {
     public int Id { get; set; }
     public string Name { get; set; } = "Tav";
     public int Level { get; set; } = 1;
@@ -29,5 +29,18 @@ public class CharacterUpdateDto {
     public int? FantasyCharacterRaceId { get; set; }
     public int? FantasyCharacterClassId { get; set; }
     
+    public CharacterStats? Stats { get; set; }
+}
+
+/// <summary>
+/// DTO for creating a character from the client.
+/// </summary>
+public class FantasyCharacterCreateDto {
+    public string Name { get; set; } = "Tav";
+    public int Level { get; set; } = 1;
+
+    public int? FantasyCharacterRaceId { get; set; }
+    public int? FantasyCharacterClassId { get; set; }
+
     public CharacterStats? Stats { get; set; }
 }

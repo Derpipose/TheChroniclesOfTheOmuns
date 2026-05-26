@@ -18,16 +18,31 @@ public class CharactersController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<FantasyCharacter>>> GetAllCharacters() {
+    public async Task<ActionResult<List<FantasyFantasyCharacterDto>>> GetAllCharacters() {
         var characters = await _db.Characters
             .Include(c => c.FantasyCharacterRace)
             .Include(c => c.FantasyCharacterClass)
             .ToListAsync();
-        return Ok(characters);
+
+        var result = characters.Select(character => new FantasyFantasyCharacterDto {
+            Id = character.Id,
+            Name = character.Name,
+            Level = character.Level,
+            Health = character.Health,
+            Mana = character.Mana,
+            FantasyCharacterRaceId = character.FantasyCharacterRace?.Id,
+            FantasyCharacterRace = character.FantasyCharacterRace,
+            FantasyCharacterClassId = character.FantasyCharacterClass?.Id,
+            FantasyCharacterClass = character.FantasyCharacterClass,
+            Stats = character.Stats,
+            CharacterStatBonuses = character.CharacterStatBonuses
+        }).ToList();
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<FantasyCharacterDto>> GetCharacterById(int id) {
+    public async Task<ActionResult<FantasyFantasyCharacterDto>> GetCharacterById(int id) {
         var character = await _db.Characters
             .Include(c => c.Stats)
             .Include(c => c.FantasyCharacterRace)
@@ -38,7 +53,7 @@ public class CharactersController : ControllerBase {
             return NotFound();
         }
 
-        var dto = new FantasyCharacterDto {
+        var dto = new FantasyFantasyCharacterDto {
             Id = character.Id,
             Name = character.Name,
             Level = character.Level,
@@ -56,15 +71,37 @@ public class CharactersController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult<FantasyCharacter>> CreateCharacter([FromBody] FantasyCharacter character) {
+    public async Task<ActionResult<FantasyCharacter>> CreateCharacter([FromBody] FantasyCharacterCreateDto createDto) {
+        var character = new FantasyCharacter {
+            Name = createDto.Name,
+            Level = createDto.Level < 1 ? 1 : createDto.Level,
+            Stats = createDto.Stats ?? new CharacterStats()
+        };
+
+        if (createDto.FantasyCharacterRaceId.HasValue) {
+            var race = await _db.FantasyCharacterRaces.FirstOrDefaultAsync(r => r.Id == createDto.FantasyCharacterRaceId.Value);
+            if (race == null) {
+                return BadRequest("Invalid RaceId.");
+            }
+
+            character.AssignFantasyCharacterRace(race);
+        }
+
+        if (createDto.FantasyCharacterClassId.HasValue) {
+            var FantasyCharacterClass = await _db.FantasyCharacterClasses.FirstOrDefaultAsync(c => c.Id == createDto.FantasyCharacterClassId.Value);
+            if (FantasyCharacterClass == null) {
+                return BadRequest("Invalid ClassId.");
+            }
+
+            character.AssignFantasyCharacterClass(FantasyCharacterClass);
+        }
+
         if (!_characterService.VerifyCharacterDB(character, out var errorMessage)) {
             return BadRequest(errorMessage);
         }
+
         if (!string.IsNullOrEmpty(errorMessage)) {
             return BadRequest(errorMessage);
-        }
-        if (character.Level < 1) {
-            character.Level = 1; 
         }
 
         FantasyCharacter verifiedCharacter = _characterService.BuildVerifiedCharacter(character);
