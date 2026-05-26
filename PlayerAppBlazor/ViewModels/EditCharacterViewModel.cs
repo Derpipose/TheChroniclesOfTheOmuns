@@ -96,7 +96,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             
             // Deserialize into DTO which has public properties
-            var characterJson = await _httpClient.GetStringAsync($"api/characters/{characterId}");
+            var characterJson = await _httpClient.GetStringAsync($"api/fantasy/characters/{characterId}");
             var characterDto = JsonSerializer.Deserialize<FantasyCharacterDto>(characterJson, options);
 
             if (characterDto == null) {
@@ -104,10 +104,10 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 return;
             }
 
-            var racesJson = await _httpClient.GetStringAsync("api/races");
+            var racesJson = await _httpClient.GetStringAsync("api/fantasy/races");
             Races = JsonSerializer.Deserialize<List<FantasyCharacterRace>>(racesJson, options) ?? new List<FantasyCharacterRace>();
             
-            var classesJson = await _httpClient.GetStringAsync("api/classes/non-veteran");
+            var classesJson = await _httpClient.GetStringAsync("api/fantasy/classes/non-veteran");
             Classes = JsonSerializer.Deserialize<List<FantasyCharacterClass>>(classesJson, options) ?? new List<FantasyCharacterClass>();
 
             // Create a minimal character object for display/editing
@@ -168,7 +168,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 }
             };
 
-            var response = await _httpClient.PutAsJsonAsync($"api/characters/{character.Id}", updateDto);
+            var response = await _httpClient.PutAsJsonAsync($"api/fantasy/characters/{character.Id}", updateDto);
             
             if (!response.IsSuccessStatusCode) {
                 StatusMessage = $"Error saving character: {response.StatusCode}";

@@ -45,7 +45,7 @@ public class CharactersViewModel : INotifyPropertyChanged {
         StatusMessage = "Loading characters...";
 
         try {
-            var response = await _httpClient.GetAsync("api/characters");
+            var response = await _httpClient.GetAsync("api/fantasy/characters");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -66,7 +66,7 @@ public class CharactersViewModel : INotifyPropertyChanged {
 
         try {
             var character = new FantasyCharacter { Name = name.Trim() };
-            await _httpClient.PostAsJsonAsync("api/characters", character);
+            await _httpClient.PostAsJsonAsync("api/fantasy/characters", character);
             StatusMessage = $"FantasyCharacter '{name}' created!";
             await LoadCharactersAsync();
         } catch (Exception ex) {
@@ -76,7 +76,7 @@ public class CharactersViewModel : INotifyPropertyChanged {
 
     public async Task DeleteCharacterAsync(int id) {
         try {
-            await _httpClient.DeleteAsync($"api/characters/{id}");
+            await _httpClient.DeleteAsync($"api/fantasy/characters/{id}");
             StatusMessage = "FantasyCharacter deleted.";
             await LoadCharactersAsync();
         } catch (Exception ex) {

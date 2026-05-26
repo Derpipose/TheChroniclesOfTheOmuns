@@ -36,7 +36,7 @@ public class ClassesViewModel : INotifyPropertyChanged {
         StatusMessage = "Loading classes...";
 
         try {
-            Classes = await _httpClient.GetFromJsonAsync<List<FantasyCharacterClass>>("api/classes") ?? new List<FantasyCharacterClass>();
+            Classes = await _httpClient.GetFromJsonAsync<List<FantasyCharacterClass>>("api/fantasy/classes") ?? new List<FantasyCharacterClass>();
             StatusMessage = $"Loaded {Classes.Count} class(es).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading classes: {ex.Message}";
@@ -50,7 +50,7 @@ public class ClassesViewModel : INotifyPropertyChanged {
         StatusMessage = "Syncing classes from JSON...";
 
         try {
-            var result = await _httpClient.PostAsync("api/classes/sync", null);
+            var result = await _httpClient.PostAsync("api/fantasy/classes/sync", null);
             if (!result.IsSuccessStatusCode) {
                 StatusMessage = $"Sync failed: {result.ReasonPhrase}";
                 return;

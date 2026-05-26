@@ -149,10 +149,10 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         try {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            var racesJson = await _httpClient.GetStringAsync("api/races");
+            var racesJson = await _httpClient.GetStringAsync("api/fantasy/races");
             Races = JsonSerializer.Deserialize<List<FantasyCharacterRace>>(racesJson, options) ?? new List<FantasyCharacterRace>();
 
-            var classesJson = await _httpClient.GetStringAsync("api/classes/non-veteran");
+            var classesJson = await _httpClient.GetStringAsync("api/fantasy/classes/non-veteran");
             Classes = JsonSerializer.Deserialize<List<FantasyCharacterClass>>(classesJson, options) ?? new List<FantasyCharacterClass>();
 
             StatusMessage = $"Loaded {Races.Count} race(s) and {Classes.Count} class(es).";
@@ -215,7 +215,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
                     _characterService.UpdateFantasyCharacterClass(character, FantasyCharacterClass);
             }
 
-            var response = await _httpClient.PostAsJsonAsync("api/characters", character);
+            var response = await _httpClient.PostAsJsonAsync("api/fantasy/characters", character);
             if (!response.IsSuccessStatusCode) {
                 StatusMessage = $"Error creating character: {response.ReasonPhrase}";
                 return false;

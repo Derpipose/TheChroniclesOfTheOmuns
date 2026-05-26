@@ -38,7 +38,7 @@ public class RacesViewModel : INotifyPropertyChanged {
 
         try {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var racesJson = await _httpClient.GetStringAsync("api/races");
+            var racesJson = await _httpClient.GetStringAsync("api/fantasy/races");
             Races = JsonSerializer.Deserialize<List<FantasyCharacterRace>>(racesJson, options) ?? new List<FantasyCharacterRace>();
             StatusMessage = $"Loaded {Races.Count} race(s).";
         } catch (Exception ex) {
@@ -53,7 +53,7 @@ public class RacesViewModel : INotifyPropertyChanged {
         StatusMessage = "Syncing races from JSON...";
 
         try {
-            var result = await _httpClient.PostAsync("api/races/sync", null);
+            var result = await _httpClient.PostAsync("api/fantasy/races/sync", null);
             if (!result.IsSuccessStatusCode) {
                 StatusMessage = $"Sync failed: {result.ReasonPhrase}";
                 return;
