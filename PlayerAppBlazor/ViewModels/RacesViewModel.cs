@@ -7,13 +7,13 @@ namespace PlayerAppBlazor.ViewModels;
 
 public class RacesViewModel : INotifyPropertyChanged {
     private readonly HttpClient _httpClient;
-    private List<CharacterRace> _races = new();
+    private List<FantasyCharacterRace> _races = new();
     private bool _isLoading;
     private string _statusMessage = "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public List<CharacterRace> Races {
+    public List<FantasyCharacterRace> Races {
         get => _races;
         set => SetProperty(ref _races, value);
     }
@@ -39,7 +39,7 @@ public class RacesViewModel : INotifyPropertyChanged {
         try {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var racesJson = await _httpClient.GetStringAsync("api/races");
-            Races = JsonSerializer.Deserialize<List<CharacterRace>>(racesJson, options) ?? new List<CharacterRace>();
+            Races = JsonSerializer.Deserialize<List<FantasyCharacterRace>>(racesJson, options) ?? new List<FantasyCharacterRace>();
             StatusMessage = $"Loaded {Races.Count} race(s).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading races: {ex.Message}";

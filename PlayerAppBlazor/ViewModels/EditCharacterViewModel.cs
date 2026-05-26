@@ -13,8 +13,8 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
         _httpClient = httpClient;
     }
 
-    private Character? _character;
-    public Character? character {
+    private FantasyCharacter? _character;
+    public FantasyCharacter? character {
         get => _character;
         set { SetProperty(ref _character, value); }
     }
@@ -85,8 +85,8 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
         set { SetProperty(ref _isLoading, value); }
     }
 
-    public List<CharacterRace> Races { get; private set; } = new();
-    public List<CharacterClass> Classes { get; private set; } = new();
+    public List<FantasyCharacterRace> Races { get; private set; } = new();
+    public List<FantasyCharacterClass> Classes { get; private set; } = new();
 
     public async Task LoadCharacterAsync(int characterId) {
         try {
@@ -97,21 +97,21 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
             
             // Deserialize into DTO which has public properties
             var characterJson = await _httpClient.GetStringAsync($"api/characters/{characterId}");
-            var characterDto = JsonSerializer.Deserialize<CharacterDto>(characterJson, options);
+            var characterDto = JsonSerializer.Deserialize<FantasyCharacterDto>(characterJson, options);
 
             if (characterDto == null) {
-                StatusMessage = "Character not found.";
+                StatusMessage = "FantasyCharacter not found.";
                 return;
             }
 
             var racesJson = await _httpClient.GetStringAsync("api/races");
-            Races = JsonSerializer.Deserialize<List<CharacterRace>>(racesJson, options) ?? new List<CharacterRace>();
+            Races = JsonSerializer.Deserialize<List<FantasyCharacterRace>>(racesJson, options) ?? new List<FantasyCharacterRace>();
             
             var classesJson = await _httpClient.GetStringAsync("api/classes/non-veteran");
-            Classes = JsonSerializer.Deserialize<List<CharacterClass>>(classesJson, options) ?? new List<CharacterClass>();
+            Classes = JsonSerializer.Deserialize<List<FantasyCharacterClass>>(classesJson, options) ?? new List<FantasyCharacterClass>();
 
             // Create a minimal character object for display/editing
-            character = new Character {
+            character = new FantasyCharacter {
                 Id = characterDto.Id,
                 Name = characterDto.Name,
                 Level = characterDto.Level,
@@ -119,16 +119,16 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 Mana = characterDto.Mana,
                 Stats = characterDto.Stats ?? new CharacterStats()
             };
-            if (characterDto.CharacterRace != null) {
-                character.AssignCharacterRace(characterDto.CharacterRace);
+            if (characterDto.FantasyCharacterRace != null) {
+                character.AssignFantasyCharacterRace(characterDto.FantasyCharacterRace);
             }
-            if (characterDto.CharacterClass != null) {
-                character.AssignCharacterClass(characterDto.CharacterClass);
+            if (characterDto.FantasyCharacterClass != null) {
+                character.AssignFantasyCharacterClass(characterDto.FantasyCharacterClass);
             }
 
             CharacterName = character.Name;
-            SelectedRaceId = characterDto.CharacterRaceId;
-            SelectedClassId = characterDto.CharacterClassId;
+            SelectedRaceId = characterDto.FantasyCharacterRaceId;
+            SelectedClassId = characterDto.FantasyCharacterClassId;
             Strength = character.Stats?.Strength ?? 10;
             Constitution = character.Stats?.Constitution ?? 10;
             Dexterity = character.Stats?.Dexterity ?? 10;
@@ -144,7 +144,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
 
     public async Task<bool> SaveCharacterAsync() {
         if (string.IsNullOrWhiteSpace(CharacterName) || character == null) {
-            StatusMessage = "Character name is required.";
+            StatusMessage = "FantasyCharacter name is required.";
             return false;
         }
 
@@ -156,8 +156,8 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 Id = character.Id,
                 Name = CharacterName,
                 Level = character.Level,
-                CharacterRaceId = SelectedRaceId,
-                CharacterClassId = SelectedClassId,
+                FantasyCharacterRaceId = SelectedRaceId,
+                FantasyCharacterClassId = SelectedClassId,
                 Stats = new CharacterStats {
                     Strength = Strength,
                     Constitution = Constitution,
@@ -175,7 +175,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
                 return false;
             }
 
-            StatusMessage = $"Character '{CharacterName}' updated successfully!";
+            StatusMessage = $"FantasyCharacter '{CharacterName}' updated successfully!";
             return true;
         } catch (Exception ex) {
             StatusMessage = $"Error saving character: {ex.Message}";

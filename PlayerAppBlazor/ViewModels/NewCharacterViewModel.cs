@@ -42,8 +42,8 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         }
     }
 
-    private Character? _draftCharacter;
-    public Character? DraftCharacter {
+    private FantasyCharacter? _draftCharacter;
+    public FantasyCharacter? DraftCharacter {
         get => _draftCharacter;
         private set { SetProperty(ref _draftCharacter, value); }
     }
@@ -140,8 +140,8 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         private set { SetProperty(ref _availableStatsForPick2, value); }
     }
 
-    public List<CharacterRace> Races { get; private set; } = new();
-    public List<CharacterClass> Classes { get; private set; } = new();
+    public List<FantasyCharacterRace> Races { get; private set; } = new();
+    public List<FantasyCharacterClass> Classes { get; private set; } = new();
 
     public async Task LoadDataAsync() {
         IsLoading = true;
@@ -150,10 +150,10 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
             var racesJson = await _httpClient.GetStringAsync("api/races");
-            Races = JsonSerializer.Deserialize<List<CharacterRace>>(racesJson, options) ?? new List<CharacterRace>();
+            Races = JsonSerializer.Deserialize<List<FantasyCharacterRace>>(racesJson, options) ?? new List<FantasyCharacterRace>();
 
             var classesJson = await _httpClient.GetStringAsync("api/classes/non-veteran");
-            Classes = JsonSerializer.Deserialize<List<CharacterClass>>(classesJson, options) ?? new List<CharacterClass>();
+            Classes = JsonSerializer.Deserialize<List<FantasyCharacterClass>>(classesJson, options) ?? new List<FantasyCharacterClass>();
 
             StatusMessage = $"Loaded {Races.Count} race(s) and {Classes.Count} class(es).";
         } catch (Exception ex) {
@@ -183,13 +183,13 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
     public async Task<bool> CreateCharacterAsync() {
         if (string.IsNullOrWhiteSpace(CharacterName)) {
-            StatusMessage = "Character name is required.";
+            StatusMessage = "FantasyCharacter name is required.";
             return false;
         }
 
         try {
             IsLoading = true;
-            var character = new Character {
+            var character = new FantasyCharacter {
                 Name = CharacterName,
                 Level = 1,
                 Health = 0,
@@ -206,13 +206,13 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
             if (SelectedRaceId.HasValue) {
                 var race = Races.FirstOrDefault(r => r.Id == SelectedRaceId.Value);
                 if (race != null)
-                    _characterService.UpdateCharacterRace(character, race);
+                    _characterService.UpdateFantasyCharacterRace(character, race);
             }
 
             if (SelectedClassId.HasValue) {
-                var characterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
-                if (characterClass != null)
-                    _characterService.UpdateCharacterClass(character, characterClass);
+                var FantasyCharacterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
+                if (FantasyCharacterClass != null)
+                    _characterService.UpdateFantasyCharacterClass(character, FantasyCharacterClass);
             }
 
             var response = await _httpClient.PostAsJsonAsync("api/characters", character);
@@ -223,13 +223,13 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
             // Attempt to read created character id if returned
             try {
-                var created = await response.Content.ReadFromJsonAsync<CharacterDto>();
+                var created = await response.Content.ReadFromJsonAsync<FantasyCharacterDto>();
                 if (created != null) CreatedCharacterId = created.Id;
             } catch {
                 // ignore if not returned
             }
 
-            StatusMessage = $"Character '{CharacterName}' created successfully!";
+            StatusMessage = $"FantasyCharacter '{CharacterName}' created successfully!";
             return true;
         } catch (Exception ex) {
             StatusMessage = $"Error creating character: {ex.Message}";
@@ -264,7 +264,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
     private void UpdateDraftCharacter() {
         // Create a fresh draft character
-        var character = new Character {
+        var character = new FantasyCharacter {
             Name = CharacterName,
             Level = 1,
             Health = 0,
@@ -283,15 +283,15 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
         if (SelectedRaceId.HasValue) {
             var race = Races.FirstOrDefault(r => r.Id == SelectedRaceId.Value);
             if (race != null) {
-                _characterService.UpdateCharacterRace(character, race);
+                _characterService.UpdateFantasyCharacterRace(character, race);
             }
         }
 
         // Apply class if selected (use loaded Classes)
         if (SelectedClassId.HasValue) {
-            var characterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
-            if (characterClass != null) {
-                _characterService.UpdateCharacterClass(character, characterClass);
+            var FantasyCharacterClass = Classes.FirstOrDefault(c => c.Id == SelectedClassId.Value);
+            if (FantasyCharacterClass != null) {
+                _characterService.UpdateFantasyCharacterClass(character, FantasyCharacterClass);
             }
         }
 

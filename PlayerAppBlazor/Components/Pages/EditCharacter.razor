@@ -6,7 +6,7 @@
 @implements IAsyncDisposable
 @rendermode InteractiveServer
 
-<PageTitle>Edit @(Vm.character?.Name ?? "Character")</PageTitle>
+<PageTitle>Edit @(Vm.character?.Name ?? "FantasyCharacter")</PageTitle>
 
 <div class="container mt-4">
     @if (Vm.IsLoading)
@@ -21,8 +21,8 @@
     else if (Vm.character != null)
     {
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Edit Character</h1>
-            <a href="/character/@Vm.character.Id" class="btn btn-secondary">Back to Character</a>
+            <h1>Edit FantasyCharacter</h1>
+            <a href="/character/@Vm.character.Id" class="btn btn-secondary">Back to FantasyCharacter</a>
         </div>
 
         @if (!string.IsNullOrEmpty(Vm.StatusMessage))
@@ -31,9 +31,9 @@
         }
 
         <form>
-            <!-- Character Name -->
+            <!-- FantasyCharacter Name -->
             <div class="mb-3">
-                <label for="characterName" class="form-label">Character Name</label>
+                <label for="characterName" class="form-label">FantasyCharacter Name</label>
                 <input type="text" class="form-control" id="characterName" 
                        @bind="Vm.CharacterName" placeholder="Enter character name" />
             </div>
@@ -65,7 +65,7 @@
             <!-- Stats -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Character Stats</h5>
+                    <h5 class="mb-0">FantasyCharacter Stats</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
