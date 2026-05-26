@@ -19,7 +19,7 @@ public class CharactersController : ControllerBase {
 
     [HttpGet]
     public async Task<ActionResult<List<FantasyFantasyCharacterDto>>> GetAllCharacters() {
-        var characters = await _db.Characters
+        var characters = await _db.FantasyCharacters
             .Include(c => c.FantasyCharacterRace)
             .Include(c => c.FantasyCharacterClass)
             .ToListAsync();
@@ -43,7 +43,7 @@ public class CharactersController : ControllerBase {
 
     [HttpGet("{id}")]
     public async Task<ActionResult<FantasyFantasyCharacterDto>> GetCharacterById(int id) {
-        var character = await _db.Characters
+        var character = await _db.FantasyCharacters
             .Include(c => c.Stats)
             .Include(c => c.FantasyCharacterRace)
             .Include(c => c.FantasyCharacterClass)
@@ -105,7 +105,7 @@ public class CharactersController : ControllerBase {
         }
 
         FantasyCharacter verifiedCharacter = _characterService.BuildVerifiedCharacter(character);
-        _db.Characters.Add(verifiedCharacter);
+        _db.FantasyCharacters.Add(verifiedCharacter);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCharacterById), new { id = verifiedCharacter.Id }, verifiedCharacter);
     }
@@ -116,7 +116,7 @@ public class CharactersController : ControllerBase {
             return BadRequest("FantasyCharacter ID mismatch");
         }
 
-        var existingCharacter = await _db.Characters
+        var existingCharacter = await _db.FantasyCharacters
             .Include(c => c.Stats)
             .Include(c => c.FantasyCharacterRace)
             .Include(c => c.FantasyCharacterClass)
@@ -166,12 +166,12 @@ public class CharactersController : ControllerBase {
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCharacter(int id) {
-        var character = await _db.Characters.FindAsync(id);
+        var character = await _db.FantasyCharacters.FindAsync(id);
         if (character == null) {
             return NotFound();
         }
 
-        _db.Characters.Remove(character);
+        _db.FantasyCharacters.Remove(character);
         await _db.SaveChangesAsync();
         return NoContent();
     }
