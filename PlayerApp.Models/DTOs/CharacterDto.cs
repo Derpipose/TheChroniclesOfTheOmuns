@@ -1,18 +1,18 @@
 namespace PlayerApp.Models.DTOs;
 
 
-public class CharacterDto {
+public class FantasyFantasyCharacterDto {
     public int Id { get; set; }
     public string Name { get; set; } = "Tav";
     public int Level { get; set; } = 1;
     public int Health { get; set; } = 0;
     public int Mana { get; set; } = 0;
 
-    public int? CharacterRaceId { get; set; }
-    public CharacterRace? CharacterRace { get; set; }
+    public int? FantasyCharacterRaceId { get; set; }
+    public FantasyCharacterRace? FantasyCharacterRace { get; set; }
     
-    public int? CharacterClassId { get; set; }
-    public CharacterClass? CharacterClass { get; set; }
+    public int? FantasyCharacterClassId { get; set; }
+    public FantasyCharacterClass? FantasyCharacterClass { get; set; }
     
     public CharacterStats? Stats { get; set; }
     public List<CharacterStatBonus> CharacterStatBonuses { get; set; } = new List<CharacterStatBonus>();
@@ -26,8 +26,21 @@ public class CharacterUpdateDto {
     public string Name { get; set; } = "Tav";
     public int Level { get; set; } = 1;
     
-    public int? CharacterRaceId { get; set; }
-    public int? CharacterClassId { get; set; }
+    public int? FantasyCharacterRaceId { get; set; }
+    public int? FantasyCharacterClassId { get; set; }
     
+    public CharacterStats? Stats { get; set; }
+}
+
+/// <summary>
+/// DTO for creating a character from the client.
+/// </summary>
+public class FantasyCharacterCreateDto {
+    public string Name { get; set; } = "Tav";
+    public int Level { get; set; } = 1;
+
+    public int? FantasyCharacterRaceId { get; set; }
+    public int? FantasyCharacterClassId { get; set; }
+
     public CharacterStats? Stats { get; set; }
 }

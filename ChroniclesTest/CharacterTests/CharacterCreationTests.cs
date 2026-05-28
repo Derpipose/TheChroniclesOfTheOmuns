@@ -6,13 +6,13 @@ using PlayerApp.Models.Dice;
 
 [TestFixture]
 public class CharacterCreationTests {
-    private CharacterClass mageClass;
+    private FantasyCharacterClass mageClass;
 
     [SetUp]
     public void Setup() {
-        mageClass = new CharacterClass() {
+        mageClass = new FantasyCharacterClass() {
             Name = "Mage",
-            ClassType = ClassTypeEnum.Magic,
+            FantasyClassType = FantasyClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDice = DiceType.D6,
             ManaDice = DiceType.D12
@@ -21,9 +21,9 @@ public class CharacterCreationTests {
 
     [Test]
     public void CreateNewCharacter() {
-        Character character = new();
+        FantasyCharacter character = new();
 
-        Assert.That(character, Is.TypeOf<Character>());
+        Assert.That(character, Is.TypeOf<FantasyCharacter>());
         Assert.Multiple(() => {
             Assert.That(character.Name, Is.EqualTo("Tav"));
             Assert.That(character.Level, Is.EqualTo(1));
@@ -32,11 +32,11 @@ public class CharacterCreationTests {
 
     [Test]
     public void AddRaceToCharacter() {
-        Character character = new();
+        FantasyCharacter character = new();
 
-        Assert.That(character.CharacterRace, Is.Null);
+        Assert.That(character.FantasyCharacterRace, Is.Null);
 
-        CharacterRace tiefling = new() {
+        FantasyCharacterRace tiefling = new() {
             Name = "Tiefling",
             RaceType = "Demonic",
             Description = "A demonic race spawned from the Hells themselves. " +
@@ -44,42 +44,42 @@ public class CharacterCreationTests {
             "purple, or normal skin tones. Some even are blue"
         };
 
-        character.AssignCharacterRace(tiefling);
+        character.AssignFantasyCharacterRace(tiefling);
 
-        Assert.That(character.CharacterRace, Is.Not.Null);
+        Assert.That(character.FantasyCharacterRace, Is.Not.Null);
 
         Assert.Multiple(() => {
-            Assert.That(character.CharacterRace.Name, Is.EqualTo("Tiefling"));
-            Assert.That(character.CharacterRace.Description, Is.EqualTo(tiefling.Description));
+            Assert.That(character.FantasyCharacterRace.Name, Is.EqualTo("Tiefling"));
+            Assert.That(character.FantasyCharacterRace.Description, Is.EqualTo(tiefling.Description));
         });
     }
 
     [Test]
     public void AddClassToCharacter() {
-        Character character = new();
+        FantasyCharacter character = new();
 
-        Assert.That(character.CharacterClass, Is.Null);
+        Assert.That(character.FantasyCharacterClass, Is.Null);
 
-        CharacterClass fighter = new() {
+        FantasyCharacterClass fighter = new() {
             Name = "Fighter",
-            ClassType = ClassTypeEnum.Combat,
+            FantasyClassType = FantasyClassTypeEnum.Combat,
             Description = "They pick up sword and go swingy swingy fast. Eventually fast enough to hit someone twice in a row :O",
             HitDice = DiceType.D12,
             ManaDice = DiceType.D6
         };
 
-        character.AssignCharacterClass(fighter);
+        character.AssignFantasyCharacterClass(fighter);
 
-        Assert.That(character.CharacterClass, Is.Not.Null);
+        Assert.That(character.FantasyCharacterClass, Is.Not.Null);
         Assert.Multiple(() => {
-            Assert.That(character.CharacterClass.Name, Is.EqualTo("Fighter"));
-            Assert.That(character.CharacterClass.Description, Is.EqualTo(fighter.Description));
+            Assert.That(character.FantasyCharacterClass.Name, Is.EqualTo("Fighter"));
+            Assert.That(character.FantasyCharacterClass.Description, Is.EqualTo(fighter.Description));
         });
     }
 
     [Test]
     public void AddStatsToCharacter() {
-        Character character = new();
+        FantasyCharacter character = new();
 
         Assert.That(character.Stats, Is.Not.Null);
 
@@ -106,7 +106,7 @@ public class CharacterCreationTests {
 
     [Test]
     public void CharacterStartsWithDefaultStatsIfNoneProvided() {
-        Character character = new();
+        FantasyCharacter character = new();
 
         Assert.That(character.Stats, Is.Not.Null);
 

@@ -7,7 +7,7 @@ namespace ChroniclesTest;
 public class CharacterDiceTests {
     [Test]
     public void CharacterWithNoClassHasNoHitDie() {
-        Character character = new();
+        FantasyCharacter character = new();
 
         DiceType? hitDie = character.GetHitDice();
 
@@ -16,7 +16,7 @@ public class CharacterDiceTests {
 
     [Test]
     public void CharacterWithNoClassHasNoManaDie() {
-        Character character = new();
+        FantasyCharacter character = new();
 
         DiceType? manaDie = character.GetManaDice();
 

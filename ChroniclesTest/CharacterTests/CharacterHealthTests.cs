@@ -6,15 +6,15 @@ using PlayerApp.Models.Dice;
 
 [TestFixture]
 public class CharacterHealthTests {
-    private CharacterClass mageClass;
+    private FantasyCharacterClass mageClass;
     private CharacterService characterService;
 
     [SetUp]
     public void Setup() {
         characterService = new CharacterService();
-        mageClass = new CharacterClass() {
+        mageClass = new FantasyCharacterClass() {
             Name = "Mage",
-            ClassType = ClassTypeEnum.Magic,
+            FantasyClassType = FantasyClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDice = DiceType.D6,
             ManaDice = DiceType.D12
@@ -23,19 +23,19 @@ public class CharacterHealthTests {
 
     [Test]
     public void CharacterHasCorrectHitPointsAtLevelOne() {
-        Character character = new();
+        FantasyCharacter character = new();
         character.Stats = new CharacterStats() {
             Constitution = 16
         };
-        CharacterRace humanRace = new() {
+        FantasyCharacterRace humanRace = new() {
             Name = "Human",
             RaceType = "Versatile",
             Description = "Versatile and ambitious race",
             Modifiers = new List<RacialModifier> { }
         };
-        characterService.UpdateCharacterRace(character, humanRace);
+        characterService.UpdateFantasyCharacterRace(character, humanRace);
 
-        characterService.UpdateCharacterClass(character, mageClass);
+        characterService.UpdateFantasyCharacterClass(character, mageClass);
 
         int expectedHP = 31; // (2 * 6) + 12 + 3
         int actualHP = character.Health;
@@ -45,28 +45,28 @@ public class CharacterHealthTests {
 
     [Test]
     public void CharacterHasCorrectHitPointsAtLevelOneForCombatClass() {
-        Character character = new();
+        FantasyCharacter character = new();
         character.Stats = new CharacterStats() {
             Constitution = 16
         };
 
-        CharacterClass fighterClass = new() {
+        FantasyCharacterClass fighterClass = new() {
             Name = "Barbarian",
-            ClassType = ClassTypeEnum.Combat,
+            FantasyClassType = FantasyClassTypeEnum.Combat,
             Description = "A strong melee fighter",
             HitDice = DiceType.D12,
             ManaDice = DiceType.D4
         };
 
-        CharacterRace humanRace = new() {
+        FantasyCharacterRace humanRace = new() {
             Name = "Human",
             RaceType = "Versatile",
             Description = "Versatile and ambitious race",
             Modifiers = new List<RacialModifier> { }
         };
 
-        characterService.UpdateCharacterClass(character, fighterClass);
-        characterService.UpdateCharacterRace(character, humanRace);
+        characterService.UpdateFantasyCharacterClass(character, fighterClass);
+        characterService.UpdateFantasyCharacterRace(character, humanRace);
 
         int expectedHP = 47; // 2 * 16 + 12 + 3
         int actualHP = character.Health;
@@ -76,7 +76,7 @@ public class CharacterHealthTests {
 
     [Test]
     public void CharacterHitPointsNotCalculatedIfNoStatsOrClass() {
-        Character character = new();
+        FantasyCharacter character = new();
 
         int expectedHP = 0;
         int actualHP = character.Health;
@@ -88,7 +88,7 @@ public class CharacterHealthTests {
     public void DerpyJrKoboldKnightHealthAndManaAreCorrect() {
         // DerpyJr: Kobold Knight
         // Expected: Health 40, Mana 47
-        Character character = new();
+        FantasyCharacter character = new();
         character.Stats = new CharacterStats() {
             Strength = 12,
             Constitution = 14,
@@ -98,23 +98,23 @@ public class CharacterHealthTests {
             Charisma = 13
         };
 
-        var knightClass = new CharacterClass {
+        var knightClass = new FantasyCharacterClass {
             Name = "Knight",
-            ClassType = ClassTypeEnum.Combat,
+            FantasyClassType = FantasyClassTypeEnum.Combat,
             Description = "A master of martial combat",
             HitDice = DiceType.D10,
             ManaDice = DiceType.D8
         };
 
-        var koboldRace = new CharacterRace {
+        var koboldRace = new FantasyCharacterRace {
             Name = "Kobold",
             RaceType = "Reptilian",
             Description = "Small crafty creatures"
         };
         koboldRace.AddModifier(ModifierType.ManaBonus, 15);
 
-        characterService.UpdateCharacterRace(character, koboldRace);
-        characterService.UpdateCharacterClass(character, knightClass);
+        characterService.UpdateFantasyCharacterRace(character, koboldRace);
+        characterService.UpdateFantasyCharacterClass(character, knightClass);
 
         // Health: 2*CON + HitDie + CON_bonus = 2*14 + 10 + 2 = 40
         Assert.That(character.Health, Is.EqualTo(40), "Health calculation failed");

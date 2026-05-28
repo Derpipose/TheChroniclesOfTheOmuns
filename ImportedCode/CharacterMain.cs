@@ -13,9 +13,9 @@ namespace DnDCharacterBuilder {
             LoadCharacters();
         }
 
-        private List<Character> characterlist = new List<Character>();
+        private List<FantasyCharacter> characterlist = new List<FantasyCharacter>();
 
-        public Character SetCharacter() {
+        public FantasyCharacter SetCharacter() {
             Console.Clear();
             int input = 32;
             string read = "initialized";
@@ -41,12 +41,12 @@ namespace DnDCharacterBuilder {
 
         }
 
-        public Character NewCharacter() {
+        public FantasyCharacter NewCharacter() {
             Console.Clear();
             Console.WriteLine("What would you like to name your new character? (Don't worry, you can change the name later) \n");
             string name = Console.ReadLine();
             if ( name != "") {
-                Character character = new Character();
+                FantasyCharacter character = new FantasyCharacter();
                 character.SetName(name);
                 characterlist.Add(character);
                 return character;
@@ -54,7 +54,7 @@ namespace DnDCharacterBuilder {
             return null;
         }
 
-        public void EditStats(Character character) {
+        public void EditStats(FantasyCharacter character) {
             string input = "initialize";
             int num;
             while (input != "") {
@@ -148,7 +148,7 @@ namespace DnDCharacterBuilder {
             }
         }
 
-        public void EditRace(Character character) {
+        public void EditRace(FantasyCharacter character) {
             string input = "initialize";
             string race;
             while (input != "") {
@@ -168,7 +168,7 @@ namespace DnDCharacterBuilder {
 
         }
 
-        public void EditClass(Character character) {
+        public void EditClass(FantasyCharacter character) {
             string input = "initialize";
             string charclass;
             while (input != "") {
@@ -190,7 +190,7 @@ namespace DnDCharacterBuilder {
 
         }
 
-        public void EditName(Character character) {
+        public void EditName(FantasyCharacter character) {
             string input = "initialized";
             while (input != "") {
                 Console.Clear();
@@ -202,7 +202,7 @@ namespace DnDCharacterBuilder {
             }
         }
 
-        public void DisplayCharacter(Character character) {
+        public void DisplayCharacter(FantasyCharacter character) {
             Console.Clear();
             string input = "initialized";
             Console.WriteLine("Hit enter to go back");
@@ -234,13 +234,13 @@ namespace DnDCharacterBuilder {
                     Console.WriteLine("Your character isn't complete yet, so your health and mana can't be generated yet!");
                 } else {
                     Console.WriteLine("Health:    " + character.CharStats.Health + "       Mana: " + character.CharStats.Mana);
-                    if(character.CharClass.ClassType == "Magic") {
+                    if(character.CharClass.FantasyClassType == "Magic") {
                         Console.WriteLine(character.Name + " would start with either a Wand, an Orb or a Staff implement for spell casting.");
                     }
-                    if (character.CharClass.ClassType == "Combat") {
+                    if (character.CharClass.FantasyClassType == "Combat") {
                         Console.WriteLine(character.Name + " would start with a trophy trinket along with the standard trinket.");
                     }
-                    if (character.CharClass.ClassType == "Utility") {
+                    if (character.CharClass.FantasyClassType == "Utility") {
                         Console.WriteLine(character.Name + " would start with an extra standard trinket.");
                     }
                 }
@@ -251,7 +251,7 @@ namespace DnDCharacterBuilder {
             }
         }
 
-        public Character DeleteCharacter(Character character) {
+        public FantasyCharacter DeleteCharacter(FantasyCharacter character) {
             Console.WriteLine("Are you sure you want to do this? There is NO way to undo this action! Type \"DELETE\" if you are SURE you want to do this. If you have changed your mind, hit enter to go back.");
             string input = Console.ReadLine();
             if (input == "DELETE") {
@@ -314,7 +314,7 @@ namespace DnDCharacterBuilder {
             }
             if (characterarray != null) {
                 foreach (var character in characterarray) {
-                    Character newchar = new();
+                    FantasyCharacter newchar = new();
                     string name = character.Name;
                     newchar.SetName(name);
                     string setting = character.Setting;
@@ -349,7 +349,7 @@ namespace DnDCharacterBuilder {
             }
         }
 
-        public void EditSetting(Character character) {
+        public void EditSetting(FantasyCharacter character) {
             string input = "initialize";
             string setting;
             while (input != "") {

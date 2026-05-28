@@ -4,17 +4,17 @@ using PlayerApp.Models.Dice;
 namespace ChroniclesTest;
 
 [TestFixture]
-public class CharacterClassLoadingTests {
-    private CharacterClassService classService;
+public class FantasyCharacterClassLoadingTests {
+    private FantasyCharacterClassService classService;
 
     [SetUp]
     public void Setup() {
-        classService = new CharacterClassService();
+        classService = new FantasyCharacterClassService();
     }
     [Test]
     [Order(1)]
     public void TestClassPullWorks() {
-        List<CharacterClass> list = classService.GetAllClassesAsync().Result;
+        List<FantasyCharacterClass> list = classService.GetAllClassesAsync().Result;
 
         Assert.That(list.Count, Is.EqualTo(33));
     }
@@ -22,14 +22,14 @@ public class CharacterClassLoadingTests {
     [Test]
     [Order(2)]
     public void TestCharacterWithClassMageHasCorrectHitDie() {
-        Character character = new Character();
-        CharacterClass? charClass = classService.GetAllClassesAsync().Result.Find(c => c.Name == "Mage");
+        FantasyCharacter character = new FantasyCharacter();
+        FantasyCharacterClass? charClass = classService.GetAllClassesAsync().Result.Find(c => c.Name == "Mage");
         Assert.That(charClass, Is.Not.Null);
-        character.AssignCharacterClass(charClass);
+        character.AssignFantasyCharacterClass(charClass);
         DiceType? hitDie = character.GetHitDice();
 
-        Assert.That(character.CharacterClass, Is.Not.Null);
-        Assert.That(character.CharacterClass?.Name, Is.EqualTo("Mage"));
+        Assert.That(character.FantasyCharacterClass, Is.Not.Null);
+        Assert.That(character.FantasyCharacterClass?.Name, Is.EqualTo("Mage"));
         Assert.That(hitDie, Is.Not.Null);
         Assert.That(hitDie?.DisplayName(), Is.EqualTo("D6"));
     }
@@ -37,14 +37,14 @@ public class CharacterClassLoadingTests {
     [Test]
     [Order(3)]
     public void TestCharacterWithClassMageHasCorrectManaDie() {
-        Character character = new Character();
-        CharacterClass? charClass = classService.GetAllClassesAsync().Result.Find(c => c.Name == "Mage");
+        FantasyCharacter character = new FantasyCharacter();
+        FantasyCharacterClass? charClass = classService.GetAllClassesAsync().Result.Find(c => c.Name == "Mage");
         Assert.That(charClass, Is.Not.Null);
-        character.AssignCharacterClass(charClass);
+        character.AssignFantasyCharacterClass(charClass);
         DiceType? manaDie = character.GetManaDice();
 
-        Assert.That(character.CharacterClass, Is.Not.Null);
-        Assert.That(character.CharacterClass?.Name, Is.EqualTo("Mage"));
+        Assert.That(character.FantasyCharacterClass, Is.Not.Null);
+        Assert.That(character.FantasyCharacterClass?.Name, Is.EqualTo("Mage"));
         Assert.That(manaDie, Is.Not.Null);
         Assert.That(manaDie?.DisplayName(), Is.EqualTo("D12"));
     }

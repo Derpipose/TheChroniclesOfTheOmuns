@@ -7,10 +7,10 @@
 @implements IAsyncDisposable
 @rendermode InteractiveServer
 
-<PageTitle>New Character</PageTitle>
+<PageTitle>New FantasyCharacter</PageTitle>
 
 <div class="container mt-4">
-    <h1>Create A New Character</h1>
+    <h1>Create A New FantasyCharacter</h1>
 
     @if (!string.IsNullOrEmpty(Vm.StatusMessage))
     {
@@ -18,9 +18,9 @@
     }
 
     <form>
-        <!-- Character Name -->
+        <!-- FantasyCharacter Name -->
         <div class="mb-3">
-            <label for="characterName" class="form-label">Character Name</label>
+            <label for="characterName" class="form-label">FantasyCharacter Name</label>
             <input type="text" class="form-control" id="characterName" 
                    @bind="Vm.CharacterName" placeholder="Enter character name" />
         </div>
@@ -52,7 +52,7 @@
         <!-- Stats -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Character Stats</h5>
+                <h5 class="mb-0">FantasyCharacter Stats</h5>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -145,7 +145,7 @@
         </div>
 
         <!-- Race Stat Bonuses Summary -->
-        @if (Vm.DraftCharacter?.CharacterRace != null)
+        @if (Vm.DraftCharacter?.FantasyCharacterRace != null)
         {
             var raceStatBonuses = Vm.DraftCharacter.CharacterStatBonuses
                 .Where(b => b.BonusSource == "Race" && b.StatId.HasValue)
@@ -156,7 +156,7 @@
             {
                 <div class="card mb-4 bg-light">
                     <div class="card-header">
-                        <h6 class="mb-0">Race Stat Bonuses - @Vm.DraftCharacter.CharacterRace.Name</h6>
+                        <h6 class="mb-0">Race Stat Bonuses - @Vm.DraftCharacter.FantasyCharacterRace.Name</h6>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -231,7 +231,7 @@
         <!-- Action Buttons -->
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-primary" @onclick="OnCreateClick" disabled="@(Vm.IsLoading || string.IsNullOrWhiteSpace(Vm.CharacterName))">
-                @if (Vm.IsLoading) { <span>Creating...</span> } else { <span>Create Character</span> }
+                @if (Vm.IsLoading) { <span>Creating...</span> } else { <span>Create FantasyCharacter</span> }
             </button>
             <a href="/characters" class="btn btn-secondary">Cancel</a>
         </div>
@@ -243,7 +243,7 @@
     {
         Vm.PropertyChanged += OnVmPropertyChanged;
         Vm.ResetForm();
-        await Task.CompletedTask;
+        await Vm.LoadDataAsync();
     }
 
     private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

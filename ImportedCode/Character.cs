@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DnDCharacterBuilder
 {
-    public class Character
+    public class FantasyCharacter
     {
-        public Character()
+        public FantasyCharacter()
         {
             Name = "";
             Race = "";
@@ -19,8 +19,8 @@ namespace DnDCharacterBuilder
         public string ClassName { get; private set; }
 
         public CharacterStats CharStats = new();
-        public CharacterRace CharRace = new();
-        public CharacterClass CharClass = new();
+        public FantasyCharacterRace CharRace = new();
+        public FantasyCharacterClass CharClass = new();
 
         public void SetName(string name)
         {

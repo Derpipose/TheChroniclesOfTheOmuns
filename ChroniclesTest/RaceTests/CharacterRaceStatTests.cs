@@ -7,10 +7,10 @@ using System.Linq;
 namespace ChroniclesTest;
 
 [TestFixture]
-public class CharacterRaceBonusTests {
+public class FantasyCharacterRaceBonusTests {
 
     CharacterService characterService = new CharacterService();
-    private CharacterRaceService raceService = new CharacterRaceService();
+    private FantasyCharacterRaceService raceService = new FantasyCharacterRaceService();
     private CharacterStats defaultStats;
 
     [SetUp]
@@ -25,8 +25,8 @@ public class CharacterRaceBonusTests {
         };
     }
 
-    private Character CreateCharacter(string name) {
-        return new Character {
+    private FantasyCharacter CreateCharacter(string name) {
+        return new FantasyCharacter {
             Name = name,
             Level = 1,
             Stats = defaultStats,
@@ -34,8 +34,8 @@ public class CharacterRaceBonusTests {
         };
     }
 
-    private CharacterRace CreateRace(int id, string name, string raceType, string description, List<RaceStatBonus> bonuses) {
-        return new CharacterRace {
+    private FantasyCharacterRace CreateRace(int id, string name, string raceType, string description, List<FantasyRaceBonus> bonuses) {
+        return new FantasyCharacterRace {
             Id = id,
             Name = name,
             RaceType = raceType,
@@ -44,8 +44,8 @@ public class CharacterRaceBonusTests {
         };
     }
 
-    private RaceStatBonus CreateStatBonus(int id, int raceId, int bonusValue, int statId, bool isSelectable = false) {
-        return new RaceStatBonus {
+    private FantasyRaceBonus CreateStatBonus(int id, int raceId, int bonusValue, int statId, bool isSelectable = false) {
+        return new FantasyRaceBonus {
             Id = id,
             RaceId = raceId,
             BonusValue = bonusValue,
@@ -57,10 +57,10 @@ public class CharacterRaceBonusTests {
     [Test]
     public void ApplyRaceBonuses_WithFixedBonus_AppliesStatBonus() {
         var race = CreateRace(1, "Dwarf", "Stout", "Short and sturdy",
-            new List<RaceStatBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
+            new List<FantasyRaceBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
         var character = CreateCharacter("Gimli");
 
-        characterService.UpdateCharacterRace(character, race);
+        characterService.UpdateFantasyCharacterRace(character, race);
 
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(1));
 
@@ -75,29 +75,29 @@ public class CharacterRaceBonusTests {
     [Test]
     public void RemoveRace_RemovesAppliedBonuses() {
         var race = CreateRace(1, "Dwarf", "Stout", "Short and sturdy",
-            new List<RaceStatBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
+            new List<FantasyRaceBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
         var character = CreateCharacter("Gimli");
 
-        characterService.UpdateCharacterRace(character, race);
+        characterService.UpdateFantasyCharacterRace(character, race);
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(1));
 
-        characterService.RemoveCharacterRace(character);
+        characterService.RemoveFantasyCharacterRace(character);
         Assert.That(character.CharacterStatBonuses, Is.Empty);
     }
 
     [Test]
     public void ChangeRace_UpdatesAppliedBonuses() {
         var dwarfRace = CreateRace(1, "Dwarf", "Stout", "Short and sturdy",
-            new List<RaceStatBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
+            new List<FantasyRaceBonus> { CreateStatBonus(1, 1, 2, (int)StatType.Constitution) });
         var elfRace = CreateRace(2, "Elf", "Graceful", "Tall and agile",
-            new List<RaceStatBonus> { CreateStatBonus(2, 2, 2, (int)StatType.Dexterity) });
+            new List<FantasyRaceBonus> { CreateStatBonus(2, 2, 2, (int)StatType.Dexterity) });
         var character = CreateCharacter("Legolas");
 
-        characterService.UpdateCharacterRace(character, dwarfRace);
+        characterService.UpdateFantasyCharacterRace(character, dwarfRace);
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(1));
         Assert.That(character.CharacterStatBonuses.First().StatId, Is.EqualTo((int)StatType.Constitution));
 
-        characterService.UpdateCharacterRace(character, elfRace);
+        characterService.UpdateFantasyCharacterRace(character, elfRace);
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(1));
         var bonus = character.CharacterStatBonuses.First();
         Assert.Multiple(() => {
@@ -110,13 +110,13 @@ public class CharacterRaceBonusTests {
     [Test]
     public void ApplyRaceBonuses_WithMultipleFixedBonuses_AppliesAllBonuses() {
         var race = CreateRace(1, "Orc", "Brutish", "Strong and fierce",
-            new List<RaceStatBonus> {
+            new List<FantasyRaceBonus> {
                 CreateStatBonus(1, 1, 2, (int)StatType.Strength),
                 CreateStatBonus(2, 1, 1, (int)StatType.Constitution)
             });
         var character = CreateCharacter("Gorg");
 
-        characterService.UpdateCharacterRace(character, race);
+        characterService.UpdateFantasyCharacterRace(character, race);
 
         Assert.That(character.CharacterStatBonuses, Has.Count.EqualTo(2));
     }
@@ -125,7 +125,7 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatCharacterCanReturnPicks() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
@@ -133,7 +133,7 @@ public class CharacterRaceBonusTests {
         Assert.That(selectableBonus, Is.Not.Null);
         Assert.That(selectableBonus.BonusValue, Is.EqualTo(1));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
 
         // Returns list of selectable bonuses
         var selectableBonuses = characterService.GetSelectableRaceBonusesOnCharacter(character);
@@ -145,7 +145,7 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatCharacterWithChooseOneModCanChooseOne() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
@@ -153,7 +153,7 @@ public class CharacterRaceBonusTests {
         Assert.That(selectableBonus, Is.Not.Null);
         Assert.That(selectableBonus.BonusValue, Is.EqualTo(1));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 2, StatType.Strength), Throws.TypeOf<System.Exception>());
 
@@ -166,7 +166,7 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatCharacterWithChooseTwoModCanChooseTwo() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kenku");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Kenku");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
@@ -174,7 +174,7 @@ public class CharacterRaceBonusTests {
         Assert.That(selectableBonus, Is.Not.Null);
         Assert.That(selectableBonus.BonusValue, Is.EqualTo(2));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 2, StatType.Strength);
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength), Throws.TypeOf<System.Exception>());
 
@@ -187,7 +187,7 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatCharacterWithChooseOneModCanNotAssignToAnAlreadyAssignedStat() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
@@ -195,7 +195,7 @@ public class CharacterRaceBonusTests {
         Assert.That(selectableBonus, Is.Not.Null);
         Assert.That(selectableBonus.BonusValue, Is.EqualTo(1));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
         // Aarakocra have a +2 in dexterity fixed bonus
         // This means that they cannot assign the +1 selectable bonus to dexterity
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 1, StatType.Dexterity), Throws.TypeOf<System.Exception>());
@@ -212,11 +212,11 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatCharacterWithChooseBothModsCanAssignStats() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
         characterService.AssignSelectableRaceBonus(character, 2, StatType.Dexterity);
 
@@ -238,11 +238,11 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatCharacterWithChooseBothModsCanNotDoubleAssignStats() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Human");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
         characterService.AssignSelectableRaceBonus(character, 1, StatType.Strength);
         Assert.That(() => characterService.AssignSelectableRaceBonus(character, 2, StatType.Strength), Throws.TypeOf<System.Exception>());
     }
@@ -250,11 +250,11 @@ public class CharacterRaceBonusTests {
     [Test]
     public void TestThatGetCharacterAvailableStatPickWorks() {
         var character = CreateCharacter("TestCharacter");
-        CharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
+        FantasyCharacterRace? charRace = raceService.GetAllRacesAsync().Result.FirstOrDefault(r => r.Name == "Aarakocra");
         Assert.That(charRace, Is.Not.Null);
         Assert.That(charRace.RaceStatBonuses.Count, Is.EqualTo(2));
 
-        characterService.UpdateCharacterRace(character, charRace);
+        characterService.UpdateFantasyCharacterRace(character, charRace);
 
         var availablePicks = characterService.GetAvailableStatSelectableBonusesOnCharacter(character);
         Assert.That(availablePicks, Is.Not.Null);

@@ -15,8 +15,8 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
         _httpClient = httpClient;
     }
 
-    private Character? _character;
-    public Character? Character {
+    private FantasyCharacter? _character;
+    public FantasyCharacter? FantasyCharacter {
         get => _character;
         set { SetProperty(ref _character, value); }
     }
@@ -39,28 +39,28 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
             StatusMessage = "";
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var characterJson = await _httpClient.GetStringAsync($"api/characters/{characterId}");
-            var characterDto = JsonSerializer.Deserialize<CharacterDto>(characterJson, options);
+            var characterJson = await _httpClient.GetStringAsync($"api/fantasy/characters/{characterId}");
+            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyFantasyCharacterDto>(characterJson, options);
 
-            if (characterDto == null) {
-                StatusMessage = "Character not found.";
+            if (FantasyCharacterDto == null) {
+                StatusMessage = "FantasyCharacter not found.";
                 return;
             }
 
             // Create a minimal character object for display
-            Character = new Character {
-                Id = characterDto.Id,
-                Name = characterDto.Name,
-                Level = characterDto.Level,
-                Health = characterDto.Health,
-                Mana = characterDto.Mana,
-                Stats = characterDto.Stats ?? new CharacterStats()
+            FantasyCharacter = new FantasyCharacter {
+                Id = FantasyCharacterDto.Id,
+                Name = FantasyCharacterDto.Name,
+                Level = FantasyCharacterDto.Level,
+                Health = FantasyCharacterDto.Health,
+                Mana = FantasyCharacterDto.Mana,
+                Stats = FantasyCharacterDto.Stats ?? new CharacterStats()
             };
-            if (characterDto.CharacterRace != null) {
-                Character.AssignCharacterRace(characterDto.CharacterRace);
+            if (FantasyCharacterDto.FantasyCharacterRace != null) {
+                FantasyCharacter.AssignFantasyCharacterRace(FantasyCharacterDto.FantasyCharacterRace);
             }
-            if (characterDto.CharacterClass != null) {
-                Character.AssignCharacterClass(characterDto.CharacterClass);
+            if (FantasyCharacterDto.FantasyCharacterClass != null) {
+                FantasyCharacter.AssignFantasyCharacterClass(FantasyCharacterDto.FantasyCharacterClass);
             }
         } catch (Exception ex) {
             StatusMessage = $"Error loading character: {ex.Message}";
@@ -69,7 +69,7 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
         }
     }
 
-    public int GetStat(Character character, StatType statType) {
+    public int GetStat(FantasyCharacter character, StatType statType) {
         return _characterService.GetStat(character, statType);
     }
 

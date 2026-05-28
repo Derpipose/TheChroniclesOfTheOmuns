@@ -5,34 +5,34 @@ using PlayerApp.Models.Dice;
 namespace PlayerApp.Models;
 
 public class CharacterCalculationService {
-    public void CalculateHitPoints(Character character) {
-        if (character.Stats.Constitution == 0 || character.CharacterClass == null
-            || character.CharacterRace == null) {
+    public void CalculateHitPoints(FantasyCharacter character) {
+        if (character.Stats.Constitution == 0 || character.FantasyCharacterClass == null
+            || character.FantasyCharacterRace == null) {
             character.Health = 0;
             return;
         }
 
-        if (character.CharacterClass.ClassType == ClassTypeEnum.Combat) {
-            character.Health = 2 * GetStat(character, StatType.Constitution) + character.CharacterClass.HitDice.Sides() + GetBonus(character, StatType.Constitution);
+        if (character.FantasyCharacterClass.FantasyClassType == FantasyClassTypeEnum.Combat) {
+            character.Health = 2 * GetStat(character, StatType.Constitution) + character.FantasyCharacterClass.HitDice.Sides() + GetBonus(character, StatType.Constitution);
         } else {
-            character.Health = (2 * character.CharacterClass.HitDice.Sides()) + GetStat(character, StatType.Constitution) + GetBonus(character, StatType.Constitution);
+            character.Health = (2 * character.FantasyCharacterClass.HitDice.Sides()) + GetStat(character, StatType.Constitution) + GetBonus(character, StatType.Constitution);
         }
     }
 
-    public void CalculateManaPoints(Character character) {
-        if (character.Stats.Intelligence == 0 || character.Stats.Wisdom == 0 || character.CharacterClass == null ||
-            character.CharacterRace == null) {
+    public void CalculateManaPoints(FantasyCharacter character) {
+        if (character.Stats.Intelligence == 0 || character.Stats.Wisdom == 0 || character.FantasyCharacterClass == null ||
+            character.FantasyCharacterRace == null) {
             character.Mana = 0;
             return;
         }
 
         var (mainStat, secondaryStat, statName) = GetManaStatInfo(character);
-        bool isMagic = character.CharacterClass.ClassType == ClassTypeEnum.Magic;
+        bool isMagic = character.FantasyCharacterClass.FantasyClassType == FantasyClassTypeEnum.Magic;
         int diceMultiplier = isMagic ? 1 : 2;
-        character.Mana = ApplyManaFormula(character, mainStat, secondaryStat, statName, character.CharacterClass.ManaDice.Sides(), diceMultiplier, isMagic);
+        character.Mana = ApplyManaFormula(character, mainStat, secondaryStat, statName, character.FantasyCharacterClass.ManaDice.Sides(), diceMultiplier, isMagic);
     }
 
-    public int GetBonus(Character character, StatType statName) {
+    public int GetBonus(FantasyCharacter character, StatType statName) {
         if (character.Stats == null)
             return 0;
 
@@ -47,21 +47,21 @@ public class CharacterCalculationService {
         };
     }
 
-    public int GetRaceModifierValue(Character character, ModifierType type) {
-        if (character.CharacterRace?.Modifiers == null) return 0;
-        var modifier = character.CharacterRace.Modifiers
+    public int GetRaceModifierValue(FantasyCharacter character, ModifierType type) {
+        if (character.FantasyCharacterRace?.Modifiers == null) return 0;
+        var modifier = character.FantasyCharacterRace.Modifiers
             .FirstOrDefault(m => m.Modifier.Type == type);
         return modifier?.Modifier.Value ?? 0;
     }
 
-    private (int mainStat, int secondaryStat, StatType statName) GetManaStatInfo(Character character) {
+    private (int mainStat, int secondaryStat, StatType statName) GetManaStatInfo(FantasyCharacter character) {
         if (GetStat(character, StatType.Intelligence) <= GetStat(character, StatType.Wisdom)) {
             return (GetStat(character, StatType.Wisdom), GetStat(character, StatType.Intelligence), StatType.Wisdom);
         }
         return (GetStat(character, StatType.Intelligence), GetStat(character, StatType.Wisdom), StatType.Intelligence);
     }
 
-    private int ApplyManaFormula(Character character, int mainStat, int secondaryStat, StatType statName, int diceSides, int diceMultiplier, bool isMagic) {
+    private int ApplyManaFormula(FantasyCharacter character, int mainStat, int secondaryStat, StatType statName, int diceSides, int diceMultiplier, bool isMagic) {
         int diceValue = diceMultiplier * diceSides;
         int statBonus = GetBonus(character, statName);
         int addBonus = GetRaceModifierValue(character, ModifierType.ManaBonus);
@@ -78,7 +78,7 @@ public class CharacterCalculationService {
         }
     }
 
-    internal int GetStat(Character character, StatType statName) {
+    internal int GetStat(FantasyCharacter character, StatType statName) {
         int baseValue = statName switch {
             StatType.Strength => character.Stats.Strength,
             StatType.Constitution => character.Stats.Constitution,

@@ -7,14 +7,14 @@ using PlayerApp.Models.DTOs;
 namespace PlayerAppBlazor.ViewModels;
 
 public class CharactersViewModel : INotifyPropertyChanged {
-    private List<CharacterDto> _characters = new();
+    private List<FantasyFantasyCharacterDto> _characters = new();
     private bool _isLoading;
     private string _statusMessage = "";
     private string _newCharacterName = "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public List<CharacterDto> Characters {
+    public List<FantasyFantasyCharacterDto> Characters {
         get => _characters;
         set => SetProperty(ref _characters, value);
     }
@@ -45,11 +45,11 @@ public class CharactersViewModel : INotifyPropertyChanged {
         StatusMessage = "Loading characters...";
 
         try {
-            var response = await _httpClient.GetAsync("api/characters");
+            var response = await _httpClient.GetAsync("api/fantasy/characters");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            Characters = JsonSerializer.Deserialize<List<CharacterDto>>(json, options) ?? new();
+            Characters = JsonSerializer.Deserialize<List<FantasyFantasyCharacterDto>>(json, options) ?? new();
             StatusMessage = $"Loaded {Characters.Count} character(s).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading characters: {ex.Message}";
@@ -60,14 +60,18 @@ public class CharactersViewModel : INotifyPropertyChanged {
 
     public async Task CreateCharacterAsync(string name) {
         if (string.IsNullOrWhiteSpace(name)) {
-            StatusMessage = "Character name cannot be empty.";
+            StatusMessage = "FantasyCharacter name cannot be empty.";
             return;
         }
 
         try {
-            var character = new Character { Name = name.Trim() };
-            await _httpClient.PostAsJsonAsync("api/characters", character);
-            StatusMessage = $"Character '{name}' created!";
+            var createDto = new FantasyCharacterCreateDto {
+                Name = name.Trim(),
+                Level = 1,
+                Stats = new CharacterStats()
+            };
+            await _httpClient.PostAsJsonAsync("api/fantasy/characters", createDto);
+            StatusMessage = $"FantasyCharacter '{name}' created!";
             await LoadCharactersAsync();
         } catch (Exception ex) {
             StatusMessage = $"Error creating character: {ex.Message}";
@@ -76,8 +80,8 @@ public class CharactersViewModel : INotifyPropertyChanged {
 
     public async Task DeleteCharacterAsync(int id) {
         try {
-            await _httpClient.DeleteAsync($"api/characters/{id}");
-            StatusMessage = "Character deleted.";
+            await _httpClient.DeleteAsync($"api/fantasy/characters/{id}");
+            StatusMessage = "FantasyCharacter deleted.";
             await LoadCharactersAsync();
         } catch (Exception ex) {
             StatusMessage = $"Error deleting character: {ex.Message}";

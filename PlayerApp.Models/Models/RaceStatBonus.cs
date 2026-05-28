@@ -1,6 +1,6 @@
 namespace PlayerApp.Models;
 
-public class RaceStatBonus {
+public class FantasyRaceBonus {
     public int Id { get; set; }
     public int RaceId { get; set; }
     public int BonusValue { get; set; }

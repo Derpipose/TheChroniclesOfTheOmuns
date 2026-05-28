@@ -8,9 +8,9 @@ public class AppDbContext : DbContext {
         : base(options) {
     }
 
-    public DbSet<Character> Characters => Set<Character>();
-    public DbSet<CharacterClass> CharacterClasses => Set<CharacterClass>();
-    public DbSet<CharacterRace> CharacterRaces => Set<CharacterRace>();
+    public DbSet<FantasyCharacter> FantasyCharacters => Set<FantasyCharacter>();
+    public DbSet<FantasyCharacterClass> FantasyCharacterClasses => Set<FantasyCharacterClass>();
+    public DbSet<FantasyCharacterRace> FantasyCharacterRaces => Set<FantasyCharacterRace>();
     public DbSet<CharacterStats> CharacterStats => Set<CharacterStats>();
     public DbSet<Modifier> Modifiers => Set<Modifier>();
     public DbSet<RacialModifier> RacialModifiers => Set<RacialModifier>();

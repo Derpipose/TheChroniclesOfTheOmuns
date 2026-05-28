@@ -6,13 +6,13 @@ Accept: application/json
 
 ###
 
-### Get Character by ID
+### Get FantasyCharacter by ID
 GET {{ChroniclesAPI_HostAddress}}/api/characters/2
 Accept: application/json
 
 ###
 
-### Create Character
+### Create FantasyCharacter
 POST {{ChroniclesAPI_HostAddress}}/api/characters
 Content-Type: application/json
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 ###
 
-### Delete Character by ID
+### Delete FantasyCharacter by ID
 DELETE {{ChroniclesAPI_HostAddress}}/api/characters/2
 Content-Type: application/json
 

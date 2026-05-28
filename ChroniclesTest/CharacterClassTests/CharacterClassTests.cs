@@ -5,12 +5,12 @@ using PlayerApp.Models.Dice;
 namespace ChroniclesTest;
 
 [TestFixture]
-public class CharacterClassTests {
+public class FantasyCharacterClassTests {
     [Test]
-    public void TestCharacterClassCreation() {
-        CharacterClass charClass = new CharacterClass() {
+    public void TestFantasyCharacterClassCreation() {
+        FantasyCharacterClass charClass = new FantasyCharacterClass() {
             Name = "Warrior",
-            ClassType = ClassTypeEnum.Combat,
+            FantasyClassType = FantasyClassTypeEnum.Combat,
             Description = "A strong melee fighter",
             HitDice = DiceType.D12,
             ManaDice = DiceType.D4
@@ -22,18 +22,18 @@ public class CharacterClassTests {
     }
 
     [Test]
-    public void TestAssignCharacterClassToCharacter() {
-        Character character = new Character();
-        CharacterClass charClass = new CharacterClass() {
+    public void TestAssignFantasyCharacterClassToCharacter() {
+        FantasyCharacter character = new FantasyCharacter();
+        FantasyCharacterClass charClass = new FantasyCharacterClass() {
             Name = "Mage",
-            ClassType = ClassTypeEnum.Magic,
+            FantasyClassType = FantasyClassTypeEnum.Magic,
             Description = "A master of arcane arts",
             HitDice = DiceType.D6,
             ManaDice = DiceType.D12
         };
 
-        character.AssignCharacterClass(charClass);
+        character.AssignFantasyCharacterClass(charClass);
 
-        Assert.That(character.CharacterClass?.Name, Is.EqualTo("Mage"));
+        Assert.That(character.FantasyCharacterClass?.Name, Is.EqualTo("Mage"));
     }
 }

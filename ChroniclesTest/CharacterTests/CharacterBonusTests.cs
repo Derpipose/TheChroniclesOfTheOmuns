@@ -14,7 +14,7 @@ public class CharacterBonusTests {
 
     [Test]
     public void CharacterGetsCorrectBonusFromStats() {
-        Character character = new();
+        FantasyCharacter character = new();
         character.Stats = new CharacterStats() {
             Strength = 18,
             Dexterity = 14,

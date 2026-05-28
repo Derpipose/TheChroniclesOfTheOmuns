@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 
 namespace DnDCharacterBuilder {
-    public class CharacterRace {
+    public class FantasyCharacterRace {
 
         public int RaceStrength { private set; get; }
         public int RaceConstitution { private set; get; }
@@ -30,7 +30,7 @@ namespace DnDCharacterBuilder {
         private dynamic RaceArray;
         private dynamic VarRaceArray;
 
-        public CharacterRace() {
+        public FantasyCharacterRace() {
             RaceStrength = 0;
             RaceIntelligence = 0;
             RaceConstitution = 0;

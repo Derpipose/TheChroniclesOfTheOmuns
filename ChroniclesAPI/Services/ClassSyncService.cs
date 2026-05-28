@@ -5,11 +5,11 @@ namespace ChroniclesAPI.Services;
 
 public class ClassSyncService {
     private readonly AppDbContext _db;
-    private readonly CharacterClassService _classService;
+    private readonly FantasyCharacterClassService _classService;
 
     public ClassSyncService(AppDbContext db) {
         _db = db;
-        _classService = new CharacterClassService();
+        _classService = new FantasyCharacterClassService();
     }
 
     public async Task<SyncResult> SyncClassesAsync() {
@@ -19,8 +19,8 @@ public class ClassSyncService {
             var jsonClasses = await _classService.GetAllClassesAsync();
 
             foreach (var jsonClass in jsonClasses) {
-                var existingClass = _db.CharacterClasses
-                    .FirstOrDefault(c => c.Name == jsonClass.Name && c.ClassType == jsonClass.ClassType);
+                var existingClass = _db.FantasyCharacterClasses
+                    .FirstOrDefault(c => c.Name == jsonClass.Name && c.FantasyClassType == jsonClass.FantasyClassType);
 
                 if (existingClass != null) {
                     existingClass.Description = jsonClass.Description;
@@ -29,9 +29,9 @@ public class ClassSyncService {
                     existingClass.IsVeteranLocked = jsonClass.IsVeteranLocked;
                     result.Updated++;
                 } else {
-                    _db.CharacterClasses.Add(new CharacterClass {
+                    _db.FantasyCharacterClasses.Add(new FantasyCharacterClass {
                         Name = jsonClass.Name,
-                        ClassType = jsonClass.ClassType,
+                        FantasyClassType = jsonClass.FantasyClassType,
                         Description = jsonClass.Description,
                         HitDice = jsonClass.HitDice,
                         ManaDice = jsonClass.ManaDice,

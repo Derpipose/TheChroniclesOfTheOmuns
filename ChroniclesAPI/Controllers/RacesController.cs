@@ -8,7 +8,7 @@ using ChroniclesAPI.Services;
 namespace ChroniclesAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/fantasy/[controller]")]
 public class RacesController : ControllerBase {
     private readonly AppDbContext _db;
     private readonly Services.CharacterService _characterService;
@@ -19,14 +19,14 @@ public class RacesController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CharacterRace>>> GetAllRaces() {
-        var races = await _db.CharacterRaces.ToListAsync();
+    public async Task<ActionResult<List<FantasyCharacterRace>>> GetAllRaces() {
+        var races = await _db.FantasyCharacterRaces.ToListAsync();
         return Ok(races);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CharacterRace>> GetRaceById(int id) {
-        var race = await _db.CharacterRaces
+    public async Task<ActionResult<FantasyCharacterRace>> GetRaceById(int id) {
+        var race = await _db.FantasyCharacterRaces
         .Include(r => r.Modifiers)
         .ThenInclude(m => m.Modifier)
         .FirstOrDefaultAsync(r => r.Id == id);

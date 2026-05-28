@@ -16,94 +16,6 @@ namespace PlayerAppBlazor.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
 
-            modelBuilder.Entity("PlayerApp.Models.Character", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CharacterClassId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CharacterRaceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Health")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Mana")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterClassId");
-
-                    b.HasIndex("CharacterRaceId");
-
-                    b.ToTable("Characters");
-                });
-
-            modelBuilder.Entity("PlayerApp.Models.CharacterClass", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ClassType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("HitDice")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsVeteranLocked")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ManaDice")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CharacterClasses");
-                });
-
-            modelBuilder.Entity("PlayerApp.Models.CharacterRace", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RaceType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CharacterRaces");
-                });
-
             modelBuilder.Entity("PlayerApp.Models.CharacterStatBonus", b =>
                 {
                     b.Property<int>("Id")
@@ -120,6 +32,9 @@ namespace PlayerAppBlazor.Migrations
                     b.Property<int>("CharacterId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("FantasyCharacterId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsSelectable")
                         .HasColumnType("INTEGER");
 
@@ -128,7 +43,7 @@ namespace PlayerAppBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacterId");
+                    b.HasIndex("FantasyCharacterId");
 
                     b.ToTable("CharacterStatBonus");
                 });
@@ -162,10 +77,128 @@ namespace PlayerAppBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacterId")
-                        .IsUnique();
-
                     b.ToTable("CharacterStats");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.FantasyCharacter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FantasyCharacterClassId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FantasyCharacterRaceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Mana")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("StatsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FantasyCharacterClassId");
+
+                    b.HasIndex("FantasyCharacterRaceId");
+
+                    b.HasIndex("StatsId");
+
+                    b.ToTable("FantasyCharacters");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.FantasyCharacterClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FantasyClassType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HitDice")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsVeteranLocked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ManaDice")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FantasyCharacterClasses");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.FantasyCharacterRace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RaceType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FantasyCharacterRaces");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.FantasyRaceBonus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BonusValue")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FantasyCharacterRaceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsSelectable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RaceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("StatId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FantasyCharacterRaceId");
+
+                    b.ToTable("FantasyRaceBonus");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.Modifier", b =>
@@ -186,34 +219,6 @@ namespace PlayerAppBlazor.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Modifiers");
-                });
-
-            modelBuilder.Entity("PlayerApp.Models.RaceStatBonus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BonusValue")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CharacterRaceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsSelectable")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RaceId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("StatId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterRaceId");
-
-                    b.ToTable("RaceStatBonus");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.RacialModifier", b =>
@@ -237,46 +242,41 @@ namespace PlayerAppBlazor.Migrations
                     b.ToTable("RacialModifiers");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.Character", b =>
-                {
-                    b.HasOne("PlayerApp.Models.CharacterClass", "CharacterClass")
-                        .WithMany()
-                        .HasForeignKey("CharacterClassId");
-
-                    b.HasOne("PlayerApp.Models.CharacterRace", "CharacterRace")
-                        .WithMany()
-                        .HasForeignKey("CharacterRaceId");
-
-                    b.Navigation("CharacterClass");
-
-                    b.Navigation("CharacterRace");
-                });
-
             modelBuilder.Entity("PlayerApp.Models.CharacterStatBonus", b =>
                 {
-                    b.HasOne("PlayerApp.Models.Character", null)
+                    b.HasOne("PlayerApp.Models.FantasyCharacter", null)
                         .WithMany("CharacterStatBonuses")
-                        .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FantasyCharacterId");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
+            modelBuilder.Entity("PlayerApp.Models.FantasyCharacter", b =>
                 {
-                    b.HasOne("PlayerApp.Models.Character", "Character")
-                        .WithOne("Stats")
-                        .HasForeignKey("PlayerApp.Models.CharacterStats", "CharacterId")
+                    b.HasOne("PlayerApp.Models.FantasyCharacterClass", "FantasyCharacterClass")
+                        .WithMany()
+                        .HasForeignKey("FantasyCharacterClassId");
+
+                    b.HasOne("PlayerApp.Models.FantasyCharacterRace", "FantasyCharacterRace")
+                        .WithMany()
+                        .HasForeignKey("FantasyCharacterRaceId");
+
+                    b.HasOne("PlayerApp.Models.CharacterStats", "Stats")
+                        .WithMany()
+                        .HasForeignKey("StatsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Character");
+                    b.Navigation("FantasyCharacterClass");
+
+                    b.Navigation("FantasyCharacterRace");
+
+                    b.Navigation("Stats");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.RaceStatBonus", b =>
+            modelBuilder.Entity("PlayerApp.Models.FantasyRaceBonus", b =>
                 {
-                    b.HasOne("PlayerApp.Models.CharacterRace", null)
+                    b.HasOne("PlayerApp.Models.FantasyCharacterRace", null)
                         .WithMany("RaceStatBonuses")
-                        .HasForeignKey("CharacterRaceId");
+                        .HasForeignKey("FantasyCharacterRaceId");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.RacialModifier", b =>
@@ -287,7 +287,7 @@ namespace PlayerAppBlazor.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlayerApp.Models.CharacterRace", "Race")
+                    b.HasOne("PlayerApp.Models.FantasyCharacterRace", "Race")
                         .WithMany("Modifiers")
                         .HasForeignKey("RaceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -298,15 +298,12 @@ namespace PlayerAppBlazor.Migrations
                     b.Navigation("Race");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.Character", b =>
+            modelBuilder.Entity("PlayerApp.Models.FantasyCharacter", b =>
                 {
                     b.Navigation("CharacterStatBonuses");
-
-                    b.Navigation("Stats")
-                        .IsRequired();
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.CharacterRace", b =>
+            modelBuilder.Entity("PlayerApp.Models.FantasyCharacterRace", b =>
                 {
                     b.Navigation("Modifiers");
 
