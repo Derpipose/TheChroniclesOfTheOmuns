@@ -37,7 +37,7 @@ namespace DnDCharacterBuilder
             BaseCharisma = 0;
         }
 
-        public void SetStat(int score, string stat, CharacterRace race) {
+        public void SetStat(int score, string stat, FantasyCharacterRace race) {
             if (stat == "Strength" || stat == "Str" || stat == "str") {
                 BaseStrength = score;
                 Strength = BaseStrength + race.RaceStrength;
@@ -66,20 +66,20 @@ namespace DnDCharacterBuilder
             }
         }
 
-        public void UpdateStats(CharacterRace race, CharacterClass charClass) {
+        public void UpdateStats(FantasyCharacterRace race, FantasyCharacterClass charClass) {
             Strength = BaseStrength + race.RaceStrength;
             Constitution = BaseConstitution + race.RaceConstitution;
             Dexterity = BaseDexterity + race.RaceDexterity;
             Intelligence = BaseIntelligence + race.RaceIntelligence;
             Wisdom = BaseWisdom + race.RaceWisdom;
             Charisma = BaseCharisma + race.RaceCharisma;
-            if (charClass.ClassType == "Combat") {
+            if (charClass.FantasyClassType == "Combat") {
                 Health = (2 * Constitution + charClass.HitDie + GetBonus("Constitution"));
             } 
             else {
                 Health = ((2 * charClass.HitDie) + Constitution + GetBonus("Constitution"));
             }
-            if(charClass.ClassType == "Magic"){
+            if(charClass.FantasyClassType == "Magic"){
                 if (race.AddOrMultMana != "Mult") {
                     if (Intelligence <= Wisdom) {
                         Mana = Intelligence + Wisdom + GetBonus("Wisdom") + race.BonusMana + charClass.ManaDie;

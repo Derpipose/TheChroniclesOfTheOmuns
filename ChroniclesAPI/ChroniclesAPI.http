@@ -1,0 +1,30 @@
+@ChroniclesAPI_HostAddress = http://localhost:5237
+
+### Get All Characters
+GET {{ChroniclesAPI_HostAddress}}/api/characters
+Accept: application/json
+
+###
+
+### Get FantasyCharacter by ID
+GET {{ChroniclesAPI_HostAddress}}/api/characters/2
+Accept: application/json
+
+###
+
+### Create FantasyCharacter
+POST {{ChroniclesAPI_HostAddress}}/api/characters
+Content-Type: application/json
+
+{
+  "name": "TestCharacter",
+  "level": 1
+}
+
+###
+
+### Delete FantasyCharacter by ID
+DELETE {{ChroniclesAPI_HostAddress}}/api/characters/2
+Content-Type: application/json
+
+###

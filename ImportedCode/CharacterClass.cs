@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DnDCharacterBuilder {
-    public class CharacterClass {
+    public class FantasyCharacterClass {
 
-        public string ClassType { private set; get; }
+        public string FantasyClassType { private set; get; }
         public string ClassName { private set; get; }
         public string SpellCastingMod { private set; get; }
         public int HitDie { private set; get; } 
@@ -22,7 +22,7 @@ namespace DnDCharacterBuilder {
         public int Skills { private set; get; }
         private dynamic ClassArray;
 
-        public CharacterClass() {
+        public FantasyCharacterClass() {
             HitDie = 0;
             ManaDie = 0;
             MagicBooks = 0;
@@ -50,7 +50,7 @@ namespace DnDCharacterBuilder {
                     Chances = item.Chances;
                     HitDie = item.HitDie;
                     ManaDie = item.ManaDie;
-                    ClassType = item.Classification;
+                    FantasyClassType = item.Classification;
                     StatFavor1 = item.StatFavor1;
                     StatFavor2 = item.StatFavor2;
                     Skills = item.ProficiencyCount;
@@ -71,7 +71,7 @@ namespace DnDCharacterBuilder {
                     Chances = item.Chances;
                     HitDie = item.HitDie;
                     ManaDie = item.ManaDie;
-                    ClassType = item.Classification;
+                    FantasyClassType = item.Classification;
                     StatFavor1 = item.StatFavor1;
                     StatFavor2 = item.StatFavor2;
                     Skills = item.ProficiencyCount;

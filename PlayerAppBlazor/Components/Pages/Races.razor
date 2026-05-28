@@ -1,0 +1,121 @@
+@page "/races"
+@using PlayerAppBlazor.ViewModels
+@inject RacesViewModel Vm
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+<PageTitle>Races</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Races</h1>
+        <button class="btn btn-success" @onclick="OnSyncClick" disabled="@Vm.IsLoading">
+            @if (Vm.IsLoading) { <span>Syncing...</span> } else { <span>Sync DB with Races</span> }
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Vm.StatusMessage))
+    {
+        <div class="alert alert-info">@Vm.StatusMessage</div>
+    }
+
+    @if (Vm.IsLoading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (Vm.Races.Count == 0)
+    {
+        <div class="alert alert-warning">
+            <p>No races found. Click <strong>Sync DB with Races</strong> to load them!</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Race Type</th>
+                        <th>Modifier Type</th>
+                        <th>Modifier Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var race in Vm.Races)
+                    {
+                        @if (race.Modifiers.Count == 0)
+                        {
+                            <tr>
+                                <td>@race.Id</td>
+                                <td>@race.Name</td>
+                                <td>@race.RaceType</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var modifier in race.Modifiers)
+                            {
+                                <tr>
+                                    <td>@race.Id</td>
+                                    <td>@race.Name</td>
+                                    <td>@race.RaceType</td>
+                                    <td>@modifier.Modifier.Type</td>
+                                    <td>@modifier.Modifier.Value</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Races page initialized");
+        Vm.PropertyChanged += OnVmPropertyChanged;
+        await Vm.LoadRacesAsync();
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        Console.WriteLine($"Property changed: {e.PropertyName} = {(e.PropertyName == "StatusMessage" ? Vm.StatusMessage : "...")}");
+        StateHasChanged();
+    }
+
+    private async Task OnSyncClick(MouseEventArgs args)
+    {
+        Console.WriteLine("OnSyncClick fired");
+        await SyncRaces();
+    }
+
+    private async Task SyncRaces()
+    {
+        Console.WriteLine("SyncRaces called");
+        try
+        {
+            await Vm.SyncRacesAsync();
+            Console.WriteLine($"SyncRaces completed. StatusMessage: {Vm.StatusMessage}");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in SyncRaces: {ex.Message}");
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (Vm != null)
+        {
+            Vm.PropertyChanged -= OnVmPropertyChanged;
+        }
+        await ValueTask.CompletedTask;
+    }
+}
