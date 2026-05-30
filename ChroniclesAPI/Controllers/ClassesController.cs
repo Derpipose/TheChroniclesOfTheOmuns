@@ -30,7 +30,7 @@ public class ClassesController : ControllerBase {
 
     [HttpPost("sync")]
     public async Task<ActionResult<SyncResult>> SyncClasses() {
-        var syncService = new ClassSyncService(_db);
+        var syncService = new FantasyClassSyncService(_db);
         var result = await syncService.SyncClassesAsync();
         return Ok(result);
     }

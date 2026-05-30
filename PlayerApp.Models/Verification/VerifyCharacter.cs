@@ -1,6 +1,6 @@
 using System;
 using PlayerApp.Models.Enums;
-using PlayerApp.Models;
+using PlayerApp.Models.Legacy;
 
 namespace PlayerApp.Models.Verification;
 

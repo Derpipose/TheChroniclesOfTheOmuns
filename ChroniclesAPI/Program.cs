@@ -16,8 +16,8 @@ var dbPath = Path.Combine(appDataPath, "chronicles.db");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}")
 );
-builder.Services.AddScoped<ChroniclesAPI.Services.CharacterService>();
-builder.Services.AddScoped<ChroniclesAPI.Services.ClassSyncService>();
+builder.Services.AddScoped<ChroniclesAPI.Services.FantasyCharacterService>();
+builder.Services.AddScoped<ChroniclesAPI.Services.FantasyClassSyncService>();
 
 // Add services to the container.
 

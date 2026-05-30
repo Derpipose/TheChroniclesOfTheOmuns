@@ -2,17 +2,18 @@ using ChroniclesAPI.Database;
 using PlayerApp.Models;
 using PlayerApp.Models.Verification;
 using Microsoft.EntityFrameworkCore;
+using ModelCharacterService = PlayerApp.Models.Legacy.CharacterService;
 
 namespace ChroniclesAPI.Services;
 
-public class CharacterService {
+public class FantasyCharacterService {
     private readonly AppDbContext _db;
-    private readonly PlayerApp.Models.CharacterService _modelService;
+    private readonly ModelCharacterService _modelService;
 
 
-    public CharacterService(AppDbContext db) {
+    public FantasyCharacterService(AppDbContext db) {
         _db = db;
-        _modelService = new PlayerApp.Models.CharacterService();
+        _modelService = new ModelCharacterService();
     }
 
     public bool VerifyCharacterDB(FantasyCharacter character, out string errorMessage) {

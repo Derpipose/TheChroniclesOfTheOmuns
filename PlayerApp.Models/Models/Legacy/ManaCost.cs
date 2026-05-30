@@ -1,6 +1,6 @@
 using PlayerApp.Models.Enums;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class ManaCost{
 public int Id {get; set;}

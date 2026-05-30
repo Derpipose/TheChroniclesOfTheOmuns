@@ -3,11 +3,11 @@ using PlayerApp.Models;
 
 namespace ChroniclesAPI.Services;
 
-public class RaceSyncService {
+public class FantasyRaceSyncService {
     private readonly AppDbContext _db;
     private readonly FantasyCharacterRaceService _raceService;
 
-    public RaceSyncService(AppDbContext db) {
+    public FantasyRaceSyncService(AppDbContext db) {
         _db = db;
         _raceService = new FantasyCharacterRaceService();
     }

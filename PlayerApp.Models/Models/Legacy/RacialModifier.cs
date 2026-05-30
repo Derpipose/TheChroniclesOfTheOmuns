@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class RacialModifier {
     // Racial modifier is for things like bonus mana or bonus health

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using PlayerApp.Models.Enums;
 using PlayerApp.Models.Dice;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class FantasyCharacterClass {
     [Key]

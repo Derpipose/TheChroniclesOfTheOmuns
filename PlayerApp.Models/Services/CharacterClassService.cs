@@ -5,7 +5,7 @@ using System.Text.Json;
 using PlayerApp.Models.Enums;
 using PlayerApp.Models.Dice;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class FantasyCharacterClassService {
     public async Task<List<FantasyCharacterClass>> GetAllClassesAsync() {

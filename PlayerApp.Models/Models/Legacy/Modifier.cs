@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using PlayerApp.Models.Enums;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class Modifier {
     // Modifiers are used to define specific changes applied to characters, 

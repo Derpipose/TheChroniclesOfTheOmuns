@@ -1,7 +1,7 @@
 using System;
 using PlayerApp.Models.Enums;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class CharacterService {
     private readonly CharacterCalculationService _calculationService;

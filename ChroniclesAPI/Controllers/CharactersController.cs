@@ -10,21 +10,21 @@ namespace ChroniclesAPI.Controllers;
 [Route("api/fantasy/[controller]")]
 public class CharactersController : ControllerBase {
     private readonly AppDbContext _db;
-    private readonly Services.CharacterService _characterService;
+    private readonly Services.FantasyCharacterService _characterService;
 
-    public CharactersController(AppDbContext db, Services.CharacterService characterService) {
+    public CharactersController(AppDbContext db, Services.FantasyCharacterService characterService) {
         _db = db;
         _characterService = characterService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<FantasyFantasyCharacterDto>>> GetAllCharacters() {
+    public async Task<ActionResult<List<FantasyCharacterDto>>> GetAllCharacters() {
         var characters = await _db.FantasyCharacters
             .Include(c => c.FantasyCharacterRace)
             .Include(c => c.FantasyCharacterClass)
             .ToListAsync();
 
-        var result = characters.Select(character => new FantasyFantasyCharacterDto {
+        var result = characters.Select(character => new FantasyCharacterDto {
             Id = character.Id,
             Name = character.Name,
             Level = character.Level,
@@ -42,7 +42,7 @@ public class CharactersController : ControllerBase {
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<FantasyFantasyCharacterDto>> GetCharacterById(int id) {
+    public async Task<ActionResult<FantasyCharacterDto>> GetCharacterById(int id) {
         var character = await _db.FantasyCharacters
             .Include(c => c.Stats)
             .Include(c => c.FantasyCharacterRace)
@@ -53,7 +53,7 @@ public class CharactersController : ControllerBase {
             return NotFound();
         }
 
-        var dto = new FantasyFantasyCharacterDto {
+        var dto = new FantasyCharacterDto {
             Id = character.Id,
             Name = character.Name,
             Level = character.Level,

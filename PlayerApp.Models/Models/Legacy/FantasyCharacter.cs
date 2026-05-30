@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using PlayerApp.Models.Dice;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class FantasyCharacter {
     [Key]
