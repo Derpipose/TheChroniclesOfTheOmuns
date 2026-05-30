@@ -11,9 +11,9 @@ namespace ChroniclesAPI.Controllers;
 [Route("api/fantasy/[controller]")]
 public class RacesController : ControllerBase {
     private readonly AppDbContext _db;
-    private readonly Services.CharacterService _characterService;
+    private readonly Services.FantasyCharacterService _characterService;
 
-    public RacesController(AppDbContext db, Services.CharacterService characterService) {
+    public RacesController(AppDbContext db, Services.FantasyCharacterService characterService) {
         _db = db;
         _characterService = characterService;
     }
@@ -39,7 +39,7 @@ public class RacesController : ControllerBase {
 
     [HttpPost("sync")]
     public async Task<ActionResult<SyncResult>> SyncRaces() {
-        var syncService = new RaceSyncService(_db);
+        var syncService = new FantasyRaceSyncService(_db);
         var result = await syncService.SyncRacesAsync();
         return Ok(result);
     }

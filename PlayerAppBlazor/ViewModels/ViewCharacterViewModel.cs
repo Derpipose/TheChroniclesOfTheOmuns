@@ -40,7 +40,7 @@ public class ViewCharacterViewModel : INotifyPropertyChanged {
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var characterJson = await _httpClient.GetStringAsync($"api/fantasy/characters/{characterId}");
-            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyFantasyCharacterDto>(characterJson, options);
+            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyCharacterDto>(characterJson, options);
 
             if (FantasyCharacterDto == null) {
                 StatusMessage = "FantasyCharacter not found.";

@@ -97,7 +97,7 @@ public class EditCharacterViewModel : INotifyPropertyChanged {
             
             // Deserialize into DTO which has public properties
             var characterJson = await _httpClient.GetStringAsync($"api/fantasy/characters/{characterId}");
-            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyFantasyCharacterDto>(characterJson, options);
+            var FantasyCharacterDto = JsonSerializer.Deserialize<FantasyCharacterDto>(characterJson, options);
 
             if (FantasyCharacterDto == null) {
                 StatusMessage = "FantasyCharacter not found.";

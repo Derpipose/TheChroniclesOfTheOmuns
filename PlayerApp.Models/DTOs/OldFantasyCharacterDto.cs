@@ -1,7 +1,9 @@
+
+using PlayerApp.Models.Legacy;
 namespace PlayerApp.Models.DTOs;
 
 
-public class FantasyFantasyCharacterDto {
+public class FantasyCharacterDto {
     public int Id { get; set; }
     public string Name { get; set; } = "Tav";
     public int Level { get; set; } = 1;

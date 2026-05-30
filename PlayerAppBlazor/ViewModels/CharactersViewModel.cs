@@ -7,14 +7,14 @@ using PlayerApp.Models.DTOs;
 namespace PlayerAppBlazor.ViewModels;
 
 public class CharactersViewModel : INotifyPropertyChanged {
-    private List<FantasyFantasyCharacterDto> _characters = new();
+    private List<FantasyCharacterDto> _characters = new();
     private bool _isLoading;
     private string _statusMessage = "";
     private string _newCharacterName = "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public List<FantasyFantasyCharacterDto> Characters {
+    public List<FantasyCharacterDto> Characters {
         get => _characters;
         set => SetProperty(ref _characters, value);
     }
@@ -49,7 +49,7 @@ public class CharactersViewModel : INotifyPropertyChanged {
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            Characters = JsonSerializer.Deserialize<List<FantasyFantasyCharacterDto>>(json, options) ?? new();
+            Characters = JsonSerializer.Deserialize<List<FantasyCharacterDto>>(json, options) ?? new();
             StatusMessage = $"Loaded {Characters.Count} character(s).";
         } catch (Exception ex) {
             StatusMessage = $"Error loading characters: {ex.Message}";

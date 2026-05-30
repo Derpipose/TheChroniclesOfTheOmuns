@@ -2,7 +2,7 @@ using System;
 using PlayerApp.Models.Enums;
 using PlayerApp.Models.Dice;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class CharacterCalculationService {
     public void CalculateHitPoints(FantasyCharacter character) {

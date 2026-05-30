@@ -212,7 +212,7 @@ public class NewCharacterViewModel : INotifyPropertyChanged {
 
             // Attempt to read created character id if returned
             try {
-                var created = await response.Content.ReadFromJsonAsync<FantasyFantasyCharacterDto>();
+                var created = await response.Content.ReadFromJsonAsync<FantasyCharacterDto>();
                 if (created != null) CreatedCharacterId = created.Id;
             } catch {
                 // ignore if not returned

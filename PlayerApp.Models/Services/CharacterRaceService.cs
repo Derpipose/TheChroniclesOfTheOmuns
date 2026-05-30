@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using PlayerApp.Models.Enums;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Legacy;
 
 public class FantasyCharacterRaceService {
     public async Task<List<FantasyCharacterRace>> GetAllRacesAsync() {
