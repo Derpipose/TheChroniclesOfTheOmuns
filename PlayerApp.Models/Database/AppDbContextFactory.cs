@@ -8,7 +8,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ChroniclesDb;Trusted_Connection=True;");
+        optionsBuilder.UseSqlite("Data Source=chronicles.db");
 
         return new AppDbContext(optionsBuilder.Options);
     }
