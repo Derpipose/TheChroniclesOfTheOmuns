@@ -1,4 +1,3 @@
-using ChroniclesAPI.Database;
 using PlayerApp.Models;
 using PlayerApp.Models.Verification;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PlayerApp.Models;
 using PlayerApp.Models.Verification;
-using ChroniclesAPI.Database;
 using ChroniclesAPI.Services;
 
 namespace ChroniclesAPI.Controllers;

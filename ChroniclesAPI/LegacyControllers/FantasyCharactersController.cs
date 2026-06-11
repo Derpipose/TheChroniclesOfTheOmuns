@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PlayerApp.Models;
 using PlayerApp.Models.DTOs;
-using ChroniclesAPI.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChroniclesAPI.Controllers;

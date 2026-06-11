@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ChroniclesAPI.Database;
+using PlayerApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

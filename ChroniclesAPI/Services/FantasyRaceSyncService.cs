@@ -1,4 +1,3 @@
-using ChroniclesAPI.Database;
 using PlayerApp.Models;
 
 namespace ChroniclesAPI.Services;
