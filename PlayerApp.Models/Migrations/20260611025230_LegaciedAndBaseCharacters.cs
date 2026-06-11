@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ChroniclesAPI.Migrations
+namespace PlayerApp.Models.Migrations
 {
     /// <inheritdoc />
     public partial class LegaciedAndBaseCharacters : Migration
@@ -14,15 +14,15 @@ namespace ChroniclesAPI.Migrations
                 name: "CharacterStats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CharacterId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Strength = table.Column<int>(type: "INTEGER", nullable: false),
-                    Constitution = table.Column<int>(type: "INTEGER", nullable: false),
-                    Dexterity = table.Column<int>(type: "INTEGER", nullable: false),
-                    Wisdom = table.Column<int>(type: "INTEGER", nullable: false),
-                    Charisma = table.Column<int>(type: "INTEGER", nullable: false),
-                    Intelligence = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CharacterId = table.Column<int>(type: "int", nullable: false),
+                    Strength = table.Column<int>(type: "int", nullable: false),
+                    Constitution = table.Column<int>(type: "int", nullable: false),
+                    Dexterity = table.Column<int>(type: "int", nullable: false),
+                    Wisdom = table.Column<int>(type: "int", nullable: false),
+                    Charisma = table.Column<int>(type: "int", nullable: false),
+                    Intelligence = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,14 +33,14 @@ namespace ChroniclesAPI.Migrations
                 name: "FantasyCharacterClasses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    FantasyClassType = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsVeteranLocked = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    HitDice = table.Column<int>(type: "INTEGER", nullable: false),
-                    ManaDice = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FantasyClassType = table.Column<int>(type: "int", nullable: false),
+                    IsVeteranLocked = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HitDice = table.Column<int>(type: "int", nullable: false),
+                    ManaDice = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,11 +51,11 @@ namespace ChroniclesAPI.Migrations
                 name: "FantasyCharacterRaces",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    RaceType = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RaceType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,11 +66,11 @@ namespace ChroniclesAPI.Migrations
                 name: "Modifiers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    Value = table.Column<int>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,15 +81,15 @@ namespace ChroniclesAPI.Migrations
                 name: "FantasyCharacters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Level = table.Column<int>(type: "INTEGER", nullable: false),
-                    StatsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Health = table.Column<int>(type: "INTEGER", nullable: false),
-                    Mana = table.Column<int>(type: "INTEGER", nullable: false),
-                    FantasyCharacterRaceId = table.Column<int>(type: "INTEGER", nullable: true),
-                    FantasyCharacterClassId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
+                    StatsId = table.Column<int>(type: "int", nullable: false),
+                    Health = table.Column<int>(type: "int", nullable: false),
+                    Mana = table.Column<int>(type: "int", nullable: false),
+                    FantasyCharacterRaceId = table.Column<int>(type: "int", nullable: true),
+                    FantasyCharacterClassId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,13 +116,13 @@ namespace ChroniclesAPI.Migrations
                 name: "FantasyRaceBonus",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RaceId = table.Column<int>(type: "INTEGER", nullable: false),
-                    BonusValue = table.Column<int>(type: "INTEGER", nullable: false),
-                    StatId = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsSelectable = table.Column<bool>(type: "INTEGER", nullable: false),
-                    FantasyCharacterRaceId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RaceId = table.Column<int>(type: "int", nullable: false),
+                    BonusValue = table.Column<int>(type: "int", nullable: false),
+                    StatId = table.Column<int>(type: "int", nullable: true),
+                    IsSelectable = table.Column<bool>(type: "bit", nullable: false),
+                    FantasyCharacterRaceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -138,10 +138,10 @@ namespace ChroniclesAPI.Migrations
                 name: "RacialModifiers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RaceId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ModifierId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RaceId = table.Column<int>(type: "int", nullable: false),
+                    ModifierId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -164,14 +164,14 @@ namespace ChroniclesAPI.Migrations
                 name: "CharacterStatBonus",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CharacterId = table.Column<int>(type: "INTEGER", nullable: false),
-                    BonusValue = table.Column<int>(type: "INTEGER", nullable: false),
-                    BonusSource = table.Column<string>(type: "TEXT", nullable: false),
-                    StatId = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsSelectable = table.Column<bool>(type: "INTEGER", nullable: false),
-                    FantasyCharacterId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CharacterId = table.Column<int>(type: "int", nullable: false),
+                    BonusValue = table.Column<int>(type: "int", nullable: false),
+                    BonusSource = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StatId = table.Column<int>(type: "int", nullable: true),
+                    IsSelectable = table.Column<bool>(type: "bit", nullable: false),
+                    FantasyCharacterId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

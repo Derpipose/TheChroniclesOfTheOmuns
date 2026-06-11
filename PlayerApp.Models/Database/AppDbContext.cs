@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PlayerApp.Models;
+using PlayerApp.Models.Legacy;
 
-namespace ChroniclesAPI.Database;
+namespace PlayerApp.Models;
 
 public class AppDbContext : DbContext {
     public AppDbContext(DbContextOptions<AppDbContext> options)
