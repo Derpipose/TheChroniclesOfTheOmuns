@@ -9,7 +9,8 @@ public class BaseCharacterTests {
     
     [Test]
     public void TestBaseCharacterCreation() {
-        Character character = new Character();
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
 
         Assert.That(character, Is.TypeOf<Character>());
         Assert.That(character != null);
@@ -17,7 +18,8 @@ public class BaseCharacterTests {
 
     [Test]
     public void TestSetCharacterName() {
-        Character character = new Character();
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
         character.SetName("Cressa");
         Assert.That(character.Name, Is.EqualTo("Cressa"));
         character.SetName("Kreena");
@@ -26,21 +28,32 @@ public class BaseCharacterTests {
 
     [Test]
     public void TestCharacterHealth() {
-        Character character = new Character();
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
         Assert.That(character.MaxHealth, Is.EqualTo(0));
     }
 
     [Test]
     public void SetMaxHealthCharacter() {
-        Character character = new Character();
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
         character.SetMaxHealth(100);
         Assert.That(character.MaxHealth, Is.EqualTo(100));
     }
 
     [Test]
     public void TestCharacterId() {
-        Character character = new Character();
-        Assert.That(character.Id, Is.EqualTo(0));
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
+        Assert.That(character.Id, Is.EqualTo(player.Id));
+    }
+
+    [Test]
+    public void CharacterBelongsToPlayer() {
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        player.SimulatePersist(1);
+        Character character = new Character(player);
+        Assert.That(character.playerId, Is.EqualTo(player.Id));
     }
 
 }

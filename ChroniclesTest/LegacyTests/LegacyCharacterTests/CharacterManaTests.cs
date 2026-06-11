@@ -1,4 +1,4 @@
-namespace ChroniclesTest;
+namespace LegacyTests;
 
 using PlayerApp.Models;
 using PlayerApp.Models.Enums;

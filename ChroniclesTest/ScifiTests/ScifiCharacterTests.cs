@@ -9,7 +9,8 @@ public class ScifiCharacterTests {
     
     [Test]
     public void TestScifiCharacterCreation() {
-        Character character = new Character();
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
         character.SimulatePersist(1);
         ScifiCharacter scifiCharacter = new ScifiCharacter(character);
 
@@ -19,7 +20,8 @@ public class ScifiCharacterTests {
 
     [Test]
     public void AssignScifiCharacterToCharacterBase() {
-        Character character = new Character();
+        Player player = new Player("TestPlayer", "testplayer@example.com");
+        Character character = new Character(player);
         character.SimulatePersist(1);
 
         Assert.That(character, Is.TypeOf<Character>());

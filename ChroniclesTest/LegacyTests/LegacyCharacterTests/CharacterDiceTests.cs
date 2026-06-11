@@ -1,7 +1,7 @@
 using PlayerApp.Models;
 using PlayerApp.Models.Dice;
 
-namespace ChroniclesTest;
+namespace LegacyTests;
 
 [TestFixture]
 public class CharacterDiceTests {

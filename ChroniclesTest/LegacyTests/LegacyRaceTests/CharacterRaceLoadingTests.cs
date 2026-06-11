@@ -1,7 +1,7 @@
 using System.Linq;
 using PlayerApp.Models;
 
-namespace ChroniclesTest;
+namespace LegacyTests;
 
 [TestFixture]
 public class FantasyCharacterRaceLoadingTests {

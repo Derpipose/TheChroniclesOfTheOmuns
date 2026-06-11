@@ -3,7 +3,7 @@ using PlayerApp.Models.Enums;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace ChroniclesTest;
+namespace LegacyTests;
 
 [TestFixture]
 public class RaceStatBonusTests {

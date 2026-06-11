@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChroniclesTest;
+namespace LegacyTests;
 
 [TestFixture]
 public class FantasyCharacterRaceBonusTests {
