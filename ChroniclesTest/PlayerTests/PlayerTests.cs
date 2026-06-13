@@ -1,49 +1,49 @@
 namespace ChroniclesTest;
+
+using Xunit;
 using PlayerApp.Models;
 
-[TestFixture]
 public class PlayerTests {
-    
-    [Test]
+
+    [Fact]
     public void TestPlayerCreation() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
 
-        Assert.That(player, Is.TypeOf<Player>());
-        Assert.That(player != null);
+        Assert.IsType<Player>(player);
+        Assert.NotNull(player);
     }
 
-    [Test]
+    [Fact]
     public void TestPlayerProperties() {
-        Player player = new Player("TestPlayer", "testplayer@example.com")  ;
+        Player player = new Player("TestPlayer", "testplayer@example.com");
 
-        Assert.That(player.DisplayName, Is.EqualTo("TestPlayer"));
-        Assert.That(player.Email, Is.EqualTo("testplayer@example.com"));
+        Assert.Equal("TestPlayer", player.DisplayName);
+        Assert.Equal("testplayer@example.com", player.Email);
     }
 
-    [Test]
+    [Fact]
     public void TestPlayerLastLogin() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
 
         player.UpdateLastLogin();
-        Assert.That(player.LastLoginAt, Is.Not.Null);
+        Assert.NotNull(player.LastLoginAt);
     }
 
-    [Test]
+    [Fact]
     public void TestPlayerSetters() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         player.SetDisplayName("NewName");
         player.SetEmail("newemail@example.com");
 
-        Assert.That(player.DisplayName, Is.EqualTo("NewName"));
-        Assert.That(player.Email, Is.EqualTo("newemail@example.com"));
+        Assert.Equal("NewName", player.DisplayName);
+        Assert.Equal("newemail@example.com", player.Email);
     }
 
-    [Test]
+    [Fact]
     public void TestPlayerSimulatePersist() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         player.SimulatePersist(1);
 
-        Assert.That(player.Id, Is.EqualTo(1));
+        Assert.Equal(1, player.Id);
     }
-
 }

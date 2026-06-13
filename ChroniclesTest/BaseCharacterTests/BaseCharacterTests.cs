@@ -3,57 +3,56 @@ namespace ChroniclesTest;
 using PlayerApp.Models;
 using PlayerApp.Models.Enums;
 using PlayerApp.Models.Dice;
+using Xunit;
 
-[TestFixture]
 public class BaseCharacterTests {
-    
-    [Test]
+
+    [Fact]
     public void TestBaseCharacterCreation() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         Character character = new Character(player);
 
-        Assert.That(character, Is.TypeOf<Character>());
-        Assert.That(character != null);
+        Assert.IsType<Character>(character);
+        Assert.NotNull(character);
     }
 
-    [Test]
+    [Fact]
     public void TestSetCharacterName() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         Character character = new Character(player);
         character.SetName("Cressa");
-        Assert.That(character.Name, Is.EqualTo("Cressa"));
+        Assert.Equal("Cressa", character.Name);
         character.SetName("Kreena");
-        Assert.That(character.Name, Is.EqualTo("Kreena"));
+        Assert.Equal("Kreena", character.Name);
     }
 
-    [Test]
+    [Fact]
     public void TestCharacterHealth() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         Character character = new Character(player);
-        Assert.That(character.MaxHealth, Is.EqualTo(0));
+        Assert.Equal(0, character.MaxHealth);
     }
 
-    [Test]
+    [Fact]
     public void SetMaxHealthCharacter() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         Character character = new Character(player);
         character.SetMaxHealth(100);
-        Assert.That(character.MaxHealth, Is.EqualTo(100));
+        Assert.Equal(100, character.MaxHealth);
     }
 
-    [Test]
+    [Fact]
     public void TestCharacterId() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         Character character = new Character(player);
-        Assert.That(character.Id, Is.EqualTo(player.Id));
+        Assert.Equal(player.Id, character.Id);
     }
 
-    [Test]
+    [Fact]
     public void CharacterBelongsToPlayer() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         player.SimulatePersist(1);
         Character character = new Character(player);
-        Assert.That(character.playerId, Is.EqualTo(player.Id));
+        Assert.Equal(player.Id, character.playerId);
     }
-
 }
