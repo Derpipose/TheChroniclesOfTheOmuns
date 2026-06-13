@@ -1,23 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PlayerApp.Models.Legacy;
+namespace PlayerApp.Models.Database;
 
-namespace PlayerApp.Models;
-
-public class AppDbContext : DbContext {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options) {
-    }
-
-    public DbSet<FantasyCharacter> FantasyCharacters => Set<FantasyCharacter>();
-    public DbSet<FantasyCharacterClass> FantasyCharacterClasses => Set<FantasyCharacterClass>();
-    public DbSet<FantasyCharacterRace> FantasyCharacterRaces => Set<FantasyCharacterRace>();
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options) {
     public DbSet<CharacterStats> CharacterStats => Set<CharacterStats>();
-    public DbSet<Modifier> Modifiers => Set<Modifier>();
-    public DbSet<RacialModifier> RacialModifiers => Set<RacialModifier>();
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder) {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<FantasyCharacter>().ToTable("FantasyCharacters");
-    }
 }

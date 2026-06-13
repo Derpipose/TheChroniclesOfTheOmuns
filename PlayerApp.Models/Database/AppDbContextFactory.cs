@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace PlayerApp.Models;
+namespace PlayerApp.Models.Database;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
