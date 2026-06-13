@@ -51,14 +51,14 @@ After this, you can:
 - View created characters and their details
 
 #### Database Details
-- **Location**: `%LOCALAPPDATA%\TheChroniclesOfTheOmuns\chronicles.db` (cross-platform SQLite)
-- **Provider**: SQLite with Entity Framework Core 10.0.1
-- **Migrations**: Auto-applied on app startup from `PlayerAppBlazor/Migrations/`
+- **Location**: Dev is on the dev server, you need access to the dev server for that
+- **Provider**: Postgres
+- **Migrations**: Auto-applied on app startup from `ChroniclesAPI`
 
 
 ### What is being worked on?
 Currently, there's a project that details everything that is being worked on actively. Each component has been broken down and made
-into small bite-sized tasks. Since this is itterative development, there may be some tasks that go through and touch up the work of
+into small bite-sized tasks. Since this is iterative development, there may be some tasks that go through and touch up the work of
 previous tasks.
 
 ### License Notice
