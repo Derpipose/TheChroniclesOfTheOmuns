@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: chronicles_dev_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: chronicles_dev
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: chroniclesdb_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+
+volumes:
+  pgdata_dev:

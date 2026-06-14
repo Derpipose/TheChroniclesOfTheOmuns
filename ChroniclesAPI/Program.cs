@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ChroniclesAPI.Database;
+using PlayerApp.Models.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +14,10 @@ var dbPath = Path.Combine(appDataPath, "chronicles.db");
 
 // Register DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite($"Data Source={dbPath}")
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-builder.Services.AddScoped<ChroniclesAPI.Services.FantasyCharacterService>();
-builder.Services.AddScoped<ChroniclesAPI.Services.FantasyClassSyncService>();
+// builder.Services.AddScoped<ChroniclesAPI.Services.FantasyCharacterService>();
+// builder.Services.AddScoped<ChroniclesAPI.Services.FantasyClassSyncService>();
 
 // Add services to the container.
 
