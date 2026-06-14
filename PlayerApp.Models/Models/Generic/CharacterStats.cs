@@ -11,6 +11,7 @@ namespace PlayerApp.Models;
 public class CharacterStats {
     [Key]
     public int Id { get; set; }
+    public int CharacterId { get; private set; }
     [Required]
     public int Strength { get; private set; } = 10;
     [Required]
@@ -24,7 +25,9 @@ public class CharacterStats {
     [Required]
     public int Intelligence { get; private set; } = 10;
 
-     public CharacterStats() { }
+    public CharacterStats(Character character) {
+        CharacterId = character.Id;
+    }
 
     // Pre-play only
     public void SetStat(StatType stat, int value, Character character) {

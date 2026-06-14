@@ -11,6 +11,7 @@ public class Character {
     public int MaxHealth { get; private set; } = 0;
     public int Id { get; private set;}
     public bool IsActive { get; private set; } = false;
+    
 
     public Character(Player player) {
         playerId = player.Id;
