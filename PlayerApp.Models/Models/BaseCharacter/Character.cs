@@ -9,7 +9,8 @@ public class Character {
     public int Level { get; private set; } = 1;
     public string Setting { get; private set; } = "Unregistered";
     public int MaxHealth { get; private set; } = 0;
-    public int Id { get; private set;} 
+    public int Id { get; private set;}
+    public bool IsActive { get; private set; } = false;
 
     public Character(Player player) {
         playerId = player.Id;
@@ -26,5 +27,9 @@ public class Character {
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
+    }
+
+    public void SetActive(){
+        IsActive = true;
     }
 }
