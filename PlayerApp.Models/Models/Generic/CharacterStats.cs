@@ -11,6 +11,7 @@ namespace PlayerApp.Models;
 public class CharacterStats {
     [Key]
     public int Id { get; set; }
+    [Required]
     public int CharacterId { get; private set; }
     [Required]
     public int Strength { get; private set; } = 10;
@@ -51,16 +52,20 @@ public class CharacterStats {
     }
 
     // In-play increases (level ups)
-    public void IncreaseStat(StatType stat, int amount) {
+    public void IncreaseStat(StatType stat, int amount, Character character) {
         if (amount <= 0)
             throw new ArgumentException("Increase amount must be positive.");
+        if (!character.IsActive)
+            throw new InvalidOperationException("Cannot edit stats of an inactive character.");
         ApplyStatDelta(stat, amount);
     }
 
     // In-play decreases (perma debuffs)
-    public void DecreaseStat(StatType stat, int amount) {
+    public void DecreaseStat(StatType stat, int amount, Character character) {
         if (amount <= 0)
             throw new ArgumentException("Decrease amount must be positive.");
+        if (!character.IsActive)
+            throw new InvalidOperationException("Cannot edit stats of an inactive character.");
         ApplyStatDelta(stat, -amount);
     }
 

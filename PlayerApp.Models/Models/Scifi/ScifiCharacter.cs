@@ -1,5 +1,3 @@
-using System;
-
 namespace PlayerApp.Models;
 
 public class ScifiCharacter {
