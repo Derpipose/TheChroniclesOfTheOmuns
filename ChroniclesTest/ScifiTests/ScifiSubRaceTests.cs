@@ -90,4 +90,16 @@ public class ScifiSubraceTests {
         Assert.NotEqual(gears.SubRaceName, thunder.SubRaceName);
         Assert.NotEqual(gears.RaceStatsId, thunder.RaceStatsId);
     }
+
+    [Fact]
+    public void DifferentSubracesCanShareTheSameRaceStats() {
+        ScifiSubrace gears = new ScifiSubrace(
+            scifiRaceId: 1, subRaceName: "House Gears", description: "", raceStatsId: 10
+        );
+        ScifiSubrace thunder = new ScifiSubrace(
+            scifiRaceId: 1, subRaceName: "House Thunder", description: "", raceStatsId: 10
+        );
+
+        Assert.Equal(gears.RaceStatsId, thunder.RaceStatsId);
+    }
 }
