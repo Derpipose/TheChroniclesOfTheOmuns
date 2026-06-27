@@ -1,6 +1,5 @@
 namespace ChroniclesTest;
 
-using Xunit;
 using PlayerApp.Models;
 using PlayerApp.Models.Enums;
 using PlayerApp.Models.Dice;
