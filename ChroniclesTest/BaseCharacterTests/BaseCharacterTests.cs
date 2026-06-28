@@ -45,7 +45,7 @@ public class BaseCharacterTests {
     public void TestCharacterId() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         Character character = new Character(player);
-        Assert.Equal(player.Id, character.Id);
+        Assert.Equal(0, character.Id);
     }
 
     [Fact]
@@ -53,6 +53,6 @@ public class BaseCharacterTests {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         player.SimulatePersist(1);
         Character character = new Character(player);
-        Assert.Equal(player.Id, character.playerId);
+        Assert.Equal(player.Id, character.PlayerId);
     }
 }

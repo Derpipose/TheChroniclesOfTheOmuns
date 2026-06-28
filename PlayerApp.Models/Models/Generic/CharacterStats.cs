@@ -26,8 +26,16 @@ public class CharacterStats {
     [Required]
     public int Intelligence { get; private set; } = 10;
 
+
     public CharacterStats(Character character) {
+        // if (character.Id == 0)
+        //     throw new InvalidOperationException(
+        //         "Character must be persisted before creating CharacterStats.");
         CharacterId = character.Id;
+    }
+
+    private CharacterStats(int characterId) {
+        CharacterId = characterId;
     }
 
     // Pre-play only

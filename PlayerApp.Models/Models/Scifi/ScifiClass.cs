@@ -24,14 +24,14 @@ public class ScifiClass {
 }
 
 public class ScifiClassTalent {
-    public int ClassId { get; private set; }
-    public int TalentId { get; private set; }
+    public int ScifiClassId { get; private set; }
+    public int ScifiTalentId { get; private set; }
 
-    public ScifiClass? Class { get; private set; }
-    public ScifiTalent? Talent { get; private set; }
+    public ScifiClass? ScifiClass { get; private set; }
+    public ScifiTalent? ScifiTalent { get; private set; }
 
-    public ScifiClassTalent(int classId, int talentId) {
-        ClassId = classId;
-        TalentId = talentId;
+    public ScifiClassTalent(int scifiClassId, int scifiTalentId) {
+        ScifiClassId = scifiClassId;
+        ScifiTalentId = scifiTalentId;
     }
 }

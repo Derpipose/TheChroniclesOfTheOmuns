@@ -41,11 +41,11 @@ public class ScifiBackgroundTalent {
     public int ScifiBackgroundId { get; private set; }
     public int ScifiTalentId { get; private set; }
 
-    public ScifiBackground? Background { get; private set; }
-    public ScifiTalent? Talent { get; private set; }
+    public ScifiBackground? ScifiBackground { get; private set; }
+    public ScifiTalent? ScifiTalent { get; private set; }
 
-    public ScifiBackgroundTalent(int backgroundId, int talentId) {
-        ScifiBackgroundId = backgroundId;
-        ScifiTalentId = talentId;
+    public ScifiBackgroundTalent(int scifiBackgroundId, int scifiTalentId) {
+        ScifiBackgroundId = scifiBackgroundId;
+        ScifiTalentId = scifiTalentId;
     }
 }

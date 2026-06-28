@@ -12,35 +12,35 @@ public class RaceStatsTests {
     public void BlankRaceStatsHasNoModifiersOrPicks() {
         RaceStats stats = new RaceStats();
 
-        Assert.Empty(stats.Modifiers);
-        Assert.Empty(stats.FreeStatPicks);
+        Assert.Empty(stats.Modifiers!);
+        Assert.Empty(stats.FreeStatPicks!);
     }
 
     [Fact]
     public void RaceStatsStoresModifiers() {
-        var modifiers = new List<StatModifier> {
-            new StatModifier(StatType.Strength, 2),
-            new StatModifier(StatType.Constitution, 2)
+        var modifiers = new List<RaceStatModifier> {
+            new RaceStatModifier(StatType.Strength, 2),
+            new RaceStatModifier(StatType.Constitution, 2)
         };
 
         RaceStats stats = new RaceStats(modifiers);
 
-        Assert.Equal(2, stats.Modifiers.Count);
+        Assert.Equal(2, stats.Modifiers!.Count);
     }
 
     [Fact]
     public void RaceStatsStoresFreeStatPicks() {
         RaceStats stats = new RaceStats(freeStatPicks: new List<int> { 1, 2 });
 
-        Assert.Equal(2, stats.FreeStatPicks.Count);
+        Assert.Equal(2, stats.FreeStatPicks!.Count);
         Assert.Contains(1, stats.FreeStatPicks);
         Assert.Contains(2, stats.FreeStatPicks);
     }
 
     [Fact]
     public void GetModifierForReturnsCorrectValue() {
-        var modifiers = new List<StatModifier> {
-            new StatModifier(StatType.Intelligence, 5)
+        var modifiers = new List<RaceStatModifier> {
+            new RaceStatModifier(StatType.Intelligence, 5)
         };
         RaceStats stats = new RaceStats(modifiers);
 
@@ -56,9 +56,9 @@ public class RaceStatsTests {
 
     [Fact]
     public void GetModifierForDoesNotBleedIntoOtherStats() {
-        var modifiers = new List<StatModifier> {
-            new StatModifier(StatType.Strength, 2),
-            new StatModifier(StatType.Constitution, -3)
+        var modifiers = new List<RaceStatModifier> {
+            new RaceStatModifier(StatType.Strength, 2),
+            new RaceStatModifier(StatType.Constitution, -3)
         };
         RaceStats stats = new RaceStats(modifiers);
 
@@ -72,8 +72,8 @@ public class RaceStatsTests {
 
     [Fact]
     public void IsStatLockedReturnsTrueForLockedStat() {
-        var modifiers = new List<StatModifier> {
-            new StatModifier(StatType.Strength, 19, isLocked: true)
+        var modifiers = new List<RaceStatModifier> {
+            new RaceStatModifier(StatType.Strength, 19, isLocked: true)
         };
         RaceStats stats = new RaceStats(modifiers);
 
@@ -82,8 +82,8 @@ public class RaceStatsTests {
 
     [Fact]
     public void IsStatLockedReturnsFalseForUnlockedStat() {
-        var modifiers = new List<StatModifier> {
-            new StatModifier(StatType.Strength, 2, isLocked: false)
+        var modifiers = new List<RaceStatModifier> {
+            new RaceStatModifier(StatType.Strength, 2, isLocked: false)
         };
         RaceStats stats = new RaceStats(modifiers);
 
@@ -99,9 +99,9 @@ public class RaceStatsTests {
 
     [Fact]
     public void CannotHaveDuplicateStatInModifiers() {
-        var modifiers = new List<StatModifier> {
-            new StatModifier(StatType.Strength, 2),
-            new StatModifier(StatType.Strength, 3)
+        var modifiers = new List<RaceStatModifier> {
+            new RaceStatModifier(StatType.Strength, 2),
+            new RaceStatModifier(StatType.Strength, 3)
         };
 
         Assert.Throws<ArgumentException>(() => new RaceStats(modifiers));

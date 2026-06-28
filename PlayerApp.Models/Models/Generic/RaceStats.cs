@@ -6,11 +6,13 @@ namespace PlayerApp.Models;
 
 public class RaceStats {
     public int Id { get; private set; }
-    public IReadOnlyList<StatModifier> Modifiers { get; private set; }
-    public IReadOnlyList<int> FreeStatPicks { get; private set; }
+    public IReadOnlyList<RaceStatModifier>? Modifiers { get; private set; }
+    public IReadOnlyList<int>? FreeStatPicks { get; private set; }
 
-    public RaceStats(List<StatModifier>? modifiers = null, List<int>? freeStatPicks = null) {
-        modifiers ??= new List<StatModifier>();
+    private RaceStats() { }
+
+    public RaceStats(List<RaceStatModifier>? modifiers = null, List<int>? freeStatPicks = null) {
+        modifiers ??= new List<RaceStatModifier>();
 
         var duplicates = modifiers.GroupBy(m => m.Stat).Where(g => g.Count() > 1);
         if (duplicates.Any())
@@ -20,13 +22,11 @@ public class RaceStats {
         FreeStatPicks = freeStatPicks ?? new List<int>();
     }
 
-    public int GetModifierFor(StatType stat) {
-        return Modifiers.FirstOrDefault(m => m.Stat == stat)?.Modifier ?? 0;
-    }
+    public int GetModifierFor(StatType stat) =>
+        (Modifiers ?? Enumerable.Empty<RaceStatModifier>()).FirstOrDefault(m => m.Stat == stat)?.Modifier ?? 0;
 
-    public bool IsStatLocked(StatType stat) {
-        return Modifiers.Any(m => m.Stat == stat && m.IsLocked);
-    }
+    public bool IsStatLocked(StatType stat) =>
+        (Modifiers ?? Enumerable.Empty<RaceStatModifier>()).Any(m => m.Stat == stat && m.IsLocked);
 
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
@@ -35,12 +35,12 @@ public class RaceStats {
 }
 
 
-public class StatModifier {
+public class RaceStatModifier {
     public StatType Stat { get; private set; }
     public int Modifier { get; private set; }
     public bool IsLocked { get; private set; }
 
-    public StatModifier(StatType stat, int modifier, bool isLocked = false) {
+    public RaceStatModifier(StatType stat, int modifier, bool isLocked = false) {
         Stat = stat;
         Modifier = modifier;
         IsLocked = isLocked;
