@@ -50,7 +50,7 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("AuthCode");
+                    b.ToTable("AuthCodes");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.Character", b =>

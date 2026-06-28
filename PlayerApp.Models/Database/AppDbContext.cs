@@ -4,6 +4,7 @@ namespace PlayerApp.Models.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options) {
     public DbSet<Player> Players => Set<Player>();
+    public DbSet<AuthCode> AuthCodes => Set<AuthCode>();
     public DbSet<Character> Characters => Set<Character>();
     public DbSet<CharacterStats> CharacterStats => Set<CharacterStats>();
     public DbSet<RaceStats> RaceStats => Set<RaceStats>();
@@ -17,6 +18,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiCharacter> ScifiCharacters => Set<ScifiCharacter>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<AuthCode>()
+            .HasOne(a => a.Player)
+            .WithMany(p => p.AuthCodes)
+            .HasForeignKey(a => a.PlayerId);
+
         modelBuilder.Entity<ScifiBackgroundTalent>()
             .HasKey(bt => new { bt.ScifiBackgroundId, bt.ScifiTalentId });
 
