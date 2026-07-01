@@ -1,47 +1,65 @@
+using System.Text;
+using ChroniclesAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PlayerApp.Models.Database;
+using Resend;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cross-platform app data directory
-var appDataPath = Path.Combine(
-    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-    "TheChroniclesOfTheOmuns");
-
-Directory.CreateDirectory(appDataPath);
-
-var dbPath = Path.Combine(appDataPath, "chronicles.db");
-
 // Register DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-// builder.Services.AddScoped<ChroniclesAPI.Services.FantasyCharacterService>();
-// builder.Services.AddScoped<ChroniclesAPI.Services.FantasyClassSyncService>();
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services to the container.
+// Resend
+builder.Services.AddOptions();
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>(o =>
+    o.ApiToken = builder.Configuration["Resend:ApiKey"]!);
+builder.Services.AddTransient<IResend, ResendClient>();
 
+// JWT
+var jwtKey = builder.Configuration["Jwt:Key"]!;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Register services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<PlayerContext>();
 
 var app = builder.Build();
 
-// Auto-create DB (dev-friendly)
+// Auto-migrate on startup (dev-friendly)
 using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication(); // must come before UseAuthorization
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

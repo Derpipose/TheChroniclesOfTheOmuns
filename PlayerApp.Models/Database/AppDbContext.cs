@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace PlayerApp.Models.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options) {
@@ -33,14 +34,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .Property(r => r.Modifiers)
             .HasConversion(
                 v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => JsonSerializer.Deserialize<List<RaceStatModifier>>(v, (JsonSerializerOptions?)null) ?? new List<RaceStatModifier>()
-            );
+                v => (IReadOnlyList<RaceStatModifier>)(JsonSerializer.Deserialize<List<RaceStatModifier>>(v, (JsonSerializerOptions?)null) ?? new List<RaceStatModifier>())
+            )
+            .Metadata.SetValueComparer(new ValueComparer<IReadOnlyList<RaceStatModifier>>(
+                (c1, c2) => JsonSerializer.Serialize(c1, (JsonSerializerOptions?)null) == JsonSerializer.Serialize(c2, (JsonSerializerOptions?)null),
+                c => JsonSerializer.Serialize(c, (JsonSerializerOptions?)null).GetHashCode(),
+                c => JsonSerializer.Deserialize<List<RaceStatModifier>>(JsonSerializer.Serialize(c, (JsonSerializerOptions?)null), (JsonSerializerOptions?)null)!
+            ));
 
         modelBuilder.Entity<RaceStats>()
             .Property(r => r.FreeStatPicks)
             .HasConversion(
                 v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => JsonSerializer.Deserialize<List<int>>(v, (JsonSerializerOptions?)null) ?? new List<int>()
-            );
+                v => (IReadOnlyList<int>)(JsonSerializer.Deserialize<List<int>>(v, (JsonSerializerOptions?)null) ?? new List<int>())
+            )
+            .Metadata.SetValueComparer(new ValueComparer<IReadOnlyList<int>>(
+                (c1, c2) => c1!.SequenceEqual(c2!),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.ToList()
+            ));
     }
 }
