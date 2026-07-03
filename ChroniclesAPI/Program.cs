@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PlayerApp.Models.Database;
-using Resend;
+// using Resend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Resend
-builder.Services.AddOptions();
-builder.Services.AddHttpClient<ResendClient>();
-builder.Services.Configure<ResendClientOptions>(o =>
-    o.ApiToken = builder.Configuration["Resend:ApiKey"]!);
-builder.Services.AddTransient<IResend, ResendClient>();
+// // Resend
+// builder.Services.AddOptions();
+// builder.Services.AddHttpClient<ResendClient>();
+// builder.Services.Configure<ResendClientOptions>(o =>
+//     o.ApiToken = builder.Configuration["Resend:ApiKey"]!);
+// builder.Services.AddTransient<IResend, ResendClient>();
 
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -58,7 +58,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); // must come before UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

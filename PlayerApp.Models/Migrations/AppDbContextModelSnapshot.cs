@@ -146,6 +146,9 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Players");
                 });
 

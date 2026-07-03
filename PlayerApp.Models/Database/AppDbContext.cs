@@ -19,6 +19,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiCharacter> ScifiCharacters => Set<ScifiCharacter>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+        modelBuilder.Entity<Player>()
+            .HasIndex(p => p.Email)
+            .IsUnique();
+
         modelBuilder.Entity<AuthCode>()
             .HasOne(a => a.Player)
             .WithMany(p => p.AuthCodes)

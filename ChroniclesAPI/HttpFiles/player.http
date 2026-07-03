@@ -1,0 +1,40 @@
+### Register a new player
+POST http://localhost:5237/players/register
+Content-Type: application/json
+
+{
+    "displayName": "Derpi Pose",
+    "email": "Not for you"
+}
+
+###
+
+### Request OTP (after registration)
+POST http://localhost:5237/auth/request
+Content-Type: application/json
+
+{
+    "email": "Not for you"
+}
+
+###
+
+### Verify OTP (replace 123456 with the code from your email)
+POST http://localhost:5237/auth/verify
+Content-Type: application/json
+
+{
+    "email": "Not for you",
+    "otp": "Ha. Nope"
+}
+
+###
+
+### Try to register duplicate email (should return 409)
+POST http://localhost:5237/players/register
+Content-Type: application/json
+
+{
+    "displayName": "Derpi Pose Duplicate",
+    "email": "Not for you"
+}
