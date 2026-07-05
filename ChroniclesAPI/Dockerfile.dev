@@ -1,0 +1,8 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+WORKDIR /src
+COPY ["ChroniclesAPI/ChroniclesAPI.csproj", "ChroniclesAPI/"]
+COPY ["PlayerApp.Models/PlayerApp.Models.csproj", "PlayerApp.Models/"]
+RUN dotnet restore "ChroniclesAPI/ChroniclesAPI.csproj"
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+ENTRYPOINT ["dotnet", "watch", "--project", "ChroniclesAPI/ChroniclesAPI.csproj", "run", "--no-launch-profile"]

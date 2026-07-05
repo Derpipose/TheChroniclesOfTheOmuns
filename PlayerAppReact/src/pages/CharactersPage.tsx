@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import type { Character } from '../types/character'
+import NavBar from '../components/NavBar'
 
 const PLACEHOLDER_CHARACTERS: Character[] = [
   { id: 1, playerId: 1, name: 'Aerin', level: 5, setting: 'Scifi', maxHealth: 80 },
@@ -12,16 +13,7 @@ export default function CharactersPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
-      <div className="border-b px-6 py-4 flex items-center justify-between" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-        <h1 className="text-lg font-semibold" style={{ color: '#2C2416' }}>Character Vault</h1>
-        <button
-          onClick={() => navigate('/sign-in')}
-          className="text-sm transition-colors hover:underline"
-          style={{ color: '#7A6F5C' }}
-        >
-          Sign out
-        </button>
-      </div>
+      <NavBar />
 
       <div className="max-w-3xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
@@ -52,16 +44,10 @@ export default function CharactersPage() {
                   <p className="text-sm mt-0.5" style={{ color: '#7A6F5C' }}>{char.setting}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span
-                    className="text-xs font-medium px-2.5 py-1 rounded-full"
-                    style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}
-                  >
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}>
                     Level {char.level}
                   </span>
-                  <span
-                    className="text-xs font-medium px-2.5 py-1 rounded-full"
-                    style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}
-                  >
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}>
                     {char.maxHealth} HP
                   </span>
                 </div>

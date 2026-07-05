@@ -49,7 +49,9 @@ builder.Services.AddCors(options => {
     options.AddPolicy("Dev", policy => {
         policy.WithOrigins(
             "http://localhost:5173",
-            "http://localhost:5174"
+            "http://localhost:5174",
+            "http://localhost:5401",
+            "http://derpserver.flyingfox-gourami.ts.net:5401"
         )
         .AllowAnyHeader()
         .AllowAnyMethod();
