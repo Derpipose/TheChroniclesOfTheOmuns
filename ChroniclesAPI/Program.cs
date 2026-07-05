@@ -45,6 +45,17 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PlayerContext>();
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("Dev", policy => {
+        policy.WithOrigins(
+            "http://localhost:5173",
+            "http://localhost:5174"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Auto-migrate on startup (dev-friendly)
@@ -58,6 +69,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Dev");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
