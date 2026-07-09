@@ -9,8 +9,7 @@ public class BaseCharacterTests {
 
     [Fact]
     public void TestBaseCharacterCreation() {
-        Player player = new Player("TestPlayer", "testplayer@example.com");
-        Character character = new Character(player);
+        Character character = new Character(1, "TestCharacter");
 
         Assert.IsType<Character>(character);
         Assert.NotNull(character);
@@ -18,8 +17,7 @@ public class BaseCharacterTests {
 
     [Fact]
     public void TestSetCharacterName() {
-        Player player = new Player("TestPlayer", "testplayer@example.com");
-        Character character = new Character(player);
+        Character character = new Character(1, "TestCharacter");
         character.SetName("Cressa");
         Assert.Equal("Cressa", character.Name);
         character.SetName("Kreena");
@@ -28,31 +26,29 @@ public class BaseCharacterTests {
 
     [Fact]
     public void TestCharacterHealth() {
-        Player player = new Player("TestPlayer", "testplayer@example.com");
-        Character character = new Character(player);
+        Character character = new Character(1, "TestCharacter");
         Assert.Equal(0, character.MaxHealth);
     }
 
     [Fact]
     public void SetMaxHealthCharacter() {
-        Player player = new Player("TestPlayer", "testplayer@example.com");
-        Character character = new Character(player);
+        Character character = new Character(1, "TestCharacter");
         character.SetMaxHealth(100);
         Assert.Equal(100, character.MaxHealth);
     }
 
     [Fact]
     public void TestCharacterId() {
-        Player player = new Player("TestPlayer", "testplayer@example.com");
-        Character character = new Character(player);
-        Assert.Equal(0, character.Id);
+        Character character = new Character(1, "TestCharacter");
+        character.SimulatePersist(1);
+        Assert.Equal(1, character.Id);
     }
 
     [Fact]
     public void CharacterBelongsToPlayer() {
         Player player = new Player("TestPlayer", "testplayer@example.com");
         player.SimulatePersist(1);
-        Character character = new Character(player);
+        Character character = new Character(player.Id, "TestCharacter");
         Assert.Equal(player.Id, character.PlayerId);
     }
 }

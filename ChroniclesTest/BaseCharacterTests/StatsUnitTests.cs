@@ -8,9 +8,7 @@ public class StatsUnitTests {
 
     [Fact]
     public void BlankCreateCharacterStats() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        CharacterStats stats = new CharacterStats(1);
 
         Assert.Equal(10, stats.Strength);
         Assert.Equal(10, stats.Constitution);
@@ -23,10 +21,10 @@ public class StatsUnitTests {
 
     [Fact]
     public void CreateCharacterStats() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
+        Character character = new Character(1, "TestCharacter");
+
         // Arrange & Act
-        CharacterStats stats = new CharacterStats(character);
+        CharacterStats stats = new CharacterStats(1);
         stats.SetStat(StatType.Strength, 15, character);
         stats.SetStat(StatType.Constitution, 14, character);
         stats.SetStat(StatType.Dexterity, 13, character);
@@ -45,9 +43,9 @@ public class StatsUnitTests {
 
     [Fact]
     public void InvalidStatValue() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+
+        CharacterStats stats = new CharacterStats(1);
 
         Assert.Throws<ArgumentException>(() => stats.SetStat(StatType.Strength, -5, character));
         Assert.Throws<ArgumentException>(() => stats.SetStat(StatType.Constitution, 0, character));
@@ -55,18 +53,18 @@ public class StatsUnitTests {
 
     [Fact]
     public void InvalidStatType() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+
+        CharacterStats stats = new CharacterStats(1);
 
         Assert.Throws<ArgumentOutOfRangeException>(() => stats.SetStat((StatType)999, 10, character));
     }
 
     [Fact]
     public void CannotEditActiveCharacterStats() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+
+        CharacterStats stats = new CharacterStats(1);
         character.SetActive();
 
         Assert.Throws<InvalidOperationException>(() => stats.SetStat(StatType.Strength, 15, character));
@@ -74,9 +72,9 @@ public class StatsUnitTests {
 
     [Fact]
     public void IncreaseAndDecreaseStats() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+
+        CharacterStats stats = new CharacterStats(1);
         character.SetActive();
 
         stats.IncreaseStat(StatType.Strength, 5, character);
@@ -88,9 +86,9 @@ public class StatsUnitTests {
 
     [Fact]
     public void InvalidIncreaseDecreaseAmount() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+
+        CharacterStats stats = new CharacterStats(1);
         character.SetActive();
 
         Assert.Throws<ArgumentException>(() => stats.IncreaseStat(StatType.Strength, -5, character));
@@ -99,9 +97,9 @@ public class StatsUnitTests {
 
     [Fact]
     public void CannotIncreaseDecreaseInactiveCharacter() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+
+        CharacterStats stats = new CharacterStats(1);
 
         Assert.Throws<InvalidOperationException>(() => stats.IncreaseStat(StatType.Strength, 5, character));
         Assert.Throws<InvalidOperationException>(() => stats.DecreaseStat(StatType.Constitution, 3, character));
@@ -112,9 +110,8 @@ public class StatsUnitTests {
 
     [Fact]
     public void InvalidStatTypeForIncreaseDecrease() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+        CharacterStats stats = new CharacterStats(1);
         character.SetActive();
 
         Assert.Throws<ArgumentOutOfRangeException>(() => stats.IncreaseStat((StatType)999, 5, character));
@@ -123,9 +120,8 @@ public class StatsUnitTests {
 
     [Fact]
     public void SetStatAcceptsMinimumValidValue() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        CharacterStats stats = new CharacterStats(character);
+        Character character = new Character(1, "TestCharacter");
+        CharacterStats stats = new CharacterStats(1);
 
         stats.SetStat(StatType.Dexterity, 1, character);
 
@@ -134,10 +130,7 @@ public class StatsUnitTests {
 
     [Fact]
     public void CharacterStatsLinksToCorrectCharacter() {
-        Player player = new Player("TestPlayer", "TestSetting");
-        Character character = new Character(player);
-        character.SimulatePersist(42);
-        CharacterStats stats = new CharacterStats(character);
+        CharacterStats stats = new CharacterStats(42);
 
         Assert.Equal(42, stats.CharacterId);
     }

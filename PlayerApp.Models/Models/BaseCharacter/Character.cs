@@ -15,11 +15,9 @@ public class Character {
     public Player? Player { get; private set; }
     
 
-    public Character(Player player) {
-        // if (player.Id == 0)
-        //     throw new InvalidOperationException(
-        //         "Player must be persisted before creating a Character.");
-        PlayerId = player.Id;
+    public Character(int playerid, string name) {
+        PlayerId = playerid;
+        Name = name;
     }
 
     private Character(int playerId) {

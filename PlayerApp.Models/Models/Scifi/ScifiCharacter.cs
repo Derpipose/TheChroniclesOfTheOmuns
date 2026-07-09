@@ -20,46 +20,39 @@ public class ScifiCharacter {
     public ScifiBackground? ScifiBackground { get; private set; }
 
 
-    public ScifiCharacter(Character character) {
-        if (character.Id == 0)
-            throw new InvalidOperationException(
-                "Character must be persisted before creating a ScifiCharacter.");
-        CharacterId = character.Id;
+    public ScifiCharacter(int characterid) {
+        CharacterId = characterid;
     }
 
-    private ScifiCharacter(int characterId) {
-        CharacterId = characterId;
-    }
-
-    public void SetScifiRace(ScifiRace scifiRace) {
-        if (scifiRace.Id == 0)
+    public void SetScifiRace(int scifiRaceId) {
+        if (scifiRaceId == 0)
             throw new InvalidOperationException(
                 "ScifiRace must be persisted before being assigned to a ScifiCharacter.");
-        ScifiRaceId = scifiRace.Id;
+        ScifiRaceId = scifiRaceId;
     }
 
-    public void SetScifiSubrace(ScifiSubrace scifiSubrace) {
+    public void SetScifiSubrace(int scifiSubraceId) {
         if (ScifiRaceId == 0)
             throw new InvalidOperationException(
                 "ScifiRace must be set before setting a ScifiSubrace.");
-        if (scifiSubrace.Id == 0)
+        if (scifiSubraceId == 0)
             throw new InvalidOperationException(
                 "ScifiSubrace must be persisted before being assigned to a ScifiCharacter.");
-        ScifiSubraceId = scifiSubrace.Id;
+        ScifiSubraceId = scifiSubraceId;
     }
 
-    public void SetScifiClass(ScifiClass scifiClass) {
-        if (scifiClass.Id == 0)
+    public void SetScifiClass(int scifiClassId) {
+        if (scifiClassId == 0)
             throw new InvalidOperationException(
                 "ScifiClass must be persisted before being assigned to a ScifiCharacter.");
-        ScifiClassId = scifiClass.Id;
+        ScifiClassId = scifiClassId;
     }
 
-    public void SetScifiBackground(ScifiBackground scifiBackground) {
-        if (scifiBackground.Id == 0)
+    public void SetScifiBackground(int scifiBackgroundId) {
+        if (scifiBackgroundId == 0)
             throw new InvalidOperationException(
                 "ScifiBackground must be persisted before being assigned to a ScifiCharacter.");
-        ScifiBackgroundId = scifiBackground.Id;
+        ScifiBackgroundId = scifiBackgroundId;
     }
 
     [Conditional("DEBUG")]
