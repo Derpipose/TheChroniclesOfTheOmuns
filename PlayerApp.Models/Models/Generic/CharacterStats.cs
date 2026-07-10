@@ -27,6 +27,11 @@ public class CharacterStats {
     public int Intelligence { get; private set; } = 10;
 
 
+    // Parameterless constructor for EF Core
+    protected CharacterStats() {
+        // EF Core needs this to materialize the entity
+    }
+
     public CharacterStats(int characterid) {
         CharacterId = characterid;
     }

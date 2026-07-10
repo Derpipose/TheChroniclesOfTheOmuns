@@ -6,8 +6,8 @@ namespace PlayerApp.Models;
 public class ScifiSubrace {
     public int Id { get; private set; }
     public int ScifiRaceId { get; private set; }
-    public string SubRaceName { get; private set; }
-    public string Description { get; private set; }
+    public string SubRaceName { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public int RaceStatsId { get; private set; }
 
     public ScifiSubrace(int scifiRaceId, string subRaceName, string description, int raceStatsId) {
@@ -24,6 +24,10 @@ public class ScifiSubrace {
         RaceStatsId = raceStatsId;
     }
 
+    // Parameterless constructor for EF Core
+    protected ScifiSubrace() {
+        // EF Core needs this to materialize the entity
+    }
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;

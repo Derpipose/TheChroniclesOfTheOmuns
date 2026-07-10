@@ -24,6 +24,10 @@ public class ScifiCharacter {
         CharacterId = characterid;
     }
 
+    // Parameterless constructor for EF Core
+    protected ScifiCharacter() {
+        // EF Core needs this to materialize entities
+    }
     public void SetScifiRace(int scifiRaceId) {
         if (scifiRaceId == 0)
             throw new InvalidOperationException(

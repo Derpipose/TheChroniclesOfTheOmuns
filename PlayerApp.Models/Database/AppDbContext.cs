@@ -29,6 +29,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .WithMany(p => p.AuthCodes)
             .HasForeignKey(a => a.PlayerId);
 
+        modelBuilder.Entity<CharacterStats>()
+            .HasOne<Character>()
+            .WithOne()
+            .HasForeignKey<CharacterStats>(cs => cs.CharacterId);
+
+        modelBuilder.Entity<ScifiCharacter>()
+            .HasOne(sc => sc.Character)
+            .WithOne()
+            .HasForeignKey<ScifiCharacter>(sc => sc.CharacterId);
+
         modelBuilder.Entity<ScifiBackgroundTalent>()
             .HasKey(bt => new { bt.ScifiBackgroundId, bt.ScifiTalentId });
 
