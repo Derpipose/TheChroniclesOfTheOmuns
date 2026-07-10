@@ -5,9 +5,9 @@ namespace PlayerApp.Models;
 
 public class ScifiClass {
     public int Id { get; private set; } = 0;
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     public DiceType HitDice { get; private set; }
-    public string Description { get; private set; }
+    public string Description { get; private set; } = string.Empty;
 
     public IReadOnlyList<ScifiClassTalent> ClassTalents { get; private set; } = new List<ScifiClassTalent>();
 
@@ -17,6 +17,10 @@ public class ScifiClass {
         Description = description;
     }
 
+    // Parameterless constructor for EF Core
+    protected ScifiClass() {
+        // EF Core needs this to materialize the entity
+    }
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
@@ -33,5 +37,10 @@ public class ScifiClassTalent {
     public ScifiClassTalent(int scifiClassId, int scifiTalentId) {
         ScifiClassId = scifiClassId;
         ScifiTalentId = scifiTalentId;
+    }
+    
+    // Parameterless constructor for EF Core
+    protected ScifiClassTalent() {
+        // EF Core needs this to materialize the join entity
     }
 }

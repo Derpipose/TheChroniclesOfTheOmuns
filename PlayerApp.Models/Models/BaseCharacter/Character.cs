@@ -24,6 +24,10 @@ public class Character {
         this.PlayerId = playerId;
     }
 
+    // Parameterless constructor for EF Core
+    protected Character() {
+        // EF Core needs this to materialize the entity
+    }
     public void SetName(string name) {
         Name = name;
     }

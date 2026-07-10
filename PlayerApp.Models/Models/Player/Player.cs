@@ -18,6 +18,10 @@ public class Player {
         Email = email;
     }
 
+    // Parameterless constructor for EF Core
+    protected Player() {
+        // EF Core needs this to materialize the entity
+    }
     public void UpdateLastLogin() {
         LastLoginAt = DateTime.UtcNow;
     }

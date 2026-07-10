@@ -16,8 +16,8 @@ pick one talent from background talents }
 */
 public class ScifiBackground {
     public int Id { get; private set; } = 0;
-    public string Name { get; private set; }
-    public string Description { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public bool Restricted { get; private set; } = false;
     public bool HasClassOverlap { get; private set; } = false;
 
@@ -30,6 +30,10 @@ public class ScifiBackground {
         HasClassOverlap = hasClassOverlap;
     }
 
+    // Parameterless constructor for EF Core
+    protected ScifiBackground() {
+        // EF Core needs this to materialize the entity
+    }
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
@@ -47,5 +51,10 @@ public class ScifiBackgroundTalent {
     public ScifiBackgroundTalent(int scifiBackgroundId, int scifiTalentId) {
         ScifiBackgroundId = scifiBackgroundId;
         ScifiTalentId = scifiTalentId;
+    }
+    
+    // Parameterless constructor for EF Core
+    protected ScifiBackgroundTalent() {
+        // EF Core needs this to materialize the join entity
     }
 }

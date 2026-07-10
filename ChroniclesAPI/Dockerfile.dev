@@ -1,8 +1,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0
+ARG UID=1004
+ARG GID=1004
+RUN groupadd -g $GID appuser && useradd -u $UID -g $GID -m appuser
 WORKDIR /src
 COPY ["ChroniclesAPI/ChroniclesAPI.csproj", "ChroniclesAPI/"]
 COPY ["PlayerApp.Models/PlayerApp.Models.csproj", "PlayerApp.Models/"]
 RUN dotnet restore "ChroniclesAPI/ChroniclesAPI.csproj"
+RUN chown -R appuser:appuser /src
+USER appuser
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 ENTRYPOINT ["dotnet", "watch", "--project", "ChroniclesAPI/ChroniclesAPI.csproj", "run", "--no-launch-profile"]

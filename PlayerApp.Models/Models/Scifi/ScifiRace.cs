@@ -2,9 +2,9 @@ using System.Diagnostics;
 
 public class ScifiRace {
     public int Id { get; private set; }
-    public string SubType { get; private set; }
-    public string Name { get; private set; }
-    public string Description { get; private set; }
+    public string SubType { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public bool IsStarterRace { get; private set; }
     public int RaceStatsId { get; private set; }
     public int Speed { get; private set; }
@@ -28,6 +28,10 @@ public class ScifiRace {
         AgeMax = ageMax;
     }
 
+    // Parameterless constructor for EF Core
+    protected ScifiRace() {
+        // EF Core needs this to materialize the entity
+    }
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
