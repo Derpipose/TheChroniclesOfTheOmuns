@@ -119,6 +119,9 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CharacterId")
+                        .IsUnique();
+
                     b.ToTable("CharacterStats");
                 });
 
@@ -238,7 +241,8 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacterId");
+                    b.HasIndex("CharacterId")
+                        .IsUnique();
 
                     b.HasIndex("ScifiBackgroundId");
 
@@ -403,6 +407,15 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("Player");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
+                {
+                    b.HasOne("PlayerApp.Models.Character", null)
+                        .WithOne()
+                        .HasForeignKey("PlayerApp.Models.CharacterStats", "CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiBackgroundTalent", b =>
                 {
                     b.HasOne("PlayerApp.Models.ScifiBackground", "ScifiBackground")
@@ -425,8 +438,8 @@ namespace PlayerApp.Models.Migrations
             modelBuilder.Entity("PlayerApp.Models.ScifiCharacter", b =>
                 {
                     b.HasOne("PlayerApp.Models.Character", "Character")
-                        .WithMany()
-                        .HasForeignKey("CharacterId")
+                        .WithOne()
+                        .HasForeignKey("PlayerApp.Models.ScifiCharacter", "CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
