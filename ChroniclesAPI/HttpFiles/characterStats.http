@@ -1,0 +1,47 @@
+@baseUrl = http://localhost:5237
+@token = 
+@characterId = 2
+
+### Get stats for a character
+GET {{baseUrl}}/api/character/{{characterId}}/stats
+Authorization: Bearer {{token}}
+
+###
+
+### Bulk update stats (pre-play, character must be inactive)
+PUT {{baseUrl}}/api/character/3/stats
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "strength": 14,
+    "constitution": 12,
+    "dexterity": 10,
+    "wisdom": 18,
+    "charisma": 13,
+    "intelligence": 11
+}
+
+###
+
+### Increase a single stat (character must be active)
+PATCH {{baseUrl}}/api/character/2/stats
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "stat": 4,
+    "value": 2
+}
+
+###
+
+### Decrease a single stat (character must be active)
+PATCH {{baseUrl}}/api/character/2/stats
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "stat": 0,
+    "value": -2
+}

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace PlayerApp.Models.Enums;
 
 public enum StatType {
-    Strength,
-    Constitution,
-    Dexterity,
-    Wisdom,
-    Charisma,
-    Intelligence
+    Strength = 0,
+    Constitution = 1,
+    Dexterity = 2,
+    Wisdom = 3,
+    Charisma = 4,
+    Intelligence = 5
 }

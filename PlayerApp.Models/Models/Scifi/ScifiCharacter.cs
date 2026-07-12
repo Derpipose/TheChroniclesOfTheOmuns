@@ -59,6 +59,22 @@ public class ScifiCharacter {
         ScifiBackgroundId = scifiBackgroundId;
     }
 
+    public void ClearScifiRace() {
+        ScifiRaceId = 0;
+    }
+
+    public void ClearScifiSubrace() {
+        ScifiSubraceId = 0;
+    }
+
+    public void ClearScifiClass() {
+        ScifiClassId = 0;
+    }
+
+    public void ClearScifiBackground() {
+        ScifiBackgroundId = 0;
+    }
+
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
