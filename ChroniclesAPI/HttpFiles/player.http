@@ -14,7 +14,7 @@ POST http://localhost:5237/auth/request
 Content-Type: application/json
 
 {
-    "email": "Not for you"
+    "email": "derpipose@gmail.com"
 }
 
 ###
@@ -24,8 +24,8 @@ POST http://localhost:5237/auth/verify
 Content-Type: application/json
 
 {
-    "email": "Not for you",
-    "otp": "Ha. Nope"
+    "email": "derpipose@gmail.com",
+    "otp": "740339"
 }
 
 ###

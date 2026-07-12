@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
@@ -7,7 +8,7 @@ public class Character {
     public string Name { get; private set; } = "Tav";
     public int PlayerId { get; private set; } = 0;
     public int Level { get; private set; } = 1;
-    public string Setting { get; private set; } = "Unregistered";
+    public SettingEnum Setting { get; private set; } = SettingEnum.Unregistered;
     public int MaxHealth { get; private set; } = 0;
     public int Id { get; private set;}
     public bool IsActive { get; private set; } = false;
@@ -43,5 +44,10 @@ public class Character {
 
     public void SetActive(){
         IsActive = true;
+    }
+
+    public void SetLevel(int value) {
+        if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), "Level must be greater than 0.");
+        Level = value;
     }
 }

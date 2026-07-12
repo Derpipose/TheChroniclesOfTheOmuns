@@ -77,9 +77,8 @@ namespace PlayerApp.Models.Migrations
                     b.Property<int>("PlayerId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Setting")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Setting")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

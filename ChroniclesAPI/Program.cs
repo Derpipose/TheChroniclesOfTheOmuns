@@ -38,6 +38,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer(); // required by Swashbuckle
+builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
 // Register services
@@ -67,7 +69,7 @@ using (var scope = app.Services.CreateScope()) {
 }
 
 if (app.Environment.IsDevelopment()) {
-    app.MapOpenApi();
+    // app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

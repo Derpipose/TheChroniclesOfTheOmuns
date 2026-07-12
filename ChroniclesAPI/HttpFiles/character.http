@@ -1,0 +1,58 @@
+# @baseUrl = http://derpserver.flyingfox-gourami.ts.net:5400
+@baseUrl = http://localhost:5237
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJkZXJwaXBvc2VAZ21haWwuY29tIiwianRpIjoiOWU5NmE2ZWEtZjk5Zi00YmZiLTg0MDEtNzYwMTU2OGU0MmZkIiwiZXhwIjoxNzgzOTA3NDIzLCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ.Vdfxz3Vj0OCBBZXipG1mtzQ3SehkoI3lNvuNWZPedcU
+
+### Get all characters (with stats)
+GET {{baseUrl}}/api/character
+Authorization: Bearer {{token}}
+
+###
+
+### Get all character details (no stats)
+GET {{baseUrl}}/api/character/details
+Authorization: Bearer {{token}}
+
+###
+
+### Get character by id (with stats)
+GET {{baseUrl}}/api/character/1
+Authorization: Bearer {{token}}
+
+###
+
+### Get character details by id (no stats)
+GET {{baseUrl}}/api/character/1/details
+Authorization: Bearer {{token}}
+
+###
+
+### Create a character
+POST {{baseUrl}}/api/character
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Maeve",
+    "maxHealth": 80,
+    "level": 1
+}
+
+###
+
+### Update a character
+PUT {{baseUrl}}/api/character/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Derpsi",
+    "maxHealth": 100,
+    "level": 2,
+    "isActive": true
+}
+
+###
+
+### Delete a character
+DELETE {{baseUrl}}/api/character/1
+Authorization: Bearer {{token}}
