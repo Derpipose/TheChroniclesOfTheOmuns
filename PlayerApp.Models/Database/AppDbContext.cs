@@ -17,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiRace> ScifiRaces => Set<ScifiRace>();
     public DbSet<ScifiSubrace> ScifiSubraces => Set<ScifiSubrace>();
     public DbSet<ScifiCharacter> ScifiCharacters => Set<ScifiCharacter>();
+    public DbSet<CharacterModifier> CharacterModifiers => Set<CharacterModifier>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -68,5 +69,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                 c => c.ToList()
             ));
+
+        modelBuilder.Entity<CharacterModifier>()
+            .HasOne(cm => cm.Character)
+            .WithMany(c => c.Modifiers)
+            .HasForeignKey(cm => cm.CharacterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CharacterModifier>()
+            .Property(cm => cm.ModifierType)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<CharacterModifier>()
+            .Property(cm => cm.Source)
+            .HasConversion<string>();
+
+
     }
 }

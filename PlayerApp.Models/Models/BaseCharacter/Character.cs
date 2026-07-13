@@ -10,11 +10,13 @@ public class Character {
     public int Level { get; private set; } = 1;
     public SettingEnum Setting { get; private set; } = SettingEnum.Unregistered;
     public int MaxHealth { get; private set; } = 0;
-    public int Id { get; private set;}
+    public int Id { get; private set; }
     public bool IsActive { get; private set; } = false;
 
+    public ICollection<CharacterModifier> Modifiers { get; set; } = [];
+
     public Player? Player { get; private set; }
-    
+
 
     public Character(int playerid, string name) {
         PlayerId = playerid;
@@ -42,12 +44,33 @@ public class Character {
         Id = id;
     }
 
-    public void SetActive(){
+    public void SetActive() {
         IsActive = true;
     }
 
     public void SetLevel(int value) {
         if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), "Level must be greater than 0.");
         Level = value;
+    }
+
+    public int GetMaxHealth() {
+        var bonus = Modifiers
+            .Where(m => m.ModifierType == RaceModifierType.Health)
+            .Sum(m => m.Amount);
+        return MaxHealth + bonus;
+    }
+
+    public int GetArmorClass(int baseArmorClass) {
+        var bonus = Modifiers
+            .Where(m => m.ModifierType == RaceModifierType.ArmorClass)
+            .Sum(m => m.Amount);
+        return baseArmorClass + bonus;
+    }
+
+    public int GetStat(RaceModifierType statType, int baseValue) {
+        var bonus = Modifiers
+            .Where(m => m.ModifierType == statType)
+            .Sum(m => m.Amount);
+        return baseValue + bonus;
     }
 }
