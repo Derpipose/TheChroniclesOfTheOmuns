@@ -8,11 +8,11 @@ public class CharacterModifier {
     public int CharacterId { get; private set; }
     public Character Character { get; private set; } = null!;
 
-    public RaceModifierType ModifierType { get; private set; }
+    public ModifierType ModifierType { get; private set; }
     public int Amount { get; private set; }
-    public RaceModifierSource Source { get; private set; }
+    public ModifierSource Source { get; private set; }
 
-    public CharacterModifier(int characterId, RaceModifierType modifierType, int amount, RaceModifierSource source, string? sourceDetail = null) {
+    public CharacterModifier(int characterId, ModifierType modifierType, int amount, ModifierSource source, string? sourceDetail = null) {
         CharacterId = characterId;
         ModifierType = modifierType;
         Amount = amount;

@@ -1,6 +1,6 @@
 namespace PlayerApp.Models.Enums;
 
-public enum RaceModifierType {
+public enum ModifierType {
     Strength,
     Dexterity,
     Constitution,
@@ -11,7 +11,7 @@ public enum RaceModifierType {
     Health
 }
 
-public enum RaceModifierSource {
+public enum ModifierSource {
     Race,
     Subrace,
     Class,

@@ -55,19 +55,19 @@ public class Character {
 
     public int GetMaxHealth() {
         var bonus = Modifiers
-            .Where(m => m.ModifierType == RaceModifierType.Health)
+            .Where(m => m.ModifierType == ModifierType.Health)
             .Sum(m => m.Amount);
         return MaxHealth + bonus;
     }
 
     public int GetArmorClass(int baseArmorClass) {
         var bonus = Modifiers
-            .Where(m => m.ModifierType == RaceModifierType.ArmorClass)
+            .Where(m => m.ModifierType == ModifierType.ArmorClass)
             .Sum(m => m.Amount);
         return baseArmorClass + bonus;
     }
 
-    public int GetStat(RaceModifierType statType, int baseValue) {
+    public int GetStat(ModifierType statType, int baseValue) {
         var bonus = Modifiers
             .Where(m => m.ModifierType == statType)
             .Sum(m => m.Amount);
@@ -75,7 +75,7 @@ public class Character {
     }
 
 
-    
+
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
