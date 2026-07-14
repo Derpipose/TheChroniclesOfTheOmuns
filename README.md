@@ -7,7 +7,6 @@ Feel free to explore the code, contribute, or use it for your own Omuns adventur
 The character builder is still being worked on, and there are many features yet to be added. Stay tuned for updates!
 Current dev timeline is that I hope to have a working version by the end of 2026, Christmas time to be exact,  for the player side.
 June 2027 for the Game Master, or Chronicler, side.
-Both will have local databases at first, with online databases to be added later.
 
 The current dev plan can be found: [https://docs.google.com/document/d/1-_hxALgBB9ue5jpOuSIECTwRzIaqAatZP465uhR4I44/edit?usp=sharing](https://docs.google.com/document/d/1kHt8aTOYBO9ikv3AfFeUJ_B-ZeSJlld_mo9rzK_wiqk/edit?usp=sharing)
 
@@ -34,12 +33,19 @@ The current dev plan can be found: [https://docs.google.com/document/d/1-_hxALgB
 ```
    This applies all migrations against the PostgreSQL dev database (port `5433`).
 
-3. **Run the API with hot reload**:
+3. **Before running the api, generate a JWT**:
+```powershell
+   [Convert]::ToBase64String((1..64 | ForEach-Object { [byte](Get-Random -Max 256) }))
+```
+Do this to generate a JWT and in your user secrets, set "Jwt:Key": to that. This will allow you to test out the API successfully. You'll need your own local db to connect to though. 
+
+
+4. **Run the API with hot reload**:
 ```powershell
    dotnet watch
 ```
 
-4. **Run the React frontend**:
+5. **Run the React frontend**:
 ```powershell
    cd PlayerAppReact
    pnpm dev
@@ -56,7 +62,7 @@ When the app first loads, navigate to sync the game data:
 After this, you can:
 - Go to **New Character** to create a character
 - Select a race and class (both optional)
-- Set character stats (default base 10, max 18)
+- Set character stats (default base 10, max depends on the setting. Fantasy, when implemented, will be a base of 18. Scifi is a base of 20)
 - View created characters and their details
 
 #### Authentication (Dev)

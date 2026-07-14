@@ -39,10 +39,6 @@ public class Character {
         MaxHealth = maxHealth;
     }
 
-    [Conditional("DEBUG")]
-    public void SimulatePersist(int id) {
-        Id = id;
-    }
 
     public void SetActive() {
         IsActive = true;
@@ -51,6 +47,10 @@ public class Character {
     public void SetLevel(int value) {
         if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), "Level must be greater than 0.");
         Level = value;
+    }
+
+    public void SetSetting(SettingEnum setting) {
+        Setting = setting;
     }
 
     public int GetMaxHealth() {
@@ -72,5 +72,12 @@ public class Character {
             .Where(m => m.ModifierType == statType)
             .Sum(m => m.Amount);
         return baseValue + bonus;
+    }
+
+
+    
+    [Conditional("DEBUG")]
+    public void SimulatePersist(int id) {
+        Id = id;
     }
 }

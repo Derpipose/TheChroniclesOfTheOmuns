@@ -1,0 +1,81 @@
+@baseUrl = http://localhost:5237
+@token = your-jwt-token-here
+@characterId = 1
+@scifiCharacterId = 1
+
+### Get all scifi characters
+GET {{baseUrl}}/api/scifi/scificharacter
+Authorization: Bearer {{token}}
+
+###
+
+### Get scifi character by id
+GET {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Create a scifi character (minimal - no race/class/background)
+POST {{baseUrl}}/api/scifi/scificharacter
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "characterId": {{characterId}}
+}
+
+###
+
+### Create a scifi character (with optional fields)
+POST {{baseUrl}}/api/scifi/scificharacter
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "characterId": {{characterId}},
+    "scifiRaceId": 1,
+    "scifiClassId": 1,
+    "scifiBackgroundId": 1
+}
+
+###
+
+### Update scifi character - set race and class, leave background alone
+PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiRaceId": 1,
+    "scifiClassId": 1
+}
+
+###
+
+### Update scifi character - clear race (and subrace) only
+PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiRaceId": 0
+}
+
+###
+
+### Update scifi character - clear everything
+PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiRaceId": 0,
+    "scifiClassId": 0,
+    "scifiBackgroundId": 0
+}
+
+###
+
+### Delete scifi character
+DELETE {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}

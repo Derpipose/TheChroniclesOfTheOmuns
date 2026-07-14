@@ -73,7 +73,7 @@ EF Core handles schema/migrations; Dapper was discussed for the query layer but 
 4. **JSON columns for collections** — `IReadOnlyList<T>` properties use EF Core value converters with an explicit `ValueComparer<IReadOnlyList<T>>` to avoid change-tracking warnings.
 5. **PostgreSQL type-conversion migrations** — when changing a column type (e.g. `text` → `integer` for an enum), EF's auto-generated migration omits the required `USING` clause. Replace with raw SQL: `ALTER COLUMN ... TYPE integer USING (CASE ...)`. The `Down()` method needs a matching reverse `CASE`. Prefer a catch-all of `ELSE -1` (not `ELSE 0`) to surface unexpected data rather than silently mapping it to a valid enum value.
 6. **`[Conditional("DEBUG")]` over `#if DEBUG`** — preferred pattern for `SimulatePersist` methods and other debug-only bridge code (used until EF Core handles ID assignment).
-7. **Clean breaks over incremental migration** — when a design is rejected outright, delete legacy code and tests in one clean, descriptive commit rather than converting incrementally.
+7. **Clean breaks over incremental migration** — when a design is rejected outright, delete legacy code and tests in one clean, descriptive commit rather than converting incrementally. (This is coming from the .Legacy update that BROKE EVERYTHING HARD. We removed all .Legacy code and started from scratch as it was heavily corrupting the tests we were playing with.)
 8. **Pin EF Core package versions** explicitly across all projects to avoid NU1605 downgrade errors.
 9. **Preserve test scaffold through refactors** — build config, dependencies, and CI integration stay; only test files get replaced.
 
@@ -82,7 +82,12 @@ EF Core handles schema/migrations; Dapper was discussed for the query layer but 
 - Ask design/clarifying questions before writing code, especially where there are database implications — don't assume.
 - API testing is done with **HTTP files**, not curl.
 - Address warnings early, while the codebase is still clean.
-- Terminal file editing uses **vim**, not nano.
+- Please put the Debug Simulate Persists at the bottom of the file. File order should also look like:
+    - Identities/properties
+    - Setters
+    - Getters
+    - Others
+    - Simulates
 
 ## Tools & Stack Summary
 
