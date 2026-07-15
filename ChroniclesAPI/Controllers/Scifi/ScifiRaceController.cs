@@ -38,12 +38,15 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
         if (testRace is not null) {
             return Conflict(new { message = $"ScifiRace with name '{request.Name}' already exists." });
         }
+
+        var raceStatsId = await ResolveRaceStatsIdAsync(request.RaceStats, request.RaceStatsId);
+
         var race = new ScifiRace(
             request.SubType,
             request.Name,
             request.Description,
             request.IsStarterRace,
-            request.RaceStatsId,
+            raceStatsId,
             request.Speed,
             request.AdventuringAgeStart,
             request.AgeMax);
@@ -61,12 +64,14 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
         if (race is null)
             return NotFound(new { message = $"ScifiRace {id} was not found." });
 
+        var raceStatsId = await ResolveRaceStatsIdAsync(request.RaceStats, request.RaceStatsId);
+
         race.Update(
             request.SubType,
             request.Name,
             request.Description,
             request.IsStarterRace,
-            request.RaceStatsId,
+            raceStatsId,
             request.Speed,
             request.AdventuringAgeStart,
             request.AgeMax,
@@ -90,24 +95,101 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
         return NoContent();
     }
 
+    [HttpGet("{id:int}/stats")]
+    public async Task<IActionResult> GetByIdWithStats(int id) {
+        var race = await db.ScifiRaces
+            .Include(r => r.RaceStats)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (race is null)
+            return NotFound(new { message = $"ScifiRace {id} was not found." });
+
+        return Ok(race);
+    }
+
+    [HttpGet("with-stats")]
+    public async Task<IActionResult> GetAllWithStats() {
+        var races = await db.ScifiRaces
+            .Include(r => r.RaceStats)
+            .ToListAsync();
+
+        return Ok(races);
+    }
+
     public record UpdateScifiRaceDto(
         string SubType,
         string Name,
         string Description,
         bool IsStarterRace,
-        int RaceStatsId,
+        int RaceStatsId,          // used if RaceStats is null
+        RaceStatsDto? RaceStats,  // used if provided
         int Speed,
         int AdventuringAgeStart,
         int AgeMax,
         bool IsPlayable);
+
+    public record RaceStatModifierDto(StatType Stat, int Modifier, bool IsLocked);
+
+    public record RaceStatsDto(
+        List<RaceStatModifierDto>? Modifiers,
+        List<int>? FreeStatPicks);
 
     public record CreateScifiRaceDto(
         string SubType,
         string Name,
         string Description,
         bool IsStarterRace,
-        int RaceStatsId,
+        int RaceStatsId,          // used if RaceStats is null
+        RaceStatsDto? RaceStats,  // used if provided
         int Speed,
         int AdventuringAgeStart,
         int AgeMax);
+
+
+    private async Task<int> ResolveRaceStatsIdAsync(RaceStatsDto? statsDto, int fallbackId) {
+        if (statsDto is null)
+            return fallbackId;
+
+        var newModifiers = (statsDto.Modifiers ?? new List<RaceStatModifierDto>())
+            .Select(m => (m.Stat, m.Modifier, m.IsLocked))
+            .OrderBy(m => m.Stat)
+            .ToList();
+
+        var newFreePicks = (statsDto.FreeStatPicks ?? new List<int>())
+            .OrderBy(x => x)
+            .ToList();
+
+        var existingStats = await db.RaceStats.ToListAsync();
+
+        var match = existingStats.FirstOrDefault(rs => {
+            var existingModifiers = (rs.Modifiers ?? new List<RaceStatModifier>())
+                .Select(m => (m.Stat, m.Modifier, m.IsLocked))
+                .OrderBy(m => m.Stat)
+                .ToList();
+
+            var existingFreePicks = (rs.FreeStatPicks ?? new List<int>())
+                .OrderBy(x => x)
+                .ToList();
+
+            return existingModifiers.SequenceEqual(newModifiers)
+                && existingFreePicks.SequenceEqual(newFreePicks);
+        });
+
+        if (match is not null)
+            return match.Id;
+
+        var modifiers = (statsDto.Modifiers ?? new List<RaceStatModifierDto>())
+            .Select(m => new RaceStatModifier(m.Stat, m.Modifier, m.IsLocked))
+            .ToList();
+
+        var newStats = new RaceStats(modifiers, statsDto.FreeStatPicks);
+        db.RaceStats.Add(newStats);
+        await db.SaveChangesAsync();
+
+        return newStats.Id;
+    }
+
+
+
 }
+

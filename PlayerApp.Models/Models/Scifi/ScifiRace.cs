@@ -1,5 +1,7 @@
 using System.Diagnostics;
 
+using PlayerApp.Models;
+
 public class ScifiRace {
     public int Id { get; private set; }
     public string SubType { get; private set; } = string.Empty;
@@ -7,6 +9,7 @@ public class ScifiRace {
     public string Description { get; private set; } = string.Empty;
     public bool IsStarterRace { get; private set; }
     public int RaceStatsId { get; private set; }
+    public RaceStats? RaceStats { get; private set; }
     public int Speed { get; private set; }
     public int AdventuringAgeStart { get; private set; }
     public int AgeMax { get; private set; }
