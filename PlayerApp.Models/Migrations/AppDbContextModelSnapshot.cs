@@ -87,6 +87,35 @@ namespace PlayerApp.Models.Migrations
                     b.ToTable("Characters");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.CharacterModifier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModifierType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("CharacterModifiers");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
                 {
                     b.Property<int>("Id")
@@ -406,6 +435,17 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("Player");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.CharacterModifier", b =>
+                {
+                    b.HasOne("PlayerApp.Models.Character", "Character")
+                        .WithMany("Modifiers")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
                 {
                     b.HasOne("PlayerApp.Models.Character", null)
@@ -494,6 +534,11 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiClass");
 
                     b.Navigation("ScifiTalent");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.Character", b =>
+                {
+                    b.Navigation("Modifiers");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.Player", b =>
