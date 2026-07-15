@@ -255,16 +255,16 @@ namespace PlayerApp.Models.Migrations
                     b.Property<int>("CharacterId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ScifiBackgroundId")
+                    b.Property<int?>("ScifiBackgroundId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ScifiClassId")
+                    b.Property<int?>("ScifiClassId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ScifiRaceId")
+                    b.Property<int?>("ScifiRaceId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ScifiSubraceId")
+                    b.Property<int?>("ScifiSubraceId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -484,27 +484,19 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasOne("PlayerApp.Models.ScifiBackground", "ScifiBackground")
                         .WithMany()
-                        .HasForeignKey("ScifiBackgroundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScifiBackgroundId");
 
                     b.HasOne("PlayerApp.Models.ScifiClass", "ScifiClass")
                         .WithMany()
-                        .HasForeignKey("ScifiClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScifiClassId");
 
                     b.HasOne("ScifiRace", "ScifiRace")
                         .WithMany()
-                        .HasForeignKey("ScifiRaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScifiRaceId");
 
                     b.HasOne("PlayerApp.Models.ScifiSubrace", "ScifiSubrace")
                         .WithMany()
-                        .HasForeignKey("ScifiSubraceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScifiSubraceId");
 
                     b.Navigation("Character");
 

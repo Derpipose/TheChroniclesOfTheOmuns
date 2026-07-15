@@ -7,10 +7,10 @@ public class ScifiCharacter {
     public int Id { get; private set; } = 0;
     public int CharacterId { get; private set; } = 0;
     public Character? Character { get; private set; } 
-    public int ScifiRaceId { get; private set; } = 0;
-    public int ScifiSubraceId { get; private set; } = 0;
-    public int ScifiClassId { get; private set; } = 0;
-    public int ScifiBackgroundId { get; private set; } = 0;
+    public int? ScifiRaceId { get; private set; } 
+    public int? ScifiSubraceId { get; private set; }
+    public int? ScifiClassId { get; private set; }
+    public int? ScifiBackgroundId { get; private set; }
     
 
 
@@ -60,19 +60,19 @@ public class ScifiCharacter {
     }
 
     public void ClearScifiRace() {
-        ScifiRaceId = 0;
+        ScifiRaceId = null;
     }
 
     public void ClearScifiSubrace() {
-        ScifiSubraceId = 0;
+        ScifiSubraceId = null;
     }
 
     public void ClearScifiClass() {
-        ScifiClassId = 0;
+        ScifiClassId = null;
     }
 
     public void ClearScifiBackground() {
-        ScifiBackgroundId = 0;
+        ScifiBackgroundId = null;
     }
 
     [Conditional("DEBUG")]
