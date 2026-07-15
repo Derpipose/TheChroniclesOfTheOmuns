@@ -14,7 +14,7 @@ POST http://localhost:5237/auth/request
 Content-Type: application/json
 
 {
-    "email": "derpipose@gmail.com"
+    "email": "jalapenojosh@gmail.com"
 }
 
 ###
@@ -24,8 +24,8 @@ POST http://localhost:5237/auth/verify
 Content-Type: application/json
 
 {
-    "email": "derpipose@gmail.com",
-    "otp": "740339"
+    "email": "jalapenojosh@gmail.com",
+    "otp": "980028"
 }
 
 ###

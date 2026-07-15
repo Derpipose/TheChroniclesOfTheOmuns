@@ -49,6 +49,53 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
 
         return Ok(race);
     }
+    
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateScifiRaceDto request) {
+        var race = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Id == id);
+
+        if (race is null)
+            return NotFound(new { message = $"ScifiRace {id} was not found." });
+
+        race.Update(
+            request.SubType,
+            request.Name,
+            request.Description,
+            request.IsStarterRace,
+            request.RaceStatsId,
+            request.Speed,
+            request.AdventuringAgeStart,
+            request.AgeMax,
+            request.IsPlayable);
+
+        await db.SaveChangesAsync();
+
+        return Ok(race);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id) {
+        var race = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Id == id);
+
+        if (race is null)
+            return NotFound(new { message = $"ScifiRace {id} was not found." });
+
+        db.ScifiRaces.Remove(race);
+        await db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    public record UpdateScifiRaceDto(
+        string SubType,
+        string Name,
+        string Description,
+        bool IsStarterRace,
+        int RaceStatsId,
+        int Speed,
+        int AdventuringAgeStart,
+        int AgeMax,
+        bool IsPlayable);
 
     public record CreateScifiRaceDto(
         string SubType,

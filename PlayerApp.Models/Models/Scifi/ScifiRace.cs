@@ -28,6 +28,20 @@ public class ScifiRace {
         AgeMax = ageMax;
     }
 
+    public void Update(string subType, string name, string description, bool isStarterRace,
+                    int raceStatsId, int speed, int adventuringAgeStart,
+                    int ageMax, bool isPlayable) {
+        SubType = subType;
+        Name = name;
+        Description = description;
+        IsStarterRace = isStarterRace;
+        RaceStatsId = raceStatsId;
+        Speed = speed;
+        AdventuringAgeStart = adventuringAgeStart;
+        AgeMax = ageMax;
+        IsPlayable = isPlayable;
+    }
+
     // Parameterless constructor for EF Core
     protected ScifiRace() {
         // EF Core needs this to materialize the entity
