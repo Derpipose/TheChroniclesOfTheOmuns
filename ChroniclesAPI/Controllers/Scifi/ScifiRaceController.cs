@@ -34,6 +34,10 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateScifiRaceDto request) {
+        var testRace = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Name == request.Name);
+        if (testRace is not null) {
+            return Conflict(new { message = $"ScifiRace with name '{request.Name}' already exists." });
+        }
         var race = new ScifiRace(
             request.SubType,
             request.Name,
@@ -49,7 +53,7 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
 
         return Ok(race);
     }
-    
+
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateScifiRaceDto request) {
         var race = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Id == id);

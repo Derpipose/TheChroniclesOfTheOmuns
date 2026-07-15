@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:5237
-@token = your-jwt-token-here
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0IiwiZW1haWwiOiJqYWxhcGVub2pvc2hAZ21haWwuY29tIiwianRpIjoiOGE0MjY3ZDgtNWI1MS00YWI1LWE0NjQtNzVkZGQzZjZlZTQyIiwiZXhwIjoxNzg0MTY5OTI2LCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ.odAf4diQKSoq9JMOHo7Rw_-yaKdknmoBo9REfGvfxu0
 @scifiRaceId = 1
 
 ### Get all scifi races
