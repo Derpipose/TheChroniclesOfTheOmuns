@@ -1,0 +1,108 @@
+@baseUrl = http://localhost:5237
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJkZXJwaXBvc2VAZ21haWwuY29tIiwianRpIjoiZGEzODQ5YjYtMjMwMC00ZWVlLWEyNTgtNmQwMjE2NzZkZGU1IiwiZXhwIjoxNzg0MzQxNDY1LCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ.VymdarTvt1IAyM5LzQEUvH-f1vzaYNKKS1sbnsUIcZQ
+@backgroundId = 1
+@talentId = 2
+
+### Get all backgrounds
+GET {{baseUrl}}/api/scifi/scifibackground
+Authorization: Bearer {{token}}
+
+###
+
+### Get background by id
+GET {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get talents for a background
+GET {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}/talents
+Authorization: Bearer {{token}}
+
+###
+
+### Create a background (minimal)
+POST {{baseUrl}}/api/scifi/scifibackground
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Mercenary",
+    "description": "Someone who fights for nothing else but money."
+}
+
+###
+
+### Create a background (full)
+POST {{baseUrl}}/api/scifi/scifibackground
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Pilot",
+    "description": "Those who've flown ships between the stars.",
+    "restricted": false,
+    "hasClassOverlap": true
+}
+
+###
+
+### Create a restricted background
+POST {{baseUrl}}/api/scifi/scifibackground
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Castaway",
+    "description": "Forgotten, lost, marooned.",
+    "restricted": true,
+    "hasClassOverlap": false
+}
+
+###
+
+### Update a background
+PUT {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Mercenary",
+    "description": "Updated description.",
+    "restricted": false,
+    "hasClassOverlap": true
+}
+
+###
+
+### Partial update - description only
+PUT {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "description": "Someone who fights for money, why have good morals when money is the only true reason to fight."
+}
+
+###
+
+### Add talent to background
+POST {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}/talents
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiTalentId": {{talentId}}
+}
+
+###
+
+### Remove talent from background
+DELETE {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}/talents/{{talentId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Delete a background
+DELETE {{baseUrl}}/api/scifi/scifibackground/{{backgroundId}}
+Authorization: Bearer {{token}}
