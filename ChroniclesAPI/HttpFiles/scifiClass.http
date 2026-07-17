@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:5237
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJkZXJwaXBvc2VAZ21haWwuY29tIiwianRpIjoiZGEzODQ5YjYtMjMwMC00ZWVlLWEyNTgtNmQwMjE2NzZkZGU1IiwiZXhwIjoxNzg0MzQxNDY1LCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ.VymdarTvt1IAyM5LzQEUvH-f1vzaYNKKS1sbnsUIcZQ
+@token = 
 @classId = 2
 @talentId = 2
 
