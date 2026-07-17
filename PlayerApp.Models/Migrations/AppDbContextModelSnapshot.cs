@@ -410,6 +410,8 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RaceStatsId");
+
                     b.ToTable("ScifiRaces");
                 });
 
@@ -526,6 +528,17 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiClass");
 
                     b.Navigation("ScifiTalent");
+                });
+
+            modelBuilder.Entity("ScifiRace", b =>
+                {
+                    b.HasOne("PlayerApp.Models.RaceStats", "RaceStats")
+                        .WithMany()
+                        .HasForeignKey("RaceStatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RaceStats");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.Character", b =>
