@@ -3,8 +3,8 @@ POST http://localhost:5237/players/register
 Content-Type: application/json
 
 {
-    "displayName": "Derpi Pose",
-    "email": "Not for you"
+    "displayName": "Stormgate",
+    "email": "jalapenojosh@gmail.com"
 }
 
 ###
@@ -25,7 +25,7 @@ Content-Type: application/json
 
 {
     "email": "jalapenojosh@gmail.com",
-    "otp": "742805"
+    "otp": "862005"
 }
 
 ###
