@@ -1,0 +1,92 @@
+@baseUrl = http://localhost:5237
+@token = 
+@classId = 2
+@talentId = 2
+
+### Get all classes
+GET {{baseUrl}}/api/scifi/scificlass
+Authorization: Bearer {{token}}
+
+###
+
+### Get class by id
+GET {{baseUrl}}/api/scifi/scificlass/{{classId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get talents for a class
+GET {{baseUrl}}/api/scifi/scificlass/{{classId}}/talents
+Authorization: Bearer {{token}}
+
+###
+
+### Create a class
+POST {{baseUrl}}/api/scifi/scificlass
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Soldier",
+    "hitDice": 12,
+    "description": "A hardened combatant."
+}
+
+###
+
+### Create a class (no description - defaults to In progress)
+POST {{baseUrl}}/api/scifi/scificlass
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Smuggler",
+    "hitDice": 10
+}
+
+###
+
+### Update a class
+PUT {{baseUrl}}/api/scifi/scificlass/{{classId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Soldier",
+    "description": "Updated description.",
+    "hitDice": 12
+}
+
+###
+
+### Partial update - description only
+PUT {{baseUrl}}/api/scifi/scificlass/{{classId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "description": "A hardened combatant trained in ballistics and energy weapons."
+}
+
+###
+
+### Add talent to class
+POST {{baseUrl}}/api/scifi/scificlass/{{classId}}/talents
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiTalentId": {{talentId}}
+}
+
+###
+
+### Remove talent from class
+DELETE {{baseUrl}}/api/scifi/scificlass/{{classId}}/talents/{{talentId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Delete a class
+DELETE {{baseUrl}}/api/scifi/scificlass/{{classId}}
+Authorization: Bearer {{token}}

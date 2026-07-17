@@ -25,6 +25,10 @@ public class ScifiClass {
     public void SimulatePersist(int id) {
         Id = id;
     }
+
+    public void SetName(string name) => Name = name;
+    public void SetDescription(string description) => Description = description;
+    public void SetHitDice(DiceType hitDice) => HitDice = hitDice;
 }
 
 public class ScifiClassTalent {
@@ -43,4 +47,6 @@ public class ScifiClassTalent {
     protected ScifiClassTalent() {
         // EF Core needs this to materialize the join entity
     }
+
+
 }

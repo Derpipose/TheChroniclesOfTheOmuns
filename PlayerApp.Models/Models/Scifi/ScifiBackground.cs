@@ -34,6 +34,13 @@ public class ScifiBackground {
     protected ScifiBackground() {
         // EF Core needs this to materialize the entity
     }
+
+    public void SetName(string name) => Name = name;
+public void SetDescription(string description) => Description = description;
+public void SetRestricted(bool restricted) => Restricted = restricted;
+public void SetHasClassOverlap(bool hasClassOverlap) => HasClassOverlap = hasClassOverlap;
+
+
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
