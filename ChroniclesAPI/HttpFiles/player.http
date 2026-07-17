@@ -24,8 +24,8 @@ POST http://localhost:5237/auth/verify
 Content-Type: application/json
 
 {
-    "email": "jalapenojosh@gmail.com",
-    "otp": "742805"
+    "email": "derpipose@gmail.com",
+    "otp": "819326"
 }
 
 ###
