@@ -84,3 +84,121 @@ Content-Type: application/json
     "ageMax": 100
 }
 
+### Create a scifi race with inline RaceStats (new stats block - should CREATE new RaceStats row)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Thovex",
+    "description": "A stoic, heavily armored race.",
+    "isStarterRace": true,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": "Strength", "modifier": 2, "isLocked": true },
+            { "stat": "Dexterity", "modifier": -1, "isLocked": false }
+        ],
+        "freeStatPicks": [3, 4]
+    },
+    "speed": 25,
+    "adventuringAgeStart": 30,
+    "ageMax": 150
+}
+
+###
+
+### Create ANOTHER race with the SAME modifiers/picks (different order) - should REUSE the RaceStats row above, not duplicate
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Vex'ari",
+    "description": "Distant cousins of the Thovex.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": "Dexterity", "modifier": -1, "isLocked": false },
+            { "stat": "Strength", "modifier": 2, "isLocked": true }
+        ],
+        "freeStatPicks": [4, 3]
+    },
+    "speed": 25,
+    "adventuringAgeStart": 30,
+    "ageMax": 150
+}
+
+###
+
+### Create a race with raceStats.modifiers = null and freeStatPicks = null (should fall back to empty lists, not throw)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Nullari",
+    "description": "Testing null modifier/pick handling.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": null,
+        "freeStatPicks": null
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 100
+}
+
+###
+
+### Create a race with BOTH raceStats and raceStatsId set - raceStats should take precedence per DTO comment
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Precedani",
+    "description": "Testing raceStats vs raceStatsId precedence.",
+    "isStarterRace": false,
+    "raceStatsId": 1,
+    "raceStats": {
+        "modifiers": [
+            { "stat": "Wisdom", "modifier": 3, "isLocked": true }
+        ],
+        "freeStatPicks": []
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 100
+}
+
+###
+//Fake Races
+### Create a race with a DUPLICATE stat in modifiers - expect this to currently 500 (uncaught ArgumentException)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Duplicari",
+    "description": "Testing duplicate stat validation.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": "Charisma", "modifier": 1, "isLocked": false },
+            { "stat": "Charisma", "modifier": 2, "isLocked": true }
+        ],
+        "freeStatPicks": []
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 100
+}
