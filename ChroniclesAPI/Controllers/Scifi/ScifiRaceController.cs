@@ -215,6 +215,32 @@ public class ScifiRaceController(AppDbContext db) : ControllerBase {
         return Ok(race);
     }
 
+    [HttpGet("subrace/{id:int}/stats")]
+    public async Task<IActionResult> GetSubraceByIdWithStats(int id) {
+        var subrace = await db.ScifiSubraces
+            .Include(s => s.RaceStats)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (subrace is null)
+            return NotFound(new { message = $"ScifiSubrace {id} was not found." });
+
+        return Ok(subrace);
+    }
+
+    [HttpGet("subrace/race/{raceId:int}/stats")]
+    public async Task<IActionResult> GetSubracesByRaceWithStats(int raceId) {
+        var raceExists = await db.ScifiRaces.AnyAsync(r => r.Id == raceId);
+        if (!raceExists)
+            return NotFound(new { message = $"ScifiRace {raceId} was not found." });
+
+        var subraces = await db.ScifiSubraces
+            .Include(s => s.RaceStats)
+            .Where(s => s.ScifiRaceId == raceId)
+            .ToListAsync();
+
+        return Ok(subraces);
+    }
+
     // ---------- Others ----------
 
     [HttpDelete("{id:int}")]
