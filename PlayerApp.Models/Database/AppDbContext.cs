@@ -51,6 +51,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .WithMany()
             .HasForeignKey(r => r.RaceStatsId);
 
+        modelBuilder.Entity<ScifiSubrace>()
+            .HasOne(s => s.RaceStats)
+            .WithMany()
+            .HasForeignKey(s => s.RaceStatsId);
+
         modelBuilder.Entity<RaceStats>()
             .Property(r => r.Modifiers)
             .HasConversion(

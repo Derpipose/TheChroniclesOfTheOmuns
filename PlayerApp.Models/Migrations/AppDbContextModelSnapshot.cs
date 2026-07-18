@@ -346,6 +346,10 @@ namespace PlayerApp.Models.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RaceStatsId");
+
+                    b.HasIndex("ScifiRaceId");
+
                     b.ToTable("ScifiSubraces");
                 });
 
@@ -534,6 +538,23 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiTalent");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiSubrace", b =>
+                {
+                    b.HasOne("PlayerApp.Models.RaceStats", "RaceStats")
+                        .WithMany()
+                        .HasForeignKey("RaceStatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScifiRace", null)
+                        .WithMany("Subraces")
+                        .HasForeignKey("ScifiRaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RaceStats");
+                });
+
             modelBuilder.Entity("ScifiRace", b =>
                 {
                     b.HasOne("PlayerApp.Models.RaceStats", "RaceStats")
@@ -565,6 +586,11 @@ namespace PlayerApp.Models.Migrations
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>
                 {
                     b.Navigation("ClassTalents");
+                });
+
+            modelBuilder.Entity("ScifiRace", b =>
+                {
+                    b.Navigation("Subraces");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,7 +9,10 @@ public class RaceStats {
     public IReadOnlyList<RaceStatModifier>? Modifiers { get; private set; }
     public IReadOnlyList<int>? FreeStatPicks { get; private set; }
 
-    private RaceStats() { }
+    // Parameterless constructor for EF Core
+    private RaceStats() {
+        // EF Core needs this to materialize the entity
+    }
 
     public RaceStats(List<RaceStatModifier>? modifiers = null, List<int>? freeStatPicks = null) {
         modifiers ??= new List<RaceStatModifier>();

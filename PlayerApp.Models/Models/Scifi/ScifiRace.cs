@@ -15,8 +15,8 @@ public class ScifiRace {
     public int AgeMax { get; private set; }
     public bool IsPlayable { get; private set; }
 
-    // public List<ScifiSubrace> Subraces { get; private set; } = new();
-    // public bool HasSubrace => Subraces.Any();
+    public List<ScifiSubrace> Subraces { get; private set; } = new();
+    public bool HasSubrace => Subraces.Any();
 
     public ScifiRace(string subType, string name, string description, bool isStarterRace,
                      int raceStatsId, int speed, int adventuringAgeStart,

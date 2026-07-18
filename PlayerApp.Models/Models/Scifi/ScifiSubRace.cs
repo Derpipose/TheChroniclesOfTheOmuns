@@ -9,6 +9,7 @@ public class ScifiSubrace {
     public string SubRaceName { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public int RaceStatsId { get; private set; }
+    public RaceStats? RaceStats { get; private set; }
 
     public ScifiSubrace(int scifiRaceId, string subRaceName, string description, int raceStatsId) {
         if (scifiRaceId == 0)
