@@ -12,7 +12,7 @@ namespace ChroniclesAPI.Controllers;
 [ApiController]
 [Route("api/scifi/[controller]")]
 [Authorize]
-public class ScifiRaceController(AppDbContext db, SciFiRaceService sfrc) : ControllerBase {
+public class ScifiRaceController(SciFiRaceService sfrc) : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateScifiRaceDto request) {
