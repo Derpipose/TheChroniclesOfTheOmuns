@@ -1,10 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+
 using ChroniclesAPI.Exceptions;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models.Database;
 using PlayerApp.Models.Enums;
@@ -116,9 +111,14 @@ public class SciFiRaceService(AppDbContext db) {
         return subrace;
     }
 
-    public async Task<ScifiSubrace> GetSubraceByRaceId(int raceId) {
-        var subrace = await db.ScifiSubraces.FirstOrDefaultAsync(s => s.ScifiRaceId == raceId) ?? throw new NotFoundException($"ScifiSubrace with RaceId {raceId} was not found.");
-        return subrace;
+    public async Task<List<ScifiSubrace>> GetSubraceByRaceId(int raceId) {
+        var subraces = await db.ScifiSubraces
+            .Where(s => s.ScifiRaceId == raceId)
+            .ToListAsync();
+        if (subraces.Count == 0) {
+            throw new NotFoundException($"ScifiSubrace with RaceId {raceId} was not found.");
+        }
+        return subraces;
     }
     public async Task<ScifiSubrace> GetSubraceByIdWithStats(int id) {
         var subrace = await db.ScifiSubraces
