@@ -711,15 +711,21 @@ public class SciFiRaceServiceTests {
 
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedFirst = await db.ScifiRaces.FirstAsync(r => r.Id == firstRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedSecond = await db.ScifiRaces.FirstAsync(r => r.Id == secondRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         // Same RaceStats row should be reused, not duplicated, despite the different order.
         // This kills the OrderBy -> OrderByDescending mutants: without the OrderBy call,
         // order-sensitive comparison would treat these as different and create a duplicate row.
         Assert.Equal(reloadedFirst.RaceStatsId, reloadedSecond.RaceStatsId);
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var statsCount = await db.RaceStats.CountAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Equal(1, statsCount);
     }
 
@@ -751,14 +757,20 @@ public class SciFiRaceServiceTests {
 
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedFirst = await db.ScifiRaces.FirstAsync(r => r.Id == firstRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedSecond = await db.ScifiRaces.FirstAsync(r => r.Id == secondRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         // Modifiers differ but FreeStatPicks match. If the SequenceEqual check used ||
         // instead of &&, this pair would incorrectly be treated as a match.
         Assert.NotEqual(reloadedFirst.RaceStatsId, reloadedSecond.RaceStatsId);
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var statsCount = await db.RaceStats.CountAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Equal(2, statsCount);
     }
 
@@ -790,8 +802,12 @@ public class SciFiRaceServiceTests {
 
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedFirst = await db.ScifiRaces.FirstAsync(r => r.Id == firstRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedSecond = await db.ScifiRaces.FirstAsync(r => r.Id == secondRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         Assert.NotEqual(reloadedFirst.RaceStatsId, reloadedSecond.RaceStatsId);
     }
@@ -827,8 +843,12 @@ public class SciFiRaceServiceTests {
 
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedFirst = await db.ScifiRaces.FirstAsync(r => r.Id == firstRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedSecond = await db.ScifiRaces.FirstAsync(r => r.Id == secondRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         // null and empty-list should be treated as equivalent, resulting in stats reuse
         Assert.Equal(reloadedFirst.RaceStatsId, reloadedSecond.RaceStatsId);
@@ -862,11 +882,15 @@ public class SciFiRaceServiceTests {
 
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedSecond = await db.ScifiRaces.FirstAsync(r => r.Id == secondRace.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         Assert.Equal(firstRace.RaceStatsId, reloadedSecond.RaceStatsId);
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var statsCount = await db.RaceStats.CountAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Equal(1, statsCount); // confirms no new row was created
     }
 
@@ -900,13 +924,17 @@ public class SciFiRaceServiceTests {
         characterBase.SetMaxHealth(10);
         characterBase.SetLevel(1);
         db.Characters.Add(characterBase);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         var scifiCharacter = new ScifiCharacter(characterBase.Id);
         scifiCharacter.SetScifiRace(race.Id);
         scifiCharacter.SetScifiSubrace(subrace.Id);
         db.ScifiCharacters.Add(scifiCharacter);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         await service.DeleteRaceAsync(race.Id);
 
@@ -914,10 +942,16 @@ public class SciFiRaceServiceTests {
         // cached state - this is what kills the "delete the SaveChangesAsync() line" mutant.
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.False(await db.ScifiRaces.AnyAsync(r => r.Id == race.Id));
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.False(await db.ScifiSubraces.AnyAsync(s => s.Id == subrace.Id));
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedCharacter = await db.ScifiCharacters.FirstAsync(c => c.Id == scifiCharacter.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Null(reloadedCharacter.ScifiRaceId);
         Assert.Null(reloadedCharacter.ScifiSubraceId);
     }
@@ -952,13 +986,17 @@ public class SciFiRaceServiceTests {
         characterBase.SetMaxHealth(10);
         characterBase.SetLevel(1);
         db.Characters.Add(characterBase);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         // This character belongs to a DIFFERENT race and should NOT be touched
         var unrelatedCharacter = new ScifiCharacter(characterBase.Id);
         unrelatedCharacter.SetScifiRace(unrelatedRace.Id);
         db.ScifiCharacters.Add(unrelatedCharacter);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         await service.DeleteRaceAsync(race.Id);
 
@@ -967,7 +1005,9 @@ public class SciFiRaceServiceTests {
         // This kills mutants that flip the Where clause's || to && or negate the
         // subrace-id-contains check: those mutations would incorrectly sweep in
         // this unrelated character too.
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedUnrelated = await db.ScifiCharacters.FirstAsync(c => c.Id == unrelatedCharacter.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Equal(unrelatedRace.Id, reloadedUnrelated.ScifiRaceId);
     }
 
@@ -1010,41 +1050,57 @@ public class SciFiRaceServiceTests {
         blazeCharBase.SetMaxHealth(10);
         blazeCharBase.SetLevel(1);
         db.Characters.Add(blazeCharBase);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         var blazeCharacter = new ScifiCharacter(blazeCharBase.Id);
         blazeCharacter.SetScifiRace(race.Id);
         blazeCharacter.SetScifiSubrace(blaze.Id);
         db.ScifiCharacters.Add(blazeCharacter);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         // A different character tied to the OTHER subrace - should survive untouched
         var nullCharBase = new Character(1, "Frost");
         nullCharBase.SetMaxHealth(10);
         nullCharBase.SetLevel(1);
         db.Characters.Add(nullCharBase);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         var nullCharacter = new ScifiCharacter(nullCharBase.Id);
         nullCharacter.SetScifiRace(race.Id);
         nullCharacter.SetScifiSubrace(nullSubrace.Id);
         db.ScifiCharacters.Add(nullCharacter);
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         await db.SaveChangesAsync();
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
         await service.DeleteSubraceAsync(blaze.Id);
 
         db.ChangeTracker.Clear();
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.False(await db.ScifiSubraces.AnyAsync(s => s.Id == blaze.Id));
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.True(await db.ScifiSubraces.AnyAsync(s => s.Id == nullSubrace.Id));
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
 
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedBlazeChar = await db.ScifiCharacters.FirstAsync(c => c.Id == blazeCharacter.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Null(reloadedBlazeChar.ScifiSubraceId);
         Assert.Equal(race.Id, reloadedBlazeChar.ScifiRaceId);
 
         // This kills the "== subraceId" -> "!= subraceId" mutant: that mutation
         // would incorrectly clear THIS character's subrace instead.
+#pragma warning disable xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         var reloadedNullChar = await db.ScifiCharacters.FirstAsync(c => c.Id == nullCharacter.Id);
+#pragma warning restore xUnit1051 // Calls to methods which accept CancellationToken should use TestContext.Current.CancellationToken
         Assert.Equal(nullSubrace.Id, reloadedNullChar.ScifiSubraceId);
     }
 
