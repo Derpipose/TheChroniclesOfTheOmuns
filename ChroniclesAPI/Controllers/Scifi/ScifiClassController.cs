@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models;
 using PlayerApp.Models.Database;
 using PlayerApp.Models.Dice;
+using static ChroniclesAPI.Controllers.ScifiController;
 
 namespace ChroniclesAPI.Controllers;
 
@@ -132,5 +133,4 @@ public class ScifiClassController(AppDbContext db) : ControllerBase {
     public record UpdateScifiClassDto(string? Name, string? Description, DiceType? HitDice);
     public record ScifiClassResponseDto(int Id, string Name, DiceType HitDice, string Description);
     public record ScifiTalentResponseDto(int Id, string Name, string Description, string Ability);
-    public record AddTalentDto(int ScifiTalentId);
 }

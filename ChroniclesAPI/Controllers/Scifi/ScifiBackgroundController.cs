@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models;
 using PlayerApp.Models.Database;
+using static ChroniclesAPI.Controllers.ScifiController;
 
 namespace ChroniclesAPI.Controllers;
 
 [ApiController]
 [Route("api/scifi/[controller]")]
 [Authorize]
-public class ScifiBackgroundController(AppDbContext db) : ControllerBase {
+public partial class ScifiBackgroundController(AppDbContext db) : ControllerBase {
 
     [HttpGet]
     public async Task<IActionResult> GetAll() {
@@ -143,5 +144,4 @@ public class ScifiBackgroundController(AppDbContext db) : ControllerBase {
     public record UpdateScifiBackgroundDto(string? Name, string? Description, bool? Restricted, bool? HasClassOverlap);
     public record ScifiBackgroundResponseDto(int Id, string Name, string Description, bool Restricted, bool HasClassOverlap);
     public record ScifiTalentResponseDto(int Id, string Name, string Description, string Ability);
-    public record AddTalentDto(int ScifiTalentId);
 }
