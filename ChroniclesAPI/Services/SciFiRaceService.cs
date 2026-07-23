@@ -67,8 +67,7 @@ public class SciFiRaceService(AppDbContext db) {
             raceStatsId,
             request.Speed,
             request.AdventuringAgeStart,
-            request.AgeMax,
-            request.IsPlayable);
+            request.AgeMax);
 
         await db.SaveChangesAsync();
 
@@ -225,8 +224,7 @@ public record UpdateScifiRaceDto(
             RaceStatsDto? RaceStats,  // used if provided
             int Speed,
             int AdventuringAgeStart,
-            int AgeMax,
-            bool IsPlayable);
+            int AgeMax);
 
 public record RaceStatModifierDto(StatType Stat, int Modifier, bool IsLocked);
 
