@@ -1,4 +1,5 @@
 
+using System.Text.Json;
 using ChroniclesAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models.Database;
@@ -7,7 +8,87 @@ using PlayerApp.Models.Enums;
 
 namespace ChroniclesAPI.Services;
 
-public class SciFiRaceService(AppDbContext db) {
+public class SciFiRaceService(AppDbContext db, IHostEnvironment env) {
+    private static readonly JsonSerializerOptions SeedJsonOptions = new() {
+        PropertyNameCaseInsensitive = true
+    };
+
+    public async Task SeedScifiRacesFromFileAsync(string fileName = "ScifiRaces.json") {
+        var path = Path.Combine(env.ContentRootPath, "JsonSeeds", fileName);
+
+        if (!File.Exists(path)) {
+            throw new FileNotFoundException($"Scifi race seed file not found at {path}.");
+        }
+
+        var json = await File.ReadAllTextAsync(path);
+        var records = JsonSerializer.Deserialize<List<ScifiRaceSeedRecord>>(json, SeedJsonOptions)
+            ?? new List<ScifiRaceSeedRecord>();
+
+        int created = 0, skipped = 0;
+
+        foreach (var record in records) {
+            var dto = MapSeedRecordToCreateDto(record);
+
+            try {
+                await CreateSciFiRaceAsync(dto);
+                created++;
+            } catch (ConflictException) {
+                // Already seeded -- skip silently, this is expected on re-runs.
+                skipped++;
+            }
+        }
+    }
+
+    private static CreateScifiRaceDto MapSeedRecordToCreateDto(ScifiRaceSeedRecord record) {
+        var modifiers = new List<RaceStatModifierDto>();
+
+        void AddIfNonZero(StatType stat, int value) {
+            if (value != 0)
+                modifiers.Add(new RaceStatModifierDto(stat, value, IsLocked: false));
+        }
+
+        AddIfNonZero(StatType.Strength, record.Str);
+        AddIfNonZero(StatType.Dexterity, record.Dex);
+        AddIfNonZero(StatType.Constitution, record.Con);
+        AddIfNonZero(StatType.Wisdom, record.Wis);
+        AddIfNonZero(StatType.Intelligence, record.Int);
+        AddIfNonZero(StatType.Charisma, record.Cha);
+
+        var raceStatsDto = new RaceStatsDto(modifiers, FreeStatPicks: ParseFreeStatPicks(record.Pick));
+
+        return new CreateScifiRaceDto(
+            SubType: record.SubType,
+            Name: record.Name,
+            Description: record.Description,
+            IsStarterRace: string.Equals(record.Starter, "Yes", StringComparison.OrdinalIgnoreCase),
+            RaceStatsId: 0, // ignored by ResolveRaceStatsIdAsync when RaceStats is provided
+            RaceStats: raceStatsDto,
+            Speed: record.Speed,
+            AdventuringAgeStart: ParseIntOrDefault(record.AdventuringAgeStart),
+            AgeMax: ParseIntOrDefault(record.AgeMax));
+    }
+
+    private static int ParseIntOrDefault(string value, int fallback = 0) =>
+        int.TryParse(value, out var result) ? result : fallback;
+
+    /// <summary>
+    /// Parses the JSON "Pick" field into FreeStatPicks. Observed values:
+    ///   ""         -> no free picks
+    ///   "Subrace"  -> not a stat pick at all (subrace stats come from the
+    ///                 subrace file instead); no free picks here
+    ///   "1,2"      -> free stat picks at those indices, e.g. [1, 2]
+    /// </summary>
+    private static List<int> ParseFreeStatPicks(string pick) {
+        if (string.IsNullOrWhiteSpace(pick) || pick.Equals("Subrace", StringComparison.OrdinalIgnoreCase))
+            return new List<int>();
+
+        return pick
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(part => int.TryParse(part, out var n) ? n : (int?)null)
+            .Where(n => n.HasValue)
+            .Select(n => n!.Value)
+            .ToList();
+    }
 
     public async Task<ScifiRace> CreateSciFiRaceAsync(CreateScifiRaceDto request) {
         var testRace = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Name == request.Name);
@@ -170,6 +251,120 @@ public class SciFiRaceService(AppDbContext db) {
         await db.SaveChangesAsync();
     }
 
+
+    public async Task SeedScifiSubracesFromFileAsync(string fileName = "ScifiSubraces.json") {
+        var path = Path.Combine(env.ContentRootPath, "JsonSeeds", fileName);
+
+        if (!File.Exists(path)) {
+            throw new FileNotFoundException($"Scifi subrace seed file not found at {path}.");
+        }
+
+        var json = await File.ReadAllTextAsync(path);
+        var records = JsonSerializer.Deserialize<List<ScifiSubraceSeedRecord>>(json, SeedJsonOptions)
+            ?? new List<ScifiSubraceSeedRecord>();
+
+        int created = 0, skipped = 0;
+
+        foreach (var record in records) {
+            var race = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Name == record.Race);
+            if (race is null) {
+                throw new InvalidOperationException(
+                    $"Cannot seed subrace '{record.SubRaceName}': parent race '{record.Race}' " +
+                    "was not found. Run SeedScifiRacesFromFileAsync first.");
+            }
+
+            var dto = MapSubraceSeedRecordToCreateDto(record);
+
+            try {
+                await CreateScifiSubraceAsync(race.Id, dto);
+                created++;
+            } catch (ConflictException) {
+                skipped++;
+            }
+        }
+    }
+
+    private static CreateScifiSubraceDto MapSubraceSeedRecordToCreateDto(ScifiSubraceSeedRecord record) {
+        var modifiers = new List<RaceStatModifierDto>();
+
+        void AddIfPresent(StatType stat, JsonElement element) {
+            var parsed = ParseStatValue(element);
+            if (parsed is { } value)
+                modifiers.Add(new RaceStatModifierDto(stat, value.Modifier, value.IsLocked));
+        }
+
+        AddIfPresent(StatType.Strength, record.Str);
+        AddIfPresent(StatType.Dexterity, record.Dex);
+        AddIfPresent(StatType.Constitution, record.Con);
+        AddIfPresent(StatType.Wisdom, record.Wis);
+        AddIfPresent(StatType.Intelligence, record.Int);
+        AddIfPresent(StatType.Charisma, record.Cha);
+
+        var raceStatsDto = new RaceStatsDto(modifiers, FreeStatPicks: ParseFreeStatPicks(record.Pick));
+
+        return new CreateScifiSubraceDto(
+            SubRaceName: record.SubRaceName,
+            Description: record.Description,
+            RaceStatsId: 0, // ignored by ResolveRaceStatsIdAsync when RaceStats is provided
+            RaceStats: raceStatsDto);
+    }
+
+    /// <summary>
+    /// Parses a stat field that may be: blank (""), a bare number (a plain
+    /// modifier), or "L{n}" (a locked absolute value, e.g. "L18" -> 18,
+    /// IsLocked: true). Returns null when the field carries no stat.
+    /// </summary>
+    private static (int Modifier, bool IsLocked)? ParseStatValue(JsonElement element) {
+        switch (element.ValueKind) {
+            case JsonValueKind.Number:
+                return (element.GetInt32(), false);
+
+            case JsonValueKind.String: {
+                    var raw = element.GetString();
+                    if (string.IsNullOrWhiteSpace(raw))
+                        return null;
+
+                    if (raw.StartsWith('L') && int.TryParse(raw.AsSpan(1), out var locked))
+                        return (locked, true);
+
+                    if (int.TryParse(raw, out var plain))
+                        return (plain, false);
+
+                    return null; // unrecognized format -- treat as no stat rather than guess
+                }
+
+            default:
+                return null; // null / missing / empty
+        }
+    }
+
+    /// <summary>
+    /// Parses a Pick field that may be: blank (""), a bare number (2),
+    /// or a comma list ("1,2", "1,2,2,3") into FreeStatPicks.
+    /// </summary>
+    private static List<int> ParseFreeStatPicks(JsonElement element) {
+        switch (element.ValueKind) {
+            case JsonValueKind.Number:
+                return new List<int> { element.GetInt32() };
+
+            case JsonValueKind.String: {
+                    var raw = element.GetString();
+                    if (string.IsNullOrWhiteSpace(raw) || raw!.Equals("Subrace", StringComparison.OrdinalIgnoreCase))
+                        return new List<int>();
+
+                    return raw
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Select(part => int.TryParse(part, out var n) ? n : (int?)null)
+                        .Where(n => n.HasValue)
+                        .Select(n => n!.Value)
+                        .ToList();
+                }
+
+            default:
+                return new List<int>();
+        }
+    }
+
     public async Task<int> ResolveRaceStatsIdAsync(RaceStatsDto? statsDto, int fallbackId) {
         // This method resolves the ID of the race stats, creating new ones if necessary
         if (statsDto is null)
@@ -255,3 +450,52 @@ public record UpdateScifiSubraceDto(
     int RaceStatsId,
     RaceStatsDto? RaceStats
 );
+
+public class ScifiRaceSeedRecord {
+    public string SubType { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Starter { get; set; } = string.Empty;
+    public string Special { get; set; } = string.Empty;
+    public int Str { get; set; }
+    public int Dex { get; set; }
+    public int Con { get; set; }
+    public int Wis { get; set; }
+    public int Int { get; set; }
+    public int Cha { get; set; }
+
+    // "" -> no free stat picks. "Subrace" -> stats come from the subrace file
+    // instead, not a pick here. "1,2" (etc.) -> parsed into FreeStatPicks by
+    // the seeder as a List<int>.
+    public string Pick { get; set; } = string.Empty;
+
+    public int Speed { get; set; }
+    public string AdventuringAgeStart { get; set; } = string.Empty;
+    public string AgeMax { get; set; } = string.Empty;
+    public string Pinterest_Inspo_Board { get; set; } = string.Empty;
+}
+
+
+public class ScifiSubraceSeedRecord {
+    public string Race { get; set; } = string.Empty;
+    public string SubRaceName { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Special { get; set; } = string.Empty; // not currently mapped -- CreateScifiSubraceDto has no field for it
+    public JsonElement Str { get; set; }
+    public JsonElement Dex { get; set; }
+    public JsonElement Con { get; set; }
+    public JsonElement Wis { get; set; }
+    public JsonElement Int { get; set; }
+    public JsonElement Cha { get; set; }
+    public JsonElement Pick { get; set; }
+
+    // Present in the source file but unused: ScifiSubrace has no Speed
+    // property and CreateScifiSubraceDto doesn't accept one (subraces
+    // inherit Speed from their parent ScifiRace).
+    public JsonElement Speed { get; set; }
+    public string AdventuringAgeStart { get; set; } = string.Empty;
+    public string AgeMax { get; set; } = string.Empty;
+    public string Pinterest_Inspo_Board { get; set; } = string.Empty;
+}
+
+

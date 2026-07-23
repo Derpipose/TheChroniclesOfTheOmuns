@@ -1,6 +1,9 @@
+using System.Text.Json;
 using ChroniclesAPI.Exceptions;
 using ChroniclesAPI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using PlayerApp.Models;
 using PlayerApp.Models.Database;
 using PlayerApp.Models.Enums;
@@ -12,7 +15,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task CreateSciFiRaceAsync_CreatesRace_WhenNameIsUnique() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db); // IConfiguration unused by this method
+        var service = new SciFiRaceService(db, new TestHostEnvironment()); // IConfiguration unused by this method
 
         var request = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -34,7 +37,7 @@ public class SciFiRaceServiceTests {
     public async Task CreateSciFiRaceAsync_Throws_WhenNameAlreadyExists() {
         await using var db = TestDb.Create();
 
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
         var request = new CreateScifiRaceDto(
             "Alien", "Divaren", "duplicate name", true, 0, null, 30, 18, 90);
         await service.CreateSciFiRaceAsync(request);
@@ -46,7 +49,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task CreateSciFiSubraceAsync_CreatesSubrace_WhenNameIsUnique() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -68,7 +71,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task CreateSciFiSubraceAsync_Throws_WhenNameAlreadyExists() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -89,7 +92,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task CreateSciFiSubraceAsync_Throws_WhenRaceDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var subraceRequest = new CreateScifiSubraceDto(
             "Hive-Mind",
@@ -101,7 +104,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task UpdateScifiRace_UpdatesRace_WhenIdExists() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -122,7 +125,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task UpdateScifiRace_Throws_WhenIdDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var updateRequest = new UpdateScifiRaceDto(
             "Alien", "NNotDivaren", "A short squat bearded race similar to humans.",
@@ -135,7 +138,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task UpdateScifiSubrace_UpdatesSubrace_WhenIdExists() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -162,7 +165,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task UpdateScifiSubrace_Throws_WhenIdDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var updateRequest = new UpdateScifiSubraceDto(
             "Hive-Mind Updated",
@@ -174,7 +177,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetAllRaces_ReturnsAllRaces() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var request = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -203,7 +206,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetRaceById_ReturnsCorrectRace() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var request = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -230,7 +233,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetRaceById_Throws_WhenIdDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         await Assert.ThrowsAsync<NotFoundException>(
             () => service.GetRaceById(999));
@@ -238,7 +241,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetRaceByIdWithStats_LoadsModifiersAndFreeStatPicks() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var request = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -258,7 +261,9 @@ public class SciFiRaceServiceTests {
 
         Assert.NotNull(result.RaceStats);
 
+#pragma warning disable CS8604 // Possible null reference argument.
         var strengthMod = result.RaceStats.Modifiers.Single(m => m.Stat == StatType.Strength);
+#pragma warning restore CS8604 // Possible null reference argument.
         Assert.Equal(2, strengthMod.Modifier);
         Assert.True(strengthMod.IsLocked);
 
@@ -272,7 +277,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetRaceByIdWithStats_LoadsSharedRaceStats_WhenRaceStatsIdProvided() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         // First race creates a RaceStats row via the DTO path.
         var firstRequest = new CreateScifiRaceDto(
@@ -301,14 +306,16 @@ public class SciFiRaceServiceTests {
         Assert.NotNull(result.RaceStats);
         Assert.Equal(sharedStatsId, result.RaceStatsId);
 
+#pragma warning disable CS8604 // Possible null reference argument.
         var dexMod = result.RaceStats.Modifiers.Single(m => m.Stat == StatType.Dexterity);
+#pragma warning restore CS8604 // Possible null reference argument.
         Assert.Equal(3, dexMod.Modifier);
         Assert.True(dexMod.IsLocked);
     }
     [Fact]
     public async Task GetAllRacesWithStats_ReturnsAllRacesWithStatsLoaded() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var firstRequest = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -337,17 +344,21 @@ public class SciFiRaceServiceTests {
 
         var resultFirst = result.Single(r => r.Id == firstRace.Id);
         Assert.NotNull(resultFirst.RaceStats);
+#pragma warning disable CS8604 // Possible null reference argument.
         Assert.Equal(StatType.Strength, resultFirst.RaceStats.Modifiers.Single().Stat);
+#pragma warning restore CS8604 // Possible null reference argument.
 
         var resultSecond = result.Single(r => r.Id == secondRace.Id);
         Assert.NotNull(resultSecond.RaceStats);
+#pragma warning disable CS8604 // Possible null reference argument.
         Assert.Equal(StatType.Dexterity, resultSecond.RaceStats.Modifiers.Single().Stat);
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
     [Fact]
     public async Task GetAllRacesWithStats_ReturnsEmptyList_WhenNoRacesExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var result = await service.GetAllRacesWithStats();
 
@@ -357,7 +368,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetSubraceById_ReturnsSubrace_WhenSubraceExists() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -400,7 +411,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetSubraceByRaceId_ReturnsSubraces_WhenSubracesExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -442,7 +453,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetSubraceByIdWithStats_ReturnsSubraceWithStats() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -469,7 +480,9 @@ public class SciFiRaceServiceTests {
 
         Assert.Equal(blaze.Id, result.Id);
         Assert.NotNull(result.RaceStats);
+#pragma warning disable CS8604 // Possible null reference argument.
         var strMod = result.RaceStats.Modifiers.Single(m => m.Stat == StatType.Strength);
+#pragma warning restore CS8604 // Possible null reference argument.
         Assert.Equal(1, strMod.Modifier);
         Assert.Equal(new List<int> { 3 }, result.RaceStats.FreeStatPicks);
     }
@@ -477,7 +490,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetSubraceByIdWithStats_Throws_WhenIdDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         await Assert.ThrowsAsync<NotFoundException>(
             () => service.GetSubraceByIdWithStats(999));
@@ -486,7 +499,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetSubraceByRaceWithStats_ReturnsFirstSubraceForRace() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -530,7 +543,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task GetSubraceByRaceWithStats_Throws_WhenRaceHasNoSubraces() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Divaren", "A short squat bearded race similar to humans.",
@@ -546,7 +559,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteRaceAsync_RemovesRaceAndSubraces_AndClearsCharacterReferences() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -611,7 +624,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteRaceAsync_Throws_WhenRaceDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         await Assert.ThrowsAsync<NotFoundException>(
             () => service.DeleteRaceAsync(999));
@@ -620,7 +633,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteSubraceAsync_RemovesSubrace_AndClearsCharacterSubraceOnly() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -668,7 +681,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteSubraceAsync_Throws_WhenSubraceDoesNotExist() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         await Assert.ThrowsAsync<NotFoundException>(
             () => service.DeleteSubraceAsync(999));
@@ -677,7 +690,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task ResolveRaceStatsIdAsync_ReusesExistingStats_RegardlessOfModifierOrder() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         // First race establishes a RaceStats row with modifiers in one order
         var firstRequest = new CreateScifiRaceDto(
@@ -732,7 +745,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task ResolveRaceStatsIdAsync_CreatesNewStats_WhenModifiersDiffer() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var firstRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -777,7 +790,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task ResolveRaceStatsIdAsync_CreatesNewStats_WhenFreeStatPicksDiffer() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var firstRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -815,7 +828,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task ResolveRaceStatsIdAsync_TreatsNullModifiersAndPicks_AsEmptyLists() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         // First race has explicit empty lists
         var firstRequest = new CreateScifiRaceDto(
@@ -857,7 +870,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task ResolveRaceStatsIdAsync_ReturnsFallbackId_WhenRaceStatsDtoIsNull() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         // Create a real RaceStats row via the DTO path first
         var firstRequest = new CreateScifiRaceDto(
@@ -897,7 +910,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteRaceAsync_PersistsRemovalOfRaceAndSubraces() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -959,7 +972,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteRaceAsync_ClearsOnlyAffectedCharacters_NotUnrelatedOnes() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -1014,7 +1027,7 @@ public class SciFiRaceServiceTests {
     [Fact]
     public async Task DeleteSubraceAsync_PersistsRemoval_AndClearsOnlyAffectedCharacters() {
         await using var db = TestDb.Create();
-        var service = new SciFiRaceService(db);
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
 
         var raceRequest = new CreateScifiRaceDto(
             "Alien", "Tasawii", "Energy Cloud in a suit of armor.",
@@ -1104,6 +1117,132 @@ public class SciFiRaceServiceTests {
         Assert.Equal(nullSubrace.Id, reloadedNullChar.ScifiSubraceId);
     }
 
+
+    [Fact]
+    public async Task SeedScifiRacesFromFileAsync_SeedsAllRaces_FromRealSeedFile() {
+        await using var db = TestDb.Create();
+        var env = new TestHostEnvironment();
+        var service = new SciFiRaceService(db, env);
+
+        var seedPath = Path.Combine(env.ContentRootPath, "JsonSeeds", "ScifiRaces.json");
+        var json = await File.ReadAllTextAsync(seedPath, TestContext.Current.CancellationToken);
+        var expectedCount = JsonSerializer.Deserialize<List<ScifiRaceSeedRecord>>(
+            json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!.Count;
+
+        await service.SeedScifiRacesFromFileAsync();
+
+        Assert.True(db.ScifiRaces.Any());
+        Assert.Contains(db.ScifiRaces, r => r.Name == "Divaren");
+        Assert.Equal(expectedCount, db.ScifiRaces.Count()); // every JSON record produced exactly one race
+    }
+
+    [Fact]
+    public async Task SeedScifiRacesFromFileAsync_IsIdempotent_OnSecondRun() {
+        await using var db = TestDb.Create();
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
+
+        await service.SeedScifiRacesFromFileAsync();
+        var countAfterFirstRun = db.ScifiRaces.Count();
+
+        await service.SeedScifiRacesFromFileAsync();
+        var countAfterSecondRun = db.ScifiRaces.Count();
+
+        Assert.Equal(countAfterFirstRun, countAfterSecondRun);
+    }
+
+    [Fact]
+    public async Task SeedScifiSubracesFromFileAsync_SeedsAllSubraces_FromRealSeedFile() {
+        await using var db = TestDb.Create();
+        var env = new TestHostEnvironment();
+        var service = new SciFiRaceService(db, env);
+
+        await service.SeedScifiRacesFromFileAsync(); // subraces require their parent races to exist first
+        await service.SeedScifiSubracesFromFileAsync();
+
+        var seedPath = Path.Combine(env.ContentRootPath, "JsonSeeds", "ScifiSubraces.json");
+        var json = await File.ReadAllTextAsync(seedPath, TestContext.Current.CancellationToken);
+        var expectedCount = JsonSerializer.Deserialize<List<ScifiSubraceSeedRecord>>(
+            json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!.Count;
+
+        Assert.Equal(expectedCount, db.ScifiSubraces.Count());
+        Assert.Contains(db.ScifiSubraces, s => s.SubRaceName == "House Gears");
+    }
+
+    [Fact]
+    public async Task SeedScifiSubracesFromFileAsync_IsIdempotent_OnSecondRun() {
+        await using var db = TestDb.Create();
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
+
+        await service.SeedScifiRacesFromFileAsync();
+        await service.SeedScifiSubracesFromFileAsync();
+        var countAfterFirstRun = db.ScifiSubraces.Count();
+
+        await service.SeedScifiSubracesFromFileAsync();
+        var countAfterSecondRun = db.ScifiSubraces.Count();
+
+        Assert.Equal(countAfterFirstRun, countAfterSecondRun);
+    }
+
+    [Fact]
+    public async Task SeedScifiSubracesFromFileAsync_Throws_WhenParentRaceNotYetSeeded() {
+        await using var db = TestDb.Create();
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
+
+        // Races were never seeded, so the first subrace's parent lookup should fail fast
+        // rather than silently skipping -- this is a seed-order bug, not a re-run.
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.SeedScifiSubracesFromFileAsync());
+    }
+
+    [Fact]
+    public async Task SeedScifiSubracesFromFileAsync_ParsesLockedStat_FromLPrefixedValue() {
+        await using var db = TestDb.Create();
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
+
+        await service.SeedScifiRacesFromFileAsync();
+        await service.SeedScifiSubracesFromFileAsync();
+
+        var knight = await db.ScifiSubraces
+            .Include(s => s.RaceStats)
+            .FirstAsync(s => s.SubRaceName == "Knight", cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.NotNull(knight.RaceStats);
+        Assert.Equal(18, knight.RaceStats!.GetModifierFor(StatType.Strength));
+        Assert.True(knight.RaceStats.IsStatLocked(StatType.Strength));
+        Assert.Equal(18, knight.RaceStats.GetModifierFor(StatType.Constitution));
+        Assert.True(knight.RaceStats.IsStatLocked(StatType.Constitution));
+    }
+
+    [Fact]
+    public async Task SeedScifiSubracesFromFileAsync_ParsesCommaListPick_IntoFreeStatPicks() {
+        await using var db = TestDb.Create();
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
+
+        await service.SeedScifiRacesFromFileAsync();
+        await service.SeedScifiSubracesFromFileAsync();
+
+        var highTech = await db.ScifiSubraces
+            .Include(s => s.RaceStats)
+            .FirstAsync(s => s.SubRaceName == "High Tech", cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(new List<int> { 1, 2, 2, 3 }, highTech.RaceStats!.FreeStatPicks);
+    }
+
+    [Fact]
+    public async Task SeedScifiSubracesFromFileAsync_ParsesBareNumberPick_IntoFreeStatPicks() {
+        await using var db = TestDb.Create();
+        var service = new SciFiRaceService(db, new TestHostEnvironment());
+
+        await service.SeedScifiRacesFromFileAsync();
+        await service.SeedScifiSubracesFromFileAsync();
+
+        var nilbog = await db.ScifiSubraces
+            .Include(s => s.RaceStats)
+            .FirstAsync(s => s.SubRaceName == "Nilbog", cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(new List<int> { 2 }, nilbog.RaceStats!.FreeStatPicks);
+    }
+
 }
 
 public static class TestDb {
@@ -1113,5 +1252,25 @@ public static class TestDb {
             .Options;
 
         return new AppDbContext(options);
+    }
+}
+
+public class TestHostEnvironment : IHostEnvironment {
+    public string EnvironmentName { get; set; } = "Test";
+    public string ApplicationName { get; set; } = "PlayerApp.Tests";
+    public string ContentRootPath { get; set; } = ResolveContentRootWithJsonSeeds();
+    public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
+
+    private static string ResolveContentRootWithJsonSeeds() {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (dir is not null && !Directory.Exists(Path.Combine(dir.FullName, "JsonSeeds"))) {
+            dir = dir.Parent;
+        }
+
+        return dir?.FullName
+            ?? throw new DirectoryNotFoundException(
+                "Could not locate a JsonSeeds folder walking up from the test assembly's output directory. " +
+                "Confirm JsonSeeds/ sits somewhere above bin/ in the repo, or adjust ResolveContentRootWithJsonSeeds.");
     }
 }

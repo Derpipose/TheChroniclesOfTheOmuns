@@ -36,6 +36,24 @@ public class ScifiRaceController(SciFiRaceService sfrc) : ControllerBase {
         }
     }
 
+    [HttpPost("seed")]
+    public async Task<IActionResult> SeedFromFiles() {
+        try {
+            await sfrc.SeedScifiRacesFromFileAsync();
+            await sfrc.SeedScifiSubracesFromFileAsync();
+            return Ok();
+        } catch (FileNotFoundException ex) {
+            // A JsonSeeds file is missing -- not a client error, but worth a
+            // clear message instead of a generic 500.
+            return NotFound(new { message = ex.Message });
+        } catch (InvalidOperationException ex) {
+            // Subrace seeding hit a missing parent race -- shouldn't happen if
+            // this endpoint always runs races before subraces, but surfaced
+            // clearly in case the seed files themselves are inconsistent.
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateScifiRaceDto request) {
         try {
