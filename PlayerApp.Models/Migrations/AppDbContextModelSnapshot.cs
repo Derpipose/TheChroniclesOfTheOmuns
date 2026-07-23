@@ -396,9 +396,6 @@ namespace PlayerApp.Models.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsPlayable")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsStarterRace")
                         .HasColumnType("boolean");
 
