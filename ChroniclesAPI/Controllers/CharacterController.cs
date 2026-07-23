@@ -70,8 +70,6 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
             return BadRequest(new { message = "Character name is required." });
 
         var character = new Character(playerContext.PlayerId, request.Name);
-        // character.SetName(request.Name);
-        character.SetMaxHealth(request.MaxHealth);
         character.SetLevel(request.Level);
 
         db.Characters.Add(character);
@@ -136,7 +134,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
             stats.Charisma,
             stats.Intelligence));
 
-    public record CreateCharacterDto(string Name, int MaxHealth = 0, int Level = 1);
+    public record CreateCharacterDto(string Name, int Level = 1);
     public record CharacterDetailsDto(int Id, string Name, int Level, SettingEnum Setting, int MaxHealth, bool IsActive);
     public record UpdateCharacterDto(string? Name, int? MaxHealth, int? Level, bool? IsActive);
     public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int MaxHealth, bool IsActive, CharacterStatsResponseDto? CharacterStats);

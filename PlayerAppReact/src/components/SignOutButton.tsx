@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
+import { clearToken } from '../auth/tokenStorage'
 
 export default function SignOutButton() {
   const navigate = useNavigate()
 
   const handleSignOut = () => {
-    localStorage.removeItem('token')
+    clearToken()
     navigate('/sign-in')
   }
 

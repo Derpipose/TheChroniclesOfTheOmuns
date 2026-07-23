@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { setToken } from '../auth/tokenStorage'
 
 type Tab = 'sign-in' | 'sign-up'
 type Step = 'email' | 'otp'
@@ -63,7 +64,7 @@ export default function SignInPage() {
       }
 
       const data = await res.json()
-      localStorage.setItem('token', data.token)
+      setToken(data.token) // Store the token in localStorage using the setToken function
       navigate('/characters')
     } catch {
       setError('Something went wrong. Please try again.')
