@@ -113,7 +113,7 @@ public class SciFiRaceServiceTests {
         var updateRequest = new UpdateScifiRaceDto(
             "Alien", "NNotDivaren", "A short squat bearded race similar to humans.",
             true, 0,
-            null, 30, 18, 90, true);
+            null, 30, 18, 90);
 
         var result = await service.UpdateRace(race.Id, updateRequest);
 
@@ -127,7 +127,7 @@ public class SciFiRaceServiceTests {
         var updateRequest = new UpdateScifiRaceDto(
             "Alien", "NNotDivaren", "A short squat bearded race similar to humans.",
             true, 0,
-            null, 30, 18, 90, true);
+            null, 30, 18, 90);
 
         await Assert.ThrowsAsync<NotFoundException>(
             () => service.UpdateRace(999, updateRequest));
