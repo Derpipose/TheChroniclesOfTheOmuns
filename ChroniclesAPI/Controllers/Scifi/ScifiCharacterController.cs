@@ -61,6 +61,10 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         if (character.IsActive)
             return BadRequest(new { message = "Cannot create a ScifiCharacter for an active character." });
 
+        if (character.Setting == SettingEnum.Scifi) {
+            return BadRequest(new { message = "Cannot create a ScifiCharacter for a character that is already in the Scifi setting." });
+        }
+
         // Validate optional race exists and is scifi
         if (request.ScifiRaceId is not null) {
             // TODO: When multiple settings exist, ensure this race actually belongs to the Scifi setting
