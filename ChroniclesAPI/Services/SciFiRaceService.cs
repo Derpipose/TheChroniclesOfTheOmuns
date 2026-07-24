@@ -12,6 +12,9 @@ public class SciFiRaceService(AppDbContext db, IHostEnvironment env) {
     private static readonly JsonSerializerOptions SeedJsonOptions = new() {
         PropertyNameCaseInsensitive = true
     };
+    private async Task<bool> RaceHasSubracesAsync(int raceId) {
+        return await db.ScifiSubraces.AnyAsync(s => s.ScifiRaceId == raceId);
+    }
 
     public async Task SeedScifiRacesFromFileAsync(string fileName = "ScifiRaces.json") {
         var path = Path.Combine(env.ContentRootPath, "JsonSeeds", fileName);
@@ -168,23 +171,34 @@ public class SciFiRaceService(AppDbContext db, IHostEnvironment env) {
         return subrace;
     }
     public async Task<List<ScifiRace>> GetAllRaces() {
-        return await db.ScifiRaces.ToListAsync();
+        var races = await db.ScifiRaces.ToListAsync();
+        foreach (var race in races) {
+            race.SetHasSubraces(await RaceHasSubracesAsync(race.Id));
+        }
+        return races;
     }
     public async Task<ScifiRace> GetRaceById(int id) {
         var race = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Id == id) ?? throw new NotFoundException($"ScifiRace {id} was not found.");
+        race.SetHasSubraces(await RaceHasSubracesAsync(id));
         return race;
     }
     public async Task<ScifiRace> GetRaceByIdWithStats(int id) {
         var race = await db.ScifiRaces
             .Include(r => r.RaceStats)
             .FirstOrDefaultAsync(r => r.Id == id) ?? throw new NotFoundException($"ScifiRace {id} was not found.");
+        race.SetHasSubraces(await RaceHasSubracesAsync(id));
 
         return race;
     }
     public async Task<List<ScifiRace>> GetAllRacesWithStats() {
-        return await db.ScifiRaces
+        var races = await db.ScifiRaces
             .Include(r => r.RaceStats)
             .ToListAsync();
+
+        foreach (var race in races) {
+            race.SetHasSubraces(await RaceHasSubracesAsync(race.Id));
+        }
+        return races;
     }
     public async Task<ScifiSubrace> GetSubraceById(int id) {
         var subrace = await db.ScifiSubraces.FirstOrDefaultAsync(s => s.Id == id) ?? throw new NotFoundException($"ScifiSubrace {id} was not found.");
