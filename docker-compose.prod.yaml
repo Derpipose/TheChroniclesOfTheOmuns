@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16
+    container_name: chronicles_prod_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "${PROD_DB_USER}"
+      POSTGRES_PASSWORD: "${PROD_DB_PASSWORD}"
+      POSTGRES_DB: "${PROD_DB_NAME}"
+    ports:
+      - "5533:5432"
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: ChroniclesAPI/Dockerfile
+    container_name: chronicles_prod_api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${PROD_DB_NAME};Username=${PROD_DB_USER};Password=${PROD_DB_PASSWORD}"
+      Jwt__Key: "${JWT_KEY}"
+      Jwt__Issuer: "${JWT_ISSUER}"
+      Jwt__Audience: "${JWT_AUDIENCE}"
+      Jwt__ExpiryHours: "${JWT_EXPIRY_HOURS}"
+      Smtp__Host: "${SMTP_HOST}"
+      Smtp__Port: "${SMTP_PORT}"
+      Smtp__Username: "${SMTP_USERNAME}"
+      Smtp__Password: "${SMTP_PASSWORD}"
+      Smtp__From: "${SMTP_FROM}"
+    ports:
+      - "5500:8080"
+    depends_on:
+      - db
+
+  react:
+    build:
+      context: ./PlayerAppReact
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+    container_name: chronicles_prod_react
+    restart: unless-stopped
+    ports:
+      - "5501:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata_prod:

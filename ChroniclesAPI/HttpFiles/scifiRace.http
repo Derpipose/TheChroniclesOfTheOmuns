@@ -1,0 +1,487 @@
+@baseUrl = http://localhost:5237
+@token = test-jwt-token
+@scifiRaceId = 1
+@arakaRaceId = 3
+
+### Get all scifi races
+GET {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+
+###
+
+### Get scifi race by id
+GET {{baseUrl}}/api/scifi/scifirace/{{scifiRaceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Create a scifi race (Divaren)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Divaren",
+    "description": "A short squat bearded race similar to humans.",
+    "isStarterRace": true,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": 2, "isLocked": true },
+            { "stat": 2, "modifier": -1, "isLocked": false },
+            { "stat": 1, "modifier": 1, "isLocked": false },
+            { "stat": 5, "modifier": 0, "isLocked": false },
+            { "stat": 3, "modifier": 0, "isLocked": false },
+            { "stat": 4, "modifier": 0, "isLocked": false }
+        ]
+    },
+    "speed": 30,
+    "adventuringAgeStart": 18,
+    "ageMax": 90
+}
+### Create a scifi race (non-starter race)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Eel'a-Siek-Cha'za",
+    "description": "Squid-like race that values science above all else.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": 2, "isLocked": true },
+            { "stat": 2, "modifier": -1, "isLocked": false }
+        ]
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 200
+}
+
+###
+
+### Create a scifi race (Araka)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Araka",
+    "description": "The Araka are very war-like and are more often than not pirates. The civilized houses still value strength however. The Araka families are organized in different houses: Gears, Thunder, Twilight, Remnants, Light (not playable), Inferno (not playable), Devils, Kings, Exiles, Winter, Wolves, and Judgement.",
+    "isStarterRace": true,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": 2, "isLocked": true },
+            { "stat": 2, "modifier": -1, "isLocked": false }
+        ]
+    },
+    "speed": 30,
+    "adventuringAgeStart": 16,
+    "ageMax": 80
+}
+
+###
+
+### Create a scifi race (Quin-Val - fast-moving race)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Quin-Val",
+    "description": "A fast-moving race.",
+    "isStarterRace": true,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": 2, "isLocked": true },
+            { "stat": 2, "modifier": -1, "isLocked": false }
+        ]
+    },
+    "speed": 40,
+    "adventuringAgeStart": 18,
+    "ageMax": 100
+}
+
+### Create a scifi race with inline RaceStats (new stats block - should CREATE new RaceStats row)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Thovex",
+    "description": "A stoic, heavily armored race.",
+    "isStarterRace": true,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": 2, "isLocked": true },
+            { "stat": 2, "modifier": -1, "isLocked": false }
+        ],
+        "freeStatPicks": [3, 4]
+    },
+    "speed": 25,
+    "adventuringAgeStart": 30,
+    "ageMax": 150
+}
+
+###
+
+### Create ANOTHER race with the SAME modifiers/picks (different order) - should REUSE the RaceStats row above, not duplicate
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Vex'ari",
+    "description": "Distant cousins of the Thovex.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": -1, "isLocked": false },
+            { "stat": 2, "modifier": 2, "isLocked": true }
+        ],
+        "freeStatPicks": [4, 3]
+    },
+    "speed": 25,
+    "adventuringAgeStart": 30,
+    "ageMax": 150
+}
+
+###
+
+### Create a race with raceStats.modifiers = null and freeStatPicks = null (should fall back to empty lists, not throw)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Nullari",
+    "description": "Testing null modifier/pick handling.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": null,
+        "freeStatPicks": null
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 100
+}
+
+###
+
+### Create a race with BOTH raceStats and raceStatsId set - raceStats should take precedence per DTO comment
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Precedani",
+    "description": "Testing raceStats vs raceStatsId precedence.",
+    "isStarterRace": false,
+    "raceStatsId": 1,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 5, "modifier": 3, "isLocked": true }
+        ],
+        "freeStatPicks": []
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 100
+}
+
+###
+//Fake Races
+### Create a race with a DUPLICATE stat in modifiers - expect this to currently 500 (uncaught ArgumentException)
+POST {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Duplicari",
+    "description": "Testing duplicate stat validation.",
+    "isStarterRace": false,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 6, "modifier": 1, "isLocked": false },
+            { "stat": 6, "modifier": 2, "isLocked": true }
+        ],
+        "freeStatPicks": []
+    },
+    "speed": 30,
+    "adventuringAgeStart": 20,
+    "ageMax": 100
+}
+
+###
+//Subraces (Araka Houses)
+### Create subrace - House Gears
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Gears",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Thunder
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Thunder",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Twilight
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Twilight",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Remnants
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Remnants",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Inferno
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Inferno",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Devils
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Devils",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Kings
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Kings",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Exiles
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Exiles",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Winter
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Winter",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Wolves
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Wolves",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create subrace - House Judgement
+POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Judgement",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Get all subraces for Araka
+GET {{baseUrl}}/api/scifi/scifirace/subrace/race/{{arakaRaceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get all subraces for a race that doesn't exist - expect 404
+GET {{baseUrl}}/api/scifi/scifirace/subrace/race/9999
+Authorization: Bearer {{token}}
+
+###
+@arakaSubraceId = 1
+
+### Get subrace by id (House Gears, assuming it's the first subrace created = id 1)
+GET {{baseUrl}}/api/scifi/scifirace/subrace/{{arakaSubraceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get subrace by id - not found case
+GET {{baseUrl}}/api/scifi/scifirace/subrace/9999
+Authorization: Bearer {{token}}
+
+###
+
+### Update subrace (House Gears -> rename/description tweak)
+PUT {{baseUrl}}/api/scifi/scifirace/subrace/{{arakaSubraceId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Gears",
+    "description": "Engineers and shipwrights of the Araka; keep the fleets running.",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 4, "modifier": 1, "isLocked": false }
+        ],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Update subrace - not found case
+PUT {{baseUrl}}/api/scifi/scifirace/subrace/9999
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "Ghost House",
+    "description": "Should 404.",
+    "raceStatsId": 0,
+    "raceStats": null
+}
+
+###
+
+### Delete subrace (House Judgement) - also clears the field on any character referencing it
+DELETE {{baseUrl}}/api/scifi/scifirace/subrace/11
+Authorization: Bearer {{token}}
+
+###
+
+### Delete subrace - not found case
+DELETE {{baseUrl}}/api/scifi/scifirace/subrace/9999
+Authorization: Bearer {{token}}

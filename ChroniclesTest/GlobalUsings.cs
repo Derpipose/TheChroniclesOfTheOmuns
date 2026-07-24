@@ -1,1 +1,1 @@
-global using PlayerApp.Models.Legacy;
+global using Xunit;
