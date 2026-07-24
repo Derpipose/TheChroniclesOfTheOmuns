@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     env:
       COMPOSE_FILE: docker-compose.prod.yaml
-      DOTNET_INSTALL_DIR: /home/cotodev/.dotnet
+      DOTNET_INSTALL_DIR: /home/cotouser/.dotnet
 
     steps:
       - name: Check out repository code
