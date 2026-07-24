@@ -47,12 +47,13 @@ builder.Services.AddScoped<PlayerContext>();
 builder.Services.AddScoped<SciFiRaceService>();
 
 builder.Services.AddCors(options => {
-    options.AddPolicy("Dev", policy => {
+    options.AddPolicy("AllowedOrigins", policy => {
         policy.WithOrigins(
             "http://localhost:5173",
             "http://localhost:5174",
             "http://localhost:5401",
-            "http://derpserver.flyingfox-gourami.ts.net:5401"
+            "http://derpserver.flyingfox-gourami.ts.net:5401",
+            "http://derpserver.flyingfox-gourami.ts.net:5501"
         )
         .AllowAnyHeader()
         .AllowAnyMethod();
@@ -74,7 +75,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-app.UseCors("Dev");
+app.UseCors("AllowedOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
