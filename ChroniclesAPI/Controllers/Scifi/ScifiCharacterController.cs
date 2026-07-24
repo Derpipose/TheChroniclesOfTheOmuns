@@ -50,6 +50,26 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         return Ok(scifiCharacter);
     }
 
+    [HttpGet("by-character/{characterId:int}")]
+    public async Task<IActionResult> GetByCharacterId(int characterId) {
+        var scifiCharacter = await db.ScifiCharacters
+            .Include(sc => sc.Character)
+            .Where(sc => sc.CharacterId == characterId && sc.Character!.PlayerId == playerContext.PlayerId)
+            .Select(sc => new ScifiCharacterResponseDto(
+                sc.Id,
+                sc.CharacterId,
+                sc.ScifiRaceId,
+                sc.ScifiSubraceId,
+                sc.ScifiClassId,
+                sc.ScifiBackgroundId))
+            .FirstOrDefaultAsync();
+
+        if (scifiCharacter is null)
+            return NotFound(new { message = $"ScifiCharacter for Character {characterId} was not found." });
+
+        return Ok(scifiCharacter);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateScifiCharacterDto request) {
         var character = await db.Characters

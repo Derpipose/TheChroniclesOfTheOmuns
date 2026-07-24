@@ -2,7 +2,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Gears",
-    "Description": "",
+    "Description": "Pirate faction, Not a lot of them. They are hackers as well, mostly through shanks or their own ingenuity. Robots for days. Many shank types, highly advanced walkers, lots of custom robots. Their K'Nell is a crazed ingenious inventor, who found an ancient foundry, and so this discovery helps them to fuel their ambitions. They managed to get their hands on an AI, which as far as they know helps them. The K'Nell saved the AI, and he plans to use it to put Devils to shame so that Gears is the top dog as far as pirates go. They fight dirty and are tricksters. They often have cybernetic enhancements. They steal tech from the Quinval constantly and sometimes buy defective ones to improve on. Rivals with Exile and Winter.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -19,7 +19,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Thunder",
-    "Description": "",
+    "Description": "They are masters of volt weaponry. Everything of theirs is volt themed. They have the best shields, even when elementally matched it takes a while. Almost everything in house thunder is shielded: Dregs to Walkers to Skiffs. Of the civil Houses, they make the most money; they don’t care about spending or using it, but they bring it in nonetheless. Rivals gears. Thunder is seeking the artifact that will give them their own pillar to leverage themselves against their rivals. The prophecy from House Rain said that they’ll find an artifact that will give them a golden age. They often send out aspirants to try and better the house. They want to be known for more than money, and they’ll do just about anything to do it. They have the most industry of the Araka, and as a result often work with house Winter.",
     "Special": "",
     "Str": 1,
     "Dex": 1,
@@ -36,7 +36,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Twilight",
-    "Description": "",
+    "Description": "Null Weaponry, cloaking tech. Assassins by trade. Saboteurs as well. Don’t use shanks for the most part (except for camera shanks). Good relations with the House of Kings in a kind of competition that ends up keeping both houses strong. Hate the Quinval because they are notorious for neglecting to pay. K'Nell is a hella buff marauder.",
     "Special": "",
     "Str": "",
     "Dex": 2,
@@ -53,7 +53,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Remnants",
-    "Description": "",
+    "Description": "Araka that deny the houses. Grouped together as a “house” because they’re outcasts and individualists. Every member is unique in one way or another.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -70,7 +70,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Inferno",
-    "Description": "",
+    "Description": "PIllagers, raiders. Use flamethrowers and incendiary weapons. They seek destruction because it’s beautiful and an easy way to honor yourself. They are technically pirates, but terrorism is mainly what they do. Dregs are called Embers, Wretches are Torches, Vandals are called Flames, Marauders are uncommon and called Bonfires, and Captains are called Pyres. Servitors are called volcanoes. Marauders use mortar flamethrowers. When they have shields, they use blaze shields. They have the fastest ships of the Araka. Rival with Illalial and Ohmoud. They especially hate the Ohmoud.",
     "Special": "",
     "Str": 1,
     "Dex": "",
@@ -87,7 +87,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Devils",
-    "Description": "",
+    "Description": "Looters, and scavengers. They are ruthless and lead the pirate houses (ish) They are always looking for ways to better themselves on the battlefield. They sorta are friends with Inferno, but not really; they do however have a more solid relationship with the house of Gears. They have the largest fleet, the largest numbers, and probably the largest known K'Nell. This is often disputed however, considering that there is more than one K'Nell at any given time due to the house infighting. They rival every house, but have a special hatred for the house of Wolves and the house of Light.",
     "Special": "",
     "Str": 2,
     "Dex": 1,
@@ -104,7 +104,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Kings",
-    "Description": "",
+    "Description": "Espionage masters. They spy on everyone in the galaxy except the other Araka. They’re the ‘face’ of the civil Araka, smooth talkers, silver tongues, and hard bargains. They have the nicest conditions for themselves. As a result, they are the best dressed, and they keep discreet armor in case of the worst. They often broker business deals. For fighting style, think mafia/spies. They are information dealers, and militarily have spec ops and ambush tactics. They hate house Exile, and feel unsafe around the house of light. Kings do have the unfortunate habit within the honorable houses of K'Nells being forcefully replaced.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -121,7 +121,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Exiles",
-    "Description": "",
+    "Description": "Kinetic Weaponry mainly used. Mostly Dregs, Wretches, and Shanks. They are outcasts that banded together to form a new house. They are basically always on the brink of starvation. They are run by a republic of sorts to make sure all/most have a say in house decisions. They often buy Ether on the market, and as a result the whole house is often up for hire so they can afford it. They have a prototype shank-servitor to process ether. It has some issues, but they tinker with it to make it better. The standard dreg is usually better armed, with actual rifles instead of just a pistol. They are very experienced and can take down a lot bigger things than one from another house should be able to. Rival with Gears.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -138,7 +138,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Winter",
-    "Description": "",
+    "Description": "House Winter specializes in technology, archeology, science, even medical stuff. They still function similarly to the other Araka, but they have an avid love of exploration and an insatiable curiosity. They perfected cryo-weaponry. They aren’t afraid to do the dirty work to learn more. They have many kinds of secret technologies, including ChillSilved (a cold fusion based Alloy) for ship Hulls and blades, even as finery for their cryo-weapons. The melee weapons they make are so cold that despite not being cryo weapons, they create icicles upon striking. House Winter scopes are holographic, and they often use holograms for all manner of panels and computer access, as they think manual computing interfaces suffer too many risks. Their melee weapons are high quality, but usually not sold. They have a rivalry with Gears and Inferno.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -155,7 +155,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Wolves",
-    "Description": "",
+    "Description": "House wolves is the raw military might of the civilized houses. They have the largest standing armada and Army out of all the honorable Araka. They have a strict honor code and are considered the right hand of judgment. They used to serve under house rain, but when it all fell apart, they now had to be both the armada and the army. They are a common form of law enforcement and they are good at their jobs, because they don’t take crap from anyone. They are the reason that the Araka are respected militarily. They are very close with house Kings because Kings are afraid of a schism in house wolves. They have this ‘death before dishonor’ mentality. They serve the leaders of the honorable Araka, their only Real rivals are the dishonored houses.",
     "Special": "",
     "Str": "",
     "Dex": 2,
@@ -172,7 +172,7 @@
   {
     "Race": "Araka",
     "SubRaceName": "House Judgement",
-    "Description": "",
+    "Description": "The “old wise men” of the Araka. They run the houses, despite not being the main face to the other races. They have their own military to supplement house wolves. The honor guard is made from fallen from all the honorable houses that are taken into house judgment as the honor guard. They are tenacious in running the fallen, and have made them extremely dependable. They are the single most trusted faction in the Araka. House Judgement dregs can sometimes be found as advisors in other houses. Native house judgments are not usually fighters, but they are competent. They are usually found as scholars and historians. There is one prophecy about presumably the Ashen that they would change the galaxy for the worst. House judgment remembers this prophecy and is extremely worried about that.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -189,7 +189,7 @@
   {
     "Race": "Nilbog",
     "SubRaceName": "Nilbog",
-    "Description": "",
+    "Description": "Space goblins. They go for any kind of title/niche/gimmick they can. Biggest family, smallest family, most notorious pirate, least notorious pirate. Any kind of title. The Nilbogs are very numerous, reproducing faster than humans, and spreading faster too. Their role in the galaxy ranges from merchants to mechanics to pirates. They not only are numerous but have two subtypes that have stemmed from them.",
     "Special": "",
     "Str": "",
     "Dex": 2,
@@ -206,7 +206,7 @@
   {
     "Race": "Nilbog",
     "SubRaceName": "Raebgub",
-    "Description": "",
+    "Description": "Gub, are a race of Nilbog that colonised a frozen planet, and grew thick amounts of fur. They are the strongest of the family, but get overheated a lot on warmer planets and stations.",
     "Special": "",
     "Str": 2,
     "Dex": "",
@@ -223,7 +223,7 @@
   {
     "Race": "Nilbog",
     "SubRaceName": "Nilbogboh",
-    "Description": "",
+    "Description": "Boh are born on planets that lack the high gravity of their homeworld, and also can be born in space. They are much taller than their smaller brethren, and easily stand as tall as a human.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -239,8 +239,8 @@
   },
   {
     "Race": "Tasawi",
-    "SubRaceName": "Void",
-    "Description": "",
+    "SubRaceName": "Null",
+    "Description": "Null tasawii filled with the power of Null energy and capable of channeling it.",
     "Special": "Void Regain",
     "Str": "",
     "Dex": "",
@@ -257,7 +257,7 @@
   {
     "Race": "Tasawi",
     "SubRaceName": "Volt",
-    "Description": "",
+    "Description": "Volt tasawii filled with the power of Volt energy and capable of channeling it.",
     "Special": "Volt Regain",
     "Str": "",
     "Dex": "",
@@ -274,7 +274,7 @@
   {
     "Race": "Tasawi",
     "SubRaceName": "Cryo",
-    "Description": "",
+    "Description": "Cryo tasawii filled with the power of Cryo energy and capable of channeling it.",
     "Special": "Cryo Regain",
     "Str": "",
     "Dex": "",
@@ -291,7 +291,7 @@
   {
     "Race": "Tasawi",
     "SubRaceName": "Blaze",
-    "Description": "",
+    "Description": "Blaze tasawii filled with the power of Blaze energy and capable of channeling it.",
     "Special": "Blaze Regain",
     "Str": "",
     "Dex": "",
@@ -308,7 +308,7 @@
   {
     "Race": "Protis",
     "SubRaceName": "Low Tech",
-    "Description": "",
+    "Description": "A Protis with a very low amount of technical add-ons.",
     "Special": "Low EMP",
     "Str": "",
     "Dex": "",
@@ -325,7 +325,7 @@
   {
     "Race": "Protis",
     "SubRaceName": "Mid Tech",
-    "Description": "",
+    "Description": "A Protis with a decent amount of technical add-ons.",
     "Special": "Mid EMP",
     "Str": "",
     "Dex": "",
@@ -342,7 +342,7 @@
   {
     "Race": "Protis",
     "SubRaceName": "High Tech",
-    "Description": "",
+    "Description": "A Protis with a very high amount of technical add-ons.",
     "Special": "High EMP",
     "Str": "",
     "Dex": "",
@@ -359,7 +359,7 @@
   {
     "Race": "Ashen",
     "SubRaceName": "Knight",
-    "Description": "",
+    "Description": "Knights are the raw strength of the ashen, fully capable of decimating their foes in single combat  or vastly outnumbered.",
     "Special": "",
     "Str": "L18",
     "Dex": "",
@@ -376,7 +376,7 @@
   {
     "Race": "Ashen",
     "SubRaceName": "Rogue",
-    "Description": "",
+    "Description": "Rogue ashen are the dexterous and agile members of their clan, specializing in agility rather than pure strength they dart around and make rapid attacks on their foes.",
     "Special": "",
     "Str": "",
     "Dex": "L18",
@@ -393,7 +393,7 @@
   {
     "Race": "Ashen",
     "SubRaceName": "Son of Jarrus",
-    "Description": "",
+    "Description": "There was a fairly modest faction of Ashen who left Cinis after the early years, once they made contact with the rest of humanity. The Sons of Jarrus are ashen, but have sought refuge with the rest of humanity, and have given themselves to more ‘normal’ traditions of the rest of humanity. Though the other ashen frown on this group heavily. This group has the Ashen Resilience, but don’t have any set stat bonuses or the ability to complete their atonement in exile. These Ashen are the most populous group of Ashen in the modern era, making up most of the count, though they lost a massive amount during the Galactic civil war as they gave themselves wholeheartedly to the United Human Alliances military, and lost a great deal of their numbers. The broken trust between them and the other ashen are slowly mending as they have to rely on each other to continue their race's lineage. Contrary to the title the ‘Sons of Jarrus’ are not only males, but rather a catch all term for those who left Cinis alongside Jarrus to give themselves over to the benefit of the United Human Alliance. Even with the healing wound between them and the other Ashen they are often referred to as ‘Jarrusites’ which is an Ashen term that often means cowards, or traitors.",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -410,7 +410,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Canine",
-    "Description": "",
+    "Description": "Beastra with dog like qualities and features",
     "Special": "",
     "Str": 1,
     "Dex": "",
@@ -427,7 +427,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Feline",
-    "Description": "",
+    "Description": "Beastra with cat like qualities and features",
     "Special": "",
     "Str": "",
     "Dex": 2,
@@ -444,7 +444,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Vulpine",
-    "Description": "",
+    "Description": "Beastra with fox like qualities and features",
     "Special": "",
     "Str": "",
     "Dex": 1,
@@ -461,7 +461,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Aries",
-    "Description": "",
+    "Description": "Beastra with sheep like qualities and features",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -478,7 +478,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Mustela",
-    "Description": "",
+    "Description": "Beastra with weasel like qualities and features",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -495,7 +495,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Cervidae",
-    "Description": "",
+    "Description": "Beastra with deer like qualities and features",
     "Special": "",
     "Str": "",
     "Dex": 2,
@@ -512,7 +512,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Rodentia",
-    "Description": "",
+    "Description": "Beastra with Rodent like qualities and features",
     "Special": "",
     "Str": "",
     "Dex": "",
@@ -529,7 +529,7 @@
   {
     "Race": "Beastra",
     "SubRaceName": "Taurus",
-    "Description": "",
+    "Description": "Beastra with Bull like qualities and features",
     "Special": "",
     "Str": 2,
     "Dex": "",
@@ -546,7 +546,7 @@
   {
     "Race": "Junker",
     "SubRaceName": "Shipyard",
-    "Description": "",
+    "Description": "A junker composed of ruined ship parts and navigation equipment. Built in thruster, wings and several other parts of ships. Compass (literally always know where they are & excellent navigator),",
     "Special": "2AC, 8DR, Flight 40",
     "Str": "",
     "Dex": "",
@@ -563,7 +563,7 @@
   {
     "Race": "Junker",
     "SubRaceName": "Industrial Compound",
-    "Description": "",
+    "Description": "A junker composed of industrial junk and scrap, massive and imposing they have many abilities to fabricate things. Living Factory (Able to literally create simple things via eating them and then eating the same materials in order to recreate them)",
     "Special": "3AC, 10DR",
     "Str": "",
     "Dex": "",
@@ -580,7 +580,7 @@
   {
     "Race": "Junker",
     "SubRaceName": "Disposal Facility",
-    "Description": "",
+    "Description": "A junker that has it's body composed of all manner of pistons and compression equipment. The lanky build of this junker has many benefits for movement. Piston Pounce 70ft, Retractable limbs (by retracting their other limbs they can gain reach with unarmed and melee attacks)",
     "Special": "2AC, 5DR, 15HP",
     "Str": "",
     "Dex": "",
@@ -597,7 +597,7 @@
   {
     "Race": "Junker",
     "SubRaceName": "Comercial District",
-    "Description": "",
+    "Description": "A Junker thats composed of many components found in the commerical district, lots of terminals, and all sorts of other commerical grade equipment. Masterhack (they can hack computers and other electrical equipment without any inputs)",
     "Special": "1AC, 2DR",
     "Str": "",
     "Dex": "",
@@ -614,7 +614,7 @@
   {
     "Race": "Junker",
     "SubRaceName": "Science Surplus",
-    "Description": "",
+    "Description": "A junker Composed of lots of scientific equipment and gear capable of all manner of stuff. has plenty of built in prottype technology. Can see all the light spectrums, Multi limbed, Experimental Tech ( Active Camo, Shield tech, Multi tooled, Medical, Power generator, subatomic manipulator pick one)",
     "Special": "2AC, 5DR",
     "Str": "",
     "Dex": "",
@@ -631,7 +631,7 @@
   {
     "Race": "Junker",
     "SubRaceName": "Military Junk",
-    "Description": "",
+    "Description": "A junker composed of various former military hardware, strong defensible and tough, with plenty of built in weapons and hard points to spare. Built-in- weaponry (Melee; Energy blade, Blades, Taser, Maul//Projectile; Finger guns, Grenade elbows{misc projectiles}, Leg machine gun {LMG}, Arm Rifle, Shotgun wrist Pick 2)",
     "Special": "4AC, 8DR",
     "Str": "",
     "Dex": "",

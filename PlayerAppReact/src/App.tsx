@@ -4,6 +4,7 @@ import SignInPage from './pages/SignInPage'
 import CharactersPage from './pages/CharactersPage'
 import AddCharacterPage from './pages/AddCharacterPage'
 import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
+import DevPage from './pages/DevPage'
 
 const queryClient = new QueryClient()
 
@@ -26,6 +27,11 @@ export default function App() {
           <Route path="/characters/add" element={
             <ProtectedRoute>
               <AddCharacterPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/dev" element={
+            <ProtectedRoute>
+              <DevPage />
             </ProtectedRoute>
           } />
         </Routes>

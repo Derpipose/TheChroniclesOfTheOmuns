@@ -15,6 +15,16 @@ export async function getScifiCharacterById(id: number): Promise<ScifiCharacter>
   return response.json()
 }
 
+export async function getScifiCharacterByCharacterId(characterId: number): Promise<ScifiCharacter> {
+  const response = await apiFetch(`${BASE_URL}/api/scifi/scificharacter/by-character/${characterId}`)
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch scifi character for character ${characterId}: ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
 export async function createScifiCharacter(newScifiCharacter: CreateScifiCharacter): Promise<ScifiCharacter> {
   const response = await apiFetch(`${BASE_URL}/api/scifi/scifiCharacter`, {
     method: 'POST',
