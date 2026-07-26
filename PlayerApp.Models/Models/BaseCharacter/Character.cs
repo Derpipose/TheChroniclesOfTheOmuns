@@ -16,6 +16,8 @@ public class Character {
     public int Id { get; private set; }
     public bool IsActive { get; private set; } = false;
 
+    public DateTime LastModified { get; private set; } = DateTime.UtcNow;
+
     public ICollection<CharacterModifier> Modifiers { get; set; } = [];
 
     public Player? Player { get; private set; }
@@ -24,6 +26,7 @@ public class Character {
     public Character(int playerid, string name) {
         PlayerId = playerid;
         Name = name;
+        LastModified = DateTime.UtcNow;
     }
 
     private Character(int playerId) {
@@ -36,9 +39,11 @@ public class Character {
     }
     public void SetName(string name) {
         Name = name;
+        LastModified = DateTime.UtcNow;
     }
     public void SetCurrentHealth(int currentHealth) {
         CurrentHealth = currentHealth;
+        LastModified = DateTime.UtcNow;
     }
 
     public void SetMaxHealth(int maxHealth) {
@@ -46,26 +51,29 @@ public class Character {
         if (CurrentHealth > MaxHealth) {
             CurrentHealth = MaxHealth;
         }
+        LastModified = DateTime.UtcNow;
     }
 
-    public void SetBaseArmorClass(int BaseArmorClass) {
-        BaseArmorClass = BaseArmorClass;
+    public void SetBaseArmorClass(int baseArmorClass) {
+        BaseArmorClass = baseArmorClass;
+        LastModified = DateTime.UtcNow;
     }
-
-
 
 
     public void SetActive() {
         IsActive = true;
+        LastModified = DateTime.UtcNow;
     }
 
     public void SetLevel(int value) {
         if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), "Level must be greater than 0.");
         Level = value;
+        LastModified = DateTime.UtcNow;
     }
 
     public void SetSetting(SettingEnum setting) {
         Setting = setting;
+        LastModified = DateTime.UtcNow;
     }
 
     public int GetMaxHealth() {

@@ -1,6 +1,7 @@
 using ChroniclesAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticAssets;
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models;
 using PlayerApp.Models.Database;
@@ -117,13 +118,23 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         }
 
         // Upsert: if scifi character already exists for this character, update it instead
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id) 
+            ?? new CharacterStats(character.Id);
+
+        // CHANGED: added .Include(sc => sc.ScifiClass) so `existing.ScifiClass` is
+        // populated for characters that already had a class set from a prior request.
+        // Without this, existingClass below would be null whenever this request
+        // doesn't touch ScifiClassId, wiping out health for an unrelated field change.
         var existing = await db.ScifiCharacters
+            .Include(sc => sc.ScifiClass)
             .FirstOrDefaultAsync(sc => sc.CharacterId == request.CharacterId);
 
         if (existing is not null) {
             // Subrace requires a race to be set (either already persisted, or provided in this same request)
             if (request.ScifiSubraceId is not null && request.ScifiRaceId is null && existing.ScifiRaceId == 0)
                 return BadRequest(new { message = "ScifiRace must be set before assigning a ScifiSubrace." });
+
+            character.SetMaxHealth(0);
 
             if (request.ScifiRaceId is not null) {
                 var race = await db.ScifiRaces.FirstAsync(r => r.Id == request.ScifiRaceId);
@@ -143,8 +154,17 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 existing.SetScifiBackground(background.Id);
             }
 
+            // CHANGED: with the .Include() above, existing.ScifiClass is now reliable
+            // for the "class unchanged this request" branch, so this no longer needs
+            // a fallback query — it's the same lookup-by-fresh-id-or-use-loaded-nav
+            // pattern as before, just now safe to trust.
+            var existingClass = request.ScifiClassId is not null
+                ? await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId)
+                : existing.ScifiClass;
+
+            existing.UpdateHealth(stats, existingClass);
+
             character.SetSetting(SettingEnum.Scifi);
-            character.SetMaxHealth(0);
             await db.SaveChangesAsync();
 
             return Ok(new ScifiCharacterResponseDto(
@@ -185,6 +205,14 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             scifiCharacter.SetScifiBackground(background.Id);
         }
 
+        // Unchanged: this is a brand-new ScifiCharacter, so scifiCharacter.ScifiClass
+        // is guaranteed null when ScifiClassId wasn't provided — no bug here.
+        var classForHealth = request.ScifiClassId is not null
+            ? await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId)
+            : scifiCharacter.ScifiClass;
+
+        scifiCharacter.UpdateHealth(stats, classForHealth);
+
         db.ScifiCharacters.Add(scifiCharacter);
         await db.SaveChangesAsync();
 
@@ -201,6 +229,10 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
     public async Task<IActionResult> Update(int id, [FromBody] UpdateScifiCharacterDto request) {
         var scifiCharacter = await db.ScifiCharacters
             .Include(sc => sc.Character)
+            .Include(sc => sc.ScifiRace)
+            .Include(sc => sc.ScifiSubrace)
+            .Include(sc => sc.ScifiClass)
+            .Include(sc => sc.ScifiBackground)
             .FirstOrDefaultAsync(sc => sc.Id == id && sc.Character!.PlayerId == playerContext.PlayerId);
 
         if (scifiCharacter is null)
@@ -242,11 +274,16 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         }
 
         // Class: 0 = clear, valid ID = set, null = no change
+        // CHANGED: capture whether class is being cleared this request, since
+        // ScifiClassId == 0 needs different handling than "not provided" below.
+        var scifiClassCleared = request.ScifiClassId == 0;
+        ScifiClass? scifiClass = null;
+
         if (request.ScifiClassId == 0) {
             scifiCharacter.ClearScifiClass();
         } else if (request.ScifiClassId is not null) {
             // TODO: When multiple settings exist, ensure this class actually belongs to the Scifi setting
-            var scifiClass = await db.ScifiClasses.FirstOrDefaultAsync(c => c.Id == request.ScifiClassId);
+            scifiClass = await db.ScifiClasses.FirstOrDefaultAsync(c => c.Id == request.ScifiClassId);
             if (scifiClass is null)
                 return BadRequest(new { message = "ScifiClass not found." });
             scifiCharacter.SetScifiClass(scifiClass.Id);
@@ -262,6 +299,17 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 return BadRequest(new { message = "ScifiBackground not found." });
             scifiCharacter.SetScifiBackground(background.Id);
         }
+
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == scifiCharacter.CharacterId) 
+            ?? new CharacterStats(scifiCharacter.CharacterId);
+
+        // CHANGED: was `request.ScifiClassId is not null`, which incorrectly matched
+        // the "clear" sentinel (0) too, causing FirstAsync(c => c.Id == 0) to throw.
+        // Now: cleared -> null; genuinely changed (nonzero) -> reload it fresh;
+        // untouched -> trust the already-.Include()'d nav property.
+        var classForHealth = scifiClassCleared ? null : scifiClass ?? scifiCharacter.ScifiClass;
+
+        scifiCharacter.UpdateHealth(stats, classForHealth);
 
         await db.SaveChangesAsync();
 

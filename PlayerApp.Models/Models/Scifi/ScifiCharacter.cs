@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using PlayerApp.Models.Dice;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
@@ -59,14 +61,17 @@ public class ScifiCharacter {
         ScifiBackgroundId = scifiBackgroundId;
     }
 
-    public void UpdateHealth(CharacterStats stats) {
-        if (ScifiClass == null) 
+    public void UpdateHealth(CharacterStats stats, ScifiClass? scifiClass) {
+        if (scifiClass == null) {
+            Character?.SetMaxHealth(0);
+            Character?.SetCurrentHealth(0);
             return;
+        }
 
         if (stats == null) 
             return;
         
-        int hitDiceMax = ScifiClass.HitDice.Sides();
+        int hitDiceMax = scifiClass.HitDice.Sides();
         int conMod = stats.GetStatModifier(StatType.Constitution);
         int constitution = stats.Constitution;
 
