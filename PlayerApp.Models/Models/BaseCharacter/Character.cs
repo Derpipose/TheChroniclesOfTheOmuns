@@ -10,6 +10,9 @@ public class Character {
     public int Level { get; private set; } = 1;
     public SettingEnum Setting { get; private set; } = SettingEnum.Unregistered;
     public int MaxHealth { get; private set; } = 0;
+    public int BaseArmorClass { get; private set; } = 10;
+
+    public int CurrentHealth { get; private set; } = 0;
     public int Id { get; private set; }
     public bool IsActive { get; private set; } = false;
 
@@ -34,10 +37,22 @@ public class Character {
     public void SetName(string name) {
         Name = name;
     }
+    public void SetCurrentHealth(int currentHealth) {
+        CurrentHealth = currentHealth;
+    }
 
     public void SetMaxHealth(int maxHealth) {
         MaxHealth = maxHealth;
+        if (CurrentHealth > MaxHealth) {
+            CurrentHealth = MaxHealth;
+        }
     }
+
+    public void SetBaseArmorClass(int BaseArmorClass) {
+        BaseArmorClass = BaseArmorClass;
+    }
+
+
 
 
     public void SetActive() {
@@ -60,11 +75,11 @@ public class Character {
         return MaxHealth + bonus;
     }
 
-    public int GetArmorClass(int baseArmorClass) {
+    public int GetArmorClass() {
         var bonus = Modifiers
             .Where(m => m.ModifierType == ModifierType.ArmorClass)
             .Sum(m => m.Amount);
-        return baseArmorClass + bonus;
+        return BaseArmorClass + bonus;
     }
 
     public int GetStat(ModifierType statType, int baseValue) {

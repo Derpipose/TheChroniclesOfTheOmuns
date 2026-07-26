@@ -59,6 +59,33 @@ public class ScifiCharacter {
         ScifiBackgroundId = scifiBackgroundId;
     }
 
+    public void UpdateHealth(CharacterStats stats) {
+        if (ScifiClass == null) 
+            return;
+
+        if (stats == null) 
+            return;
+        
+        int hitDiceMax = ScifiClass.HitDice.Sides();
+        int conMod = stats.GetStatModifier(StatType.Constitution);
+        int constitution = stats.Constitution;
+
+        int health = constitution * 2 + hitDiceMax + conMod;
+
+        Character?.SetMaxHealth(health);
+        Character?.SetCurrentHealth(health);
+        
+
+    }
+
+    public void ScifiCharacterSetBaseArmorClass(CharacterStats stats) {
+        if (ScifiRace != null) {
+            int dexmod = stats.GetStatModifier(StatType.Dexterity);
+            int baseAC = 10 + dexmod;
+            Character?.SetBaseArmorClass(baseAC);
+        }
+    }
+
     public void ClearScifiRace() {
         ScifiRaceId = null;
     }

@@ -57,6 +57,20 @@ public class CharacterStats {
         }
     }
 
+    public int GetStatModifier(StatType stat) {
+        int statValue = stat switch {
+            StatType.Strength => Strength,
+            StatType.Dexterity => Dexterity,
+            StatType.Constitution => Constitution,
+            StatType.Wisdom => Wisdom,
+            StatType.Intelligence => Intelligence,
+            StatType.Charisma => Charisma,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(stat), "Unknown stat type.")
+        };
+        return (statValue - 10) / 2;
+    }
+
     // In-play increases (level ups)
     public void IncreaseStat(StatType stat, int amount, Character character) {
         if (amount <= 0)
