@@ -163,8 +163,8 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 : existing.ScifiClass;
 
             existing.UpdateHealth(stats, existingClass);
-
             character.SetSetting(SettingEnum.Scifi);
+
             await db.SaveChangesAsync();
 
             return Ok(new ScifiCharacterResponseDto(
@@ -211,9 +211,9 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             ? await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId)
             : scifiCharacter.ScifiClass;
 
+        db.ScifiCharacters.Add(scifiCharacter);
         scifiCharacter.UpdateHealth(stats, classForHealth);
 
-        db.ScifiCharacters.Add(scifiCharacter);
         await db.SaveChangesAsync();
 
         return Ok(new ScifiCharacterResponseDto(

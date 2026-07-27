@@ -63,8 +63,8 @@ public class ScifiCharacter {
 
     public void UpdateHealth(CharacterStats stats, ScifiClass? scifiClass) {
         if (scifiClass == null) {
-            Character?.SetMaxHealth(0);
-            Character?.SetCurrentHealth(0);
+            Character.SetMaxHealth(0);
+            Character.SetCurrentHealth(0);
             return;
         }
 
@@ -77,8 +77,8 @@ public class ScifiCharacter {
 
         int health = constitution * 2 + hitDiceMax + conMod;
 
-        Character?.SetMaxHealth(health);
-        Character?.SetCurrentHealth(health);
+        Character.SetMaxHealth(health);
+        Character.SetCurrentHealth(health);
         
 
     }
@@ -87,7 +87,7 @@ public class ScifiCharacter {
         if (ScifiRace != null) {
             int dexmod = stats.GetStatModifier(StatType.Dexterity);
             int baseAC = 10 + dexmod;
-            Character?.SetBaseArmorClass(baseAC);
+            Character.SetBaseArmorClass(baseAC);
         }
     }
 
