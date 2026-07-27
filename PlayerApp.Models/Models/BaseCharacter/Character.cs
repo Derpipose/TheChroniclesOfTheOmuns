@@ -26,7 +26,7 @@ public class Character {
     public Character(int playerid, string name) {
         PlayerId = playerid;
         Name = name;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
     private Character(int playerId) {
@@ -37,13 +37,18 @@ public class Character {
     protected Character() {
         // EF Core needs this to materialize the entity
     }
+
+    public void UpdateLastModified() {
+        LastModified = DateTime.UtcNow;
+    }
+
     public void SetName(string name) {
         Name = name;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
     public void SetCurrentHealth(int currentHealth) {
         CurrentHealth = currentHealth;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
     public void SetMaxHealth(int maxHealth) {
@@ -51,29 +56,29 @@ public class Character {
         if (CurrentHealth > MaxHealth) {
             CurrentHealth = MaxHealth;
         }
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
     public void SetBaseArmorClass(int baseArmorClass) {
         BaseArmorClass = baseArmorClass;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
 
     public void SetActive() {
         IsActive = true;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
     public void SetLevel(int value) {
         if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), "Level must be greater than 0.");
         Level = value;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
     public void SetSetting(SettingEnum setting) {
         Setting = setting;
-        LastModified = DateTime.UtcNow;
+        UpdateLastModified();
     }
 
     public int GetMaxHealth() {
