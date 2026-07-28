@@ -47,6 +47,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PlayerContext>();
 builder.Services.AddScoped<SciFiRaceService>();
+builder.Services.AddScoped<SciFiSubraceService>();
+builder.Services.AddScoped<ScifiSeedingService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowedOrigins", policy => {
@@ -83,3 +85,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
