@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChroniclesAPI.Controllers;
 
 [ApiController]
-[Route("api/scifi/subrace")]
+[Route("api/scifi/[controller]")]
 [Authorize]
 public class ScifiSubraceController(SciFiSubraceService subraceService) : ControllerBase {
 
