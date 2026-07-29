@@ -18,6 +18,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiSubrace> ScifiSubraces => Set<ScifiSubrace>();
     public DbSet<ScifiCharacter> ScifiCharacters => Set<ScifiCharacter>();
     public DbSet<CharacterModifier> CharacterModifiers => Set<CharacterModifier>();
+    public DbSet<ScifiWeapon> ScifiWeapons { get; set; }
+    public DbSet<ScifiWeaponInstance> ScifiWeaponInstances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -93,6 +95,40 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<CharacterModifier>()
             .Property(cm => cm.Source)
             .HasConversion<string>();
+
+        modelBuilder.Entity<ScifiWeaponInstance>(entity => {
+            entity.HasKey(e => e.Id);
+
+            // Database generates the ID (IDENTITY)
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            // ScifiWeaponId is just a plain int property — NO FK constraint
+            // It's informational only, for "reset to factory" lookups
+            entity.Property(e => e.ScifiWeaponId).IsRequired();
+
+            // FK to character only
+            entity.Property(e => e.ScifiCharacterId).IsRequired();
+            entity.HasOne<ScifiCharacter>()
+                .WithMany()
+                .HasForeignKey(e => e.ScifiCharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Stat fields
+            entity.Property(e => e.DamageFormula).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.CriticalRange).IsRequired().HasMaxLength(10);
+            entity.Property(e => e.CriticalMultiplier).IsRequired().HasMaxLength(10);
+        });
+
+        // ScifiWeapon needs no special configuration — it's completely standalone
+        modelBuilder.Entity<ScifiWeapon>(entity => {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.DamageFormula).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.CriticalRange).IsRequired().HasMaxLength(10);
+            entity.Property(e => e.CriticalMultiplier).IsRequired().HasMaxLength(10);
+            // No HasMany(Instances) — blueprint doesn't know about instances
+        });
 
 
     }
