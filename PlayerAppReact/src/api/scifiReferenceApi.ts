@@ -15,8 +15,8 @@ export async function getScifiRaces(): Promise<ScifiRace[]> {
 }
 
 export async function getScifiSubracesByRace(raceId: number): Promise<ScifiSubrace[]> {
-  // GET /api/scifi/ScifiRace/subrace/race/{raceId}
-    const response = await apiFetch(`${BASE_URL}/api/scifi/ScifiRace/subrace/race/${raceId}`)
+  // GET /api/scifi/ScifiSubrace/by-race/{raceId}
+    const response = await apiFetch(`${BASE_URL}/api/scifi/ScifiSubrace/by-race/${raceId}`)
 
     if (response.status === 404) {
         return [] // Return an empty array if no subraces are found for the given raceId

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getCharacters } from '../api/characterApi'
+import { getCharacterById, getCharacters } from '../api/characterApi'
 import type { Character } from '../types/character'
 import { getScifiCharacterByCharacterId } from '../api/scifiCharacterApi'
 
@@ -15,5 +15,13 @@ export function useScifiCharacterByCharacterId(characterId: number) {
     queryKey: ['scifiCharacter', characterId],
     queryFn: () => getScifiCharacterByCharacterId(characterId),
     enabled: !!characterId,
+  })
+}
+
+export function useCharacter(id: number) {
+  return useQuery<Character>({
+    queryKey: ['character', id],
+    queryFn: () => getCharacterById(id),
+    enabled: !!id,
   })
 }
