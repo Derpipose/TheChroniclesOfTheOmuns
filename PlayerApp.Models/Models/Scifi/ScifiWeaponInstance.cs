@@ -2,6 +2,7 @@
 // Instance: Player-owned weapon (copied from blueprint, then independent)
 // Instance: Player-owned weapon (independent after creation)
 using System.Diagnostics;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
