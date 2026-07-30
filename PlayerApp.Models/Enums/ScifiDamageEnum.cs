@@ -1,3 +1,4 @@
+namespace PlayerApp.Models.Enums;
 public enum DamageType {
     Melee,
     Ballistic,
