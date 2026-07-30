@@ -20,11 +20,11 @@ public class ScifiWeapon {
     public int AmmoCapacity { get; private set; } = 0;
     public int ReloadTimeInActions { get; private set; } = 1;
 
-    public string CriticalRange { get; private set; } = string.Empty;  // "20" or "19-20"
-    public string CriticalMultiplier { get; private set; } = string.Empty;  // "x2"
+    public string CriticalRange { get; private set; } = string.Empty;  // "20" or "19-20" Maybe Crit Base, since range always goes to 20. 
+    public string CriticalMultiplier { get; private set; } = string.Empty;  // "x2" Not string, Int. It's always a whole number and always a multiplier. 
 
     public string? RangeCategory { get; private set; }
-    public string? CriticalFailRange { get; private set; }
+    public string? CriticalFailRange { get; private set; } //Same thing as crit range, but for critical fails. We always go to 1, So we really just need the highest number in the range. 
 
 
     public ScifiWeapon(

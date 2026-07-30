@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import SignInPage from './pages/SignInPage'
 import CharactersPage from './pages/CharactersPage'
+import CharacterViewPage from './pages/CharacterViewPage'
 import AddCharacterPage from './pages/AddCharacterPage'
 import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import DevPage from './pages/DevPage'
@@ -29,6 +30,14 @@ export default function App() {
               <AddCharacterPage />
             </ProtectedRoute>
           } />
+          <Route path="/character/:id" element={
+            <ProtectedRoute>
+              <CharacterViewPage />
+            </ProtectedRoute>
+          } />
+
+
+
           <Route path="/dev" element={
             <ProtectedRoute>
               <DevPage />
