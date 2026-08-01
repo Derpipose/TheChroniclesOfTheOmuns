@@ -7,51 +7,81 @@ using Xunit;
 public class ModifierTypeTests {
 
 
+
     [Fact]
     public void GetMaxHealth_NoModifiers_ReturnsBaseHealth() {
         Character character = new(1, "TestCharacter");
         character.SetMaxHealth(20);
 
-        Assert.Equal(20, character.GetMaxHealth());
+        Assert.Equal(20, character.GetMaxHealth(new List<ICharacterModifier>()));
     }
 
     [Fact]
     public void GetMaxHealth_SingleHealthModifier_AddsBonus() {
         Character character = new(1, "TestCharacter");
         character.SetMaxHealth(20);
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, 5, ModifierSource.Race));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = 5
+            }
+        };
 
-        Assert.Equal(25, character.GetMaxHealth());
+        Assert.Equal(25, character.GetMaxHealth(Modifiers));
     }
 
     [Fact]
     public void GetMaxHealth_MultipleHealthModifiers_SumsAllBonuses() {
         Character character = new(1, "TestCharacter");
         character.SetMaxHealth(20);
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, 5, ModifierSource.Race));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, 3, ModifierSource.Class));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, 2, ModifierSource.Background));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = 5
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = 3
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = 2
+            }
+        };
 
-        Assert.Equal(30, character.GetMaxHealth());
+        Assert.Equal(30, character.GetMaxHealth(Modifiers));
     }
 
     [Fact]
     public void GetMaxHealth_NegativeHealthModifier_ReducesTotal() {
         Character character = new(1, "TestCharacter");
         character.SetMaxHealth(20);
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, -5, ModifierSource.Subrace));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = -5
+            }
+        };
 
-        Assert.Equal(15, character.GetMaxHealth());
+        Assert.Equal(15, character.GetMaxHealth(Modifiers));
     }
 
     [Fact]
     public void GetMaxHealth_IgnoresNonHealthModifiers() {
         Character character = new(1, "TestCharacter");
         character.SetMaxHealth(20);
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Strength, 2, ModifierSource.Race));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.ArmorClass, 1, ModifierSource.Class));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
+            new TestModifier {
+                ModifierType = ModifierType.Strength,
+                Amount = 2
+            },
+            new TestModifier {
+                ModifierType = ModifierType.ArmorClass,
+                Amount = 1
+            }
+        };
 
-        Assert.Equal(20, character.GetMaxHealth());
+        Assert.Equal(20, character.GetMaxHealth(Modifiers));
     }
 
     // -- GetArmorClass --
@@ -59,37 +89,54 @@ public class ModifierTypeTests {
     [Fact]
     public void GetArmorClass_NoModifiers_ReturnsBaseValue() {
         Character character = new(1, "TestCharacter");
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>();
         character.SetBaseArmorClass(15);
 
-        Assert.Equal(15, character.GetArmorClass());
+        Assert.Equal(15, character.GetArmorClass(Modifiers));
     }
 
     [Fact]
     public void GetArmorClass_SingleModifier_AddsBonus() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.ArmorClass, 2, ModifierSource.Subrace));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+            ModifierType = ModifierType.ArmorClass,
+            Amount = 2
+        }};
         character.SetBaseArmorClass(15);
 
-        Assert.Equal(17, character.GetArmorClass());
+        Assert.Equal(17, character.GetArmorClass(Modifiers));
     }
 
     [Fact]
     public void GetArmorClass_NegativeModifier_ReducesValue() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.ArmorClass, -1, ModifierSource.Background));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+            ModifierType = ModifierType.ArmorClass,
+            Amount = -1
+        }};
         character.SetBaseArmorClass(15);
 
-        Assert.Equal(14, character.GetArmorClass());
+        Assert.Equal(14, character.GetArmorClass(Modifiers));
     }
 
     [Fact]
     public void GetArmorClass_IgnoresHealthAndStatModifiers() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, 10, ModifierSource.Race));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Dexterity, 3, ModifierSource.Class));
-        character.SetBaseArmorClass(15);
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = 10
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Dexterity,
+                Amount = 3
+            }
+        };
 
-        Assert.Equal(15, character.GetArmorClass());
+        character.SetBaseArmorClass(15);
+        Assert.Equal(15, character.GetArmorClass(Modifiers));
     }
 
     // -- GetStat --
@@ -97,43 +144,70 @@ public class ModifierTypeTests {
     [Fact]
     public void GetStat_NoMatchingModifiers_ReturnsBaseValue() {
         Character character = new(1, "TestCharacter");
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>();
 
-        Assert.Equal(10, character.GetStat(ModifierType.Strength, 10));
+        Assert.Equal(10, character.GetStat(Modifiers,ModifierType.Strength, 10));
     }
 
     [Fact]
     public void GetStat_SingleMatchingModifier_AddsBonus() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Wisdom, 2, ModifierSource.Race));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+                ModifierType = ModifierType.Wisdom,
+                Amount = 2
+            }
+        };
 
-        Assert.Equal(14, character.GetStat(ModifierType.Wisdom, 12));
+        Assert.Equal(14, character.GetStat(Modifiers,ModifierType.Wisdom, 12));
     }
 
     [Fact]
     public void GetStat_MultipleModifiersSameType_SumsBonuses() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Charisma, 2, ModifierSource.Race));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Charisma, 1, ModifierSource.Subrace));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+                ModifierType = ModifierType.Charisma,
+                Amount = 2
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Charisma,
+                Amount = 1
+            }
+        };
 
-        Assert.Equal(13, character.GetStat(ModifierType.Charisma, 10));
+        Assert.Equal(13, character.GetStat(Modifiers,ModifierType.Charisma, 10));
     }
 
     [Fact]
     public void GetStat_NegativeModifier_ReducesStat() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Intelligence, -2, ModifierSource.Class));
-
-        Assert.Equal(8, character.GetStat(ModifierType.Intelligence, 10));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+                ModifierType = ModifierType.Intelligence,
+                Amount = -2
+            }
+        };
+    
+        Assert.Equal(8, character.GetStat(Modifiers,ModifierType.Intelligence, 10));
     }
 
     [Fact]
     public void GetStat_OnlyAppliesModifiersOfRequestedType() {
         Character character = new(1, "TestCharacter");
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Strength, 5, ModifierSource.Race));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Dexterity, 5, ModifierSource.Race));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+                ModifierType = ModifierType.Strength,
+                Amount = 5
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Dexterity,
+                Amount = 5
+            }
+        };
 
-        Assert.Equal(10, character.GetStat(ModifierType.Dexterity, 5));
-        Assert.Equal(0, character.GetStat(ModifierType.Constitution, 0));
+        Assert.Equal(10, character.GetStat(Modifiers,ModifierType.Dexterity, 5));
+        Assert.Equal(0, character.GetStat(Modifiers,ModifierType.Constitution, 0));
     }
 
     // ---------- Others ----------
@@ -144,13 +218,33 @@ public class ModifierTypeTests {
         character.SetMaxHealth(30);
         character.SetBaseArmorClass(15);
 
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Health, 10, ModifierSource.Race));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.ArmorClass, 2, ModifierSource.Subrace));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Strength, 1, ModifierSource.Class));
-        character.Modifiers.Add(new CharacterModifier(character.Id, ModifierType.Strength, 1, ModifierSource.Background));
+        IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
+            new TestModifier {
+                ModifierType = ModifierType.Health,
+                Amount = 10
+            },
+            new TestModifier {
+                ModifierType = ModifierType.ArmorClass,
+                Amount = 2
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Strength,
+                Amount = 1
+            },
+            new TestModifier {
+                ModifierType = ModifierType.Strength,
+                Amount = 1
+            }
+        };
 
-        Assert.Equal(40, character.GetMaxHealth());
-        Assert.Equal(17, character.GetArmorClass());
-        Assert.Equal(12, character.GetStat(ModifierType.Strength, 10));
+        Assert.Equal(40, character.GetMaxHealth(Modifiers));
+        Assert.Equal(17, character.GetArmorClass(Modifiers));
+        Assert.Equal(12, character.GetStat(Modifiers,ModifierType.Strength, 10));
     }
+}
+
+
+public class TestModifier : ICharacterModifier {
+    public ModifierType ModifierType { get; set; }
+    public int Amount { get; set; }
 }

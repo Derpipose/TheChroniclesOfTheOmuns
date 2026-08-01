@@ -14,6 +14,7 @@ public class ScifiCharacter {
     public int? ScifiClassId { get; private set; }
     public int? ScifiBackgroundId { get; private set; }
     
+    public ICollection<ScifiCharacterModifier> Modifiers { get; set; } = [];
 
 
     public ScifiRace? ScifiRace { get; private set; }
@@ -62,6 +63,9 @@ public class ScifiCharacter {
     }
 
     public void UpdateHealth(CharacterStats stats, ScifiClass? scifiClass) {
+        if (Character is null)
+            throw new InvalidOperationException("ScifiCharacter must have an associated Character before health can be set.");
+        
         if (scifiClass == null) {
             Character.SetMaxHealth(0);
             Character.SetCurrentHealth(0);
@@ -84,11 +88,18 @@ public class ScifiCharacter {
     }
 
     public void ScifiCharacterSetBaseArmorClass(CharacterStats stats) {
+        if (Character is null)
+            throw new InvalidOperationException("ScifiCharacter must have an associated Character before AC can be set.");
+        
         if (ScifiRace != null) {
             int dexmod = stats.GetStatModifier(StatType.Dexterity);
             int baseAC = 10 + dexmod;
             Character.SetBaseArmorClass(baseAC);
         }
+    }
+
+    public IEnumerable<ICharacterModifier> GetAllModifiers() {
+        return Modifiers.Cast<ICharacterModifier>();
     }
 
     public void ClearScifiRace() {

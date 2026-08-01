@@ -18,8 +18,6 @@ public class Character {
 
     public DateTime LastModified { get; private set; } = DateTime.UtcNow;
 
-    public ICollection<CharacterModifier> Modifiers { get; set; } = [];
-
     public Player? Player { get; private set; }
 
 
@@ -81,21 +79,21 @@ public class Character {
         UpdateLastModified();
     }
 
-    public int GetMaxHealth() {
+    public int GetMaxHealth(IEnumerable<ICharacterModifier> Modifiers) {
         var bonus = Modifiers
             .Where(m => m.ModifierType == ModifierType.Health)
             .Sum(m => m.Amount);
         return MaxHealth + bonus;
     }
 
-    public int GetArmorClass() {
+    public int GetArmorClass(IEnumerable<ICharacterModifier> Modifiers) {
         var bonus = Modifiers
             .Where(m => m.ModifierType == ModifierType.ArmorClass)
             .Sum(m => m.Amount);
         return BaseArmorClass + bonus;
     }
 
-    public int GetStat(ModifierType statType, int baseValue) {
+    public int GetStat(IEnumerable<ICharacterModifier> Modifiers, ModifierType statType, int baseValue) {
         var bonus = Modifiers
             .Where(m => m.ModifierType == statType)
             .Sum(m => m.Amount);

@@ -96,35 +96,6 @@ namespace PlayerApp.Models.Migrations
                     b.ToTable("Characters");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.CharacterModifier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ModifierType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterId");
-
-                    b.ToTable("CharacterModifiers");
-                });
-
             modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
                 {
                     b.Property<int>("Id")
@@ -290,6 +261,35 @@ namespace PlayerApp.Models.Migrations
                     b.HasIndex("ScifiSubraceId");
 
                     b.ToTable("ScifiCharacters");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterModifier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModifierType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ScifiCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScifiCharacterId");
+
+                    b.ToTable("ScifiCharacterModifiers");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>
@@ -565,17 +565,6 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.CharacterModifier", b =>
-                {
-                    b.HasOne("PlayerApp.Models.Character", "Character")
-                        .WithMany("Modifiers")
-                        .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Character");
-                });
-
             modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
                 {
                     b.HasOne("PlayerApp.Models.Character", null)
@@ -639,6 +628,17 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiSubrace");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterModifier", b =>
+                {
+                    b.HasOne("PlayerApp.Models.ScifiCharacter", "ScifiCharacter")
+                        .WithMany("Modifiers")
+                        .HasForeignKey("ScifiCharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ScifiCharacter");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiClassTalent", b =>
                 {
                     b.HasOne("PlayerApp.Models.ScifiClass", "ScifiClass")
@@ -695,11 +695,6 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("RaceStats");
                 });
 
-            modelBuilder.Entity("PlayerApp.Models.Character", b =>
-                {
-                    b.Navigation("Modifiers");
-                });
-
             modelBuilder.Entity("PlayerApp.Models.Player", b =>
                 {
                     b.Navigation("AuthCodes");
@@ -710,6 +705,11 @@ namespace PlayerApp.Models.Migrations
             modelBuilder.Entity("PlayerApp.Models.ScifiBackground", b =>
                 {
                     b.Navigation("BackgroundTalents");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacter", b =>
+                {
+                    b.Navigation("Modifiers");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>

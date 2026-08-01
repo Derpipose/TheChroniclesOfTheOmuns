@@ -17,7 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiRace> ScifiRaces => Set<ScifiRace>();
     public DbSet<ScifiSubrace> ScifiSubraces => Set<ScifiSubrace>();
     public DbSet<ScifiCharacter> ScifiCharacters => Set<ScifiCharacter>();
-    public DbSet<CharacterModifier> CharacterModifiers => Set<CharacterModifier>();
+    public DbSet<ScifiCharacterModifier> ScifiCharacterModifiers => Set<ScifiCharacterModifier>();
     public DbSet<ScifiWeapon> ScifiWeapons { get; set; }
     public DbSet<ScifiWeaponInstance> ScifiWeaponInstances { get; set; }
 
@@ -82,17 +82,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 c => c.ToList()
             ));
 
-        modelBuilder.Entity<CharacterModifier>()
-            .HasOne(cm => cm.Character)
+        modelBuilder.Entity<ScifiCharacterModifier>()
+            .HasOne(cm => cm.ScifiCharacter)
             .WithMany(c => c.Modifiers)
-            .HasForeignKey(cm => cm.CharacterId)
+            .HasForeignKey(cm => cm.ScifiCharacterId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<CharacterModifier>()
+        modelBuilder.Entity<ScifiCharacterModifier>()
             .Property(cm => cm.ModifierType)
             .HasConversion<string>();
 
-        modelBuilder.Entity<CharacterModifier>()
+        modelBuilder.Entity<ScifiCharacterModifier>()
             .Property(cm => cm.Source)
             .HasConversion<string>();
 
