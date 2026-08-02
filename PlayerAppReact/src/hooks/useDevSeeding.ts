@@ -60,7 +60,7 @@ export function useDevSeeding() {
         setTableStatus('races', 'loading')
         try {
         // TODO: Wire in Josh's race endpoints here
-        await fetch(`${BASE_URL}/api/scifi/ScifiRace/seed`, {
+        await fetch(`${BASE_URL}/api/scifi/scifiseeding/races`, {
             method: 'POST',
             headers: getAuthHeader(),
         })
@@ -74,7 +74,7 @@ export function useDevSeeding() {
         setTableStatus('subraces', 'loading')
         try {
         // TODO: Wire in Josh's subrace endpoints here
-        await fetch(`${BASE_URL}/api/scifi/ScifiRace/seed`, {
+        await fetch(`${BASE_URL}/api/scifi/scifiseeding/subraces`, {
             method: 'POST',
             headers: getAuthHeader(),
         })
