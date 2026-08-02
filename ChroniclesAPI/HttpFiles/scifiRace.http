@@ -9,6 +9,12 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Get all scifi races with stats
+GET {{baseUrl}}/api/scifi/scifirace/with-stats
+Authorization: Bearer {{token}}
+
+###
+
 ### Get scifi race by id
 GET {{baseUrl}}/api/scifi/scifirace/{{scifiRaceId}}
 Authorization: Bearer {{token}}
