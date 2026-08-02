@@ -79,22 +79,22 @@ public class Character {
         UpdateLastModified();
     }
 
-    public int GetMaxHealth(IEnumerable<ICharacterModifier> Modifiers) {
-        var bonus = Modifiers
+    public int GetMaxHealth(IEnumerable<ICharacterModifier> modifiers) {
+        var bonus = modifiers
             .Where(m => m.ModifierType == ModifierType.Health)
             .Sum(m => m.Amount);
         return MaxHealth + bonus;
     }
 
-    public int GetArmorClass(IEnumerable<ICharacterModifier> Modifiers) {
-        var bonus = Modifiers
+    public int GetArmorClass(IEnumerable<ICharacterModifier> modifiers) {
+        var bonus = modifiers
             .Where(m => m.ModifierType == ModifierType.ArmorClass)
             .Sum(m => m.Amount);
         return BaseArmorClass + bonus;
     }
 
-    public int GetStat(IEnumerable<ICharacterModifier> Modifiers, ModifierType statType, int baseValue) {
-        var bonus = Modifiers
+    public int GetStat(IEnumerable<ICharacterModifier> modifiers, ModifierType statType, int baseValue) {
+        var bonus = modifiers
             .Where(m => m.ModifierType == statType)
             .Sum(m => m.Amount);
         return baseValue + bonus;
