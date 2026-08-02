@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace PlayerApp.Models.Database;
@@ -20,6 +21,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiCharacterModifier> ScifiCharacterModifiers => Set<ScifiCharacterModifier>();
     public DbSet<ScifiWeapon> ScifiWeapons { get; set; }
     public DbSet<ScifiWeaponInstance> ScifiWeaponInstances { get; set; }
+
+    private static readonly JsonSerializerOptions ModifierJsonOptions = new() {
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -61,13 +66,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<RaceStats>()
             .Property(r => r.Modifiers)
             .HasConversion(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => (IReadOnlyList<RaceStatModifier>)(JsonSerializer.Deserialize<List<RaceStatModifier>>(v, (JsonSerializerOptions?)null) ?? new List<RaceStatModifier>())
+                v => JsonSerializer.Serialize(v, ModifierJsonOptions),
+                v => (IReadOnlyList<RaceStatModifier>)(JsonSerializer.Deserialize<List<RaceStatModifier>>(v, ModifierJsonOptions) ?? new List<RaceStatModifier>())
             )
             .Metadata.SetValueComparer(new ValueComparer<IReadOnlyList<RaceStatModifier>>(
-                (c1, c2) => JsonSerializer.Serialize(c1, (JsonSerializerOptions?)null) == JsonSerializer.Serialize(c2, (JsonSerializerOptions?)null),
-                c => JsonSerializer.Serialize(c, (JsonSerializerOptions?)null).GetHashCode(),
-                c => JsonSerializer.Deserialize<List<RaceStatModifier>>(JsonSerializer.Serialize(c, (JsonSerializerOptions?)null), (JsonSerializerOptions?)null)!
+                (c1, c2) => JsonSerializer.Serialize(c1, ModifierJsonOptions) == JsonSerializer.Serialize(c2, ModifierJsonOptions),
+                c => JsonSerializer.Serialize(c, ModifierJsonOptions).GetHashCode(),
+                c => JsonSerializer.Deserialize<List<RaceStatModifier>>(JsonSerializer.Serialize(c, ModifierJsonOptions), ModifierJsonOptions)!
             ));
 
         modelBuilder.Entity<RaceStats>()
