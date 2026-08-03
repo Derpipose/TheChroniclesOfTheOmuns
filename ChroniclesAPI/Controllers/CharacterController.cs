@@ -100,6 +100,20 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
         return Ok(MapToResponse(character, stats));
     }
 
+    [HttpPatch("{id:int}/notes")]
+    public async Task<IActionResult> UpdateCharacterNotes(int id, [FromBody] string notes) {
+        var character = await db.Characters
+            .FirstOrDefaultAsync(c => c.Id == id && c.PlayerId == playerContext.PlayerId);
+
+        if (character is null)
+            return NotFound(new { message = $"Character {id} was not found." });
+
+        character.SetNotes(notes);
+        await db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCharacter(int id) {
         var character = await db.Characters
@@ -124,6 +138,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
         character.Setting,
         character.MaxHealth,
         character.IsActive,
+        character.Notes,
         stats is null ? null : new CharacterStatsResponseDto(
             stats.Id,
             stats.CharacterId,
@@ -137,6 +152,6 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
     public record CreateCharacterDto(string Name, int Level = 1);
     public record CharacterDetailsDto(int Id, string Name, int Level, SettingEnum Setting, int MaxHealth, bool IsActive);
     public record UpdateCharacterDto(string? Name, int? MaxHealth, int? Level, bool? IsActive);
-    public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int MaxHealth, bool IsActive, CharacterStatsResponseDto? CharacterStats);
+    public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int MaxHealth, bool IsActive, string Notes, CharacterStatsResponseDto? CharacterStats);
     public record CharacterStatsResponseDto(int Id, int CharacterId, int Strength, int Constitution, int Dexterity, int Wisdom, int Charisma, int Intelligence);
 }

@@ -23,11 +23,17 @@ public class ScifiWeaponInstance {
     public string DamageFormula { get; private set; } = string.Empty;
     public DamageType DamageType { get; private set; } = DamageType.Ballistic;
     public EnergyType EnergyType { get; private set; } = EnergyType.Physical;
-    public int RateOfFire { get; private set; } = 0;
+    public string RateOfFire { get; private set; } = "1";
     public int AmmoCapacity { get; private set; } = 0;
     public int ReloadTimeInActions { get; private set; } = 1;
-    public string CriticalRange { get; private set; } = string.Empty;
-    public string CriticalMultiplier { get; private set; } = string.Empty;
+    public int CriticalRange { get; private set; } = 20;
+    public int CriticalMultiplier { get; private set; } = 2;
+
+    public int? CriticalFailRange { get; private set; } = 1;
+
+    public string? RangeCategory { get; private set; } = null;
+
+    public string AmmoType { get; private set; } = "";
 
     // Constructor: takes already-prepared data (no blueprint dependency)
     public ScifiWeaponInstance(
@@ -62,9 +68,9 @@ public class ScifiWeaponInstance {
     public void SetDamageFormula(string formula) => DamageFormula = formula;
     public void SetDamageType(DamageType type) => DamageType = type;
     public void SetEnergyType(EnergyType type) => EnergyType = type;
-    public void SetRateOfFire(int rof) => RateOfFire = rof;
-    public void SetCriticalRange(string range) => CriticalRange = range;
-    public void SetCriticalMultiplier(string multiplier) => CriticalMultiplier = multiplier;
+    public void SetRateOfFire(string rof) => RateOfFire = rof;
+    public void SetCriticalRange(int range) => CriticalRange = range;
+    public void SetCriticalMultiplier(int multiplier) => CriticalMultiplier = multiplier;
 
     public ScifiWeaponInstance UpdateWeaponInstance(ScifiWeaponInstance updated) {
         ScifiWeaponId = updated.ScifiWeaponId;

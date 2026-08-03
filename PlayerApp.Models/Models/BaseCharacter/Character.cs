@@ -20,6 +20,8 @@ public class Character {
 
     public Player? Player { get; private set; }
 
+    public string Notes { get; private set; } = "";
+
 
     public Character(int playerid, string name) {
         PlayerId = playerid;
@@ -98,6 +100,11 @@ public class Character {
             .Where(m => m.ModifierType == statType)
             .Sum(m => m.Amount);
         return baseValue + bonus;
+    }
+
+    public void SetNotes(string notes) {
+        Notes = notes;
+        UpdateLastModified();
     }
 
 
