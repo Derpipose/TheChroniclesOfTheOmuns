@@ -52,6 +52,9 @@ public class ScifiWeaponInstance {
         ReloadTimeInActions = blueprint.ReloadTimeInActions;
         CriticalRange = blueprint.CriticalRange;
         CriticalMultiplier = blueprint.CriticalMultiplier;
+        CriticalFailRange = blueprint.CriticalFailRange;
+        RangeCategory = blueprint.RangeCategory;
+        AmmoType = blueprint.AmmoType;
 
         // Ammo defaults to full capacity
         CurrentAmmo = blueprint.AmmoCapacity;
