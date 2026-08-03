@@ -5,7 +5,7 @@ set -euo pipefail
 # Falls back to the db container if pg_restore is not installed locally.
 # Usage: ./scripts/restore_db.sh [path/to/backup.dump]
 
-COMPOSE_FILE="docker-compose.dev.yaml"
+COMPOSE_FILE="../docker-compose.dev.yaml"
 BACKUP_DIR="${BACKUP_DIR:-$HOME/dev/backupdb}"
 HOST="${PGHOST:-localhost}"
 PORT="${PGPORT:-5433}"
