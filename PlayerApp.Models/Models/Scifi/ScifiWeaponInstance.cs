@@ -8,7 +8,7 @@ namespace PlayerApp.Models;
 
 public class ScifiWeaponInstance {
     public int Id { get; private set; } = 0;  // EF Core sets this, never set manually
-    public string Name { get; private set; } = string.Empty;  // Player can rename weapon instance
+    public string Name { get; private set; } = string.Empty;
     public string Nickname { get; private set; } = string.Empty;  // Player can rename weapon instance
     public bool Favorite { get; private set; } = false;  // Player can mark weapon instance as favorite
 
@@ -62,6 +62,11 @@ public class ScifiWeaponInstance {
         CriticalFailRange = blueprint.CriticalFailRange;
         RangeCategory = blueprint.RangeCategory;
         AmmoType = blueprint.AmmoType;
+        Name = blueprint.Name;
+        CurrentAmmo = blueprint.AmmoCapacity;
+        ModifierStat = blueprint.ModifierStat;
+
+
 
         // Ammo defaults to full capacity
         CurrentAmmo = blueprint.AmmoCapacity;
@@ -72,18 +77,23 @@ public class ScifiWeaponInstance {
 
     // Player actions
     public void RenameWeapon(string newName) => Nickname = newName;
-    public void UseAmmo(int count) => CurrentAmmo = Math.Max(0, CurrentAmmo - count);
+    public void UseAmmo(int count) => CurrentAmmo -= count;
 
-    // So, reloading should take into account current ammo on the 
-    // character, but we will handle that when we implement the inventory system. 
+    // So, reloading should take into account current ammo on the
+    // character, but we will handle that when we implement the inventory system.
     // For now, we will just reset to full capacity.
     public void Reload() => CurrentAmmo = AmmoCapacity;
+
     public void ToggleFavorite() => Favorite = !Favorite;
+
+    public void ChangeOwner(int newCharacterId) => ScifiCharacterId = newCharacterId;   //don't expect it to be used much, but here it is
 
     // Modify instance stats (independent of blueprint)
     public void SetDamageFormula(string formula) => DamageFormula = formula;
     public void SetDamageType(DamageType type) => DamageType = type;
     public void SetEnergyType(EnergyType type) => EnergyType = type;
+    public void SetAmmo(int amount) => CurrentAmmo = amount;
+    public void SetModifierStat(StatType stat) => ModifierStat = stat;
     public void SetRateOfFire(string rof) => RateOfFire = rof;
     public void SetAmmoType(ScifiAmmoType ammoType) => AmmoType = ammoType;
     public void SetAmmoCapacity(int capacity) => AmmoCapacity = capacity;
@@ -91,28 +101,9 @@ public class ScifiWeaponInstance {
     public void SetCriticalMultiplier(int multiplier) => CriticalMultiplier = multiplier;
     public void SetReloadTime(int actions) => ReloadTimeInActions = actions;
     public void SetCriticalFailRange(int range) => CriticalFailRange = range;
-    
+    public void SetRangeCategory(WeaponRange range) => RangeCategory = range;
 
-    // Not sure we even need this as we do all the updating individually above.
-    // public ScifiWeaponInstance UpdateWeaponInstance(ScifiWeaponInstance updated) {
-    //     ScifiWeaponId = updated.ScifiWeaponId;
-    //     ScifiCharacterId = updated.ScifiCharacterId;
 
-    //     DamageFormula = updated.DamageFormula;
-    //     DamageType = updated.DamageType;
-    //     EnergyType = updated.EnergyType;
-    //     RateOfFire = updated.RateOfFire;
-    //     AmmoCapacity = updated.AmmoCapacity;
-    //     ReloadTimeInActions = updated.ReloadTimeInActions;
-    //     CriticalRange = updated.CriticalRange;
-    //     CriticalMultiplier = updated.CriticalMultiplier;
-
-    //     // Ammo defaults to full capacity 
-    //     // Not sure we want to do this. If we swap scopes, for instance
-    //     // we don't want to reset the ammo. 
-    //     // CurrentAmmo = updated.AmmoCapacity;
-    //     return this;
-    // }
 
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) => Id = id;
