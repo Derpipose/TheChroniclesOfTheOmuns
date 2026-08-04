@@ -83,6 +83,10 @@ namespace PlayerApp.Models.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("PlayerId")
                         .HasColumnType("integer");
 
@@ -398,18 +402,19 @@ namespace PlayerApp.Models.Migrations
                     b.Property<int>("AmmoCapacity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CriticalFailRange")
-                        .HasColumnType("text");
+                    b.Property<int>("AmmoType")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("CriticalMultiplier")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                    b.Property<int?>("CriticalFailRange")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("CriticalRange")
-                        .IsRequired()
+                    b.Property<int>("CriticalMultiplier")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalRange")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
 
                     b.Property<string>("DamageFormula")
                         .IsRequired()
@@ -430,11 +435,12 @@ namespace PlayerApp.Models.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("RangeCategory")
-                        .HasColumnType("text");
-
-                    b.Property<int>("RateOfFire")
+                    b.Property<int>("RangeCategory")
                         .HasColumnType("integer");
+
+                    b.Property<string>("RateOfFire")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ReloadTimeInActions")
                         .HasColumnType("integer");
@@ -455,15 +461,19 @@ namespace PlayerApp.Models.Migrations
                     b.Property<int>("AmmoCapacity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CriticalMultiplier")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                    b.Property<int>("AmmoType")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("CriticalRange")
-                        .IsRequired()
+                    b.Property<int?>("CriticalFailRange")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalMultiplier")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalRange")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
 
                     b.Property<int>("CurrentAmmo")
                         .HasColumnType("integer");
@@ -479,8 +489,26 @@ namespace PlayerApp.Models.Migrations
                     b.Property<int>("EnergyType")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RateOfFire")
+                    b.Property<bool>("Favorite")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ModifierStat")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RangeCategory")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RateOfFire")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ReloadTimeInActions")
                         .HasColumnType("integer");

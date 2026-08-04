@@ -1,14 +1,14 @@
 namespace PlayerApp.Models.Enums;
 public enum DamageType {
-    Melee,
-    Ballistic,
-    Energy
+    Melee = 0,
+    Ballistic = 1,
+    Energy = 2
 }
 
 public enum EnergyType {
-    Physical,  // Neutral, no modifier
-    Blaze,
-    Volt,
-    Null,
-    Cryo
+    Physical = 0,  // Neutral, no modifier
+    Blaze = 1,
+    Volt = 2,
+    Null = 3,
+    Cryo = 4
 }
