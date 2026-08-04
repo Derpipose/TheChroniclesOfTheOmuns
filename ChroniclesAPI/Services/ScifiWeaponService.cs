@@ -8,6 +8,10 @@ namespace ChroniclesAPI.Services;
 public class ScifiWeaponService(AppDbContext db) {
 
     public async Task<ScifiWeapon> CreateScifiWeaponAsync(CreateScifiWeaponDto request) {
+        var shouldbeNull = await db.ScifiWeapons.FirstOrDefaultAsync(w => w.Name == request.Name);
+        if (shouldbeNull != null) {
+            throw new InvalidOperationException($"ScifiWeapon with name {request.Name} already exists.");
+        }
         var weapon = new ScifiWeapon(
             request.Name,
             request.DamageFormula,
