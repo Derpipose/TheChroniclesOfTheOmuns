@@ -63,6 +63,16 @@ public class ScifiWeaponService(AppDbContext db) {
         await db.SaveChangesAsync();
     }
 
+    public async Task<ScifiWeapon> GetScifiWeaponAsync(int id) {
+        var weapon = await db.ScifiWeapons.FindAsync(id) ??
+        throw new NotFoundException($"ScifiWeapon {id} was not found.");
+
+        return weapon;
+    }
+    public async Task<IEnumerable<ScifiWeapon>> GetAllScifiWeaponsAsync() {
+        return await db.ScifiWeapons.ToListAsync();
+    }
+
 
 }
 

@@ -26,6 +26,16 @@ public class ScifiWeaponInstanceService(AppDbContext db) {
         return instance;
     }
 
+    public async Task<ScifiWeaponInstance> GetScifiWeaponInstanceAsync(int id) {
+        return await GetInstanceAsync(id);
+    }
+
+    public async Task<IEnumerable<ScifiWeaponInstance>> GetUsersScifiWeaponInstancesAsync(int userId) {
+        return await db.ScifiWeaponInstances.Where(i => i.ScifiCharacterId == userId).ToListAsync();
+    }
+
+    
+
     public async Task DeleteScifiWeaponInstanceAsync(int id) {
         var instance = await db.ScifiWeaponInstances.FindAsync(id)
             ?? throw new NotFoundException($"ScifiWeaponInstance {id} was not found.");
