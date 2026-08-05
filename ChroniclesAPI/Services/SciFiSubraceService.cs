@@ -76,11 +76,11 @@ public class SciFiSubraceService(AppDbContext db) {
         return subrace;
     }
 
-    public async Task<ScifiSubrace> GetSubraceByRaceWithStats(int raceId) {
+    public async Task<List<ScifiSubrace>> GetSubraceByRaceWithStats(int raceId) {
         var subrace = await db.ScifiSubraces
             .Include(s => s.RaceStats)
-            .FirstOrDefaultAsync(s => s.ScifiRaceId == raceId)
-            ?? throw new NotFoundException($"ScifiSubrace with RaceId {raceId} was not found.");
+            .Where(s => s.ScifiRaceId == raceId)
+            .ToListAsync();
 
         return subrace;
     }
