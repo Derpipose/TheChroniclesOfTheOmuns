@@ -53,6 +53,8 @@ builder.Services.AddScoped<PlayerContext>();
 builder.Services.AddScoped<SciFiRaceService>();
 builder.Services.AddScoped<SciFiSubraceService>();
 builder.Services.AddScoped<ScifiSeedingService>();
+builder.Services.AddScoped<ScifiWeaponService>();
+builder.Services.AddScoped<ScifiWeaponInstanceService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowedOrigins", policy => {
