@@ -270,28 +270,37 @@ public class ScifiWeaponInstanceServiceTests {
         var weapon = await weaponService.CreateScifiWeaponAsync(CreatePlasmaRifleDto());
         var blueprint = await weaponService.CreateScifiWeaponAsync(CreateLaserPistolDto());
 
-        var character1 = new Character(1, "Character1");
-        character1.SetMaxHealth(10);
-        character1.SetLevel(1);
-        db.Characters.Add(character1);
+        // Create base characters
+        var characterBase1 = new Character(1, "Character1");
+        characterBase1.SetMaxHealth(10);
+        characterBase1.SetLevel(1);
+        db.Characters.Add(characterBase1);
 
-        var character2 = new Character(2, "Character2");
-        character2.SetMaxHealth(10);
-        character2.SetLevel(1);
-        db.Characters.Add(character2);
+        var characterBase2 = new Character(2, "Character2");
+        characterBase2.SetMaxHealth(10);
+        characterBase2.SetLevel(1);
+        db.Characters.Add(characterBase2);
+        await db.SaveChangesAsync();
+
+        // Create ScifiCharacters with base character IDs
+        var scifiCharacter1 = new ScifiCharacter(characterBase1.Id);
+        db.ScifiCharacters.Add(scifiCharacter1);
+
+        var scifiCharacter2 = new ScifiCharacter(characterBase2.Id);
+        db.ScifiCharacters.Add(scifiCharacter2);
         await db.SaveChangesAsync();
 
         var instance = await instanceService.CreateScifiWeaponInstanceAsync(new CreateScifiWeaponInstanceDto {
             ScifiWeaponId = weapon.Id,
-            ScifiCharacterId = character1.Id,
+            ScifiCharacterId = scifiCharacter1.Id,  // Use the ScifiCharacter's Id
             ScifiWeaponBlueprintId = blueprint.Id
         });
 
-        var result = await instanceService.ChangeOwnerAsync(instance.Id, character2.Id);
+        var result = await instanceService.ChangeOwnerAsync(instance.Id, scifiCharacter2.Id);
 
-        Assert.Equal(character2.Id, result.ScifiCharacterId);
+        Assert.Equal(scifiCharacter2.Id, result.ScifiCharacterId);
     }
-
+    
     [Fact]
     public async Task ChangeOwnerAsync_Throws_WhenNewCharacterDoesNotExist() {
         await using var db = TestDb.Create();
