@@ -45,3 +45,9 @@ csharp_style_expression_bodied_accessors = true:silent
 
 # Namespace declarations - FILE-SCOPED NAMESPACE
 csharp_style_namespace_declarations = file_scoped:warning
+
+# IDE0058: Expression value is never used
+csharp_style_unused_value_expression_statement_preference = unused_local_variable
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none

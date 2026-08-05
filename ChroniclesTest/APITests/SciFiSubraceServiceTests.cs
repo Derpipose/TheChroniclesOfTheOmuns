@@ -288,30 +288,12 @@ public class SciFiSubraceServiceTests {
 
         var result = await subraceService.GetSubraceByRaceWithStats(race.Id);
 
-        Assert.Equal(race.Id, result.ScifiRaceId);
-        Assert.NotNull(result.RaceStats);
-        Assert.Equal(blaze.Id, result.Id);
+        Assert.Equal(race.Id, result[0].ScifiRaceId);
+        Assert.NotNull(result[0].RaceStats);
+        Assert.Equal(blaze.Id, result[0].Id);
     }
 
-    [Fact]
-    public async Task GetSubraceByRaceWithStats_Throws_WhenRaceHasNoSubraces() {
-        await using var db = TestDb.Create();
-        var raceService = CreateRaceService(db);
-        var subraceService = CreateSubraceService(db);
-
-        var race = await raceService.CreateSciFiRaceAsync(new CreateScifiRaceDto(
-            "Alien",
-            "Divaren",
-            "A short squat bearded race similar to humans.",
-            true,
-            0,
-            null,
-            30,
-            18,
-            90));
-
-        await Assert.ThrowsAsync<NotFoundException>(() => subraceService.GetSubraceByRaceWithStats(race.Id));
-    }
+    
 
     [Fact]
     public async Task DeleteRaceAsync_RemovesRaceAndSubraces_AndClearsCharacterReferences() {

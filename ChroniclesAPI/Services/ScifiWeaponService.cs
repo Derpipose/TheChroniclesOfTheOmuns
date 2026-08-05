@@ -77,18 +77,18 @@ public class ScifiWeaponService(AppDbContext db) {
 }
 
 public class UpdateScifiWeaponDto {
-    public string Name { get; internal set; } = string.Empty;
-    public string DamageFormula { get; internal set; } = string.Empty;
-    public ScifiAmmoType AmmoType { get; internal set; }
-    public DamageType DamageType { get; internal set; }
-    public EnergyType EnergyType { get; internal set; }
-    public string RateOfFire { get; internal set; } = string.Empty;
-    public int AmmoCapacity { get; internal set; }
-    public int CriticalRange { get; internal set; }
-    public int CriticalMultiplier { get; internal set; }
-    public int ReloadTimeInActions { get; internal set; }
-    public WeaponRange RangeCategory { get; internal set; }
-    public int? CriticalFailRange { get; internal set; }
+    public string Name { get; set; } = string.Empty;
+    public string DamageFormula { get; set; } = string.Empty;
+    public ScifiAmmoType AmmoType { get; set; }
+    public DamageType DamageType { get; set; }
+    public EnergyType EnergyType { get; set; }
+    public string RateOfFire { get; set; } = string.Empty;
+    public int AmmoCapacity { get; set; }
+    public int CriticalRange { get; set; }
+    public int CriticalMultiplier { get; set; }
+    public int ReloadTimeInActions { get; set; }
+    public WeaponRange RangeCategory { get; set; }
+    public int? CriticalFailRange { get; set; }
 }
 
 public class CreateScifiWeaponDto {
