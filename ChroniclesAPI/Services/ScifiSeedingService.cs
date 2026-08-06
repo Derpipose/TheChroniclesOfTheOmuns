@@ -11,12 +11,14 @@ public class ScifiSeedingService(
     AppDbContext db,
     IHttpClientFactory httpClientFactory,
     SciFiRaceService raceService,
-    SciFiSubraceService subraceService) {
+    SciFiSubraceService subraceService,
+    ScifiWeaponService weaponService) {
     private const string DefaultTalentsUrl = "https://derpipose.github.io/JsonFiles/ScifiFiles/ScifiTalents.json";
     private const string DefaultClassesUrl = "https://derpipose.github.io/JsonFiles/ScifiFiles/ScifiClasses.json";
     private const string DefaultBackgroundsUrl = "https://derpipose.github.io/JsonFiles/ScifiFiles/ScifiBackgrounds.json";
     private const string DefaultRacesUrl = "http://derpipose.github.io/JsonFiles/ScifiFiles/ScifiRaces.json";
     private const string DefaultSubracesUrl = "http://derpipose.github.io/JsonFiles/ScifiFiles/ScifiSubRaces.json";
+    private const string DefaultWeaponsUrl = "https://derpipose.github.io/JsonFiles/ScifiFiles/ScifiWeapons.json";
 
     public async Task<(int created, int updated, int total)> SeedTalentsAsync(string? sourceUrl = null) {
         var url = sourceUrl ?? DefaultTalentsUrl;
@@ -375,6 +377,102 @@ public class ScifiSeedingService(
         }
     }
 
+    // Add this method after SeedSubracesAsync in ScifiSeedingService
+
+    public async Task<(int created, int skipped, int total)> SeedWeaponsAsync(string? sourceUrl = null) {
+        var url = sourceUrl ?? DefaultWeaponsUrl;
+        var records = await FetchSeedDataAsync<List<ScifiWeaponSeedRecord>>(url, "weapon");
+
+        if (records is null || records.Count == 0) {
+            throw new InvalidOperationException("No weapon data found at source.");
+        }
+
+        int created = 0;
+        int skipped = 0;
+
+        foreach (var record in records) {
+            var dto = MapWeaponSeedRecordToCreateDto(record);
+
+            try {
+                await weaponService.CreateScifiWeaponAsync(dto);
+                created++;
+            } catch (InvalidOperationException) {
+                // Weapon already exists
+                skipped++;
+            }
+        }
+
+        return (created, skipped, records.Count);
+    }
+
+    private static CreateScifiWeaponDto MapWeaponSeedRecordToCreateDto(ScifiWeaponSeedRecord record) {
+        var ammoType = ParseAmmoType(record.AmmoType);
+        var damageType = ParseDamageTypeFromString(record.DamageType);
+        var rangeCategory = ParseWeaponRange(record.Range);
+
+        return new CreateScifiWeaponDto {
+            Name = record.Classification,
+            DamageFormula = record.Damage,
+            AmmoType = ammoType,
+            DamageType = damageType,
+            EnergyType = EnergyType.Physical,  // Default; can be enhanced with special traits parsing
+            RateOfFire = record.RateOfFire.ToString() ?? string.Empty,
+            AmmoCapacity = record.Capacity,
+            CriticalRange = record.CriticalRange,
+            CriticalMultiplier = record.CriticalMultiplier,
+            ReloadTimeInActions = 1,  // Default; could be inferred from RateOfFire if needed
+            RangeCategory = rangeCategory,
+            CriticalFailRange = 1  // Default lower bound
+        };
+    }
+
+    private static ScifiAmmoType ParseAmmoType(string ammoTypeRaw) {
+        if (string.IsNullOrWhiteSpace(ammoTypeRaw))
+            return ScifiAmmoType.None;
+
+        // Normalize: "Greater Generic" → "GreaterGeneric", "Lesser Common" → "LesserCommon"
+        var normalized = ammoTypeRaw
+            .Replace(" ", "", StringComparison.OrdinalIgnoreCase)
+            .Trim();
+
+        // Try direct enum match
+        if (Enum.TryParse<ScifiAmmoType>(normalized, ignoreCase: true, out var result)) {
+            return result;
+        }
+
+        // Fallback to Generic
+        return ScifiAmmoType.Generic;
+    }
+
+    private static DamageType ParseDamageTypeFromString(string damageTypeRaw) {
+        if (string.IsNullOrWhiteSpace(damageTypeRaw))
+            return DamageType.Ballistic;
+
+        return damageTypeRaw.Trim() switch {
+            "Kinetic" => DamageType.Ballistic,
+            "Energy" => DamageType.Energy,
+            "Melee" => DamageType.Melee,
+            _ => DamageType.Ballistic  // Default for unknown
+        };
+    }
+
+    private static WeaponRange ParseWeaponRange(string rangeRaw) {
+        if (string.IsNullOrWhiteSpace(rangeRaw))
+            return WeaponRange.None;
+
+        return rangeRaw.Trim() switch {
+            "Melee" => WeaponRange.Melee,
+            "Short" => WeaponRange.Short,
+            "Medium" => WeaponRange.Medium,
+            "Long" => WeaponRange.Long,
+            _ => WeaponRange.None
+        };
+    }
+
+    // Add this record class at the end of the service
+
+
+
     private static int ParseIntOrDefault(string value, int fallback = 0) =>
         int.TryParse(value, out var result) ? result : fallback;
 
@@ -431,5 +529,18 @@ public class ScifiSeedingService(
         public string AdventuringAgeStart { get; set; } = string.Empty;
         public string AgeMax { get; set; } = string.Empty;
         public string Pinterest_Inspo_Board { get; set; } = string.Empty;
+    }
+
+    public class ScifiWeaponSeedRecord {
+        public string Classification { get; set; } = string.Empty;
+        public object RateOfFire { get; set; } = string.Empty;  // Can be "1D8" or 2
+        public string Damage { get; set; } = string.Empty;
+        public string DamageType { get; set; } = string.Empty;
+        public string Range { get; set; } = string.Empty;
+        public int CriticalRange { get; set; } = 20;
+        public int CriticalMultiplier { get; set; } = 2;
+        public string AmmoType { get; set; } = string.Empty;
+        public int Capacity { get; set; }
+        public string SpecialTraits { get; set; } = string.Empty;
     }
 }

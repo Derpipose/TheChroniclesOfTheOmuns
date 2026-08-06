@@ -12,8 +12,8 @@ public class ScifiSeedingController(ScifiSeedingService seedingService) : Contro
     [HttpPost("talents")]
     public async Task<IActionResult> SeedTalents([FromQuery] string? sourceUrl) {
         try {
-            var result = await seedingService.SeedTalentsAsync(sourceUrl);
-            return Ok(new { created = result.created, updated = result.updated, total = result.total });
+            var (created, updated, total) = await seedingService.SeedTalentsAsync(sourceUrl);
+            return Ok(new { created, updated, total });
         } catch (InvalidOperationException ex) {
             return BadRequest(new { message = ex.Message });
         }
@@ -22,8 +22,8 @@ public class ScifiSeedingController(ScifiSeedingService seedingService) : Contro
     [HttpPost("classes")]
     public async Task<IActionResult> SeedClasses([FromQuery] string? sourceUrl) {
         try {
-            var result = await seedingService.SeedClassesAsync(sourceUrl);
-            return Ok(new { created = result.created, updated = result.updated, total = result.total, skippedClasses = result.skippedClasses, skippedTalents = result.skippedTalents });
+            var (created, updated, total, skippedClasses, skippedTalents) = await seedingService.SeedClassesAsync(sourceUrl);
+            return Ok(new { created, updated, total, skippedClasses, skippedTalents });
         } catch (InvalidOperationException ex) {
             return BadRequest(new { message = ex.Message });
         }
@@ -32,8 +32,8 @@ public class ScifiSeedingController(ScifiSeedingService seedingService) : Contro
     [HttpPost("backgrounds")]
     public async Task<IActionResult> SeedBackgrounds([FromQuery] string? sourceUrl) {
         try {
-            var result = await seedingService.SeedBackgroundsAsync(sourceUrl);
-            return Ok(new { created = result.created, updated = result.updated, total = result.total, skippedTalents = result.skippedTalents });
+            var (created, updated, total, skippedTalents) = await seedingService.SeedBackgroundsAsync(sourceUrl);
+            return Ok(new { created, updated, total, skippedTalents });
         } catch (InvalidOperationException ex) {
             return BadRequest(new { message = ex.Message });
         }
@@ -42,8 +42,8 @@ public class ScifiSeedingController(ScifiSeedingService seedingService) : Contro
     [HttpPost("races")]
     public async Task<IActionResult> SeedRaces([FromQuery] string? sourceUrl) {
         try {
-            var result = await seedingService.SeedRacesAsync(sourceUrl);
-            return Ok(new { created = result.created, skipped = result.skipped, total = result.total });
+            var (created, skipped, total) = await seedingService.SeedRacesAsync(sourceUrl);
+            return Ok(new { created, skipped, total });
         } catch (InvalidOperationException ex) {
             return BadRequest(new { message = ex.Message });
         }
@@ -52,8 +52,18 @@ public class ScifiSeedingController(ScifiSeedingService seedingService) : Contro
     [HttpPost("subraces")]
     public async Task<IActionResult> SeedSubraces([FromQuery] string? sourceUrl) {
         try {
-            var result = await seedingService.SeedSubracesAsync(sourceUrl);
-            return Ok(new { created = result.created, skipped = result.skipped, total = result.total });
+            var (created, skipped, total) = await seedingService.SeedSubracesAsync(sourceUrl);
+            return Ok(new { created, skipped, total });
+        } catch (InvalidOperationException ex) {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("weapons")]
+    public async Task<IActionResult> SeedWeapons([FromQuery] string? sourceUrl) {
+        try {
+            var (created, skipped, total) = await seedingService.SeedWeaponsAsync(sourceUrl);
+            return Ok(new { created, skipped, total });
         } catch (InvalidOperationException ex) {
             return BadRequest(new { message = ex.Message });
         }
