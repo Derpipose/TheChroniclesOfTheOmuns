@@ -25,6 +25,7 @@ export default function DiceRollerPage() {
   const [newPresetExpr, setNewPresetExpr] = useState('')
   const [showAddPreset, setShowAddPreset] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [rollNumber, setRollNumber] = useState(0) // For tracking roll count
 
   // Load custom presets from localStorage on mount
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function DiceRollerPage() {
       setError(null)
       const result = resolveExpression(expression)
       const roll: DiceRoll = {
-        id: Date.now().toString(),
+        id: rollNumber.toString(),
         timestamp: new Date().toLocaleTimeString(),
         expression,
         resolvedExpr: result.resolvedExpr,
@@ -56,7 +57,8 @@ export default function DiceRollerPage() {
         total: result.total,
         label,
       }
-      setRolls((prev) => [...prev, roll]) // append to bottom
+      setRolls((prev) => [roll, ...prev]) // append to bottom
+      setRollNumber((prev) => prev + 1)
     } catch (err) {
       setError((err as Error).message || 'Invalid dice expression')
     }
@@ -64,6 +66,7 @@ export default function DiceRollerPage() {
 
   const clearRolls = () => {
     setRolls([])
+    setRollNumber(0)
   }
 
   const addPreset = () => {
