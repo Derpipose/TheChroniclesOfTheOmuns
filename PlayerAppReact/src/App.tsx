@@ -6,6 +6,7 @@ import CharacterViewPage from './pages/CharacterViewPage'
 import AddCharacterPage from './pages/AddCharacterPage'
 import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import DevPage from './pages/DevPage'
+import DiceRollerPage from './pages/DiceRollerPage'
 
 const queryClient = new QueryClient()
 
@@ -42,6 +43,12 @@ export default function App() {
             <ProtectedRoute>
               <DevPage />
             </ProtectedRoute>
+          } />
+
+          <Route path="rolldice" element={
+            // <ProtectedRoute>
+              <DiceRollerPage />
+            // </ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>
