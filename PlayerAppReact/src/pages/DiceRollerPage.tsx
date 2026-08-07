@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { resolveExpression} from '../functions/DiceRoller'
 import { CustomRollPresetCard, type CustomRollPreset } from '../components/CustomRollPresetCard'
+import NavBar from '../components/NavBar'
+import { useNavigate } from '@tanstack/react-router'
 
 interface DiceRoll {
   id: string
@@ -13,6 +15,7 @@ interface DiceRoll {
 }
 
 export default function DiceRollerPage() {
+    const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<'custom' | 'character'>('custom')
   const [rolls, setRolls] = useState<DiceRoll[]>([])
   const [customPresets, setCustomPresets] = useState<CustomRollPreset[]>([])
@@ -93,6 +96,7 @@ export default function DiceRollerPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
+        <NavBar /> 
       {/* Header */}
       <div
         className="border-b px-6 py-4 flex items-center justify-between"
