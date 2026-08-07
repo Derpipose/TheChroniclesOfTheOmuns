@@ -1,7 +1,7 @@
 namespace PlayerApp.Models.Enums;
 public enum DamageType {
     Melee = 0,
-    Ballistic = 1,
+    Kinetic = 1,
     Energy = 2
 }
 

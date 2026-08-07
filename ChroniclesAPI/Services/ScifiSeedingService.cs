@@ -446,13 +446,13 @@ public class ScifiSeedingService(
 
     private static DamageType ParseDamageTypeFromString(string damageTypeRaw) {
         if (string.IsNullOrWhiteSpace(damageTypeRaw))
-            return DamageType.Ballistic;
+            return DamageType.Kinetic;
 
         return damageTypeRaw.Trim() switch {
-            "Kinetic" => DamageType.Ballistic,
+            "Kinetic" => DamageType.Kinetic,
             "Energy" => DamageType.Energy,
             "Melee" => DamageType.Melee,
-            _ => DamageType.Ballistic  // Default for unknown
+            _ => DamageType.Kinetic  // Default for unknown
         };
     }
 

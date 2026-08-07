@@ -13,7 +13,7 @@ public class ScifiWeapon {
     public string DamageFormula { get; private set; } = string.Empty;  // "1d6"
 
     public StatType ModifierStat { get; private set; } = StatType.Dexterity;
-    public DamageType DamageType { get; private set; } = DamageType.Ballistic;
+    public DamageType DamageType { get; private set; } = DamageType.Kinetic;
     public EnergyType EnergyType { get; private set; } = EnergyType.Physical;
     public ScifiAmmoType AmmoType { get; private set; } = ScifiAmmoType.None;
 
@@ -21,7 +21,7 @@ public class ScifiWeapon {
     public string RateOfFire { get; private set; } = "1";
     public int ReloadTimeInActions { get; private set; } = 1;
 
-    public int CriticalMultiplier { get; private set; } = 2; 
+    public int CriticalMultiplier { get; private set; } = 2;
     public int CriticalRange { get; private set; } = 20;  // holds lowest critical success roll, ie 18, 19, 20
     public int? CriticalFailRange { get; private set; } = 1; //Same thing as crit range, but for critical fails. We always go to 1, So we really just need the highest number in the range.
 

@@ -27,7 +27,7 @@ public class ScifiWeaponInstance {
     public string DamageFormula { get; private set; } = string.Empty;
 
     public StatType ModifierStat { get; private set; } = StatType.Dexterity;
-    public DamageType DamageType { get; private set; } = DamageType.Ballistic;
+    public DamageType DamageType { get; private set; } = DamageType.Kinetic;
     public EnergyType EnergyType { get; private set; } = EnergyType.Physical;
     public ScifiAmmoType AmmoType { get; private set; } = ScifiAmmoType.None;
 
