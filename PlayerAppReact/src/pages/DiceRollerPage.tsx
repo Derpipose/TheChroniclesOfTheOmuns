@@ -14,30 +14,33 @@ interface DiceRoll {
   label?: string
 }
 
+
 export default function DiceRollerPage() {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<'custom' | 'character'>('custom')
   const [rolls, setRolls] = useState<DiceRoll[]>([])
-  const [customPresets, setCustomPresets] = useState<CustomRollPreset[]>([])
+
+  // Initialize from localStorage without an effect
+  const [customPresets, setCustomPresets] = useState(() => {
+    const saved = localStorage.getItem('diceroller_presets')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch (e) {
+        console.error('Failed to load presets:', e)
+        return []
+      }
+    }
+    return []
+  })
+
   const [newPresetName, setNewPresetName] = useState('')
   const [newPresetExpr, setNewPresetExpr] = useState('')
   const [showAddPreset, setShowAddPreset] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [rollNumber, setRollNumber] = useState(0) // For tracking roll count
+  const [rollNumber, setRollNumber] = useState(0)
 
-  // Load custom presets from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('diceroller_presets')
-    if (saved) {
-      try {
-        setCustomPresets(JSON.parse(saved))
-      } catch (e) {
-        console.error('Failed to load presets:', e)
-      }
-    }
-  }, [])
-
-  // Save custom presets to localStorage whenever they change
+  // Only keep the save effect (remove the load effect)
   useEffect(() => {
     localStorage.setItem('diceroller_presets', JSON.stringify(customPresets))
   }, [customPresets])
@@ -80,7 +83,7 @@ export default function DiceRollerPage() {
         name: newPresetName,
         expression: newPresetExpr,
       }
-      setCustomPresets((prev) => [...prev, preset])
+      setCustomPresets((prev: CustomRollPreset[]) => [...prev, preset])
       setNewPresetName('')
       setNewPresetExpr('')
       setShowAddPreset(false)
@@ -91,12 +94,12 @@ export default function DiceRollerPage() {
   }
 
   const deletePreset = (id: string) => {
-    setCustomPresets((prev) => prev.filter((p) => p.id !== id))
-  }
+  setCustomPresets((prev: CustomRollPreset[]) => prev.filter((p) => p.id !== id))
+}
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
-        <NavBar /> 
+        <NavBar />
       {/* Header */}
       <div
         className="border-b px-6 py-4 flex items-center justify-between"
@@ -164,7 +167,7 @@ export default function DiceRollerPage() {
                 </p>
               )}
 
-              {customPresets.map((preset) => (
+              {customPresets.map((preset: CustomRollPreset) => (
                 <CustomRollPresetCard
                   key={preset.id}
                   preset={preset}
