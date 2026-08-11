@@ -7,15 +7,15 @@ namespace ChroniclesAPI.Services;
 
 public class SciFiSubraceService(AppDbContext db) {
     public async Task<ScifiSubrace> CreateScifiSubraceAsync(int raceId, CreateScifiSubraceDto request) {
-        var raceExists = await db.ScifiRaces.AnyAsync(r => r.Id == raceId);
-        if (!raceExists) {
+        var raceExists = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Id == raceId);
+        if (raceExists == null) {
             throw new NotFoundException($"ScifiRace {raceId} was not found.");
         }
 
         var subraceExists = await db.ScifiSubraces
             .AnyAsync(s => s.ScifiRaceId == raceId && s.SubRaceName == request.SubRaceName);
         if (subraceExists) {
-            throw new ConflictException($"ScifiSubrace '{request.SubRaceName}' already exists for ScifiRace {raceId}.");
+            throw new ConflictException($"ScifiSubrace '{request.SubRaceName}' already exists for ScifiRace {raceExists.Name}.");
         }
 
         var raceStatsId = await ResolveRaceStatsIdAsync(request.RaceStats, request.RaceStatsId);
@@ -27,6 +27,15 @@ public class SciFiSubraceService(AppDbContext db) {
             raceStatsId);
 
         db.ScifiSubraces.Add(subrace);
+        if (raceExists.HasSubraces == false) {
+            raceExists.SetHasSubraces(true);
+            var raceStats = await db.RaceStats
+                .Where(rs => !rs.Modifiers.Any() && !rs.FreeStatPicks.Any())
+                .FirstOrDefaultAsync();
+
+            raceExists.SetRaceStats(raceStats ?? new RaceStats(new List<RaceStatModifier>(), new List<int>())); 
+
+        }
         await db.SaveChangesAsync();
 
         return subrace;
