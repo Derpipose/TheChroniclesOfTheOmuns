@@ -11,7 +11,7 @@ public class SciFiSeedingServiceTests {
     public async Task SeedScifiRacesFromFileAsync_SeedsAllRaces_FromRealSeedFile() {
         await using var db = TestDb.Create();
         var raceService = new SciFiRaceService(db);
-        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db));
+        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db), new ScifiWeaponService(db));
 
         await seedService.SeedRacesAsync();
         int expectedCount = 26;
@@ -24,8 +24,10 @@ public class SciFiSeedingServiceTests {
     public async Task SeedScifiRacesFromFileAsync_IsIdempotent_OnSecondRun() {
         await using var db = TestDb.Create();
         var raceService = new SciFiRaceService(db);
+        var subraceService = new SciFiSubraceService(db);
+        var weaponService = new ScifiWeaponService(db);
         var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(),
-        raceService, new SciFiSubraceService(db));
+        raceService, subraceService, weaponService);
 
         await seedService.SeedRacesAsync();
 
@@ -42,7 +44,9 @@ public class SciFiSeedingServiceTests {
     public async Task SeedScifiSubracesFromFileAsync_SeedsAllSubraces_FromRealSeedFile() {
         await using var db = TestDb.Create();
         var raceService = new SciFiRaceService(db);
-        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db));
+        var subraceService = new SciFiSubraceService(db);
+        var weaponService = new ScifiWeaponService(db);
+        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, subraceService, weaponService);
 
         await seedService.SeedRacesAsync();
         await seedService.SeedSubracesAsync();
@@ -57,7 +61,9 @@ public class SciFiSeedingServiceTests {
     public async Task SeedScifiSubracesFromFileAsync_IsIdempotent_OnSecondRun() {
         await using var db = TestDb.Create();
         var raceService = new SciFiRaceService(db);
-        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db));
+        var subraceService = new SciFiSubraceService(db);
+        var weaponService = new ScifiWeaponService(db);
+        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, subraceService, weaponService);
 
         await seedService.SeedRacesAsync();
         await seedService.SeedSubracesAsync();
@@ -84,7 +90,9 @@ public class SciFiSeedingServiceTests {
     public async Task SeedScifiSubracesFromFileAsync_ParsesLockedStat_FromLPrefixedValue() {
         await using var db = TestDb.Create();
         var raceService = new SciFiRaceService(db);
-        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db));
+        var subraceService = new SciFiSubraceService(db);
+        var weaponService = new ScifiWeaponService(db);
+        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, subraceService, weaponService);
 
         await seedService.SeedRacesAsync();
         await seedService.SeedRacesAsync();
@@ -105,7 +113,9 @@ public class SciFiSeedingServiceTests {
     public async Task SeedScifiSubracesFromFileAsync_ParsesCommaListPick_IntoFreeStatPicks() {
         await using var db = TestDb.Create();
         var raceService = new SciFiRaceService(db);
-        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db));
+        var subraceService = new SciFiSubraceService(db);
+        var weaponService = new ScifiWeaponService(db);
+        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, subraceService, weaponService);
 
         await seedService.SeedRacesAsync();
         await seedService.SeedSubracesAsync();
@@ -120,8 +130,10 @@ public class SciFiSeedingServiceTests {
     [Fact]
     public async Task SeedScifiSubracesFromFileAsync_ParsesBareNumberPick_IntoFreeStatPicks() {
         await using var db = TestDb.Create();
+        var subraceService = new SciFiSubraceService(db);
+        var weaponService = new ScifiWeaponService(db);
         var raceService = new SciFiRaceService(db);
-        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, new SciFiSubraceService(db));
+        var seedService = new ScifiSeedingService(db, new TestHttpClientFactory(), raceService, subraceService, weaponService);
 
         await seedService.SeedRacesAsync();
 

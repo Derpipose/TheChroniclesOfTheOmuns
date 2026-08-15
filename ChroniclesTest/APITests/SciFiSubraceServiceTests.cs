@@ -329,7 +329,7 @@ public class SciFiSubraceServiceTests {
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var raceOnlyCharacter = new ScifiCharacter(raceCharacterBase.Id);
-        raceOnlyCharacter.SetScifiRace(race.Id);
+        raceOnlyCharacter.SetScifiRace(race, []);
         db.ScifiCharacters.Add(raceOnlyCharacter);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -340,8 +340,7 @@ public class SciFiSubraceServiceTests {
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var subraceCharacter = new ScifiCharacter(subraceCharacterBase.Id);
-        subraceCharacter.SetScifiRace(race.Id);
-        subraceCharacter.SetScifiSubrace(subrace.Id);
+        subraceCharacter.SetScifiRace(race, [], subrace);
         db.ScifiCharacters.Add(subraceCharacter);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -401,8 +400,7 @@ public class SciFiSubraceServiceTests {
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var scifiCharacter = new ScifiCharacter(characterBase.Id);
-        scifiCharacter.SetScifiRace(race.Id);
-        scifiCharacter.SetScifiSubrace(subrace.Id);
+        scifiCharacter.SetScifiRace(race, [(StatType.Dexterity, 3)], subrace);
         db.ScifiCharacters.Add(scifiCharacter);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 

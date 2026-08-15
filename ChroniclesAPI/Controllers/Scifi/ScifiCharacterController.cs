@@ -138,7 +138,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
             if (request.ScifiRaceId is not null) {
                 var race = await db.ScifiRaces.FirstAsync(r => r.Id == request.ScifiRaceId);
-                existing.SetScifiRace(race.Id);
+                // existing.SetScifiRace(race.Id);
                 existing.ClearScifiSubrace();
             }
             if (request.ScifiSubraceId is not null) {
@@ -187,7 +187,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
         if (request.ScifiRaceId is not null) {
             var race = await db.ScifiRaces.FirstAsync(r => r.Id == request.ScifiRaceId);
-            scifiCharacter.SetScifiRace(race.Id);
+            // scifiCharacter.SetScifiRace(race.Id);
         }
 
         if (request.ScifiSubraceId is not null) {
@@ -250,7 +250,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             var race = await db.ScifiRaces.FirstOrDefaultAsync(r => r.Id == request.ScifiRaceId);
             if (race is null)
                 return BadRequest(new { message = "ScifiRace not found." });
-            scifiCharacter.SetScifiRace(race.Id);
+            // scifiCharacter.SetScifiRace(race.Id);
             scifiCharacter.ClearScifiSubrace();
         }
 
