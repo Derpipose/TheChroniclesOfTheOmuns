@@ -6,14 +6,16 @@ export interface CustomRollPreset {
 
 interface CustomRollPresetCardProps {
   preset: CustomRollPreset
-  onRoll: (expression: string, label?: string) => void
+  onRoll: (expression: string, label?: string, rollKey?: string) => void
   onDelete: (id: string) => void
+  isRolling?: boolean
 }
 
 export function CustomRollPresetCard({
   preset,
   onRoll,
   onDelete,
+  isRolling = false,
 }: CustomRollPresetCardProps) {
   return (
     <div
@@ -38,14 +40,15 @@ export function CustomRollPresetCard({
       </div>
       <div className="flex gap-2">
         <button
-          onClick={() => onRoll(preset.expression, preset.name)}
-          className="flex-1 py-2 text-xs font-semibold rounded transition-colors hover:opacity-90"
+          onClick={() => onRoll(preset.expression, preset.name, `preset-${preset.id}`)}
+          disabled={isRolling}
+          className="flex-1 py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
           style={{
             backgroundColor: '#8B7355',
             color: '#FDFAF4',
           }}
         >
-          Roll
+          {isRolling ? 'Rolling' : 'Roll'}
         </button>
         <button
           onClick={() => onDelete(preset.id)}
