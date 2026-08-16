@@ -155,3 +155,10 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
     public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int MaxHealth, bool IsActive, string Notes, CharacterStatsResponseDto? CharacterStats);
     public record CharacterStatsResponseDto(int Id, int CharacterId, int Strength, int Constitution, int Dexterity, int Wisdom, int Charisma, int Intelligence);
 }
+// Eventually we will need a "getSettingsForCharacter" endpoint that will look at the different setting tables and 
+// return a list of settings that the character has a sub in. We will use that to correctly call the right
+// endpoints for character creation and updates. For right now, we don't need to worry about that since we only have
+// one setting, but in the future we will need to make sure that we are not creating a character in a setting that
+// the character already has a sub in. For example, if a character has a sub in the Scifi setting, we should not 
+// allow them to create a new ScifiCharacter for that character. That could cause issues. Each will have it's 
+// own check to ensure that doesn't happen, but just in case. 

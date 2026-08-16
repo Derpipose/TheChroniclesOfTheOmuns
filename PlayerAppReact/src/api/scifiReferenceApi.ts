@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5237'
 
 export async function getScifiRaces(): Promise<ScifiRace[]> {
   // GET /api/scifi/ScifiRace
-    const response = await apiFetch(`${BASE_URL}/api/scifi/ScifiRace`)
+    const response = await apiFetch(`${BASE_URL}/api/scifi/ScifiRace/with-stats`)
 
     if (!response.ok) {
         throw new Error(`Failed to fetch scifi races: ${response.statusText}`)

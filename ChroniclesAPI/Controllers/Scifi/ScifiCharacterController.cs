@@ -75,6 +75,8 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
     public async Task<IActionResult> Create([FromBody] CreateScifiCharacterDto request) {
         var character = await db.Characters
             .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.PlayerId == playerContext.PlayerId);
+        
+        // Validation checks
 
         if (character is null)
             return NotFound(new { message = "Character not found." });
@@ -82,9 +84,13 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         if (character.IsActive)
             return BadRequest(new { message = "Cannot create a ScifiCharacter for an active character." });
 
-        if (character.Setting == SettingEnum.Scifi) {
-            return BadRequest(new { message = "Cannot create a ScifiCharacter for a character that is already in the Scifi setting." });
-        }
+
+        var existingScifiCharacter = await db.ScifiCharacters
+            .FirstOrDefaultAsync(sc => sc.CharacterId == request.CharacterId);
+
+        if (existingScifiCharacter is not null)
+            return BadRequest(new { message = "ScifiCharacter already exists for this character." });
+
 
         // Validate optional race exists and is scifi
         if (request.ScifiRaceId is not null) {
@@ -117,65 +123,6 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 return BadRequest(new { message = "ScifiBackground not found." });
         }
 
-        // Upsert: if scifi character already exists for this character, update it instead
-        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id) 
-            ?? new CharacterStats(character.Id);
-
-        // CHANGED: added .Include(sc => sc.ScifiClass) so `existing.ScifiClass` is
-        // populated for characters that already had a class set from a prior request.
-        // Without this, existingClass below would be null whenever this request
-        // doesn't touch ScifiClassId, wiping out health for an unrelated field change.
-        var existing = await db.ScifiCharacters
-            .Include(sc => sc.ScifiClass)
-            .FirstOrDefaultAsync(sc => sc.CharacterId == request.CharacterId);
-
-        if (existing is not null) {
-            // Subrace requires a race to be set (either already persisted, or provided in this same request)
-            if (request.ScifiSubraceId is not null && request.ScifiRaceId is null && existing.ScifiRaceId == 0)
-                return BadRequest(new { message = "ScifiRace must be set before assigning a ScifiSubrace." });
-
-            character.SetMaxHealth(0);
-
-            if (request.ScifiRaceId is not null) {
-                var race = await db.ScifiRaces.FirstAsync(r => r.Id == request.ScifiRaceId);
-                // existing.SetScifiRace(race.Id);
-                existing.ClearScifiSubrace();
-            }
-            if (request.ScifiSubraceId is not null) {
-                var subrace = await db.ScifiSubraces.FirstAsync(sr => sr.Id == request.ScifiSubraceId);
-                // existing.SetScifiSubrace(subrace.Id);
-            }
-            if (request.ScifiClassId is not null) {
-                var scifiClass = await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId);
-                existing.SetScifiClass(scifiClass.Id);
-            }
-            if (request.ScifiBackgroundId is not null) {
-                var background = await db.ScifiBackgrounds.FirstAsync(b => b.Id == request.ScifiBackgroundId);
-                existing.SetScifiBackground(background.Id);
-            }
-
-            // CHANGED: with the .Include() above, existing.ScifiClass is now reliable
-            // for the "class unchanged this request" branch, so this no longer needs
-            // a fallback query — it's the same lookup-by-fresh-id-or-use-loaded-nav
-            // pattern as before, just now safe to trust.
-            var existingClass = request.ScifiClassId is not null
-                ? await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId)
-                : existing.ScifiClass;
-
-            existing.UpdateHealth(stats, existingClass);
-            character.SetSetting(SettingEnum.Scifi);
-
-            await db.SaveChangesAsync();
-
-            return Ok(new ScifiCharacterResponseDto(
-                existing.Id,
-                existing.CharacterId,
-                existing.ScifiRaceId,
-                existing.ScifiSubraceId,
-                existing.ScifiClassId,
-                existing.ScifiBackgroundId));
-        }
-
         // No existing scifi character, create new
         if (request.ScifiSubraceId is not null && request.ScifiRaceId is null)
             return BadRequest(new { message = "ScifiRace must be set before assigning a ScifiSubrace." });
@@ -186,13 +133,20 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         var scifiCharacter = new ScifiCharacter(character.Id);
 
         if (request.ScifiRaceId is not null) {
-            var race = await db.ScifiRaces.FirstAsync(r => r.Id == request.ScifiRaceId);
-            // scifiCharacter.SetScifiRace(race.Id);
-        }
+            var race = await db.ScifiRaces
+                .Include(r => r.RaceStats)
+                .FirstAsync(r => r.Id == request.ScifiRaceId);
 
-        if (request.ScifiSubraceId is not null) {
-            var subrace = await db.ScifiSubraces.FirstAsync(sr => sr.Id == request.ScifiSubraceId);
-            // scifiCharacter.SetScifiSubrace(subrace.Id);
+            ScifiSubrace? subrace = null;
+            if (request.ScifiSubraceId is not null) {
+                subrace = await db.ScifiSubraces
+                    .Include(sr => sr.RaceStats)
+                    .FirstAsync(sr => sr.Id == request.ScifiSubraceId);
+            }
+
+            var picks = request.StatPicks.Select(sp => (sp.Stat, sp.Amount)).ToList();
+
+            scifiCharacter.SetScifiRace(race, picks, subrace);
         }
 
         if (request.ScifiClassId is not null) {
@@ -212,6 +166,9 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             : scifiCharacter.ScifiClass;
 
         db.ScifiCharacters.Add(scifiCharacter);
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id) 
+                                ?? new CharacterStats(character.Id);
+        
         scifiCharacter.UpdateHealth(stats, classForHealth);
 
         await db.SaveChangesAsync();
@@ -336,7 +293,9 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         return NoContent();
     }
 
-    public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId);
-    public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId);
-    public record ScifiCharacterResponseDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId);
+    public record StatPickDto(StatType Stat, int Amount);
+    public record StatModifierResponseDto(ModifierType Stat, int Amount, ModifierSource Source);
+    public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto> StatPicks = []);
+    public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto> StatPicks = []);
+    public record ScifiCharacterResponseDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatModifierResponseDto> StatBonuses);
 }

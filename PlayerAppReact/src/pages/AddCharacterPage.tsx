@@ -4,6 +4,7 @@ import { useScifiRaces, useScifiSubracesByRace, useScifiClasses, useScifiBackgro
 import { createCharacter } from '../api/characterApi'
 import { createScifiCharacter } from '../api/scifiCharacterApi'
 import { bulkUpdateCharacterStats } from '../api/characterStatsApi'
+import type { ScifiSubrace } from '../types/scifiReference'
 
 export default function AddCharacterPage() {
   const navigate = useNavigate()
@@ -22,12 +23,12 @@ export default function AddCharacterPage() {
   const { data: classes } = useScifiClasses()
   const { data: backgrounds } = useScifiBackgrounds()
 
-  const [strength, setStrength] = useState('10')
-  const [constitution, setConstitution] = useState('10')
-  const [dexterity, setDexterity] = useState('10')
-  const [wisdom, setWisdom] = useState('10')
-  const [charisma, setCharisma] = useState('10')
-  const [intelligence, setIntelligence] = useState('10')
+  const [strength, setStrength] = useState('0')
+  const [constitution, setConstitution] = useState('0')
+  const [dexterity, setDexterity] = useState('0')
+  const [wisdom, setWisdom] = useState('0')
+  const [charisma, setCharisma] = useState('0')
+  const [intelligence, setIntelligence] = useState('0')
   const statFields: { label: string; value: string; setValue: (v: string) => void }[] = [
   { label: 'Strength', value: strength, setValue: setStrength },
   { label: 'Constitution', value: constitution, setValue: setConstitution },
@@ -38,7 +39,22 @@ export default function AddCharacterPage() {
 ]
 
   // ??? — you write this part: find the selected race object from `races`, given `raceId`
-  const selectedRace = races?.find((r) => r.id === raceId)
+  const selectedRace = races?.find((r) => r.id === raceId);
+  const selectedSubrace = subraces?.find((sr) => sr.id === subraceId);
+  const subraceHasStats = (subrace: ScifiSubrace | undefined): boolean => {
+    return subrace !== undefined && (subrace.raceStats.modifiers.length > 0 || subrace.raceStats.freeStatPicks.length > 0);
+  }
+
+  const activeRaceStats = subraceHasStats(selectedSubrace) ? selectedSubrace?.raceStats : selectedRace?.raceStats;
+  const activeRaceFreeStatPicks = subraceHasStats(selectedSubrace) ? selectedSubrace?.raceStats.freeStatPicks : selectedRace?.raceStats.freeStatPicks;
+  // const getRacialModifiers = selectedRace?.raceStats.modifiers || selectedSubrace?.raceStats.modifiers || [];
+  // const getRacialFreeStatPicks = selectedRace?.raceStats.freeStatPicks ||  selectedSubrace?.raceStats.freeStatPicks || [];
+
+  const getRacialModifierForStat = (statLabel: string): number => {
+    const modifiers = activeRaceStats?.modifiers || [];
+    const modifier = modifiers.find((m) => m.stat === statLabel);
+    return modifier ? modifier.modifier : 0;
+  }
 
   /* ... */
 
@@ -195,22 +211,43 @@ export default function AddCharacterPage() {
           </select>
         </div>
 
-        {/* YOUR TURN: Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
+        {/* Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
         <div className="grid grid-cols-2 gap-3">
-          {statFields.map(({ label, value, setValue }) => (
-            <div key={label} className="flex flex-col gap-1">
-              <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>{label}</label>
-              <input
-                type="number"
-                min="1"
-                max="20"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
-              />
-            </div>
-          ))}
+          {statFields.map(({ label, value, setValue }) => {
+            const racialEntry = activeRaceStats?.modifiers.find((m) => m.stat === label); /* ??? — find the matching modifier entry for this stat's label */
+            const isLocked =  racialEntry?.isLocked ?? false; /* ??? */
+            const racialMod = racialEntry?.modifier ?? 0; /* ??? */
+            const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + (racialMod) + 10; /* ??? — branch: locked uses racialMod directly, unlocked uses the formula */
+
+            return (
+              <div key={label} className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>{label}</label>
+
+                {isLocked ? (
+                  <span className="text-sm" style={{ color: '#2C2416' }}>
+                    {/* ??? — render: {racialMod} (locked by race) */}
+                    {racialMod} (locked by race)
+                  </span>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={value}
+                      onChange={(e) => setValue(e.target.value)}
+                      className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
+                      style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+                    />
+                    <span className="text-sm" style={{ color: '#7A6F5C' }}>
+                      {/* ??? — render: + {racialMod} (racial) + 10 = {finalValue} */}
+                      + {racialMod} (racial) + 10 = {finalValue}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
 
         {/* Level input */}
@@ -244,102 +281,3 @@ export default function AddCharacterPage() {
   </div>
 )
 }
-
-
-
-
-// import { useState } from 'react'
-// import { useNavigate } from 'react-router-dom'
-
-// export default function AddCharacterPage() {
-//   const navigate = useNavigate()
-//   const [name, setName] = useState('')
-//   const [charClass, setCharClass] = useState('')
-//   const [level, setLevel] = useState('1')
-
-//   const handleAdd = () => {
-//     // TODO: wire up to real state/backend
-//     navigate('/characters')
-//   }
-
-//   return (
-//     <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
-//       {/* Nav */}
-//       <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-//         <button
-//           onClick={() => navigate('/characters')}
-//           className="text-sm transition-colors hover:underline"
-//           style={{ color: '#7A6F5C' }}
-//         >
-//           ← Back
-//         </button>
-//         <h1 className="text-lg font-semibold" style={{ color: '#2C2416' }}>Add Character</h1>
-//       </div>
-
-//       <div className="max-w-md mx-auto px-6 py-8">
-//         <div className="rounded-2xl border p-6 flex flex-col gap-5" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-
-//           <div className="flex flex-col gap-1">
-//             <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
-//               Name
-//             </label>
-//             <input
-//               type="text"
-//               value={name}
-//               onChange={(e) => setName(e.target.value)}
-//               className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-//               style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
-//               placeholder="Character name"
-//             />
-//           </div>
-
-//           <div className="flex flex-col gap-1">
-//             <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
-//               Class
-//             </label>
-//             <input
-//               type="text"
-//               value={charClass}
-//               onChange={(e) => setCharClass(e.target.value)}
-//               className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-//               style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
-//               placeholder="e.g. Fighter, Mage, Ranger"
-//             />
-//           </div>
-
-//           <div className="flex flex-col gap-1">
-//             <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
-//               Level
-//             </label>
-//             <input
-//               type="number"
-//               min="1"
-//               max="20"
-//               value={level}
-//               onChange={(e) => setLevel(e.target.value)}
-//               className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-//               style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
-//             />
-//           </div>
-
-//           <div className="flex gap-3 mt-2">
-//             <button
-//               onClick={() => navigate('/characters')}
-//               className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors"
-//               style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}
-//             >
-//               Cancel
-//             </button>
-//             <button
-//               onClick={handleAdd}
-//               className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-//               style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
-//             >
-//               Add Character
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
