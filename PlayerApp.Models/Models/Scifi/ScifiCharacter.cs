@@ -110,15 +110,6 @@ public class ScifiCharacter {
         }
     }
 
-    public void SetScifiSubrace(int scifiSubraceId) {
-        if (ScifiRaceId == 0)
-            throw new InvalidOperationException(
-                "ScifiRace must be set before setting a ScifiSubrace.");
-        if (scifiSubraceId == 0)
-            throw new InvalidOperationException(
-                "ScifiSubrace must be persisted before being assigned to a ScifiCharacter.");
-        ScifiSubraceId = scifiSubraceId;
-    }
 
     public void SetScifiClass(int scifiClassId) {
         if (scifiClassId == 0)
