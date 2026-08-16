@@ -143,7 +143,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             }
             if (request.ScifiSubraceId is not null) {
                 var subrace = await db.ScifiSubraces.FirstAsync(sr => sr.Id == request.ScifiSubraceId);
-                existing.SetScifiSubrace(subrace.Id);
+                // existing.SetScifiSubrace(subrace.Id);
             }
             if (request.ScifiClassId is not null) {
                 var scifiClass = await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId);
@@ -192,7 +192,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
         if (request.ScifiSubraceId is not null) {
             var subrace = await db.ScifiSubraces.FirstAsync(sr => sr.Id == request.ScifiSubraceId);
-            scifiCharacter.SetScifiSubrace(subrace.Id);
+            // scifiCharacter.SetScifiSubrace(subrace.Id);
         }
 
         if (request.ScifiClassId is not null) {
@@ -270,7 +270,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             if (raceId is null or 0)
                 return BadRequest(new { message = "ScifiRace must be set before assigning a ScifiSubrace." });
 
-            scifiCharacter.SetScifiSubrace(subrace.Id);
+            // scifiCharacter.SetScifiSubrace(subrace.Id);
         }
 
         // Class: 0 = clear, valid ID = set, null = no change
