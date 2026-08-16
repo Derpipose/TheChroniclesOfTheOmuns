@@ -3,6 +3,8 @@ import { resolveExpression} from '../functions/DiceRoller'
 import { CustomRollPresetCard, type CustomRollPreset } from '../components/CustomRollPresetCard'
 import NavBar from '../components/NavBar'
 import { useNavigate } from '@tanstack/react-router'
+import { useCharacter, useCharacters } from '../hooks/useCharacters'
+import { useCharacterStats } from '../hooks/useCharacterStats'
 
 interface DiceRoll {
   id: string
@@ -17,8 +19,29 @@ interface DiceRoll {
 
 export default function DiceRollerPage() {
   const navigate = useNavigate()
+  const ROLL_DELAY_MS = 750
   const [activeTab, setActiveTab] = useState<'custom' | 'character'>('custom')
   const [rolls, setRolls] = useState<DiceRoll[]>([])
+  const [selectedCharacterId, setSelectedCharacterId] = useState<number | ''>('')
+  const [rollingStat, setRollingStat] = useState<string | null>(null)
+
+  const { data: characters = [], isLoading: charactersLoading } = useCharacters()
+  // TODO: Re-enable the active-only filter once the rest of the site supports inactive character flows more cleanly.
+  const activeCharacters = characters
+
+  const { data: selectedCharacter } = useCharacter(selectedCharacterId || 0)
+  const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
+
+  useEffect(() => {
+    if (activeCharacters.length === 0) {
+      setSelectedCharacterId('')
+      return
+    }
+
+    if (!selectedCharacterId || !activeCharacters.some((character) => character.id === selectedCharacterId)) {
+      setSelectedCharacterId(activeCharacters[0].id)
+    }
+  }, [activeCharacters, selectedCharacterId])
 
   // Initialize from localStorage without an effect
   const [customPresets, setCustomPresets] = useState(() => {
@@ -45,24 +68,34 @@ export default function DiceRollerPage() {
     localStorage.setItem('diceroller_presets', JSON.stringify(customPresets))
   }, [customPresets])
 
-  const handleRoll = (expression: string, label?: string) => {
-    try {
-      setError(null)
-      const result = resolveExpression(expression)
-      const roll: DiceRoll = {
-        id: rollNumber.toString(),
-        timestamp: new Date().toLocaleTimeString(),
-        expression,
-        resolvedExpr: result.resolvedExpr,
-        allRolls: result.allRolls,
-        total: result.total,
-        label,
-      }
-      setRolls((prev) => [roll, ...prev]) // append to bottom
-      setRollNumber((prev) => prev + 1)
-    } catch (err) {
-      setError((err as Error).message || 'Invalid dice expression')
+  const handleRoll = (expression: string, label?: string, rollKey?: string) => {
+    setError(null)
+    if (rollKey) {
+      setRollingStat(rollKey)
     }
+
+    window.setTimeout(() => {
+      try {
+        const result = resolveExpression(expression)
+        const roll: DiceRoll = {
+          id: rollNumber.toString(),
+          timestamp: new Date().toLocaleTimeString(),
+          expression,
+          resolvedExpr: result.resolvedExpr,
+          allRolls: result.allRolls,
+          total: result.total,
+          label,
+        }
+        setRolls((prev) => [roll, ...prev]) // append to bottom
+        setRollNumber((prev) => prev + 1)
+      } catch (err) {
+        setError((err as Error).message || 'Invalid dice expression')
+      } finally {
+        if (rollKey) {
+          setRollingStat((current) => (current === rollKey ? null : current))
+        }
+      }
+    }, ROLL_DELAY_MS)
   }
 
   const clearRolls = () => {
@@ -97,6 +130,22 @@ export default function DiceRollerPage() {
   setCustomPresets((prev: CustomRollPreset[]) => prev.filter((p) => p.id !== id))
 }
 
+  const statEntries = selectedStats
+    ? [
+        { label: 'Strength', score: selectedStats.strength },
+        { label: 'Constitution', score: selectedStats.constitution },
+        { label: 'Dexterity', score: selectedStats.dexterity },
+        { label: 'Wisdom', score: selectedStats.wisdom },
+        { label: 'Charisma', score: selectedStats.charisma },
+        { label: 'Intelligence', score: selectedStats.intelligence },
+      ]
+    : []
+
+  const getAbilityModifier = (score: number) => Math.floor((score - 10) / 2)
+  const statRows = statEntries.length ? Array.from({ length: Math.ceil(statEntries.length / 2) }, (_, index) =>
+    statEntries.slice(index * 2, index * 2 + 2)
+  ) : []
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
         <NavBar />
@@ -115,7 +164,7 @@ export default function DiceRollerPage() {
             backgroundColor: '#8B7355',
             color: '#FDFAF4',
           }}
-          disabled={rolls.length === 0}
+          disabled={rolls.length === 0 || rollingStat !== null}
         >
           Clear Log
         </button>
@@ -173,6 +222,7 @@ export default function DiceRollerPage() {
                   preset={preset}
                   onRoll={handleRoll}
                   onDelete={deletePreset}
+                  isRolling={rollingStat === `preset-${preset.id}`}
                 />
               ))}
 
@@ -254,24 +304,127 @@ export default function DiceRollerPage() {
               <div className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
                 Character Rolls
               </div>
-              <div
-                className="rounded-lg border p-4 text-center"
-                style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
-              >
-                <p
-                  className="text-sm font-medium"
-                  style={{ color: '#2C2416' }}
-                >
-                  TODO: Wire up to character stats & weapons
+
+              {charactersLoading ? (
+                <p className="text-sm" style={{ color: '#7A6F5C' }}>
+                  Loading characters...
                 </p>
-                <p
-                  className="text-xs mt-2"
-                  style={{ color: '#7A6F5C' }}
+              ) : activeCharacters.length === 0 ? (
+                <div
+                  className="rounded-lg border p-4 text-center"
+                  style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
                 >
-                  This will pull ability checks, skill rolls, and weapon attacks
-                  from the selected character's data.
-                </p>
-              </div>
+                  <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+                    No active characters available.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <label className="flex flex-col gap-2">
+                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                      Select Character
+                    </span>
+                    <select
+                      value={selectedCharacterId}
+                      onChange={(event) => setSelectedCharacterId(Number(event.target.value))}
+                      className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors"
+                      style={{
+                        backgroundColor: '#FDFAF4',
+                        borderColor: '#DDD8CC',
+                        color: '#2C2416',
+                      }}
+                    >
+                      {activeCharacters.map((character) => (
+                        <option key={character.id} value={character.id}>
+                          {character.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  {selectedCharacter && (
+                    <p className="text-xs" style={{ color: '#7A6F5C' }}>
+                      Selected: <span className="font-semibold" style={{ color: '#2C2416' }}>{selectedCharacter.name}</span>
+                    </p>
+                  )}
+
+                  {statsLoading ? (
+                    <p className="text-sm" style={{ color: '#7A6F5C' }}>
+                      Loading character stats...
+                    </p>
+                  ) : selectedStats ? (
+                    <div className="space-y-4">
+                      <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                        Character Stats
+                      </h2>
+
+                      <div className="space-y-3">
+                        {statRows.map((row, rowIndex) => (
+                          <div key={`stat-row-${rowIndex}`} className="grid grid-cols-2 gap-2">
+                            {row.map(({ label, score }) => {
+                              const modifier = getAbilityModifier(score)
+
+                              return (
+                                <div
+                                  key={label}
+                                  className="rounded-lg border p-3 space-y-2"
+                                  style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+                                >
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold" style={{ color: '#2C2416' }}>
+                                        {label}
+                                      </p>
+                                      <p className="text-xs mt-1" style={{ color: '#7A6F5C' }}>
+                                        Score: {score} | Mod: {modifier >= 0 ? `+${modifier}` : modifier}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRoll(`1d20 + ${modifier}`, `${label} check`, label)}
+                                    disabled={rollingStat === label}
+                                    className="w-full py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+                                    style={{
+                                      backgroundColor: '#8B7355',
+                                      color: '#FDFAF4',
+                                    }}
+                                  >
+                                    {rollingStat === label ? 'Rolling' : 'Roll'}
+                                  </button>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="pt-2">
+                        <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                          Weapon
+                        </h2>
+                        <div
+                          className="rounded-lg border p-4 mt-2 text-center"
+                          style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+                        >
+                          <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+                            TODO
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="rounded-lg border p-4 text-center"
+                      style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+                    >
+                      <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+                        No stats found for this character.
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
 
