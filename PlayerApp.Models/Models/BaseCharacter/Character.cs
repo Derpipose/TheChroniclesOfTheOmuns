@@ -102,11 +102,13 @@ public class Character {
         return baseValue + bonus;
     }
 
+    public int GetModifierBonus(IEnumerable<ICharacterModifier> modifiers, ModifierType statType) =>
+        GetStat(modifiers, statType, 0);
+
     public void SetNotes(string notes) {
         Notes = notes;
         UpdateLastModified();
     }
-
 
 
     [Conditional("DEBUG")]

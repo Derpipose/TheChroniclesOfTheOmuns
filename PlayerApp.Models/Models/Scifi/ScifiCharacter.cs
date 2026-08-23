@@ -139,15 +139,14 @@ public class ScifiCharacter {
             return;
         
         int hitDiceMax = scifiClass.HitDice.Sides();
-        int conMod = stats.GetStatModifier(StatType.Constitution);
-        int constitution = stats.Constitution;
+        int conBonus = Character.GetModifierBonus(GetAllModifiers(), ModifierType.Constitution);
+        int constitution = stats.Constitution + conBonus;
+        int conMod = (constitution - 10) / 2;
 
         int health = constitution * 2 + hitDiceMax + conMod;
 
         Character.SetMaxHealth(health);
         Character.SetCurrentHealth(health);
-        
-
     }
 
     public void ScifiCharacterSetBaseArmorClass(CharacterStats stats) {
