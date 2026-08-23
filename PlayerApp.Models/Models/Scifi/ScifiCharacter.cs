@@ -198,4 +198,8 @@ public class ScifiCharacter {
         Id = id;
     }
 
+    [Conditional("DEBUG")]
+    public void SimulateSetCharacter(Character character) {
+        Character = character;
+    }
 }

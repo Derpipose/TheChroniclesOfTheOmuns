@@ -301,12 +301,46 @@ public class ScifiCharacterTests {
     }
 
     [Fact]
+    public void UpdateHealth_AppliesNoRacialBonus() {
+        Character character = new Character(1, "TestCharacter");
+        character.SimulatePersist(1);
+        ScifiCharacter scifiCharacter = new ScifiCharacter(character.Id);
+        scifiCharacter.SimulatePersist(1);
+        scifiCharacter.SimulateSetCharacter(character);
+        
+        
+        ScifiClass scifiClass = new ScifiClass("TestClass", DiceType.D10, "Test");
+        scifiClass.SimulatePersist(1);
+        CharacterStats stats = new CharacterStats(character.Id);
+
+        ScifiRace scifiRace = new ScifiRace("TestSubType", "TestRace", "Test description", true, 1, 30, 0, 0);
+        scifiRace.SimulatePersist(1);
+        scifiRace.SetRaceStats(new RaceStats(
+            modifiers: new List<RaceStatModifier> { },
+            freeStatPicks: null));
+
+        scifiCharacter.SetScifiRace(scifiRace, []);
+
+        scifiCharacter.UpdateHealth(stats, scifiClass);
+
+        int expectedConstitution = 10 ; // base 10 + racial bonus
+        int expectedConMod = (expectedConstitution - 10) / 2; //
+        int expectedHitDiceMax = scifiClass.HitDice.Sides(); // D10
+        int expectedHealth = expectedConstitution * 2 + expectedHitDiceMax + expectedConMod;
+        Assert.Equal(expectedHealth, character.MaxHealth);
+
+    }
+
+    [Fact]
     public void UpdateHealth_AppliesConstitutionRacialBonus() {
         // ??? — build a Character, a CharacterStats with a known Constitution (e.g. 10),
         //       a ScifiClass with a known HitDice, and a ScifiCharacter linked to the Character
         Character character = new Character(1, "TestCharacter");
         character.SimulatePersist(1);
         ScifiCharacter scifiCharacter = new ScifiCharacter(character.Id);
+        scifiCharacter.SimulatePersist(1);
+        scifiCharacter.SimulateSetCharacter(character);
+        
         
         ScifiClass scifiClass = new ScifiClass("TestClass", DiceType.D10, "Test");
         scifiClass.SimulatePersist(1);
