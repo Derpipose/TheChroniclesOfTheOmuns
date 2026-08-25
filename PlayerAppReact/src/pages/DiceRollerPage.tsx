@@ -501,6 +501,10 @@ export default function DiceRollerPage() {
                   {weapon.modifierStat}
                   {' '}
                   {modifier >= 0 ? `+${modifier}` : modifier}
+                  {' Ammo: '}
+                  {weapon.currentAmmo}
+                  {'/'}
+                  {weapon.ammoCapacity}
                 </p>
               </div>
 
