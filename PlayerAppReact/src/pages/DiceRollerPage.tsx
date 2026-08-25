@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar'
 import { useNavigate } from '@tanstack/react-router'
 import { useCharacter, useCharacters } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
+import { useScifiWeaponInstances } from '../hooks/useScifiWeaponInstance'
 
 interface DiceRoll {
   id: string
@@ -31,6 +32,9 @@ export default function DiceRollerPage() {
 
   const { data: selectedCharacter } = useCharacter(selectedCharacterId || 0)
   const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
+
+  const { data: selectedWeapons = [], isLoading: weaponsLoading } =
+  useScifiWeaponInstances(selectedCharacterId || 0)
 
   useEffect(() => {
     if (activeCharacters.length === 0) {
@@ -142,6 +146,24 @@ export default function DiceRollerPage() {
     : []
 
   const getAbilityModifier = (score: number) => Math.floor((score - 10) / 2)
+
+  const getWeaponModifier = (weapon: typeof selectedWeapons[number]) => {
+  if (!selectedStats) return 0
+
+  const statScores = {
+    Strength: selectedStats.strength,
+    Constitution: selectedStats.constitution,
+    Dexterity: selectedStats.dexterity,
+    Wisdom: selectedStats.wisdom,
+    Charisma: selectedStats.charisma,
+    Intelligence: selectedStats.intelligence,
+  }
+
+  const score = statScores[weapon.modifierStat]
+
+  return getAbilityModifier(score)
+}
+
   const statRows = statEntries.length ? Array.from({ length: Math.ceil(statEntries.length / 2) }, (_, index) =>
     statEntries.slice(index * 2, index * 2 + 2)
   ) : []
@@ -400,18 +422,123 @@ export default function DiceRollerPage() {
                       </div>
 
                       <div className="pt-2">
-                        <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
-                          Weapon
-                        </h2>
-                        <div
-                          className="rounded-lg border p-4 mt-2 text-center"
-                          style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
-                        >
-                          <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
-                            TODO
-                          </p>
-                        </div>
-                      </div>
+  <h2
+    className="text-sm font-semibold uppercase tracking-wide"
+    style={{ color: '#7A6F5C' }}
+  >
+    Weapons
+  </h2>
+
+  {weaponsLoading ? (
+    <p className="text-sm mt-2" style={{ color: '#7A6F5C' }}>
+      Loading weapons...
+    </p>
+  ) : selectedWeapons.length === 0 ? (
+    <div
+      className="rounded-lg border p-4 mt-2 text-center"
+      style={{
+        backgroundColor: '#FDFAF4',
+        borderColor: '#DDD8CC',
+      }}
+    >
+      <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+        This character has no weapons.
+      </p>
+    </div>
+  ) : (
+    <div className="space-y-3 mt-2">
+      {selectedWeapons.map((weapon) => {
+        const statScore = (() => {
+          switch (weapon.modifierStat) {
+            case 'Strength':
+              return selectedStats.strength
+            case 'Constitution':
+              return selectedStats.constitution
+            case 'Dexterity':
+              return selectedStats.dexterity
+            case 'Wisdom':
+              return selectedStats.wisdom
+            case 'Charisma':
+              return selectedStats.charisma
+            case 'Intelligence':
+              return selectedStats.intelligence
+            default:
+              return 10
+          }
+        })()
+
+        const modifier = getAbilityModifier(statScore)
+
+        const expression =
+          `${weapon.damageFormula} ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}`
+
+        const weaponRollKey = `weapon-${weapon.id}`
+
+        return (
+          <div
+            key={weapon.id}
+            className="rounded-lg border p-3 space-y-2"
+            style={{
+              backgroundColor: '#FDFAF4',
+              borderColor: '#DDD8CC',
+            }}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p
+                  className="text-sm font-semibold"
+                  style={{ color: '#2C2416' }}
+                >
+                  {weapon.nickname || weapon.name}
+                </p>
+
+                <p
+                  className="text-xs mt-1"
+                  style={{ color: '#7A6F5C' }}
+                >
+                  {expression}
+                  {' || Modifier: '}
+                  {weapon.modifierStat}
+                  {' '}
+                  {modifier >= 0 ? `+${modifier}` : modifier}
+                </p>
+              </div>
+
+              {weapon.favorite && (
+                <span
+                  className="text-xs"
+                  title="Favorite"
+                  style={{ color: '#8B7355' }}
+                >
+                  ★
+                </span>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                handleRoll(
+                  expression,
+                  `${weapon.nickname || weapon.name} damage`,
+                  weaponRollKey
+                )
+              }
+              disabled={rollingStat === weaponRollKey}
+              className="w-full py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: '#8B7355',
+                color: '#FDFAF4',
+              }}
+            >
+              {rollingStat === weaponRollKey ? 'Rolling' : 'Roll'}
+            </button>
+          </div>
+        )
+      })}
+    </div>
+  )}
+</div>
                     </div>
                   ) : (
                     <div

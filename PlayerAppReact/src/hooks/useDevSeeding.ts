@@ -11,6 +11,7 @@ export function useDevSeeding() {
         backgrounds: 'idle',
         races: 'idle',
         subraces: 'idle',
+        weapons: 'idle',
     })
 
     // Holds the last response/error message per table so skipped items are visible, not just swallowed.
@@ -84,6 +85,19 @@ export function useDevSeeding() {
         }
     }
 
+    const seedWeapons = async () => {
+        setTableStatus('weapons', 'loading')
+        try {
+        await fetch(`${BASE_URL}/api/scifi/scifiseeding/weapons`, {
+            method: 'POST',
+            headers: getAuthHeader(),
+        })
+        setTableStatus('weapons', 'success')
+        } catch {
+        setTableStatus('weapons', 'error')
+        }
+    }
+
     return {
         status,
         messages,
@@ -92,5 +106,6 @@ export function useDevSeeding() {
         seedBackgrounds,
         seedRaces,
         seedSubraces,
+        seedWeapons,
     }
 }

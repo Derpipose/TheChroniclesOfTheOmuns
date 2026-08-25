@@ -7,6 +7,7 @@ import AddCharacterPage from './pages/AddCharacterPage'
 import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import DevPage from './pages/DevPage'
 import DiceRollerPage from './pages/DiceRollerPage'
+import AddWeaponInstancePage from './pages/AddWeaponInstancePage'
 
 const queryClient = new QueryClient()
 
@@ -46,9 +47,15 @@ export default function App() {
           } />
 
           <Route path="rolldice" element={
-            // <ProtectedRoute>
-              <DiceRollerPage />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+                <DiceRollerPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="addweapon" element={
+            <ProtectedRoute>
+                <AddWeaponInstancePage />
+            </ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>

@@ -6,6 +6,7 @@ export interface SeedResult {
   backgrounds: SeedStatus
   races: SeedStatus
   subraces: SeedStatus
+  weapons: SeedStatus
 }
 
 // Shape returned by all three ScifiSeedingController endpoints.
