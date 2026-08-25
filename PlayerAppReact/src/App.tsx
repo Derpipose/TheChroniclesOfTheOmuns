@@ -46,13 +46,13 @@ export default function App() {
             </ProtectedRoute>
           } />
 
-          <Route path="rolldice" element={
+          <Route path="/rolldice" element={
             <ProtectedRoute>
                 <DiceRollerPage />
             </ProtectedRoute>
           } />
 
-          <Route path="addweapon" element={
+          <Route path="/addweapon" element={
             <ProtectedRoute>
                 <AddWeaponInstancePage />
             </ProtectedRoute>
