@@ -7,6 +7,7 @@ import {
     useCreateScifiWeaponInstance,
     useScifiWeaponInstances,
 } from '../hooks/useScifiWeaponInstance'
+import NavBar from '../components/NavBar'
 
 export default function AddWeaponInstancePage() {
     const navigate = useNavigate()
@@ -16,6 +17,16 @@ export default function AddWeaponInstancePage() {
 
     const { data: characters, isLoading: charactersLoading } = useCharacters()
     const { data: weapons, isLoading: weaponsLoading } = useScifiWeapons()
+
+
+    const [weaponSearch, setWeaponSearch] = useState('')
+    const [weaponDropdownOpen, setWeaponDropdownOpen] = useState(false)
+
+    const filteredWeapons = weapons?.filter((weapon) =>
+        weapon.name
+            .toLowerCase()
+            .includes(weaponSearch.toLowerCase())
+    )
 
     const {
         data: existingWeapons,
@@ -36,6 +47,8 @@ export default function AddWeaponInstancePage() {
     if (!selectedCharacterId || !selectedWeaponId) {
         return
     }
+
+
 
     createWeaponInstance.mutate({
         scifiWeaponId: selectedWeaponId,
@@ -65,28 +78,8 @@ export default function AddWeaponInstancePage() {
             className="min-h-screen"
             style={{ backgroundColor: '#F5F0E8' }}
         >
-            <div
-                className="border-b px-6 py-4 flex items-center gap-3"
-                style={{
-                    backgroundColor: '#FDFAF4',
-                    borderColor: '#DDD8CC',
-                }}
-            >
-                <button
-                    onClick={() => navigate(-1)}
-                    className="text-sm transition-colors hover:underline"
-                    style={{ color: '#7A6F5C' }}
-                >
-                    ← Back
-                </button>
+                <NavBar title="Edit Weapon" />
 
-                <h1
-                    className="text-lg font-semibold"
-                    style={{ color: '#2C2416' }}
-                >
-                    Add Weapon
-                </h1>
-            </div>
 
             <div className="max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
 
@@ -146,32 +139,79 @@ export default function AddWeaponInstancePage() {
                             Weapon
                         </label>
 
-                        <select
-                            id="weapon"
-                            value={selectedWeaponId}
-                            onChange={(e) =>
-                                setSelectedWeaponId(Number(e.target.value))
-                            }
-                            className="rounded-lg border px-3 py-2 text-sm outline-none"
+                        <div className="relative">
+    <button
+        type="button"
+        onClick={() => setWeaponDropdownOpen((open) => !open)}
+        className="w-full rounded-lg border px-3 py-2 text-sm text-left outline-none"
+        style={{
+            backgroundColor: '#F5F0E8',
+            borderColor: '#DDD8CC',
+            color: selectedWeaponId ? '#2C2416' : '#7A6F5C',
+        }}
+    >
+        {selectedWeaponId
+            ? weapons?.find((weapon) => weapon.id === selectedWeaponId)?.name
+            : 'Select a weapon...'}
+    </button>
+
+    {weaponDropdownOpen && (
+        <div
+            className="absolute z-10 mt-1 w-full rounded-lg border p-2 shadow-sm"
+            style={{
+                backgroundColor: '#FDFAF4',
+                borderColor: '#DDD8CC',
+            }}
+        >
+            <input
+                type="text"
+                value={weaponSearch}
+                onChange={(e) => setWeaponSearch(e.target.value)}
+                placeholder="Search weapons..."
+                autoFocus
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                style={{
+                    backgroundColor: '#F5F0E8',
+                    borderColor: '#DDD8CC',
+                    color: '#2C2416',
+                }}
+            />
+
+            <div className="mt-2 max-h-60 overflow-y-auto">
+                {filteredWeapons.length === 0 ? (
+                    <p
+                        className="px-3 py-2 text-sm"
+                        style={{ color: '#7A6F5C' }}
+                    >
+                        No weapons found.
+                    </p>
+                ) : (
+                    filteredWeapons.map((weapon) => (
+                        <button
+                            key={weapon.id}
+                            type="button"
+                            onClick={() => {
+                                setSelectedWeaponId(weapon.id)
+                                setWeaponSearch('')
+                                setWeaponDropdownOpen(false)
+                            }}
+                            className="w-full rounded-lg px-3 py-2 text-left text-sm transition-colors hover:opacity-80"
                             style={{
-                                backgroundColor: '#F5F0E8',
-                                borderColor: '#DDD8CC',
+                                backgroundColor:
+                                    selectedWeaponId === weapon.id
+                                        ? '#EDE8DC'
+                                        : 'transparent',
                                 color: '#2C2416',
                             }}
                         >
-                            <option value={0}>
-                                Select a weapon...
-                            </option>
-
-                            {weapons?.map((weapon) => (
-                                <option
-                                    key={weapon.id}
-                                    value={weapon.id}
-                                >
-                                    {weapon.name}
-                                </option>
-                            ))}
-                        </select>
+                            {weapon.name}
+                        </button>
+                    ))
+                )}
+            </div>
+        </div>
+    )}
+</div>
                     </div>
 
                     {/* Selected weapon preview */}
@@ -295,7 +335,7 @@ export default function AddWeaponInstancePage() {
                             style={{ color: '#2C2416' }}
                         >
                             <div className="flex items-center gap-2">
-                                
+
                                 <div className="flex flex-col">
                                     <span className="text-sm font-semibold">
                                         {weapon.nickname || weapon.name}

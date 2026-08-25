@@ -1,0 +1,399 @@
+import { useEffect, useState } from 'react'
+import { useCharacters } from '../hooks/useCharacters'
+import {
+    useScifiWeaponInstances,
+    useScifiWeaponInstance,
+    useRenameWeapon,
+    useToggleFavorite,
+} from '../hooks/useScifiWeaponInstance'
+
+import NavBar from '../components/NavBar'
+
+export default function UpdateWeaponInstancePage() {
+    const { data: characters = [], isLoading: charactersLoading } = useCharacters()
+
+    const [selectedCharacterId, setSelectedCharacterId] = useState<number | ''>('')
+    const [selectedWeaponId, setSelectedWeaponId] = useState<number | ''>('')
+
+    const {
+        data: weapons = [],
+        isLoading: weaponsLoading,
+    } = useScifiWeaponInstances(selectedCharacterId || 0)
+
+    const { data: selectedWeapon } = useScifiWeaponInstance(
+        selectedWeaponId || 0
+    )
+
+    const renameMutation = useRenameWeapon()
+    const favoriteMutation = useToggleFavorite()
+
+    const [nickname, setNickname] = useState('')
+    const [favorite, setFavorite] = useState(false)
+
+    const [saving, setSaving] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState(false)
+
+    // Select the first character when characters load.
+    useEffect(() => {
+        if (characters.length > 0 && !selectedCharacterId) {
+            setSelectedCharacterId(characters[0].id)
+        }
+    }, [characters, selectedCharacterId])
+
+    // Select the first weapon when the character changes.
+    useEffect(() => {
+        if (weapons.length > 0) {
+            setSelectedWeaponId(weapons[0].id)
+        } else {
+            setSelectedWeaponId('')
+        }
+    }, [weapons])
+
+    // Populate the editor whenever the selected weapon changes.
+    useEffect(() => {
+        if (selectedWeapon) {
+            setNickname(selectedWeapon.nickname)
+            setFavorite(selectedWeapon.favorite)
+            setError(null)
+            setSuccess(false)
+        }
+    }, [selectedWeapon])
+
+    const handleCharacterChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const id = Number(event.target.value)
+
+        setSelectedCharacterId(id)
+        setSelectedWeaponId('')
+        setError(null)
+        setSuccess(false)
+    }
+
+    const handleWeaponChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const id = Number(event.target.value)
+
+        setSelectedWeaponId(id)
+        setError(null)
+        setSuccess(false)
+    }
+
+    const handleSave = async () => {
+        if (!selectedWeapon) return
+
+        try {
+            setSaving(true)
+            setError(null)
+            setSuccess(false)
+
+            let updatedWeapon = selectedWeapon
+
+            // Update nickname if it changed.
+            if (nickname !== selectedWeapon.nickname) {
+                updatedWeapon = await renameMutation.mutateAsync({
+                    id: selectedWeapon.id,
+                    newName: nickname,
+                })
+            }
+
+            // Toggle favorite if the desired state differs.
+            if (favorite !== updatedWeapon.favorite) {
+                updatedWeapon = await favoriteMutation.mutateAsync(
+                    updatedWeapon.id
+                )
+            }
+
+            setNickname(updatedWeapon.nickname)
+            setFavorite(updatedWeapon.favorite)
+            setSuccess(true)
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to update weapon.'
+            )
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    return (
+        <div
+            className="min-h-screen"
+            style={{ backgroundColor: '#F5F0E8' }}
+        >
+            {/* Header */}
+            <NavBar title="Edit Weapon" />
+
+            <div className="max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
+
+                {/* Selection */}
+                <div
+                    className="rounded-2xl border p-6 flex flex-col gap-4"
+                    style={{
+                        backgroundColor: '#FDFAF4',
+                        borderColor: '#DDD8CC',
+                    }}
+                >
+                    <h2
+                        className="text-sm font-semibold uppercase tracking-wide"
+                        style={{ color: '#7A6F5C' }}
+                    >
+                        Select Weapon
+                    </h2>
+
+                    {/* Character */}
+                    <label className="flex flex-col gap-2">
+                        <span
+                            className="text-xs font-medium uppercase tracking-wide"
+                            style={{ color: '#7A6F5C' }}
+                        >
+                            Character
+                        </span>
+
+                        {charactersLoading ? (
+                            <p
+                                className="text-sm"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                Loading characters...
+                            </p>
+                        ) : characters.length === 0 ? (
+                            <p
+                                className="text-sm"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                No characters found.
+                            </p>
+                        ) : (
+                            <select
+                                value={selectedCharacterId}
+                                onChange={handleCharacterChange}
+                                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                                style={{
+                                    backgroundColor: '#F5F0E8',
+                                    borderColor: '#DDD8CC',
+                                    color: '#2C2416',
+                                }}
+                            >
+                                {characters.map((character) => (
+                                    <option
+                                        key={character.id}
+                                        value={character.id}
+                                    >
+                                        {character.name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                    </label>
+
+                    {/* Weapon */}
+                    <label className="flex flex-col gap-2">
+                        <span
+                            className="text-xs font-medium uppercase tracking-wide"
+                            style={{ color: '#7A6F5C' }}
+                        >
+                            Weapon
+                        </span>
+
+                        {weaponsLoading ? (
+                            <p
+                                className="text-sm"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                Loading weapons...
+                            </p>
+                        ) : weapons.length === 0 ? (
+                            <p
+                                className="text-sm"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                This character has no weapons.
+                            </p>
+                        ) : (
+                            <select
+                                value={selectedWeaponId}
+                                onChange={handleWeaponChange}
+                                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                                style={{
+                                    backgroundColor: '#F5F0E8',
+                                    borderColor: '#DDD8CC',
+                                    color: '#2C2416',
+                                }}
+                            >
+                                {weapons.map((weapon) => (
+                                    <option
+                                        key={weapon.id}
+                                        value={weapon.id}
+                                    >
+                                        {weapon.nickname || weapon.name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                    </label>
+                </div>
+
+                {/* Weapon editor */}
+                {selectedWeapon && (
+                    <div
+                        className="rounded-2xl border p-6 flex flex-col gap-5"
+                        style={{
+                            backgroundColor: '#FDFAF4',
+                            borderColor: '#DDD8CC',
+                        }}
+                    >
+                        <div>
+                            <p
+                                className="text-xs font-medium uppercase tracking-wide"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                Weapon
+                            </p>
+
+                            <h2
+                                className="text-lg font-semibold mt-1"
+                                style={{ color: '#2C2416' }}
+                            >
+                                {selectedWeapon.name}
+                            </h2>
+                        </div>
+
+                        {/* Nickname */}
+                        <label className="flex flex-col gap-2">
+                            <span
+                                className="text-xs font-medium uppercase tracking-wide"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                Nickname
+                            </span>
+
+                            <input
+                                type="text"
+                                value={nickname}
+                                onChange={(event) =>
+                                    setNickname(event.target.value)
+                                }
+                                placeholder={selectedWeapon.name}
+                                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                                style={{
+                                    backgroundColor: '#F5F0E8',
+                                    borderColor: '#DDD8CC',
+                                    color: '#2C2416',
+                                }}
+                            />
+
+                            <span
+                                className="text-xs"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                Leave blank to use the weapon's normal name.
+                            </span>
+                        </label>
+
+                        {/* Favorite */}
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setFavorite((current) => !current)
+                            }
+                            className="rounded-lg border px-4 py-3 flex items-center justify-between transition-opacity hover:opacity-90"
+                            style={{
+                                backgroundColor: favorite
+                                    ? '#EDE8DC'
+                                    : '#F5F0E8',
+                                borderColor: '#DDD8CC',
+                            }}
+                        >
+                            <span
+                                className="text-sm font-medium"
+                                style={{ color: '#2C2416' }}
+                            >
+                                Favorite
+                            </span>
+
+                            <span
+                                className="text-lg"
+                                style={{
+                                    color: favorite
+                                        ? '#8B7355'
+                                        : '#7A6F5C',
+                                }}
+                            >
+                                {favorite ? '★' : '☆'}
+                            </span>
+                        </button>
+
+                        {/* Weapon information */}
+                        <div
+                            className="rounded-lg px-3 py-3 flex flex-col gap-1"
+                            style={{ backgroundColor: '#EDE8DC' }}
+                        >
+                            <p
+                                className="text-xs"
+                                style={{ color: '#7A6F5C' }}
+                            >
+                                Ammo
+                            </p>
+
+                            <p
+                                className="text-sm font-semibold"
+                                style={{ color: '#2C2416' }}
+                            >
+                                {selectedWeapon.currentAmmo}/
+                                {selectedWeapon.ammoCapacity}
+                            </p>
+                        </div>
+
+                        {error && (
+                            <div
+                                className="rounded-lg p-3 text-sm"
+                                style={{
+                                    backgroundColor: '#F5F0E8',
+                                    color: '#A85C4B',
+                                    border: '1px solid #DDD8CC',
+                                }}
+                            >
+                                {error}
+                            </div>
+                        )}
+
+                        {success && (
+                            <div
+                                className="rounded-lg p-3 text-sm"
+                                style={{
+                                    backgroundColor: '#E4EEE4',
+                                    color: '#3D5C3D',
+                                    border: '1px solid #C9D9C9',
+                                }}
+                            >
+                                Weapon updated successfully.
+                            </div>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={handleSave}
+                            disabled={
+                                saving ||
+                                renameMutation.isPending ||
+                                favoriteMutation.isPending
+                            }
+                            className="w-full rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+                            style={{
+                                backgroundColor: '#8B7355',
+                                color: '#FDFAF4',
+                            }}
+                        >
+                            {saving ? 'Saving...' : 'Save Changes'}
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}

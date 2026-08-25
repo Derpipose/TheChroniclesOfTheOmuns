@@ -19,7 +19,6 @@ interface DiceRoll {
 
 
 export default function DiceRollerPage() {
-  const navigate = useNavigate()
   const ROLL_DELAY_MS = 750
   const [activeTab, setActiveTab] = useState<'custom' | 'character'>('custom')
   const [rolls, setRolls] = useState<DiceRoll[]>([])
@@ -170,15 +169,13 @@ export default function DiceRollerPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
-        <NavBar />
+        <NavBar title="Dice Roller" />
       {/* Header */}
       <div
         className="border-b px-6 py-4 flex items-center justify-between"
         style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
       >
-        <h1 className="text-lg font-semibold" style={{ color: '#2C2416' }}>
-          Dice Roller
-        </h1>
+
         <button
           onClick={clearRolls}
           className="px-4 py-2 text-sm rounded transition-colors hover:opacity-90 disabled:opacity-50"

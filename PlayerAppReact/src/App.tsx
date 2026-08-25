@@ -8,6 +8,7 @@ import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import DevPage from './pages/DevPage'
 import DiceRollerPage from './pages/DiceRollerPage'
 import AddWeaponInstancePage from './pages/AddWeaponInstancePage'
+import UpdateWeaponInstancePage from './pages/UpdateWeaponInstancePage'
 
 const queryClient = new QueryClient()
 
@@ -55,6 +56,12 @@ export default function App() {
           <Route path="/addweapon" element={
             <ProtectedRoute>
                 <AddWeaponInstancePage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/editweapon" element={
+            <ProtectedRoute>
+                <UpdateWeaponInstancePage />
             </ProtectedRoute>
           } />
         </Routes>
