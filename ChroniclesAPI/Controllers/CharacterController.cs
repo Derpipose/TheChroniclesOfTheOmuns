@@ -41,7 +41,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
     public async Task<ActionResult<IEnumerable<CharacterResponseDto>>> GetPlayerCharacters() {
         var characters = await db.Characters
             .Where(c => c.PlayerId == playerContext.PlayerId)
-            .OrderBy(c => c.Id)
+            .OrderByDescending(c => c.LastModified)
             .ToListAsync();
 
         var characterIds = characters.Select(c => c.Id).ToList();

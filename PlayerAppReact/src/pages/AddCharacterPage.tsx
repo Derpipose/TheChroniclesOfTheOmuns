@@ -38,32 +38,39 @@ export default function AddCharacterPage() {
     { label: 'Charisma', value: charisma, setValue: setCharisma },
     { label: 'Intelligence', value: intelligence, setValue: setIntelligence },
   ]
-  const [value, setValue] = useState<string>('0')
 
-  
   const selectedRace = races?.find((r) => r.id === raceId);
   const selectedSubrace = subraces?.find((sr) => sr.id === subraceId);
   const subraceHasStats = (subrace: ScifiSubrace | undefined): boolean => {
     return subrace !== undefined && (subrace.raceStats.modifiers.length > 0 || subrace.raceStats.freeStatPicks.length > 0);
   }
-  
+
   const activeRaceStats = subraceHasStats(selectedSubrace) ? selectedSubrace?.raceStats : selectedRace?.raceStats;
-  const activeRaceFreeStatPicks = subraceHasStats(selectedSubrace) ? selectedSubrace?.raceStats.freeStatPicks : selectedRace?.raceStats.freeStatPicks;
-  
-  const getRacialModifierForStat = (statLabel: string): number => {
-    const modifiers = activeRaceStats?.modifiers || [];
-    const modifier = modifiers.find((m) => m.stat === statLabel);
-    return modifier ? modifier.modifier : 0;
-  }
 
   const [pickAssignments, setPickAssignments] = useState<(string | null)[]>([]);
 
-  const showSubraceDropdown =  subraces && subraces.length > 0 
-  
+  // Looks up the racial bonus for a given stat, checking BOTH the race/subrace's
+  // fixed modifiers AND whatever the player has assigned via picks, so the live
+  // breakdown display stays in sync with pick selections as they're made.
+  const getRacialModifierForStat = (statLabel: string): number => {
+    const fixedModifiers = activeRaceStats?.modifiers || [];
+    const fixedMatch = fixedModifiers.find((m) => m.stat === statLabel);
+    if (fixedMatch) return fixedMatch.modifier;
+
+    const pickIndex = pickAssignments.findIndex((assigned) => assigned === statLabel);
+    if (pickIndex !== -1) {
+        return activeRaceStats?.freeStatPicks[pickIndex] ?? 0;
+    }
+
+    return 0;
+  }
+
+  const showSubraceDropdown =  subraces && subraces.length > 0
+
   const getEligibleStatsForPick = (pickIndex: number): string[] => {
-    // ??? — start with all six stat labels
+    // start with all six stat labels
     let eligibleStats = ['Strength', 'Constitution', 'Dexterity', 'Wisdom', 'Charisma', 'Intelligence'];
-    // ??? — remove any stat that appears in activeRaceStats?.modifiers (fixed/locked)
+    // remove any stat that appears in activeRaceStats?.modifiers (fixed/locked)
     if (activeRaceStats?.modifiers) {
       activeRaceStats?.modifiers.forEach((m) => {
         const index = eligibleStats.indexOf(m.stat);
@@ -72,8 +79,8 @@ export default function AddCharacterPage() {
         }
       });
     }
-    
-    // ??? — remove any stat already assigned to a DIFFERENT pick index in pickAssignments
+
+    // remove any stat already assigned to a DIFFERENT pick index in pickAssignments
     for (let i = 0; i < pickAssignments.length; i++) {
       if (i === pickIndex) continue;
         const assignedStat = pickAssignments[i];
@@ -104,13 +111,15 @@ export default function AddCharacterPage() {
       const characterId = characterResponse.id
 
       // step 2: update the character's stats
+      // Add 10 to each stat to account for the base value of 10 in the system
+      // On edit this will need to be set to - 10 to display and + 10 to save
       await bulkUpdateCharacterStats(characterId, {
-        strength: parseInt(strength),
-        constitution: parseInt(constitution),
-        dexterity: parseInt(dexterity),
-        wisdom: parseInt(wisdom),
-        charisma: parseInt(charisma),
-        intelligence: parseInt(intelligence),
+        strength: parseInt(strength) + 10,
+        constitution: parseInt(constitution) + 10,
+        dexterity: parseInt(dexterity) + 10,
+        wisdom: parseInt(wisdom) + 10,
+        charisma: parseInt(charisma) + 10,
+        intelligence: parseInt(intelligence) + 10,
       })
 
       // step 3: use that character id to create the scifi character, passing raceId/subraceId/classId/backgroundId
@@ -244,9 +253,11 @@ export default function AddCharacterPage() {
         <div className="grid grid-cols-2 gap-3">
           {statFields.map(({ label, value, setValue }) => {
             const racialEntry = activeRaceStats?.modifiers.find((m) => m.stat === label);
-            const isLocked =  racialEntry?.isLocked ?? false; /* ??? */
-            const racialMod = racialEntry?.modifier ?? 0; /* ??? */
-            const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + (racialMod) + 10; 
+            const isLocked = racialEntry?.isLocked ?? false;
+            // Uses getRacialModifierForStat (not racialEntry directly) so that
+            // pick-assigned bonuses show up live, alongside fixed racial modifiers.
+            const racialMod = getRacialModifierForStat(label);
+            const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + racialMod + 10;
 
             return (
               <div key={label} className="flex flex-col gap-1">
