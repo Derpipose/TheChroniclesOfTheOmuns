@@ -1,4 +1,3 @@
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createScifiWeaponInstance,
@@ -85,7 +84,10 @@ export function useDeleteScifiWeaponInstance() {
 }
 
 function useWeaponInstanceMutation<TVariables>(
-  mutationFn: (variables: TVariables) => Promise<ScifiWeaponInstance>
+  mutationFn: (variables: TVariables) => Promise<ScifiWeaponInstance>,
+  options?: {
+    onSuccess?: (weapon: ScifiWeaponInstance) => void
+  }
 ) {
   const queryClient = useQueryClient()
 
@@ -96,9 +98,12 @@ function useWeaponInstanceMutation<TVariables>(
         ['scifiWeaponInstance', weapon.id],
         weapon
       )
+      // Invalidate all scifiWeaponInstances queries (with any character ID)
       queryClient.invalidateQueries({
         queryKey: ['scifiWeaponInstances'],
       })
+      // Call any additional onSuccess callback
+      options?.onSuccess?.(weapon)
     },
   })
 }

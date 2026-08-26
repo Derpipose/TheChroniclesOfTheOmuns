@@ -5,8 +5,11 @@ import NavBar from '../components/NavBar'
 import { useNavigate } from '@tanstack/react-router'
 import { useCharacter, useCharacters } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
-import { useScifiWeaponInstances } from '../hooks/useScifiWeaponInstance'
-
+import {
+  useScifiWeaponInstances,
+  useUseAmmo,
+  useReloadWeapon,
+} from '../hooks/useScifiWeaponInstance'
 interface DiceRoll {
   id: string
   timestamp: string
@@ -34,6 +37,11 @@ export default function DiceRollerPage() {
 
   const { data: selectedWeapons = [], isLoading: weaponsLoading } =
   useScifiWeaponInstances(selectedCharacterId || 0)
+
+    const fireAmmoMutation = useUseAmmo()
+
+    const reloadWeaponMutation = useReloadWeapon()
+    const [reloadingWeapon, setReloadingWeapon] = useState<number | null>(null)
 
   useEffect(() => {
     if (activeCharacters.length === 0) {
@@ -464,20 +472,71 @@ export default function DiceRollerPage() {
           }
         })()
 
+        const handleWeaponReload = () => {
+            setReloadingWeapon(weapon.id)
+
+            reloadWeaponMutation.mutate(weapon.id, {
+                onSettled: () => {
+                setReloadingWeapon((current) =>
+            current === weapon.id ? null : current
+            )
+            },
+            })
+        }
         const modifier = getAbilityModifier(statScore)
 
-        const expression =
-          `${weapon.damageFormula} ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}`
+        const isReloading = reloadingWeapon === weapon.id
+        const isFullAmmo = weapon.currentAmmo >= weapon.ammoCapacity
+
+        // ===== AMMO & DAMAGE FORMULA CALCULATION =====
+        // Parse rateOfFire from string to number
+        const rateOfFire = parseInt(weapon.rateOfFire, 10) || 1
+
+        // Calculate how many rounds actually fire (limited by current ammo)
+        const ammoToConsume = Math.min(rateOfFire, weapon.currentAmmo)
+
+        // Extract hit die from the weapon's damage formula
+        // e.g., "d6" from "1d6" or "1d6+1"
+        const hitDieMatch = weapon.damageFormula.match(/d(\d+)/)
+        const hitDie = hitDieMatch ? hitDieMatch[1] : '4'
+
+        // Build the damage formula: 1d{ammoToConsume}d{hitDie} + modifier
+        // Examples:
+        //   Pistol (ROF 1): "1d1d4 + 2"
+        //   Machine gun (ROF 12, full ammo): "1d12d4 + 2"
+        //   Machine gun (ROF 12, 7 ammo left): "1d7d4 + 2"
+        const damageFormula = `1d${ammoToConsume}d${hitDie}`
+        const expression = `${damageFormula} ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}`
 
         const weaponRollKey = `weapon-${weapon.id}`
+        const isOutOfAmmo = weapon.currentAmmo === 0
+
+        // Handler that rolls AND consumes ammo
+        const handleWeaponRoll = () => {
+          // Initiate the roll with the calculated formula
+          handleRoll(
+            expression,
+            `${weapon.nickname || weapon.name} damage`,
+            weaponRollKey
+          )
+
+          // After the roll animation completes (ROLL_DELAY_MS), consume the ammo
+          // This timing ensures the roll displays before ammo count updates
+          setTimeout(() => {
+            if (ammoToConsume > 0) {
+              fireAmmoMutation.mutate({ id: weapon.id, amount: ammoToConsume })
+            }
+          }, ROLL_DELAY_MS)
+        }
 
         return (
           <div
             key={weapon.id}
-            className="rounded-lg border p-3 space-y-2"
+            className="rounded-lg border p-3 space-y-2 transition-opacity"
             style={{
-              backgroundColor: '#FDFAF4',
-              borderColor: '#DDD8CC',
+                backgroundColor: isOutOfAmmo ? '#F3E2DE' : '#FDFAF4',
+                borderColor: isOutOfAmmo ? '#C98A7D' : '#DDD8CC',
+                opacity: 1,
             }}
           >
             <div className="flex items-center justify-between gap-2">
@@ -490,18 +549,21 @@ export default function DiceRollerPage() {
                 </p>
 
                 <p
-                  className="text-xs mt-1"
+                  className="text-xs mt-1 font-mono"
                   style={{ color: '#7A6F5C' }}
                 >
                   {expression}
-                  {' || Modifier: '}
-                  {weapon.modifierStat}
-                  {' '}
-                  {modifier >= 0 ? `+${modifier}` : modifier}
-                  {' || Ammo: '}
-                  {weapon.currentAmmo}
-                  {'/'}
-                  {weapon.ammoCapacity}
+                </p>
+
+                <p
+                  className="text-xs mt-1"
+                  style={{ color: '#7A6F5C' }}
+                >
+                  ROF: {rateOfFire}
+                  {' || '}
+                  <span className={isOutOfAmmo ? 'font-semibold' : ''}>
+                    Ammo: {weapon.currentAmmo}/{weapon.ammoCapacity}
+                  </span>
                 </p>
               </div>
 
@@ -516,24 +578,40 @@ export default function DiceRollerPage() {
               )}
             </div>
 
-            <button
-              type="button"
-              onClick={() =>
-                handleRoll(
-                  expression,
-                  `${weapon.nickname || weapon.name} damage`,
-                  weaponRollKey
-                )
-              }
-              disabled={rollingStat === weaponRollKey}
-              className="w-full py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{
-                backgroundColor: '#8B7355',
-                color: '#FDFAF4',
-              }}
-            >
-              {rollingStat === weaponRollKey ? 'Rolling' : 'Roll'}
-            </button>
+            <div className="flex gap-2">
+  <button
+    type="button"
+    onClick={handleWeaponRoll}
+    disabled={rollingStat === weaponRollKey || isOutOfAmmo || isReloading}
+    className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+    style={{
+      backgroundColor: '#8B7355',
+      color: '#FDFAF4',
+    }}
+  >
+    {isOutOfAmmo
+      ? 'Out of Ammo'
+      : rollingStat === weaponRollKey
+      ? `Rolling (${ammoToConsume} rnds)`
+      : 'Roll'}
+  </button>
+
+  <button
+  type="button"
+  onClick={handleWeaponReload}
+  disabled={isFullAmmo || isReloading || rollingStat === weaponRollKey}
+  className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+  style={{
+    backgroundColor: isOutOfAmmo ? '#A85C4B' : '#EDE8DC',
+    color: isOutOfAmmo ? '#FDFAF4' : '#5C4F38',
+    border: isOutOfAmmo ? '1px solid #8F493C' : '1px solid #DDD8CC',
+  }}
+>
+  {isReloading
+    ? 'Reloading...'
+    : `Reload ${weapon.reloadTimeInActions} actions`}
+</button>
+</div>
           </div>
         )
       })}
