@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useScifiRaces, useScifiSubracesByRace, useScifiClasses, useScifiBackgrounds } from '../hooks/useScifiReference'
 import { createCharacter } from '../api/characterApi'
 import { createScifiCharacter } from '../api/scifiCharacterApi'
 import { bulkUpdateCharacterStats } from '../api/characterStatsApi'
 import type { ScifiSubrace } from '../types/scifiReference'
+import type {StatPick} from '../types/character'
 
 export default function AddCharacterPage() {
   const navigate = useNavigate()
@@ -30,42 +31,63 @@ export default function AddCharacterPage() {
   const [charisma, setCharisma] = useState('0')
   const [intelligence, setIntelligence] = useState('0')
   const statFields: { label: string; value: string; setValue: (v: string) => void }[] = [
-  { label: 'Strength', value: strength, setValue: setStrength },
-  { label: 'Constitution', value: constitution, setValue: setConstitution },
-  { label: 'Dexterity', value: dexterity, setValue: setDexterity },
-  { label: 'Wisdom', value: wisdom, setValue: setWisdom },
-  { label: 'Charisma', value: charisma, setValue: setCharisma },
-  { label: 'Intelligence', value: intelligence, setValue: setIntelligence },
-]
+    { label: 'Strength', value: strength, setValue: setStrength },
+    { label: 'Constitution', value: constitution, setValue: setConstitution },
+    { label: 'Dexterity', value: dexterity, setValue: setDexterity },
+    { label: 'Wisdom', value: wisdom, setValue: setWisdom },
+    { label: 'Charisma', value: charisma, setValue: setCharisma },
+    { label: 'Intelligence', value: intelligence, setValue: setIntelligence },
+  ]
+  const [value, setValue] = useState<string>('0')
 
-  // ??? — you write this part: find the selected race object from `races`, given `raceId`
+  
   const selectedRace = races?.find((r) => r.id === raceId);
   const selectedSubrace = subraces?.find((sr) => sr.id === subraceId);
   const subraceHasStats = (subrace: ScifiSubrace | undefined): boolean => {
     return subrace !== undefined && (subrace.raceStats.modifiers.length > 0 || subrace.raceStats.freeStatPicks.length > 0);
   }
-
+  
   const activeRaceStats = subraceHasStats(selectedSubrace) ? selectedSubrace?.raceStats : selectedRace?.raceStats;
   const activeRaceFreeStatPicks = subraceHasStats(selectedSubrace) ? selectedSubrace?.raceStats.freeStatPicks : selectedRace?.raceStats.freeStatPicks;
-  // const getRacialModifiers = selectedRace?.raceStats.modifiers || selectedSubrace?.raceStats.modifiers || [];
-  // const getRacialFreeStatPicks = selectedRace?.raceStats.freeStatPicks ||  selectedSubrace?.raceStats.freeStatPicks || [];
-
+  
   const getRacialModifierForStat = (statLabel: string): number => {
     const modifiers = activeRaceStats?.modifiers || [];
     const modifier = modifiers.find((m) => m.stat === statLabel);
     return modifier ? modifier.modifier : 0;
   }
 
-  /* ... */
+  const [pickAssignments, setPickAssignments] = useState<(string | null)[]>([]);
 
-  // ??? — should the subrace dropdown even render? depends on two things
-  const showSubraceDropdown =  subraces && subraces.length > 0 //selectedRace?.hasSubrace &&
-  // console.log('selectedRace:', selectedRace)
-  // console.log('subraces:', subraces)
-  // console.log('showSubraceDropdown:', showSubraceDropdown)
-  /* ... */
+  const showSubraceDropdown =  subraces && subraces.length > 0 
+  
+  const getEligibleStatsForPick = (pickIndex: number): string[] => {
+    // ??? — start with all six stat labels
+    let eligibleStats = ['Strength', 'Constitution', 'Dexterity', 'Wisdom', 'Charisma', 'Intelligence'];
+    // ??? — remove any stat that appears in activeRaceStats?.modifiers (fixed/locked)
+    if (activeRaceStats?.modifiers) {
+      activeRaceStats?.modifiers.forEach((m) => {
+        const index = eligibleStats.indexOf(m.stat);
+        if (index !== -1) {
+          eligibleStats.splice(index, 1);
+        }
+      });
+    }
+    
+    // ??? — remove any stat already assigned to a DIFFERENT pick index in pickAssignments
+    for (let i = 0; i < pickAssignments.length; i++) {
+      if (i === pickIndex) continue;
+        const assignedStat = pickAssignments[i];
+        if (assignedStat) {
+            const index = eligibleStats.indexOf(assignedStat);
+            if (index !== -1) eligibleStats.splice(index, 1);
+        }
+    }
+    return eligibleStats;
+  }
 
-  // ...
+  const statPicks: StatPick[] = (activeRaceStats?.freeStatPicks ?? [])
+    .map((amount, index) => ({ stat: pickAssignments[index], amount }))
+    .filter((pick): pick is StatPick => pick.stat !== null)
 
   const handleAdd = async () => {
     if (!name.trim()) {
@@ -81,16 +103,7 @@ export default function AddCharacterPage() {
       const characterResponse = await createCharacter({ name, level: parseInt(level) })
       const characterId = characterResponse.id
 
-      // step 2: use that id to create the scifi character, passing raceId/subraceId/classId/backgroundId
-      await createScifiCharacter({
-        characterId,
-        scifiRaceId : raceId,
-        scifiSubraceId : subraceId,
-        scifiClassId : classId,
-        scifiBackgroundId : backgroundId,
-      })
-
-      // step 3: update the character's stats
+      // step 2: update the character's stats
       await bulkUpdateCharacterStats(characterId, {
         strength: parseInt(strength),
         constitution: parseInt(constitution),
@@ -100,6 +113,17 @@ export default function AddCharacterPage() {
         intelligence: parseInt(intelligence),
       })
 
+      // step 3: use that character id to create the scifi character, passing raceId/subraceId/classId/backgroundId
+      await createScifiCharacter({
+        characterId,
+        scifiRaceId : raceId,
+        scifiSubraceId : subraceId,
+        scifiClassId : classId,
+        scifiBackgroundId : backgroundId,
+        statPicks,
+      })
+
+
       // step 4: navigate to /characters
       navigate('/characters')
     } catch (err) {
@@ -108,6 +132,11 @@ export default function AddCharacterPage() {
       setSubmitting(false)
     }
   }
+
+  useEffect(() => {
+    const pickCount = activeRaceStats?.freeStatPicks.length ?? 0;
+    setPickAssignments(Array(pickCount).fill(null));
+  }, [selectedRace?.id, selectedSubrace?.id]);
 
   return (
   <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
@@ -133,7 +162,7 @@ export default function AddCharacterPage() {
           />
         </div>
 
-        {/* YOUR TURN: Race dropdown — options from `races`, onChange sets raceId, also reset subraceId to undefined when race changes */}
+        {/* Race dropdown — options from `races`, onChange sets raceId, also reset subraceId to undefined when race changes */}
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Race</label>
           <select
@@ -155,7 +184,7 @@ export default function AddCharacterPage() {
           </select>
         </div>
 
-        {/* YOUR TURN: Subrace dropdown — only rendered if showSubraceDropdown is true, options from `subraces` */}
+        {/* Subrace dropdown — only rendered if showSubraceDropdown is true, options from `subraces` */}
         {showSubraceDropdown && (
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Subrace</label>
@@ -175,7 +204,7 @@ export default function AddCharacterPage() {
           </div>
         )}
 
-        {/* YOUR TURN: Class dropdown — options from `classes` */}
+        {/* Class dropdown — options from `classes` */}
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Class</label>
           <select
@@ -193,7 +222,7 @@ export default function AddCharacterPage() {
           </select>
         </div>
 
-        {/* YOUR TURN: Background dropdown — options from `backgrounds` */}
+        {/* Background dropdown — options from `backgrounds` */}
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Background</label>
           <select
@@ -214,10 +243,10 @@ export default function AddCharacterPage() {
         {/* Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
         <div className="grid grid-cols-2 gap-3">
           {statFields.map(({ label, value, setValue }) => {
-            const racialEntry = activeRaceStats?.modifiers.find((m) => m.stat === label); /* ??? — find the matching modifier entry for this stat's label */
+            const racialEntry = activeRaceStats?.modifiers.find((m) => m.stat === label);
             const isLocked =  racialEntry?.isLocked ?? false; /* ??? */
             const racialMod = racialEntry?.modifier ?? 0; /* ??? */
-            const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + (racialMod) + 10; /* ??? — branch: locked uses racialMod directly, unlocked uses the formula */
+            const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + (racialMod) + 10; 
 
             return (
               <div key={label} className="flex flex-col gap-1">
@@ -225,7 +254,7 @@ export default function AddCharacterPage() {
 
                 {isLocked ? (
                   <span className="text-sm" style={{ color: '#2C2416' }}>
-                    {/* ??? — render: {racialMod} (locked by race) */}
+                    {/* render: {racialMod} (locked by race) */}
                     {racialMod} (locked by race)
                   </span>
                 ) : (
@@ -236,11 +265,16 @@ export default function AddCharacterPage() {
                       max="10"
                       value={value}
                       onChange={(e) => setValue(e.target.value)}
+                      onBlur={(e) => {
+                        const num = parseInt(e.target.value, 10);
+                        const clamped = isNaN(num) ? 1 : Math.min(10, Math.max(1, num));
+                        setValue(String(clamped));
+                      }}
                       className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
                       style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
                     />
                     <span className="text-sm" style={{ color: '#7A6F5C' }}>
-                      {/* ??? — render: + {racialMod} (racial) + 10 = {finalValue} */}
+                      {/* render: + {racialMod} (racial) + 10 = {finalValue} */}
                       + {racialMod} (racial) + 10 = {finalValue}
                     </span>
                   </div>
@@ -249,6 +283,37 @@ export default function AddCharacterPage() {
             )
           })}
         </div>
+
+        {activeRaceStats && activeRaceStats.freeStatPicks.length > 0 && (
+          <div className="flex flex-col gap-4">
+            {activeRaceStats.freeStatPicks.map((amount, index) => (
+              <div key={index} className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                  Apply the +{amount} pick
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {getEligibleStatsForPick(index).map((stat) => (
+                    <label key={stat} className="flex items-center gap-1 text-sm">
+                      <input
+                        type="radio"
+                        name={`pick-${index}`}
+                        checked={pickAssignments[index] === stat}
+                        onChange={() => {
+                          setPickAssignments((prev) => {
+                            const newAssignments = [...prev];
+                            newAssignments[index] = stat;
+                            return newAssignments;
+                          });
+                        }}
+                      />
+                      {stat}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Level input */}
 
