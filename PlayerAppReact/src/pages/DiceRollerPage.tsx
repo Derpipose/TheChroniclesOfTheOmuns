@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect,  } from 'react'
 import { resolveExpression} from '../functions/DiceRoller'
 import { CustomRollPresetCard, type CustomRollPreset } from '../components/CustomRollPresetCard'
 import NavBar from '../components/NavBar'
 import { useNavigate } from '@tanstack/react-router'
 import { useCharacter, useCharacters } from '../hooks/useCharacters'
-import { useScifiCharacterWithStats } from '../hooks/useCharacterStats'
+import { useCharacterStats } from '../hooks/useCharacterStats'
+import { useScifiCharacterWithStats } from '../hooks/useScifiCharacterWithStats'
+import { getScifiCharacterByCharacterId } from '../api/scifiCharacterApi'
 import {
   useScifiWeaponInstances,
   useUseAmmo,
   useReloadWeapon,
 } from '../hooks/useScifiWeaponInstance'
+import { useQuery } from '@tanstack/react-query'
 interface DiceRoll {
   id: string
   timestamp: string
@@ -33,7 +36,22 @@ export default function DiceRollerPage() {
   const activeCharacters = characters
 
   const { data: selectedCharacter } = useCharacter(selectedCharacterId || 0)
-  const { data: selectedStats, isLoading: statsLoading } = useScifiCharacterWithStats(selectedCharacterId || 0)
+  const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
+
+  const { data: scifiCharacterForCharacter } = useQuery({
+    queryKey: ['scifiCharacterForCharacter', selectedCharacterId],
+    queryFn: () => getScifiCharacterByCharacterId(selectedCharacterId || 0),
+    enabled: !!selectedCharacterId,
+  })
+
+  // Debugging: inspect which scifiCharacter is resolved and adjusted result
+  console.debug('scifiCharacterForCharacter', scifiCharacterForCharacter)
+
+  const { data: selectedAdjustedScifi, isLoading: adjustedLoading } = useScifiCharacterWithStats(scifiCharacterForCharacter)
+
+  console.debug('selectedAdjustedScifi', selectedAdjustedScifi)
+
+  const effectiveStats = selectedAdjustedScifi ?? selectedStats
 
   const { data: selectedWeapons = [], isLoading: weaponsLoading } =
   useScifiWeaponInstances(selectedCharacterId || 0)
@@ -141,29 +159,29 @@ export default function DiceRollerPage() {
   setCustomPresets((prev: CustomRollPreset[]) => prev.filter((p) => p.id !== id))
 }
 
-  const statEntries = selectedStats
+  const statEntries = effectiveStats
     ? [
-        { label: 'Strength', score: selectedStats.strength },
-        { label: 'Constitution', score: selectedStats.constitution },
-        { label: 'Dexterity', score: selectedStats.dexterity },
-        { label: 'Wisdom', score: selectedStats.wisdom },
-        { label: 'Charisma', score: selectedStats.charisma },
-        { label: 'Intelligence', score: selectedStats.intelligence },
+        { label: 'Strength', score: effectiveStats.strength },
+        { label: 'Constitution', score: effectiveStats.constitution },
+        { label: 'Dexterity', score: effectiveStats.dexterity },
+        { label: 'Wisdom', score: effectiveStats.wisdom },
+        { label: 'Charisma', score: effectiveStats.charisma },
+        { label: 'Intelligence', score: effectiveStats.intelligence },
       ]
     : []
 
   const getAbilityModifier = (score: number) => Math.floor((score - 10) / 2)
 
   const getWeaponModifier = (weapon: typeof selectedWeapons[number]) => {
-  if (!selectedStats) return 0
+  if (!effectiveStats) return 0
 
   const statScores = {
-    Strength: selectedStats.strength,
-    Constitution: selectedStats.constitution,
-    Dexterity: selectedStats.dexterity,
-    Wisdom: selectedStats.wisdom,
-    Charisma: selectedStats.charisma,
-    Intelligence: selectedStats.intelligence,
+    Strength: effectiveStats.strength,
+    Constitution: effectiveStats.constitution,
+    Dexterity: effectiveStats.dexterity,
+    Wisdom: effectiveStats.wisdom,
+    Charisma: effectiveStats.charisma,
+    Intelligence: effectiveStats.intelligence,
   }
 
   const score = statScores[weapon.modifierStat]
@@ -375,11 +393,11 @@ export default function DiceRollerPage() {
                     </p>
                   )}
 
-                  {statsLoading ? (
+                  {statsLoading || adjustedLoading ? (
                     <p className="text-sm" style={{ color: '#7A6F5C' }}>
                       Loading character stats...
                     </p>
-                  ) : selectedStats ? (
+                  ) : effectiveStats ? (
                     <div className="space-y-4">
                       <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
                         Character Stats
@@ -453,24 +471,7 @@ export default function DiceRollerPage() {
   ) : (
     <div className="space-y-3 mt-2">
       {selectedWeapons.map((weapon) => {
-        const statScore = (() => {
-          switch (weapon.modifierStat) {
-            case 'Strength':
-              return selectedStats.strength
-            case 'Constitution':
-              return selectedStats.constitution
-            case 'Dexterity':
-              return selectedStats.dexterity
-            case 'Wisdom':
-              return selectedStats.wisdom
-            case 'Charisma':
-              return selectedStats.charisma
-            case 'Intelligence':
-              return selectedStats.intelligence
-            default:
-              return 10
-          }
-        })()
+        // Determine ability modifier from effective (possibly adjusted) stats
 
         const handleWeaponReload = () => {
             setReloadingWeapon(weapon.id)
@@ -483,7 +484,7 @@ export default function DiceRollerPage() {
             },
             })
         }
-        const modifier = getAbilityModifier(statScore)
+        const modifier = getWeaponModifier(weapon)
 
         const isReloading = reloadingWeapon === weapon.id
         const isFullAmmo = weapon.currentAmmo >= weapon.ammoCapacity

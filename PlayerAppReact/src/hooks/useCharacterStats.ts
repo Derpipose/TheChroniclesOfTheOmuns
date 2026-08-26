@@ -4,6 +4,14 @@ import type { CharacterStats } from '../types/characterStats'
 import { getScifiCharacterWithAdjustedStats } from '../api/scifiCharacterApi'
 import type { CharacterStats as CharacterStatsType } from '../types/characterStats'
 
+type ScifiRef = number | { id?: number; characterId?: number } | undefined | null
+
+function resolveScifiId(ref: ScifiRef): number | undefined {
+  if (ref == null) return undefined
+  if (typeof ref === 'number') return ref
+  return ref.id ?? ref.characterId
+}
+
 export function useCharacterStats(characterId: number) {
     return useQuery<CharacterStats>({
         queryKey: ['characterStats', characterId],
@@ -14,10 +22,12 @@ export function useCharacterStats(characterId: number) {
 
 
 
-export function useScifiCharacterWithStats(scifiCharacterId?: number) {
+export function useScifiCharacterWithStats(scifiCharacterRef?: ScifiRef) {
+  const resolvedId = resolveScifiId(scifiCharacterRef)
+
   return useQuery<CharacterStatsType | null>({
-    queryKey: ['scifiCharacterWithStats', scifiCharacterId],
-    queryFn: () => getScifiCharacterWithAdjustedStats(scifiCharacterId!),
-    enabled: typeof scifiCharacterId === 'number' && scifiCharacterId > 0,
+    queryKey: ['scifiCharacterWithStats', resolvedId],
+    queryFn: () => getScifiCharacterWithAdjustedStats(resolvedId!),
+    enabled: typeof resolvedId === 'number' && resolvedId > 0,
   })
 }
