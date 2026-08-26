@@ -4,7 +4,7 @@ import { CustomRollPresetCard, type CustomRollPreset } from '../components/Custo
 import NavBar from '../components/NavBar'
 import { useNavigate } from '@tanstack/react-router'
 import { useCharacter, useCharacters } from '../hooks/useCharacters'
-import { useCharacterStats } from '../hooks/useCharacterStats'
+import { useScifiCharacterWithStats } from '../hooks/useCharacterStats'
 import {
   useScifiWeaponInstances,
   useUseAmmo,
@@ -33,7 +33,7 @@ export default function DiceRollerPage() {
   const activeCharacters = characters
 
   const { data: selectedCharacter } = useCharacter(selectedCharacterId || 0)
-  const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
+  const { data: selectedStats, isLoading: statsLoading } = useScifiCharacterWithStats(selectedCharacterId || 0)
 
   const { data: selectedWeapons = [], isLoading: weaponsLoading } =
   useScifiWeaponInstances(selectedCharacterId || 0)

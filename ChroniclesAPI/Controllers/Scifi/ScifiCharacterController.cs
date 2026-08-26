@@ -80,11 +80,63 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         return Ok(scifiCharacter);
     }
 
+    [HttpGet("{id:int}/with-stats")]
+    public async Task<IActionResult> GetWithAdjustedStats(int id) {
+        var scifiCharacter = await db.ScifiCharacters
+            .Include(sc => sc.Character)
+            .Include(sc => sc.Modifiers)
+            .Where(sc => sc.Id == id && sc.Character!.PlayerId == playerContext.PlayerId)
+            .FirstOrDefaultAsync();
+
+        if (scifiCharacter is null)
+            return NotFound(new { message = $"ScifiCharacter {id} was not found." });
+
+        // Load character stats (pre-play values)
+        var characterStats = await db.CharacterStats
+            .FirstOrDefaultAsync(cs => cs.CharacterId == scifiCharacter.CharacterId);
+
+        // If no explicit CharacterStats row exists, use defaults
+        if (characterStats is null)
+            characterStats = new PlayerApp.Models.CharacterStats(scifiCharacter.CharacterId);
+
+        // Use the Character instance's helper methods to compute adjusted values
+        var modifiers = scifiCharacter.Modifiers.Cast<PlayerApp.Models.ICharacterModifier>();
+
+        var adjusted = new AdjustedStatsDto(
+            Strength: scifiCharacter.Character!.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Strength, characterStats.Strength),
+            Dexterity: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Dexterity, characterStats.Dexterity),
+            Constitution: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Constitution, characterStats.Constitution),
+            Intelligence: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Intelligence, characterStats.Intelligence),
+            Wisdom: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Wisdom, characterStats.Wisdom),
+            Charisma: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Charisma, characterStats.Charisma),
+            ArmorClass: scifiCharacter.Character.GetArmorClass(modifiers),
+            MaxHealth: scifiCharacter.Character.GetMaxHealth(modifiers),
+            CurrentHealth: scifiCharacter.Character.CurrentHealth
+        );
+
+        var modifierDtos = scifiCharacter.Modifiers
+            .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
+            .ToList();
+
+        var result = new ScifiCharacterWithStatsDto(
+            scifiCharacter.Id,
+            scifiCharacter.CharacterId,
+            scifiCharacter.ScifiRaceId,
+            scifiCharacter.ScifiSubraceId,
+            scifiCharacter.ScifiClassId,
+            scifiCharacter.ScifiBackgroundId,
+            adjusted,
+            modifierDtos
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateScifiCharacterDto request) {
         var character = await db.Characters
             .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.PlayerId == playerContext.PlayerId);
-        
+
         // Validation checks
 
         if (character is null)
@@ -175,12 +227,12 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             : scifiCharacter.ScifiClass;
 
         db.ScifiCharacters.Add(scifiCharacter);
-        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id) 
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id)
                                 ?? new CharacterStats(character.Id);
 
-        if(!(db.CharacterStats.Local.Contains(stats)))
+        if (!(db.CharacterStats.Local.Contains(stats)))
             db.CharacterStats.Add(stats);
-        
+
         scifiCharacter.UpdateHealth(stats, classForHealth);
 
         await db.SaveChangesAsync();
@@ -275,7 +327,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             scifiCharacter.SetScifiBackground(background.Id);
         }
 
-        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == scifiCharacter.CharacterId) 
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == scifiCharacter.CharacterId)
             ?? new CharacterStats(scifiCharacter.CharacterId);
 
         // CHANGED: was `request.ScifiClassId is not null`, which incorrectly matched
@@ -317,6 +369,8 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
     public record StatPickDto(StatType Stat, int Amount);
     public record StatModifierResponseDto(ModifierType Stat, int Amount, ModifierSource Source);
+    public record AdjustedStatsDto(int Strength, int Dexterity, int Constitution, int Intelligence, int Wisdom, int Charisma, int ArmorClass, int MaxHealth, int CurrentHealth);
+    public record ScifiCharacterWithStatsDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, AdjustedStatsDto AdjustedStats, List<StatModifierResponseDto> Modifiers);
     public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null);
     public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null);
     public record ScifiCharacterResponseDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatModifierResponseDto> StatBonuses);
