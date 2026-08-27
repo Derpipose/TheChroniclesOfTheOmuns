@@ -1,6 +1,6 @@
 import { useState, useEffect,  } from 'react'
 import { resolveExpression} from '../functions/DiceRoller'
-import { CustomRollPresetCard, type CustomRollPreset } from '../components/CustomRollPresetCard'
+import CustomRolls from '../components/CustomRolls'
 import RollLog, { type DiceRoll, type RollMode } from '../components/RollLog'
 import NavBar from '../components/NavBar'
 import { useCharacter, useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
@@ -34,7 +34,7 @@ export default function DiceRollerPage() {
   const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
 
 
-  const { data: selectedAdjustedScifi, isLoading: adjustedLoading } = useScifiCharacterWithStats(selectedCharacterId || 0)
+  const { data: selectedAdjustedScifi, isLoading: adjustedLoading } = useScifiCharacterWithStats(selectedScifiCharacter?.id)
 
   console.debug('selectedAdjustedScifi', selectedAdjustedScifi)
 
@@ -68,30 +68,8 @@ export default function DiceRollerPage() {
     }
   }, [activeCharacters, selectedCharacterId])
 
-  // Initialize from localStorage without an effect
-  const [customPresets, setCustomPresets] = useState(() => {
-    const saved = localStorage.getItem('diceroller_presets')
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch (e) {
-        console.error('Failed to load presets:', e)
-        return []
-      }
-    }
-    return []
-  })
-
-  const [newPresetName, setNewPresetName] = useState('')
-  const [newPresetExpr, setNewPresetExpr] = useState('')
-  const [showAddPreset, setShowAddPreset] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [rollNumber, setRollNumber] = useState(0)
-
-  // Only keep the save effect (remove the load effect)
-  useEffect(() => {
-    localStorage.setItem('diceroller_presets', JSON.stringify(customPresets))
-  }, [customPresets])
 
   const handleRoll = (
     expression: string,
@@ -151,33 +129,6 @@ export default function DiceRollerPage() {
     setRolls([])
     setRollNumber(0)
   }
-
-  const addPreset = () => {
-    if (!newPresetName.trim() || !newPresetExpr.trim()) {
-      setError('Name and expression are required')
-      return
-    }
-    try {
-      // Validate the expression by attempting to resolve it
-      resolveExpression(newPresetExpr)
-      const preset: CustomRollPreset = {
-        id: Date.now().toString(),
-        name: newPresetName,
-        expression: newPresetExpr,
-      }
-      setCustomPresets((prev: CustomRollPreset[]) => [...prev, preset])
-      setNewPresetName('')
-      setNewPresetExpr('')
-      setShowAddPreset(false)
-      setError(null)
-    } catch (err) {
-      setError((err as Error).message || 'Invalid dice expression')
-    }
-  }
-
-  const deletePreset = (id: string) => {
-  setCustomPresets((prev: CustomRollPreset[]) => prev.filter((p) => p.id !== id))
-}
 
   const statEntries = effectiveStats
     ? [
@@ -295,97 +246,11 @@ export default function DiceRollerPage() {
 
           {/* Custom Rolls Tab */}
           {activeTab === 'custom' && (
-            <div className="space-y-4">
-              <div className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
-                Custom Presets
-              </div>
-
-              {customPresets.length === 0 && !showAddPreset && (
-                <p className="text-xs text-center" style={{ color: '#7A6F5C' }}>
-                  No presets yet
-                </p>
-              )}
-
-              {customPresets.map((preset: CustomRollPreset) => (
-                <CustomRollPresetCard
-                  key={preset.id}
-                  preset={preset}
-                  onRoll={handleRoll}
-                  onDelete={deletePreset}
-                  isRolling={rollingStat === `preset-${preset.id}`}
-                />
-              ))}
-
-              {showAddPreset ? (
-                <div
-                  className="rounded-lg border p-3 space-y-3"
-                  style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
-                >
-                  <input
-                    type="text"
-                    placeholder="Preset name"
-                    value={newPresetName}
-                    onChange={(e) => setNewPresetName(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded outline-none border focus:border-stone-400 transition-colors"
-                    style={{
-                      backgroundColor: '#F5F0E8',
-                      borderColor: '#DDD8CC',
-                      color: '#2C2416',
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="e.g., 1d20 + 3"
-                    value={newPresetExpr}
-                    onChange={(e) => setNewPresetExpr(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded outline-none border focus:border-stone-400 transition-colors font-mono"
-                    style={{
-                      backgroundColor: '#F5F0E8',
-                      borderColor: '#DDD8CC',
-                      color: '#2C2416',
-                    }}
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={addPreset}
-                      className="flex-1 py-2 text-xs font-semibold rounded transition-colors hover:opacity-90"
-                      style={{
-                        backgroundColor: '#8B7355',
-                        color: '#FDFAF4',
-                      }}
-                    >
-                      Add
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowAddPreset(false)
-                        setNewPresetName('')
-                        setNewPresetExpr('')
-                      }}
-                      className="flex-1 py-2 text-xs font-medium rounded transition-colors"
-                      style={{
-                        backgroundColor: '#EDE8DC',
-                        color: '#5C4F38',
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowAddPreset(true)}
-                  className="w-full py-2 text-xs font-medium rounded transition-colors border"
-                  style={{
-                    backgroundColor: '#F5F0E8',
-                    borderColor: '#DDD8CC',
-                    color: '#5C4F38',
-                  }}
-                >
-                  + New Preset
-                </button>
-              )}
-            </div>
+            <CustomRolls
+              onRoll={handleRoll}
+              rollingStat={rollingStat}
+              onError={setError}
+            />
           )}
 
           {/* Character Rolls Tab */}
