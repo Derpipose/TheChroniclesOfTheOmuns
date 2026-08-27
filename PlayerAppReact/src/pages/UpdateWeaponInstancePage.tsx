@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useCharacters } from '../hooks/useCharacters'
+import { useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import {
     useScifiWeaponInstances,
     useScifiWeaponInstance,
@@ -14,11 +14,12 @@ export default function UpdateWeaponInstancePage() {
 
     const [selectedCharacterId, setSelectedCharacterId] = useState<number | ''>('')
     const [selectedWeaponId, setSelectedWeaponId] = useState<number | ''>('')
+    const { data: selectedScifiCharacter } = useScifiCharacterByCharacterId(selectedCharacterId || 0)
 
     const {
         data: weapons = [],
         isLoading: weaponsLoading,
-    } = useScifiWeaponInstances(selectedCharacterId || 0)
+    } = useScifiWeaponInstances(selectedScifiCharacter?.id || 0)
 
     const { data: selectedWeapon } = useScifiWeaponInstance(
         selectedWeaponId || 0

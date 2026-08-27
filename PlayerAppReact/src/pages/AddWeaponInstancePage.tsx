@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCharacters } from '../hooks/useCharacters'
+import { useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useScifiWeapons } from '../hooks/useScifiWeapon'
 import {
     useCreateScifiWeaponInstance,
@@ -17,6 +17,8 @@ export default function AddWeaponInstancePage() {
 
     const { data: characters, isLoading: charactersLoading } = useCharacters()
     const { data: weapons, isLoading: weaponsLoading } = useScifiWeapons()
+    const { data: selectedScifiCharacter, isLoading: scifiCharacterLoading } =
+        useScifiCharacterByCharacterId(selectedCharacterId)
 
 
     const [weaponSearch, setWeaponSearch] = useState('')
@@ -31,7 +33,7 @@ export default function AddWeaponInstancePage() {
     const {
         data: existingWeapons,
         isLoading: existingWeaponsLoading,
-    } = useScifiWeaponInstances(selectedCharacterId)
+    } = useScifiWeaponInstances(selectedScifiCharacter?.id ?? 0)
 
     const createWeaponInstance = useCreateScifiWeaponInstance()
 
@@ -50,9 +52,13 @@ export default function AddWeaponInstancePage() {
 
 
 
+    if (!selectedScifiCharacter) {
+        return
+    }
+
     createWeaponInstance.mutate({
         scifiWeaponId: selectedWeaponId,
-        scifiCharacterId: selectedCharacterId,
+        scifiCharacterId: selectedScifiCharacter.id,
         scifiWeaponBlueprintId: selectedWeaponId,
     })
 }
@@ -250,6 +256,8 @@ export default function AddWeaponInstancePage() {
                         disabled={
                             !selectedCharacterId ||
                             !selectedWeaponId ||
+                            scifiCharacterLoading ||
+                            !selectedScifiCharacter ||
                             createWeaponInstance.isPending
                         }
                         className="rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50"

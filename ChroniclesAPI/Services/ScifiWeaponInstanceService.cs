@@ -11,6 +11,10 @@ public class ScifiWeaponInstanceService(AppDbContext db) {
         if (!weaponExists) {
             throw new NotFoundException($"ScifiWeapon {request.ScifiWeaponId} was not found.");
         }
+        var scifiCharacterExists = await db.ScifiCharacters.AnyAsync(c => c.Id == request.ScifiCharacterId);
+        if (!scifiCharacterExists) {
+            throw new NotFoundException($"ScifiCharacter {request.ScifiCharacterId} was not found.");
+        }
         var blueprint = await db.ScifiWeapons.FirstOrDefaultAsync(w => w.Id == request.ScifiWeaponBlueprintId)
             ?? throw new NotFoundException($"ScifiWeaponBlueprint {request.ScifiWeaponBlueprintId} was not found.");
 
@@ -34,7 +38,7 @@ public class ScifiWeaponInstanceService(AppDbContext db) {
         return await db.ScifiWeaponInstances.Where(i => i.ScifiCharacterId == userId).ToListAsync();
     }
 
-    
+
 
     public async Task DeleteScifiWeaponInstanceAsync(int id) {
         var instance = await db.ScifiWeaponInstances.FindAsync(id)

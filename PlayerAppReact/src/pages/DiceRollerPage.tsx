@@ -3,7 +3,7 @@ import { resolveExpression} from '../functions/DiceRoller'
 import { CustomRollPresetCard, type CustomRollPreset } from '../components/CustomRollPresetCard'
 import NavBar from '../components/NavBar'
 import { useNavigate } from '@tanstack/react-router'
-import { useCharacter, useCharacters } from '../hooks/useCharacters'
+import { useCharacter, useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
 import { useScifiCharacterWithStats } from '../hooks/useScifiCharacterWithStats'
 import { getScifiCharacterByCharacterId } from '../api/scifiCharacterApi'
@@ -21,6 +21,22 @@ interface DiceRoll {
   allRolls: number[]
   total: number
   label?: string
+  attempts?: DiceRollAttempt[]
+  rollMode?: RollMode
+  chosenAttemptIndex?: number
+}
+
+type RollMode = 'standard' | 'advantage' | 'disadvantage'
+
+interface DiceRollAttempt {
+  resolvedExpr: string
+  allRolls: number[]
+  total: number
+}
+
+interface PendingWeaponRoll {
+  weaponId: number
+  criticalMultiplier: number
 }
 
 
@@ -30,12 +46,14 @@ export default function DiceRollerPage() {
   const [rolls, setRolls] = useState<DiceRoll[]>([])
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | ''>('')
   const [rollingStat, setRollingStat] = useState<string | null>(null)
+  const [rollMode, setRollMode] = useState<RollMode>('standard')
 
   const { data: characters = [], isLoading: charactersLoading } = useCharacters()
   // TODO: Re-enable the active-only filter once the rest of the site supports inactive character flows more cleanly.
   const activeCharacters = characters
 
   const { data: selectedCharacter } = useCharacter(selectedCharacterId || 0)
+  const { data: selectedScifiCharacter } = useScifiCharacterByCharacterId(selectedCharacterId || 0)
   const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
 
   const { data: scifiCharacterForCharacter } = useQuery({
@@ -54,12 +72,21 @@ export default function DiceRollerPage() {
   const effectiveStats = selectedAdjustedScifi ?? selectedStats
 
   const { data: selectedWeapons = [], isLoading: weaponsLoading } =
-  useScifiWeaponInstances(selectedCharacterId || 0)
+  useScifiWeaponInstances(selectedScifiCharacter?.id || 0)
+
+  const sortedWeapons = [...selectedWeapons].sort((first, second) => {
+    if (first.favorite !== second.favorite) {
+      return first.favorite ? -1 : 1
+    }
+
+    return first.id - second.id
+  })
 
     const fireAmmoMutation = useUseAmmo()
 
     const reloadWeaponMutation = useReloadWeapon()
     const [reloadingWeapon, setReloadingWeapon] = useState<number | null>(null)
+    const [pendingWeaponRoll, setPendingWeaponRoll] = useState<PendingWeaponRoll | null>(null)
 
   useEffect(() => {
     if (activeCharacters.length === 0) {
@@ -97,15 +124,35 @@ export default function DiceRollerPage() {
     localStorage.setItem('diceroller_presets', JSON.stringify(customPresets))
   }, [customPresets])
 
-  const handleRoll = (expression: string, label?: string, rollKey?: string) => {
+  const handleRoll = (
+    expression: string,
+    label?: string,
+    rollKey?: string,
+    onComplete?: (result: ReturnType<typeof resolveExpression>) => void,
+    selectedRollMode: RollMode = 'standard',
+  ) => {
     setError(null)
+    if (selectedRollMode !== 'standard') {
+      setRollMode('standard')
+    }
     if (rollKey) {
       setRollingStat(rollKey)
     }
 
     window.setTimeout(() => {
       try {
-        const result = resolveExpression(expression)
+        const attempts = selectedRollMode === 'standard'
+          ? [resolveExpression(expression)]
+          : [resolveExpression(expression), resolveExpression(expression)]
+        const chosenAttemptIndex = selectedRollMode === 'advantage'
+          ? (attempts[1].total > attempts[0].total ? 1 : 0)
+          : selectedRollMode === 'disadvantage'
+            ? (attempts[1].total < attempts[0].total ? 1 : 0)
+            : 0
+        const result = attempts[chosenAttemptIndex]
+        const rollLabel = label && selectedRollMode !== 'standard'
+          ? `${label} with ${selectedRollMode}`
+          : label
         const roll: DiceRoll = {
           id: rollNumber.toString(),
           timestamp: new Date().toLocaleTimeString(),
@@ -113,10 +160,14 @@ export default function DiceRollerPage() {
           resolvedExpr: result.resolvedExpr,
           allRolls: result.allRolls,
           total: result.total,
-          label,
+          label: rollLabel,
+          attempts: selectedRollMode === 'standard' ? undefined : attempts,
+          rollMode: selectedRollMode,
+          chosenAttemptIndex,
         }
         setRolls((prev) => [roll, ...prev]) // append to bottom
         setRollNumber((prev) => prev + 1)
+        onComplete?.(result)
       } catch (err) {
         setError((err as Error).message || 'Invalid dice expression')
       } finally {
@@ -201,6 +252,31 @@ export default function DiceRollerPage() {
         className="border-b px-6 py-4 flex items-center justify-between"
         style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
       >
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+            Roll mode
+          </span>
+          {(['standard', 'advantage', 'disadvantage'] as RollMode[]).map((mode) => (
+            <label
+              key={mode}
+              className="flex items-center gap-1 rounded border px-2 py-2 text-xs capitalize cursor-pointer"
+              style={{
+                backgroundColor: rollMode === mode ? '#EDE8DC' : '#FDFAF4',
+                borderColor: '#DDD8CC',
+                color: '#5C4F38',
+              }}
+            >
+              <input
+                type="radio"
+                name="roll-mode"
+                value={mode}
+                checked={rollMode === mode}
+                onChange={() => setRollMode(mode)}
+              />
+              {mode}
+            </label>
+          ))}
+        </div>
 
         <button
           onClick={clearRolls}
@@ -427,7 +503,13 @@ export default function DiceRollerPage() {
                                   </div>
                                   <button
                                     type="button"
-                                    onClick={() => handleRoll(`1d20 + ${modifier}`, `${label} check`, label)}
+                                    onClick={() => handleRoll(
+                                      `1d20 + ${modifier}`,
+                                      `${label} check`,
+                                      label,
+                                      undefined,
+                                      rollMode,
+                                    )}
                                     disabled={rollingStat === label}
                                     className="w-full py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
                                     style={{
@@ -470,7 +552,7 @@ export default function DiceRollerPage() {
     </div>
   ) : (
     <div className="space-y-3 mt-2">
-      {selectedWeapons.map((weapon) => {
+      {sortedWeapons.map((weapon) => {
         // Determine ability modifier from effective (possibly adjusted) stats
 
         const handleWeaponReload = () => {
@@ -496,38 +578,54 @@ export default function DiceRollerPage() {
         // Calculate how many rounds actually fire (limited by current ammo)
         const ammoToConsume = Math.min(rateOfFire, weapon.currentAmmo)
 
-        // Extract hit die from the weapon's damage formula
-        // e.g., "d6" from "1d6" or "1d6+1"
-        const hitDieMatch = weapon.damageFormula.match(/d(\d+)/)
-        const hitDie = hitDieMatch ? hitDieMatch[1] : '4'
-
-        // Build the damage formula: 1d{ammoToConsume}d{hitDie} + modifier
-        // Examples:
-        //   Pistol (ROF 1): "1d1d4 + 2"
-        //   Machine gun (ROF 12, full ammo): "1d12d4 + 2"
-        //   Machine gun (ROF 12, 7 ammo left): "1d7d4 + 2"
-        const damageFormula = `1d${ammoToConsume}d${hitDie}`
-        const expression = `${damageFormula} ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}`
-
+        // Roll ROF first, then apply it to every die in the weapon formula.
+        const damageFormula = `1d${ammoToConsume} * ${weapon.damageFormula}`
+        const modifierExpression = `${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}`
         const weaponRollKey = `weapon-${weapon.id}`
         const isOutOfAmmo = weapon.currentAmmo === 0
+        const isFiring = pendingWeaponRoll?.weaponId === weapon.id
 
-        // Handler that rolls AND consumes ammo
-        const handleWeaponRoll = () => {
-          // Initiate the roll with the calculated formula
+        const consumeWeaponAmmo = () => {
+          if (ammoToConsume > 0) {
+            fireAmmoMutation.mutate({ id: weapon.id, amount: ammoToConsume })
+          }
+          setPendingWeaponRoll(null)
+        }
+
+        const handleWeaponHitRoll = () => {
+          const hitExpression = `1d20 ${modifierExpression}`
+
+          handleRoll(
+            hitExpression,
+            `${weapon.nickname || weapon.name} to hit`,
+            weaponRollKey,
+            (result) => {
+              const d20Result = result.allRolls[0]
+
+              setPendingWeaponRoll({
+                weaponId: weapon.id,
+                criticalMultiplier:
+                  d20Result >= weapon.criticalRange
+                    ? weapon.criticalMultiplier
+                    : 1,
+              })
+            },
+            rollMode,
+          )
+        }
+
+        const handleWeaponDamage = () => {
+          const criticalMultiplier = pendingWeaponRoll?.criticalMultiplier ?? 1
+          const expression = criticalMultiplier === 1
+            ? `${damageFormula} ${modifierExpression}`
+            : `${criticalMultiplier} * ${damageFormula} ${modifierExpression}`
+
           handleRoll(
             expression,
             `${weapon.nickname || weapon.name} damage`,
-            weaponRollKey
+            weaponRollKey,
+            consumeWeaponAmmo,
           )
-
-          // After the roll animation completes (ROLL_DELAY_MS), consume the ammo
-          // This timing ensures the roll displays before ammo count updates
-          setTimeout(() => {
-            if (ammoToConsume > 0) {
-              fireAmmoMutation.mutate({ id: weapon.id, amount: ammoToConsume })
-            }
-          }, ROLL_DELAY_MS)
         }
 
         return (
@@ -553,7 +651,7 @@ export default function DiceRollerPage() {
                   className="text-xs mt-1 font-mono"
                   style={{ color: '#7A6F5C' }}
                 >
-                  {expression}
+                  {damageFormula} {modifierExpression}
                 </p>
 
                 <p
@@ -582,36 +680,42 @@ export default function DiceRollerPage() {
             <div className="flex gap-2">
   <button
     type="button"
-    onClick={handleWeaponRoll}
+    onClick={isFiring ? handleWeaponDamage : handleWeaponHitRoll}
     disabled={rollingStat === weaponRollKey || isOutOfAmmo || isReloading}
     className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
-    style={{
-      backgroundColor: '#8B7355',
-      color: '#FDFAF4',
-    }}
+    style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
   >
     {isOutOfAmmo
       ? 'Out of Ammo'
       : rollingStat === weaponRollKey
-      ? `Rolling (${ammoToConsume} rnds)`
-      : 'Roll'}
+        ? 'Rolling...'
+        : isFiring
+          ? 'Roll damage'
+          : 'Roll to hit'}
   </button>
 
   <button
-  type="button"
-  onClick={handleWeaponReload}
-  disabled={isFullAmmo || isReloading || rollingStat === weaponRollKey}
-  className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
-  style={{
-    backgroundColor: isOutOfAmmo ? '#A85C4B' : '#EDE8DC',
-    color: isOutOfAmmo ? '#FDFAF4' : '#5C4F38',
-    border: isOutOfAmmo ? '1px solid #8F493C' : '1px solid #DDD8CC',
-  }}
->
-  {isReloading
-    ? 'Reloading...'
-    : `Reload ${weapon.reloadTimeInActions} actions`}
-</button>
+    type="button"
+    onClick={isFiring ? consumeWeaponAmmo : handleWeaponReload}
+    disabled={
+      isReloading ||
+      rollingStat === weaponRollKey ||
+      (!isFiring && isFullAmmo) ||
+      (isFiring && ammoToConsume <= 0)
+    }
+    className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+    style={{
+      backgroundColor: isFiring ? '#EDE8DC' : isOutOfAmmo ? '#A85C4B' : '#EDE8DC',
+      color: !isFiring && isOutOfAmmo ? '#FDFAF4' : '#5C4F38',
+      border: !isFiring && isOutOfAmmo ? '1px solid #8F493C' : '1px solid #DDD8CC',
+    }}
+  >
+    {isFiring
+      ? 'Cancel'
+      : isReloading
+        ? 'Reloading...'
+        : `Reload ${weapon.reloadTimeInActions} actions`}
+  </button>
 </div>
           </div>
         )
@@ -689,12 +793,31 @@ export default function DiceRollerPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p
-                        className="text-2xl font-bold font-mono"
-                        style={{ color: '#8B7355' }}
-                      >
-                        {roll.total}
-                      </p>
+                      {roll.attempts ? (
+                        <div className="flex gap-2">
+                          {roll.attempts.map((attempt, index) => (
+                            <div
+                              key={`${roll.id}-summary-${index}`}
+                              className="rounded border px-2 py-1"
+                              style={{
+                                borderColor: index === roll.chosenAttemptIndex ? '#8B7355' : '#DDD8CC',
+                                backgroundColor: index === roll.chosenAttemptIndex ? '#F3EBDD' : '#FDFAF4',
+                              }}
+                            >
+                              <p className="text-2xl font-bold font-mono" style={{ color: '#8B7355' }}>
+                                {attempt.total}
+                              </p>
+                              <p className="text-xs" style={{ color: '#7A6F5C' }}>
+                                {index === roll.chosenAttemptIndex ? 'Chosen' : `Roll ${index + 1}`}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-2xl font-bold font-mono" style={{ color: '#8B7355' }}>
+                          {roll.total}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -705,6 +828,31 @@ export default function DiceRollerPage() {
                     >
                       {roll.expression}
                     </p>
+                    {roll.attempts && (
+                      <div className="space-y-2 pt-1">
+                        <p className="text-xs capitalize" style={{ color: '#7A6F5C' }}>
+                          {roll.rollMode}
+                        </p>
+                        {roll.attempts.map((attempt, index) => (
+                          <div
+                            key={`${roll.id}-attempt-${index}`}
+                            className="rounded border px-2 py-1"
+                            style={{
+                              borderColor: index === roll.chosenAttemptIndex ? '#8B7355' : '#DDD8CC',
+                              backgroundColor: index === roll.chosenAttemptIndex ? '#F3EBDD' : '#FDFAF4',
+                            }}
+                          >
+                            <p className="text-xs font-mono" style={{ color: '#2C2416' }}>
+                              Attempt {index + 1}: {attempt.total}
+                              {index === roll.chosenAttemptIndex && ' — Chosen'}
+                            </p>
+                            <p className="text-xs font-mono" style={{ color: '#7A6F5C' }}>
+                              [{attempt.allRolls.join(', ')}]
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <p
                       className="text-xs font-mono"
                       style={{ color: '#7A6F5C' }}

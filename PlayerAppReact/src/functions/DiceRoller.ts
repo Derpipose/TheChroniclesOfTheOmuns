@@ -122,53 +122,131 @@ function resolveMultiplyChain(chain: string[]): string {
   return finalNotation;
 }
 
+type EvaluatedFactor = {
+  kind: "number" | "dice";
+  total: number;
+  rolls: number[];
+};
+
+function evaluateFactor(input: string): EvaluatedFactor {
+  const factor = input.replace(/\s/g, "");
+  const nestedMatch = factor.match(/^(\d*)d(\d+)d(\d+)$/i);
+
+  if (nestedMatch) {
+    const multiplierRolls = rollDice(
+      nestedMatch[1] ? parseInt(nestedMatch[1], 10) : 1,
+      parseInt(nestedMatch[2], 10),
+    );
+    const multiplier = multiplierRolls.reduce((sum, roll) => sum + roll, 0);
+    const rolls = rollDice(multiplier, parseInt(nestedMatch[3], 10));
+
+    return {
+      kind: "dice",
+      rolls,
+      total: rolls.reduce((sum, roll) => sum + roll, 0),
+    };
+  }
+
+  if (/^\d+d\d+$/i.test(factor)) {
+    const { numDice, faceCount } = parseSingleDice(factor);
+    const rolls = rollDice(numDice, faceCount);
+
+    return {
+      kind: "dice",
+      rolls,
+      total: rolls.reduce((sum, roll) => sum + roll, 0),
+    };
+  }
+
+  if (/^\d+$/.test(factor)) {
+    return { kind: "number", rolls: [], total: parseInt(factor, 10) };
+  }
+
+  throw new Error(`Invalid dice expression: ${input}`);
+}
+
 export function resolveExpression(
-  input: string
+  input: string,
 ): { resolvedExpr: string; allRolls: number[]; total: number } {
-  // Remove preprocessing — evaluateDiceToken handles nested dice
-  const tokens = tokenize(input);
-  const chains = getMultiplyChains(tokens);
+  const normalizedInput = input.replace(/\s/g, "");
+  const terms = input.match(/[+-]?[^+-]+/g);
+
+  if (!terms || terms.join("").replace(/\s/g, "") !== normalizedInput) {
+    throw new Error("Invalid dice expression");
+  }
 
   const allRolls: number[] = [];
-  const resolvedParts: string[] = [];
-
-  // Process chains and reconstruct expression with resolved notations
-  for (let chainIndex = 0; chainIndex < chains.length; chainIndex++) {
-    const chain = chains[chainIndex];
-
-    if (typeof chain[0] === "string" && chain.length > 1) {
-      // Multi-element chain (has multiplication) - resolve to final notation
-      const finalNotation = resolveMultiplyChain(chain);
-      resolvedParts.push(finalNotation);
-    } else {
-      // Single operand - no multiplication
-      resolvedParts.push(chain[0]);
-    }
-
-    if (chainIndex < chains.length - 1) {
-      resolvedParts.push("+");
-    }
-  }
-
-  const resolvedExpr = resolvedParts.join(" ");
-
-  // Evaluate the entire resolved expression, rolling all dice together
-  const resolvedTokens = tokenize(resolvedExpr);
   let total = 0;
 
-  for (const token of resolvedTokens) {
-    if (token.type === "dice") {
-      const rolls = evaluateDiceToken(token.value);
-      allRolls.push(...rolls);
-      total += rolls.reduce((a, b) => a + b, 0);
-    } else if (token.type === "number") {
-      const num = parseInt(token.value, 10);
-      allRolls.push(num);
-      total += num;
+  for (const rawTerm of terms) {
+    const negative = rawTerm.trim().startsWith("-");
+    const term = rawTerm.replace(/^[+-]/, "").trim();
+    const factorInputs = term.split("*");
+    const factors = factorInputs.map((factorInput, factorIndex) =>
+      factorIndex > 0 && /^\s*\d*d\d+\s*$/i.test(factorInputs[factorIndex - 1])
+        ? null
+        : evaluateFactor(factorInput),
+    );
+
+    let termTotal = 1;
+    let diceRolls: number[] = [];
+    let numericMultiplier = 1;
+
+    for (let factorIndex = 0; factorIndex < factors.length; factorIndex++) {
+      const factor = factors[factorIndex];
+
+      if (!factor) {
+        continue;
+      }
+
+      if (factor.kind === "number") {
+        numericMultiplier *= factor.total;
+        continue;
+      }
+
+      const isFinalDiceFactor = factorIndex === factors.length - 1;
+      if (isFinalDiceFactor) {
+        diceRolls = factor.rolls.map((roll) => roll * numericMultiplier);
+        termTotal *= factor.total * numericMultiplier;
+      } else {
+        const multiplier = factor.total;
+        if (factorIndex + 1 >= factorInputs.length) {
+          throw new Error("Dice multipliers must be followed by dice");
+        }
+
+        const nextDice = parseSingleDice(factorInputs[factorIndex + 1].trim());
+        const scaledRolls = rollDice(multiplier * nextDice.numDice, nextDice.faceCount);
+        const scaledTotal = scaledRolls.reduce((sum, roll) => sum + roll, 0);
+        diceRolls = scaledRolls.map((roll) => roll * numericMultiplier);
+        termTotal *= scaledTotal * numericMultiplier;
+        factorIndex++;
+      }
+    }
+
+    if (factors.filter((factor): factor is EvaluatedFactor => factor !== null)
+      .every((factor) => factor.kind === "number")) {
+      termTotal = numericMultiplier;
+    }
+
+    if (negative) {
+      termTotal *= -1;
+      diceRolls = diceRolls.map((roll) => roll * -1);
+    }
+
+    total += termTotal;
+    allRolls.push(...diceRolls);
+
+    if (factors.filter((factor): factor is EvaluatedFactor => factor !== null)
+      .every((factor) => factor.kind === "number")) {
+      allRolls.push(Math.abs(termTotal));
     }
   }
 
-  return { resolvedExpr, allRolls, total };
+  return {
+    resolvedExpr: terms.map((term) => term.trim()).join(" "),
+    allRolls,
+    total,
+  };
 }
 // Test: show multiply chains
 export function analyzeExpression(input: string): void {
