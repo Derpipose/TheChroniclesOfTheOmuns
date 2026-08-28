@@ -97,18 +97,18 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
         // If no explicit CharacterStats row exists, use defaults
         if (characterStats is null)
-            characterStats = new PlayerApp.Models.CharacterStats(scifiCharacter.CharacterId);
+            characterStats = new CharacterStats(scifiCharacter.CharacterId);
 
         // Use the Character instance's helper methods to compute adjusted values
-        var modifiers = scifiCharacter.Modifiers.Cast<PlayerApp.Models.ICharacterModifier>();
+        var modifiers = scifiCharacter.Modifiers.Cast<ICharacterModifier>();
 
         var adjusted = new AdjustedStatsDto(
-            Strength: scifiCharacter.Character!.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Strength, characterStats.Strength),
-            Dexterity: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Dexterity, characterStats.Dexterity),
-            Constitution: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Constitution, characterStats.Constitution),
-            Intelligence: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Intelligence, characterStats.Intelligence),
-            Wisdom: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Wisdom, characterStats.Wisdom),
-            Charisma: scifiCharacter.Character.GetStat(modifiers, PlayerApp.Models.Enums.ModifierType.Charisma, characterStats.Charisma),
+            Strength: scifiCharacter.Character!.GetStat(modifiers, ModifierType.Strength, characterStats.Strength),
+            Dexterity: scifiCharacter.Character.GetStat(modifiers, ModifierType.Dexterity, characterStats.Dexterity),
+            Constitution: scifiCharacter.Character.GetStat(modifiers, ModifierType.Constitution, characterStats.Constitution),
+            Intelligence: scifiCharacter.Character.GetStat(modifiers, ModifierType.Intelligence, characterStats.Intelligence),
+            Wisdom: scifiCharacter.Character.GetStat(modifiers, ModifierType.Wisdom, characterStats.Wisdom),
+            Charisma: scifiCharacter.Character.GetStat(modifiers, ModifierType.Charisma, characterStats.Charisma),
             ArmorClass: scifiCharacter.Character.GetArmorClass(modifiers),
             MaxHealth: scifiCharacter.Character.GetMaxHealth(modifiers),
             CurrentHealth: scifiCharacter.Character.CurrentHealth
@@ -230,7 +230,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id)
                                 ?? new CharacterStats(character.Id);
 
-        if (!(db.CharacterStats.Local.Contains(stats)))
+        if (!db.CharacterStats.Local.Contains(stats))
             db.CharacterStats.Add(stats);
 
         scifiCharacter.UpdateHealth(stats, classForHealth);

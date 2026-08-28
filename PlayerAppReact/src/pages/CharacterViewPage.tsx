@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useCharacter, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
-import { useCharacterStats } from '../hooks/useCharacterStats'
 import { useScifiBackgrounds, useScifiClasses, useScifiRaces, useScifiSubracesByRace } from '../hooks/useScifiReference'
+import { useScifiStatsByCharacterId } from '../hooks/useScifiStats'
 
 export default function CharacterViewPage() {
     const { id } = useParams()
@@ -11,7 +11,7 @@ export default function CharacterViewPage() {
 
     const { data: character, isLoading: characterLoading } = useCharacter(characterId ?? 0)
     const { data: scifiCharacter, isLoading: scifiLoading } = useScifiCharacterByCharacterId(characterId ?? 0)
-    const { data: stats, isLoading: statsLoading } = useCharacterStats(characterId ?? 0)
+    const { data: adjustedStats, isLoading: adjustedStatsLoading } = useScifiStatsByCharacterId(characterId)
 
     const { data: races } = useScifiRaces()
     const { data: subraces } = useScifiSubracesByRace(scifiCharacter?.scifiRaceId ?? 0)
@@ -24,18 +24,18 @@ export default function CharacterViewPage() {
     const background = backgrounds?.find((b) => b.id === scifiCharacter?.scifiBackgroundId)
     const setting = "Scifi" // Placeholder for now, as there is only one setting currently.
 
-    const statEntries = stats
+    const statEntries = adjustedStats
         ? [
-            { label: 'Strength', value: stats.strength },
-            { label: 'Constitution', value: stats.constitution },
-            { label: 'Dexterity', value: stats.dexterity },
-            { label: 'Wisdom', value: stats.wisdom },
-            { label: 'Charisma', value: stats.charisma },
-            { label: 'Intelligence', value: stats.intelligence },
+            { label: 'Strength', value: adjustedStats?.strength },
+            { label: 'Constitution', value: adjustedStats?.constitution },
+            { label: 'Dexterity', value: adjustedStats?.dexterity },
+            { label: 'Wisdom', value: adjustedStats?.wisdom },
+            { label: 'Charisma', value: adjustedStats?.charisma },
+            { label: 'Intelligence', value: adjustedStats?.intelligence },
         ]
         : []
 
-    if (characterLoading || scifiLoading || statsLoading) {
+    if (characterLoading || scifiLoading || adjustedStatsLoading) {
         return (
         <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F5F0E8' }}>
             <p className="text-sm" style={{ color: '#7A6F5C' }}>Loading character...</p>
@@ -109,7 +109,7 @@ export default function CharacterViewPage() {
             )}
 
             {/* Stats card */}
-            {stats && (
+            { adjustedStats && (
             <div className="rounded-2xl border p-6" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
                 <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: '#7A6F5C' }}>Stats</h2>
                 <div className="grid grid-cols-2 gap-3">
