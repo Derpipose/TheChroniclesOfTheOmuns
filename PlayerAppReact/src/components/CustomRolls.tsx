@@ -113,14 +113,14 @@ export default function CustomRolls({
           <div className="flex gap-2">
             <button
               onClick={addPreset}
-              className="flex-1 py-2 text-xs font-semibold rounded transition-colors hover:opacity-90"
+              className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 sm:py-2 sm:text-xs"
               style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
             >
               Add
             </button>
             <button
               onClick={cancelAddPreset}
-              className="flex-1 py-2 text-xs font-medium rounded transition-colors"
+              className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-medium rounded transition-colors sm:py-2 sm:text-xs"
               style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}
             >
               Cancel

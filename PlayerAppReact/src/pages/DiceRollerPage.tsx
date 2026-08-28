@@ -24,6 +24,8 @@ export default function DiceRollerPage() {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | ''>('')
   const [rollingStat, setRollingStat] = useState<string | null>(null)
   const [rollMode, setRollMode] = useState<RollMode>('standard')
+  const [rollLogVisible, setRollLogVisible] = useState(true)
+  const [rollAlert, setRollAlert] = useState<string | null>(null)
 
   const { data: characters = [], isLoading: charactersLoading } = useCharacters()
   // TODO: Re-enable the active-only filter once the rest of the site supports inactive character flows more cleanly.
@@ -114,6 +116,9 @@ export default function DiceRollerPage() {
         }
         setRolls((prev) => [roll, ...prev]) // append to bottom
         setRollNumber((prev) => prev + 1)
+        if (!rollLogVisible) {
+          setRollAlert(`${roll.label ?? roll.expression}: ${roll.total}`)
+        }
         onComplete?.(result)
       } catch (err) {
         setError((err as Error).message || 'Invalid dice expression')
@@ -128,6 +133,13 @@ export default function DiceRollerPage() {
   const clearRolls = () => {
     setRolls([])
     setRollNumber(0)
+  }
+
+  const handleRollLogVisibilityChange = (isVisible: boolean) => {
+    setRollLogVisible(isVisible)
+    if (isVisible) {
+      setRollAlert(null)
+    }
   }
 
   const statEntries = effectiveStats
@@ -169,17 +181,17 @@ export default function DiceRollerPage() {
         <NavBar title="Dice Roller" />
       {/* Header */}
       <div
-        className="border-b px-6 py-4 flex items-center justify-between"
+        className="sticky top-0 z-20 border-b px-4 py-3 shadow-sm sm:px-6 sm:py-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
         style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
             Roll mode
           </span>
           {(['standard', 'advantage', 'disadvantage'] as RollMode[]).map((mode) => (
             <label
               key={mode}
-              className="flex items-center gap-1 rounded border px-2 py-2 text-xs capitalize cursor-pointer"
+                className="flex items-center gap-1 rounded border px-1.5 py-1.5 text-[11px] capitalize cursor-pointer sm:px-2 sm:py-2 sm:text-xs"
               style={{
                 backgroundColor: rollMode === mode ? '#EDE8DC' : '#FDFAF4',
                 borderColor: '#DDD8CC',
@@ -200,7 +212,7 @@ export default function DiceRollerPage() {
 
         <button
           onClick={clearRolls}
-          className="px-4 py-2 text-sm rounded transition-colors hover:opacity-90 disabled:opacity-50"
+          className="w-full px-3 py-1.5 text-xs rounded transition-colors hover:opacity-90 disabled:opacity-50 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
           style={{
             backgroundColor: '#8B7355',
             color: '#FDFAF4',
@@ -211,18 +223,38 @@ export default function DiceRollerPage() {
         </button>
       </div>
 
+      {rollAlert && (
+        <div
+          className="fixed inset-x-4 top-24 z-30 flex items-center justify-between gap-3 rounded-lg border px-3 py-2 shadow-lg sm:inset-x-auto sm:right-6 sm:w-auto sm:min-w-72"
+          style={{ backgroundColor: '#FDFAF4', borderColor: '#8B7355', color: '#2C2416' }}
+          role="status"
+          aria-live="polite"
+        >
+          <span className="min-w-0 flex-1 break-words text-sm font-semibold">{rollAlert}</span>
+          <button
+            type="button"
+            onClick={() => setRollAlert(null)}
+            className="shrink-0 px-1 text-lg leading-none"
+            style={{ color: '#7A6F5C' }}
+            aria-label="Dismiss roll alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-80px)]">
+      <div className="flex min-h-[calc(100vh-80px)] flex-col md:h-[calc(100vh-80px)] md:flex-row">
         {/* Left Panel - Roll Inputs */}
         <div
-          className="w-1/3 border-r overflow-y-auto p-6 flex flex-col gap-4"
+          className="order-2 w-full min-w-0 border-b overflow-y-auto p-4 flex flex-col gap-4 sm:p-6 md:order-1 md:w-1/3 md:border-b-0 md:border-r"
           style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC' }}
         >
           {/* Tab Switcher */}
           <div className="flex gap-2 mb-4">
             <button
               onClick={() => setActiveTab('custom')}
-              className="flex-1 py-2 px-3 text-sm rounded transition-all border"
+              className="min-w-0 flex-1 px-2 py-1.5 text-xs rounded transition-all border sm:px-3 sm:py-2 sm:text-sm"
               style={{
                 backgroundColor: activeTab === 'custom' ? '#8B7355' : '#EDE8DC',
                 color: activeTab === 'custom' ? '#FDFAF4' : '#5C4F38',
@@ -233,7 +265,7 @@ export default function DiceRollerPage() {
             </button>
             <button
               onClick={() => setActiveTab('character')}
-              className="flex-1 py-2 px-3 text-sm rounded transition-all border"
+              className="min-w-0 flex-1 px-2 py-1.5 text-xs rounded transition-all border sm:px-3 sm:py-2 sm:text-sm"
               style={{
                 backgroundColor: activeTab === 'character' ? '#8B7355' : '#EDE8DC',
                 color: activeTab === 'character' ? '#FDFAF4' : '#5C4F38',
@@ -516,7 +548,7 @@ export default function DiceRollerPage() {
     type="button"
     onClick={isFiring ? handleWeaponDamage : handleWeaponHitRoll}
     disabled={rollingStat === weaponRollKey || isOutOfAmmo || isReloading}
-    className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+    className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
     style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
   >
     {isOutOfAmmo
@@ -537,7 +569,7 @@ export default function DiceRollerPage() {
       (!isFiring && isFullAmmo) ||
       (isFiring && ammoToConsume <= 0)
     }
-    className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+    className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
     style={{
       backgroundColor: isFiring ? '#EDE8DC' : isOutOfAmmo ? '#A85C4B' : '#EDE8DC',
       color: !isFiring && isOutOfAmmo ? '#FDFAF4' : '#5C4F38',
@@ -585,7 +617,7 @@ export default function DiceRollerPage() {
         </div>
 
         {/* Right Panel - Roll Log */}
-        <RollLog rolls={rolls} />
+        <RollLog rolls={rolls} onVisibilityChange={handleRollLogVisibilityChange} />
       </div>
     </div>
   )

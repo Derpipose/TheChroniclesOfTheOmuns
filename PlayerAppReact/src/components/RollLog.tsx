@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 interface DiceRollAttempt {
   resolvedExpr: string
   allRolls: number[]
@@ -21,12 +23,28 @@ export interface DiceRoll {
 
 interface RollLogProps {
   rolls: DiceRoll[]
+  onVisibilityChange?: (isVisible: boolean) => void
 }
 
-export default function RollLog({ rolls }: RollLogProps) {
+export default function RollLog({ rolls, onVisibilityChange }: RollLogProps) {
+  const rollLogRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!onVisibilityChange || !rollLogRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => onVisibilityChange(entry.isIntersecting),
+      { threshold: 0.1 },
+    )
+
+    observer.observe(rollLogRef.current)
+    return () => observer.disconnect()
+  }, [onVisibilityChange])
+
   return (
     <div
-      className="w-2/3 overflow-y-auto p-6"
+      ref={rollLogRef}
+      className="order-1 max-h-[22rem] w-full min-w-0 overflow-y-auto p-4 sm:max-h-[28rem] sm:p-6 md:order-2 md:max-h-none md:w-2/3"
       style={{ backgroundColor: '#F5F0E8' }}
     >
       <div className="space-y-3">
@@ -40,13 +58,13 @@ export default function RollLog({ rolls }: RollLogProps) {
           rolls.map((roll) => (
             <div
               key={roll.id}
-              className="rounded-lg border p-4"
+              className="rounded-lg border p-3 sm:p-4"
               style={{
                 backgroundColor: '#FDFAF4',
                 borderColor: '#DDD8CC',
               }}
             >
-              <div className="flex items-start justify-between gap-4 mb-2">
+              <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4 mb-2">
                 <div className="flex-1 min-w-0">
                   {roll.label && (
                     <p className="text-sm font-semibold mb-1" style={{ color: '#2C2416' }}>
@@ -57,19 +75,19 @@ export default function RollLog({ rolls }: RollLogProps) {
                     {roll.timestamp}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="ml-auto text-right">
                   {roll.attempts ? (
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap justify-end gap-1.5 sm:gap-2">
                       {roll.attempts.map((attempt, index) => (
                         <div
                           key={`${roll.id}-summary-${index}`}
-                          className="rounded border px-2 py-1"
+                            className="rounded border px-1.5 py-1 sm:px-2"
                           style={{
                             borderColor: index === roll.chosenAttemptIndex ? '#8B7355' : '#DDD8CC',
                             backgroundColor: index === roll.chosenAttemptIndex ? '#F3EBDD' : '#FDFAF4',
                           }}
                         >
-                          <p className="text-2xl font-bold font-mono" style={{ color: '#8B7355' }}>
+                          <p className="text-xl font-bold font-mono sm:text-2xl" style={{ color: '#8B7355' }}>
                             {attempt.total}
                           </p>
                           <p className="text-xs" style={{ color: '#7A6F5C' }}>
@@ -79,7 +97,7 @@ export default function RollLog({ rolls }: RollLogProps) {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-2xl font-bold font-mono" style={{ color: '#8B7355' }}>
+                    <p className="text-xl font-bold font-mono sm:text-2xl" style={{ color: '#8B7355' }}>
                       {roll.total}
                     </p>
                   )}
