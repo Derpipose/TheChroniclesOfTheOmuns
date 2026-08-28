@@ -125,7 +125,7 @@ export default function CharacterViewPage() {
 
             <div className="flex gap-3">
             <button
-                onClick={() => navigate(`/characters/${characterId}/edit`)}
+                onClick={() => navigate(`/character/${characterId}/edit`)}
                 className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
                 style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
             >

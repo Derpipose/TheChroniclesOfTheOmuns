@@ -4,6 +4,7 @@ import SignInPage from './pages/SignInPage'
 import CharactersPage from './pages/CharactersPage'
 import CharacterViewPage from './pages/CharacterViewPage'
 import AddCharacterPage from './pages/AddCharacterPage'
+import EditCharacterPage from './pages/EditCharacterPage.tsx'
 import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import DevPage from './pages/DevPage'
 import DiceRollerPage from './pages/DiceRollerPage'
@@ -36,6 +37,11 @@ export default function App() {
           <Route path="/character/:id" element={
             <ProtectedRoute>
               <CharacterViewPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/character/:id/edit" element={
+            <ProtectedRoute>
+              <EditCharacterPage />
             </ProtectedRoute>
           } />
 
