@@ -81,46 +81,46 @@ function parseSingleDice(notation: string): { numDice: number; faceCount: number
   return { numDice, faceCount };
 }
 
-function resolveMultiplyChain(chain: string[]): string {
-  let multiplier = 0;
-  let finalNotation = "";
+// function resolveMultiplyChain(chain: string[]): string {
+//   let multiplier = 0;
+//   let finalNotation = "";
 
-  // Process left-to-right: roll first operand to get multiplier, scale subsequent dice
-  for (let i = 0; i < chain.length; i++) {
-    const operand = chain[i];
+//   // Process left-to-right: roll first operand to get multiplier, scale subsequent dice
+//   for (let i = 0; i < chain.length; i++) {
+//     const operand = chain[i];
 
-    if (/^(\d*)d/i.test(operand)) {
-      // This is a dice notation
-      const { numDice, faceCount } = parseSingleDice(operand);
+//     if (/^(\d*)d/i.test(operand)) {
+//       // This is a dice notation
+//       const { numDice, faceCount } = parseSingleDice(operand);
 
-      if (i === 0) {
-        // First operand: roll it to get the multiplier
-        const rolls = rollDice(numDice, faceCount);
-        multiplier = rolls.reduce((a, b) => a + b, 0);
-        finalNotation = operand; // Save in case chain length is 1
-      } else {
-        // Subsequent operand: scale it by the multiplier
-        const scaledDiceCount = multiplier * numDice;
-        finalNotation = `${scaledDiceCount}d${faceCount}`;
-        // If there are more operands, this becomes the multiplier
-        // For now, just update for the final notation
-        multiplier = 1; // Reset since we've built the notation
-      }
-    } else {
-      // This is a plain number
-      const num = parseInt(operand, 10);
+//       if (i === 0) {
+//         // First operand: roll it to get the multiplier
+//         const rolls = rollDice(numDice, faceCount);
+//         multiplier = rolls.reduce((a, b) => a + b, 0);
+//         finalNotation = operand; // Save in case chain length is 1
+//       } else {
+//         // Subsequent operand: scale it by the multiplier
+//         const scaledDiceCount = multiplier * numDice;
+//         finalNotation = `${scaledDiceCount}d${faceCount}`;
+//         // If there are more operands, this becomes the multiplier
+//         // For now, just update for the final notation
+//         multiplier = 1; // Reset since we've built the notation
+//       }
+//     } else {
+//       // This is a plain number
+//       const num = parseInt(operand, 10);
 
-      if (i === 0) {
-        multiplier = num;
-      } else {
-        // Multiply by current multiplier (shouldn't normally happen but handle it)
-        multiplier *= num;
-      }
-    }
-  }
+//       if (i === 0) {
+//         multiplier = num;
+//       } else {
+//         // Multiply by current multiplier (shouldn't normally happen but handle it)
+//         multiplier *= num;
+//       }
+//     }
+//   }
 
-  return finalNotation;
-}
+//   return finalNotation;
+// }
 
 type EvaluatedFactor = {
   kind: "number" | "dice";
@@ -299,35 +299,35 @@ export function roll(diceInput: string): DiceResult {
 }
 
 
-function evaluateDiceToken(diceToken: string): number[] {
-  const dCount = (diceToken.match(/d/gi) || []).length;
+// function evaluateDiceToken(diceToken: string): number[] {
+//   const dCount = (diceToken.match(/d/gi) || []).length;
 
-  if (dCount === 1) {
-    const { numDice, faceCount } = parseSingleDice(diceToken);
-    return rollDice(numDice, faceCount);
-  }
+//   if (dCount === 1) {
+//     const { numDice, faceCount } = parseSingleDice(diceToken);
+//     return rollDice(numDice, faceCount);
+//   }
 
-  if (dCount > 1) {
-    const firstDIndex = diceToken.search(/d/i);
-    const leftPart = diceToken.slice(0, firstDIndex + 1);
-    const restPart = diceToken.slice(firstDIndex + 1);
+//   if (dCount > 1) {
+//     const firstDIndex = diceToken.search(/d/i);
+//     const leftPart = diceToken.slice(0, firstDIndex + 1);
+//     const restPart = diceToken.slice(firstDIndex + 1);
 
-    const nextDIndex = restPart.search(/d/i);
-    const leftFaceStr = restPart.slice(0, nextDIndex);
-    const rightPart = restPart.slice(nextDIndex);
+//     const nextDIndex = restPart.search(/d/i);
+//     const leftFaceStr = restPart.slice(0, nextDIndex);
+//     const rightPart = restPart.slice(nextDIndex);
 
-    const completeLeft = leftPart + leftFaceStr;
+//     const completeLeft = leftPart + leftFaceStr;
 
-    const { numDice, faceCount } = parseSingleDice(completeLeft);
-    const leftRolls = rollDice(numDice, faceCount);
-    const multiplier = leftRolls.reduce((a, b) => a + b, 0);
+//     const { numDice, faceCount } = parseSingleDice(completeLeft);
+//     const leftRolls = rollDice(numDice, faceCount);
+//     const multiplier = leftRolls.reduce((a, b) => a + b, 0);
 
-    const newRight = multiplier + rightPart;
-    const rightRolls = evaluateDiceToken(newRight);
+//     const newRight = multiplier + rightPart;
+//     const rightRolls = evaluateDiceToken(newRight);
 
-    // Only return the right rolls, not the left
-    return rightRolls;
-  }
+//     // Only return the right rolls, not the left
+//     return rightRolls;
+//   }
 
-  throw new Error(`Invalid dice token: ${diceToken}`);
-}
+//   throw new Error(`Invalid dice token: ${diceToken}`);
+// }

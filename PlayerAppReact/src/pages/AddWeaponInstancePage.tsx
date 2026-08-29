@@ -1,6 +1,6 @@
 
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import { useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useScifiWeapons } from '../hooks/useScifiWeapon'
 import {
@@ -10,7 +10,7 @@ import {
 import NavBar from '../components/NavBar'
 
 export default function AddWeaponInstancePage() {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const [selectedCharacterId, setSelectedCharacterId] = useState<number>(0)
     const [selectedWeaponId, setSelectedWeaponId] = useState<number>(0)
@@ -28,7 +28,7 @@ export default function AddWeaponInstancePage() {
         weapon.name
             .toLowerCase()
             .includes(weaponSearch.toLowerCase())
-    )
+    ) ?? []
 
     const {
         data: existingWeapons,
