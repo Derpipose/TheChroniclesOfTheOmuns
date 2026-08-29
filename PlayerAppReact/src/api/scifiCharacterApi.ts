@@ -70,13 +70,13 @@ export async function deleteScifiCharacter(id: number): Promise<void> {
 import type { ScifiCharacterWithStats } from '../types/scifiCharacterWithStats'
 import type { CharacterStats } from '../types/characterStats'
 
-export async function getScifiCharacterWithAdjustedStats(id: number): Promise<CharacterStats | null> {
-  const response = await apiFetch(`${BASE_URL}/api/scifi/scifiCharacter/${id}/with-stats`)
+export async function getScifiCharacterWithAdjustedStats(scifiCharacterId: number): Promise<CharacterStats | null> {
+  const response = await apiFetch(`${BASE_URL}/api/scifi/scifiCharacter/${scifiCharacterId}/with-stats`)
 
   if (!response.ok) {
     // if 404, return null to let callers fall back
     if (response.status === 404) return null
-    throw new Error(`Failed to fetch scifi character with adjusted stats for id ${id}: ${response.statusText}`)
+    throw new Error(`Failed to fetch scifi character with adjusted stats for id ${scifiCharacterId}: ${response.statusText}`)
   }
 
   const scifi = await response.json() as ScifiCharacterWithStats
