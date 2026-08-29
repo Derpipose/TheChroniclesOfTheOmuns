@@ -30,10 +30,11 @@ public class SciFiSubraceService(AppDbContext db) {
         if (raceExists.HasSubraces == false) {
             raceExists.SetHasSubraces(true);
             var raceStats = await db.RaceStats
+                .AsEnumerable()
                 .Where(rs => !rs.Modifiers.Any() && !rs.FreeStatPicks.Any())
                 .FirstOrDefaultAsync();
 
-            raceExists.SetRaceStats(raceStats ?? new RaceStats(new List<RaceStatModifier>(), new List<int>())); 
+            raceExists.SetRaceStats(raceStats ?? new RaceStats(new List<RaceStatModifier>(), new List<int>()));
 
         }
         await db.SaveChangesAsync();
