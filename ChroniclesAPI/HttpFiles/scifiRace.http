@@ -1,10 +1,16 @@
 @baseUrl = http://localhost:5237
-@token = test-jwt-token
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJkZXJwaXBvc2VAZ21haWwuY29tIiwianRpIjoiNGFlYjNhY2QtZmFiYS00ZTQ5LWFkMWUtMDQ3ODQyNzkzMWZmIiwiZXhwIjoxNzg1NzIxNzI0LCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ.-V2Rdzk9mZAg7aGEiyhd5mIvVZvugP-kz1Sy922X-P4
 @scifiRaceId = 1
 @arakaRaceId = 3
 
 ### Get all scifi races
 GET {{baseUrl}}/api/scifi/scifirace
+Authorization: Bearer {{token}}
+
+###
+
+### Get all scifi races with stats
+GET {{baseUrl}}/api/scifi/scifirace/with-stats
 Authorization: Bearer {{token}}
 
 ###

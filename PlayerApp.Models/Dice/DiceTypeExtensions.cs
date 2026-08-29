@@ -1,8 +1,8 @@
-// namespace PlayerApp.Models.Dice;
+namespace PlayerApp.Models.Dice;
 
-// public static class DiceTypeExtensions
-// {
-//     public static int Sides(this DiceType die) => (int)die;
+public static class DiceTypeExtensions
+{
+    public static int Sides(this DiceType die) => (int)die;
 
-//     public static string DisplayName(this DiceType die) => $"D{die.Sides()}";
-// }
+    public static string DisplayName(this DiceType die) => $"D{die.Sides()}";
+}

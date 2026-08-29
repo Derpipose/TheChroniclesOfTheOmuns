@@ -10,6 +10,12 @@ export async function getCharacters(): Promise<Character[]> {
   return res.json()
 }
 
+export async function getCharacterById(id: number): Promise<Character> {
+  const res = await apiFetch(`${BASE_URL}/api/character/${id}`)
+  if (!res.ok) throw new Error('Failed to fetch character')
+  return res.json()
+}
+
 export async function createCharacter(payload: {
   name: string
   level: number
@@ -20,5 +26,15 @@ export async function createCharacter(payload: {
     body: JSON.stringify(payload),
   })
   if (!res.ok) throw new Error('Failed to create character')
+  return res.json()
+}
+
+export async function updateCharacter(id: number, payload: Partial<Character>): Promise<Character> {
+  const res = await apiFetch(`${BASE_URL}/api/character/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json'},
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error('Failed to update character')
   return res.json()
 }

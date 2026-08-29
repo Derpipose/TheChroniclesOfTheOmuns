@@ -16,6 +16,7 @@ export interface CreateScifiCharacter {
   scifiSubraceId?: number
   scifiClassId?: number
   scifiBackgroundId?: number
+  statPicks?: StatPick[]
 }
 
 export interface UpdateScifiCharacter {
@@ -23,6 +24,7 @@ export interface UpdateScifiCharacter {
   scifiSubraceId?: number
   scifiClassId?: number
   scifiBackgroundId?: number
+  statPicks?: StatPick[]
 }
 
 export interface ScifiCharacter {
@@ -32,8 +34,20 @@ export interface ScifiCharacter {
   scifiSubraceId?: number
   scifiClassId?: number
   scifiBackgroundId?: number
+  statBonuses: StatModifier[]
 }
 
 // Union for when you need to handle multiple subtypes
 export type AnyCharacter =
-  | { type: 'scifi'; data: ScifiCharacter }
+  { type: 'scifi'; data: ScifiCharacter }
+
+export interface StatPick {
+  stat: string
+  amount: number
+}
+
+export interface StatModifier {
+  stat: string
+  amount: number
+  source: string
+}

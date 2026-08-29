@@ -1,6 +1,8 @@
 # @baseUrl = http://derpserver.flyingfox-gourami.ts.net:5400
 @baseUrl = http://localhost:5237
-@token = 
+@token = derp 
+@characterId = 2
+
 ### Get all characters (with stats)
 GET {{baseUrl}}/api/character
 Authorization: Bearer {{token}}
@@ -11,7 +13,9 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/api/character/details
 Authorization: Bearer {{token}}
 
-###
+### Get scifi character by character id
+GET {{baseUrl}}/api/scifi/scificharacter/by-character/{{characterId}}
+Authorization: Bearer {{token}}
 
 ### Get character by id (with stats)
 GET {{baseUrl}}/api/character/1

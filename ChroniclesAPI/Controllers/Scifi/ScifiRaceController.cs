@@ -12,63 +12,24 @@ namespace ChroniclesAPI.Controllers;
 [ApiController]
 [Route("api/scifi/[controller]")]
 [Authorize]
-public class ScifiRaceController(SciFiRaceService sfrc) : ControllerBase {
+public class ScifiRaceController(SciFiRaceService raceService, SciFiSubraceService subraceService) : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateScifiRaceDto request) {
         try {
-            var race = await sfrc.CreateSciFiRaceAsync(request);
+            var race = await raceService.CreateSciFiRaceAsync(request);
             return Ok(race);
         } catch (ConflictException ex) {
             return Conflict(new { message = ex.Message });
         }
     }
 
-    [HttpPost("{raceId:int}/subrace")]
-    public async Task<IActionResult> CreateSubrace(int raceId, [FromBody] CreateScifiSubraceDto request) {
-        try {
-            var subrace = await sfrc.CreateScifiSubraceAsync(raceId, request);
-            return Ok(subrace);
-        } catch (ConflictException ex) {
-            return Conflict(new { message = ex.Message });
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    [HttpPost("seed")]
-    public async Task<IActionResult> SeedFromFiles() {
-        try {
-            await sfrc.SeedScifiRacesFromFileAsync();
-            await sfrc.SeedScifiSubracesFromFileAsync();
-            return Ok();
-        } catch (FileNotFoundException ex) {
-            // A JsonSeeds file is missing -- not a client error, but worth a
-            // clear message instead of a generic 500.
-            return NotFound(new { message = ex.Message });
-        } catch (InvalidOperationException ex) {
-            // Subrace seeding hit a missing parent race -- shouldn't happen if
-            // this endpoint always runs races before subraces, but surfaced
-            // clearly in case the seed files themselves are inconsistent.
-            return StatusCode(500, new { message = ex.Message });
-        }
-    }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateScifiRaceDto request) {
         try {
-            var race = await sfrc.UpdateRace(id, request);
+            var race = await raceService.UpdateRace(id, request);
             return Ok(race);
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    [HttpPut("subrace/{id:int}")]
-    public async Task<IActionResult> UpdateSubrace(int id, [FromBody] UpdateScifiSubraceDto request) {
-        try {
-            var subrace = await sfrc.UpdateSubrace(id, request);
-            return Ok(subrace);
         } catch (NotFoundException ex) {
             return NotFound(new { message = ex.Message });
         }
@@ -78,14 +39,14 @@ public class ScifiRaceController(SciFiRaceService sfrc) : ControllerBase {
 
     [HttpGet]
     public async Task<IActionResult> GetAll() {
-        var races = await sfrc.GetAllRaces();
+        var races = await raceService.GetAllRaces();
         return Ok(races);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id) {
         try {
-            var race = await sfrc.GetRaceById(id);
+            var race = await raceService.GetRaceById(id);
             return Ok(race);
         } catch (NotFoundException ex) {
             return NotFound(new { message = ex.Message });
@@ -94,55 +55,15 @@ public class ScifiRaceController(SciFiRaceService sfrc) : ControllerBase {
 
     [HttpGet("with-stats")]
     public async Task<IActionResult> GetAllWithStats() {
-        var races = await sfrc.GetAllRacesWithStats();
+        var races = await raceService.GetAllRacesWithStats();
         return Ok(races);
-    }
-
-    [HttpGet("subrace/{id:int}")]
-    public async Task<IActionResult> GetSubraceById(int id) {
-        try {
-            var subrace = await sfrc.GetSubraceById(id);
-            return Ok(subrace);
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    [HttpGet("subrace/race/{raceId:int}")]
-    public async Task<IActionResult> GetSubracesByRace(int raceId) {
-        try {
-            var subrace = await sfrc.GetSubraceByRaceId(raceId);
-            return Ok(subrace);
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
     }
 
     [HttpGet("{id:int}/stats")]
     public async Task<IActionResult> GetByIdWithStats(int id) {
         try {
-            var race = await sfrc.GetRaceByIdWithStats(id);
+            var race = await raceService.GetRaceByIdWithStats(id);
             return Ok(race);
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    [HttpGet("subrace/{id:int}/stats")]
-    public async Task<IActionResult> GetSubraceByIdWithStats(int id) {
-        try {
-            var subrace = await sfrc.GetSubraceByIdWithStats(id);
-            return Ok(subrace);
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    [HttpGet("subrace/race/{raceId:int}/stats")]
-    public async Task<IActionResult> GetSubracesByRaceWithStats(int raceId) {
-        try {
-            var subrace = await sfrc.GetSubraceByRaceWithStats(raceId);
-            return Ok(subrace);
         } catch (NotFoundException ex) {
             return NotFound(new { message = ex.Message });
         }
@@ -153,20 +74,11 @@ public class ScifiRaceController(SciFiRaceService sfrc) : ControllerBase {
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id) {
         try {
-            await sfrc.DeleteRaceAsync(id);
+            await subraceService.DeleteRaceAsync(id);
             return NoContent();
         } catch (NotFoundException ex) {
             return NotFound(new { message = ex.Message });
         }
     }
 
-    [HttpDelete("subrace/{id:int}")]
-    public async Task<IActionResult> DeleteSubrace(int id) {
-        try {
-            await sfrc.DeleteSubraceAsync(id);
-            return NoContent();
-        } catch (NotFoundException ex) {
-            return NotFound(new { message = ex.Message });
-        }
-    }
 }

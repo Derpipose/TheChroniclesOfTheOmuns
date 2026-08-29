@@ -10,17 +10,23 @@ public class Character {
     public int Level { get; private set; } = 1;
     public SettingEnum Setting { get; private set; } = SettingEnum.Unregistered;
     public int MaxHealth { get; private set; } = 0;
+    public int BaseArmorClass { get; private set; } = 10;
+
+    public int CurrentHealth { get; private set; } = 0;
     public int Id { get; private set; }
     public bool IsActive { get; private set; } = false;
 
-    public ICollection<CharacterModifier> Modifiers { get; set; } = [];
+    public DateTime LastModified { get; private set; } = DateTime.UtcNow;
 
     public Player? Player { get; private set; }
+
+    public string Notes { get; private set; } = "";
 
 
     public Character(int playerid, string name) {
         PlayerId = playerid;
         Name = name;
+        UpdateLastModified();
     }
 
     private Character(int playerId) {
@@ -31,49 +37,78 @@ public class Character {
     protected Character() {
         // EF Core needs this to materialize the entity
     }
+
+    public void UpdateLastModified() {
+        LastModified = DateTime.UtcNow;
+    }
+
     public void SetName(string name) {
         Name = name;
+        UpdateLastModified();
+    }
+    public void SetCurrentHealth(int currentHealth) {
+        CurrentHealth = currentHealth;
+        UpdateLastModified();
     }
 
     public void SetMaxHealth(int maxHealth) {
         MaxHealth = maxHealth;
+        if (CurrentHealth > MaxHealth) {
+            CurrentHealth = MaxHealth;
+        }
+        UpdateLastModified();
+    }
+
+    public void SetBaseArmorClass(int baseArmorClass) {
+        BaseArmorClass = baseArmorClass;
+        UpdateLastModified();
     }
 
 
     public void SetActive() {
         IsActive = true;
+        UpdateLastModified();
     }
 
     public void SetLevel(int value) {
         if (value < 1) throw new ArgumentOutOfRangeException(nameof(value), "Level must be greater than 0.");
         Level = value;
+        UpdateLastModified();
     }
 
     public void SetSetting(SettingEnum setting) {
         Setting = setting;
+        UpdateLastModified();
     }
 
-    public int GetMaxHealth() {
-        var bonus = Modifiers
+    public int GetMaxHealth(IEnumerable<ICharacterModifier> modifiers) {
+        var bonus = modifiers
             .Where(m => m.ModifierType == ModifierType.Health)
             .Sum(m => m.Amount);
         return MaxHealth + bonus;
     }
 
-    public int GetArmorClass(int baseArmorClass) {
-        var bonus = Modifiers
+    public int GetArmorClass(IEnumerable<ICharacterModifier> modifiers) {
+        var bonus = modifiers
             .Where(m => m.ModifierType == ModifierType.ArmorClass)
             .Sum(m => m.Amount);
-        return baseArmorClass + bonus;
+        return BaseArmorClass + bonus;
     }
 
-    public int GetStat(ModifierType statType, int baseValue) {
-        var bonus = Modifiers
+    public int GetStat(IEnumerable<ICharacterModifier> modifiers, ModifierType statType, int baseValue) {
+        var bonus = modifiers
             .Where(m => m.ModifierType == statType)
             .Sum(m => m.Amount);
         return baseValue + bonus;
     }
 
+    public int GetModifierBonus(IEnumerable<ICharacterModifier> modifiers, ModifierType statType) =>
+        GetStat(modifiers, statType, 0);
+
+    public void SetNotes(string notes) {
+        Notes = notes;
+        UpdateLastModified();
+    }
 
 
     [Conditional("DEBUG")]

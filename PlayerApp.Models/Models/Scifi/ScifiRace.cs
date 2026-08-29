@@ -15,7 +15,7 @@ public class ScifiRace {
     public int AgeMax { get; private set; }
 
     public List<ScifiSubrace> Subraces { get; private set; } = new();
-    public bool HasSubrace => Subraces.Any();
+    public bool HasSubraces { get; private set; }
 
     public ScifiRace(string subType, string name, string description, bool isStarterRace,
                      int raceStatsId, int speed, int adventuringAgeStart,
@@ -41,6 +41,15 @@ public class ScifiRace {
         Speed = speed;
         AdventuringAgeStart = adventuringAgeStart;
         AgeMax = ageMax;
+    }
+
+    public void SetHasSubraces(bool hasSubraces) {
+        HasSubraces = hasSubraces;
+    }
+
+    public void SetRaceStats(RaceStats raceStats) {
+        RaceStats = raceStats;
+        RaceStatsId = raceStats.Id;
     }
 
     // Parameterless constructor for EF Core

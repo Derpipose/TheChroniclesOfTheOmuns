@@ -1,0 +1,8 @@
+@baseUrl = http://localhost:5237
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJqYWxhcGVub2pvc2hAZ21haWwuY29tIiwianRpIjoiODJmM2M0YjEtYTNlYy00MWYzLWJlOGUtNDM4NzlmZDBjZGYwIiwiZXhwIjoxNzg3ODU0MjY1LCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ._LyCAdqmK9gEkteWkzklmSlagW1NFoslrlMv6O-af8I
+GET http://localhost:5237/api/scifi/ScifiCharacter/5/with-stats
+Authorization: Bearer {{token}}
+
+### Example (id=1)
+GET http://localhost:5237/api/scifi/ScifiCharacter/1/with-stats
+Authorization: Bearer {{token}}

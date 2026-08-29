@@ -61,8 +61,17 @@ namespace PlayerApp.Models.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BaseArmorClass")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CurrentHealth")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Level")
                         .HasColumnType("integer");
@@ -71,6 +80,10 @@ namespace PlayerApp.Models.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -85,35 +98,6 @@ namespace PlayerApp.Models.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Characters");
-                });
-
-            modelBuilder.Entity("PlayerApp.Models.CharacterModifier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ModifierType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterId");
-
-                    b.ToTable("CharacterModifiers");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
@@ -283,6 +267,35 @@ namespace PlayerApp.Models.Migrations
                     b.ToTable("ScifiCharacters");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterModifier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModifierType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ScifiCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScifiCharacterId");
+
+                    b.ToTable("ScifiCharacterModifiers");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>
                 {
                     b.Property<int>("Id")
@@ -378,6 +391,141 @@ namespace PlayerApp.Models.Migrations
                     b.ToTable("ScifiTalents");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiWeapon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AmmoCapacity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AmmoType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CriticalFailRange")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalMultiplier")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalRange")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DamageFormula")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("DamageType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EnergyType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ModifierStat")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("RangeCategory")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RateOfFire")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReloadTimeInActions")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScifiWeapons");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.ScifiWeaponInstance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AmmoCapacity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AmmoType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CriticalFailRange")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalMultiplier")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriticalRange")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CurrentAmmo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DamageFormula")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("DamageType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EnergyType")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Favorite")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ModifierStat")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RangeCategory")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RateOfFire")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReloadTimeInActions")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScifiCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScifiWeaponId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScifiCharacterId");
+
+                    b.ToTable("ScifiWeaponInstances");
+                });
+
             modelBuilder.Entity("ScifiRace", b =>
                 {
                     b.Property<int>("Id")
@@ -395,6 +543,9 @@ namespace PlayerApp.Models.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("HasSubraces")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsStarterRace")
                         .HasColumnType("boolean");
@@ -440,17 +591,6 @@ namespace PlayerApp.Models.Migrations
                         .IsRequired();
 
                     b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("PlayerApp.Models.CharacterModifier", b =>
-                {
-                    b.HasOne("PlayerApp.Models.Character", "Character")
-                        .WithMany("Modifiers")
-                        .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Character");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.CharacterStats", b =>
@@ -516,6 +656,17 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiSubrace");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterModifier", b =>
+                {
+                    b.HasOne("PlayerApp.Models.ScifiCharacter", "ScifiCharacter")
+                        .WithMany("Modifiers")
+                        .HasForeignKey("ScifiCharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ScifiCharacter");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiClassTalent", b =>
                 {
                     b.HasOne("PlayerApp.Models.ScifiClass", "ScifiClass")
@@ -552,6 +703,15 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("RaceStats");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiWeaponInstance", b =>
+                {
+                    b.HasOne("PlayerApp.Models.ScifiCharacter", null)
+                        .WithMany()
+                        .HasForeignKey("ScifiCharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ScifiRace", b =>
                 {
                     b.HasOne("PlayerApp.Models.RaceStats", "RaceStats")
@@ -561,11 +721,6 @@ namespace PlayerApp.Models.Migrations
                         .IsRequired();
 
                     b.Navigation("RaceStats");
-                });
-
-            modelBuilder.Entity("PlayerApp.Models.Character", b =>
-                {
-                    b.Navigation("Modifiers");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.Player", b =>
@@ -578,6 +733,11 @@ namespace PlayerApp.Models.Migrations
             modelBuilder.Entity("PlayerApp.Models.ScifiBackground", b =>
                 {
                     b.Navigation("BackgroundTalents");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacter", b =>
+                {
+                    b.Navigation("Modifiers");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>
