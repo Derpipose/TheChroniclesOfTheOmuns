@@ -36,9 +36,9 @@ public class ScifiBackground {
     }
 
     public void SetName(string name) => Name = name;
-public void SetDescription(string description) => Description = description;
-public void SetRestricted(bool restricted) => Restricted = restricted;
-public void SetHasClassOverlap(bool hasClassOverlap) => HasClassOverlap = hasClassOverlap;
+    public void SetDescription(string description) => Description = description;
+    public void SetRestricted(bool restricted) => Restricted = restricted;
+    public void SetHasClassOverlap(bool hasClassOverlap) => HasClassOverlap = hasClassOverlap;
 
 
     [Conditional("DEBUG")]

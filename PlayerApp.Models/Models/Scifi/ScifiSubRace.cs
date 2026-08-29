@@ -31,6 +31,11 @@ public class ScifiSubrace {
         RaceStatsId = raceStatsId;
     }
 
+    public void SetSubraceStats(RaceStats raceStats) {
+        RaceStats = raceStats;
+        RaceStatsId = raceStats.Id;
+    }
+
     // Parameterless constructor for EF Core
     protected ScifiSubrace() {
         // EF Core needs this to materialize the entity
