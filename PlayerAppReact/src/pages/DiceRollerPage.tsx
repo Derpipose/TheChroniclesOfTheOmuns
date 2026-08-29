@@ -1,39 +1,16 @@
 import { useState, useEffect,  } from 'react'
 import { resolveExpression} from '../functions/DiceRoller'
-import { CustomRollPresetCard, type CustomRollPreset } from '../components/CustomRollPresetCard'
+import CustomRolls from '../components/CustomRolls'
+import RollLog, { type DiceRoll, type RollMode } from '../components/RollLog'
 import NavBar from '../components/NavBar'
-import { useNavigate } from '@tanstack/react-router'
 import { useCharacter, useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
 import { useScifiCharacterWithStats } from '../hooks/useScifiCharacterWithStats'
-import { getScifiCharacterByCharacterId } from '../api/scifiCharacterApi'
 import {
   useScifiWeaponInstances,
   useUseAmmo,
   useReloadWeapon,
 } from '../hooks/useScifiWeaponInstance'
-import { useQuery } from '@tanstack/react-query'
-interface DiceRoll {
-  id: string
-  timestamp: string
-  expression: string
-  resolvedExpr: string
-  allRolls: number[]
-  total: number
-  label?: string
-  attempts?: DiceRollAttempt[]
-  rollMode?: RollMode
-  chosenAttemptIndex?: number
-}
-
-type RollMode = 'standard' | 'advantage' | 'disadvantage'
-
-interface DiceRollAttempt {
-  resolvedExpr: string
-  allRolls: number[]
-  total: number
-}
-
 interface PendingWeaponRoll {
   weaponId: number
   criticalMultiplier: number
@@ -47,6 +24,8 @@ export default function DiceRollerPage() {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | ''>('')
   const [rollingStat, setRollingStat] = useState<string | null>(null)
   const [rollMode, setRollMode] = useState<RollMode>('standard')
+  const [rollLogVisible, setRollLogVisible] = useState(true)
+  const [rollAlert, setRollAlert] = useState<string | null>(null)
 
   const { data: characters = [], isLoading: charactersLoading } = useCharacters()
   // TODO: Re-enable the active-only filter once the rest of the site supports inactive character flows more cleanly.
@@ -56,16 +35,8 @@ export default function DiceRollerPage() {
   const { data: selectedScifiCharacter } = useScifiCharacterByCharacterId(selectedCharacterId || 0)
   const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
 
-  const { data: scifiCharacterForCharacter } = useQuery({
-    queryKey: ['scifiCharacterForCharacter', selectedCharacterId],
-    queryFn: () => getScifiCharacterByCharacterId(selectedCharacterId || 0),
-    enabled: !!selectedCharacterId,
-  })
 
-  // Debugging: inspect which scifiCharacter is resolved and adjusted result
-  console.debug('scifiCharacterForCharacter', scifiCharacterForCharacter)
-
-  const { data: selectedAdjustedScifi, isLoading: adjustedLoading } = useScifiCharacterWithStats(scifiCharacterForCharacter)
+  const { data: selectedAdjustedScifi, isLoading: adjustedLoading } = useScifiCharacterWithStats(selectedScifiCharacter?.id)
 
   console.debug('selectedAdjustedScifi', selectedAdjustedScifi)
 
@@ -99,30 +70,8 @@ export default function DiceRollerPage() {
     }
   }, [activeCharacters, selectedCharacterId])
 
-  // Initialize from localStorage without an effect
-  const [customPresets, setCustomPresets] = useState(() => {
-    const saved = localStorage.getItem('diceroller_presets')
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch (e) {
-        console.error('Failed to load presets:', e)
-        return []
-      }
-    }
-    return []
-  })
-
-  const [newPresetName, setNewPresetName] = useState('')
-  const [newPresetExpr, setNewPresetExpr] = useState('')
-  const [showAddPreset, setShowAddPreset] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [rollNumber, setRollNumber] = useState(0)
-
-  // Only keep the save effect (remove the load effect)
-  useEffect(() => {
-    localStorage.setItem('diceroller_presets', JSON.stringify(customPresets))
-  }, [customPresets])
 
   const handleRoll = (
     expression: string,
@@ -167,6 +116,9 @@ export default function DiceRollerPage() {
         }
         setRolls((prev) => [roll, ...prev]) // append to bottom
         setRollNumber((prev) => prev + 1)
+        if (!rollLogVisible) {
+          setRollAlert(`${roll.label ?? roll.expression}: ${roll.total}`)
+        }
         onComplete?.(result)
       } catch (err) {
         setError((err as Error).message || 'Invalid dice expression')
@@ -183,32 +135,12 @@ export default function DiceRollerPage() {
     setRollNumber(0)
   }
 
-  const addPreset = () => {
-    if (!newPresetName.trim() || !newPresetExpr.trim()) {
-      setError('Name and expression are required')
-      return
-    }
-    try {
-      // Validate the expression by attempting to resolve it
-      resolveExpression(newPresetExpr)
-      const preset: CustomRollPreset = {
-        id: Date.now().toString(),
-        name: newPresetName,
-        expression: newPresetExpr,
-      }
-      setCustomPresets((prev: CustomRollPreset[]) => [...prev, preset])
-      setNewPresetName('')
-      setNewPresetExpr('')
-      setShowAddPreset(false)
-      setError(null)
-    } catch (err) {
-      setError((err as Error).message || 'Invalid dice expression')
+  const handleRollLogVisibilityChange = (isVisible: boolean) => {
+    setRollLogVisible(isVisible)
+    if (isVisible) {
+      setRollAlert(null)
     }
   }
-
-  const deletePreset = (id: string) => {
-  setCustomPresets((prev: CustomRollPreset[]) => prev.filter((p) => p.id !== id))
-}
 
   const statEntries = effectiveStats
     ? [
@@ -249,17 +181,17 @@ export default function DiceRollerPage() {
         <NavBar title="Dice Roller" />
       {/* Header */}
       <div
-        className="border-b px-6 py-4 flex items-center justify-between"
+        className="sticky top-0 z-20 border-b px-4 py-3 shadow-sm sm:px-6 sm:py-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
         style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
             Roll mode
           </span>
           {(['standard', 'advantage', 'disadvantage'] as RollMode[]).map((mode) => (
             <label
               key={mode}
-              className="flex items-center gap-1 rounded border px-2 py-2 text-xs capitalize cursor-pointer"
+                className="flex items-center gap-1 rounded border px-1.5 py-1.5 text-[11px] capitalize cursor-pointer sm:px-2 sm:py-2 sm:text-xs"
               style={{
                 backgroundColor: rollMode === mode ? '#EDE8DC' : '#FDFAF4',
                 borderColor: '#DDD8CC',
@@ -280,7 +212,7 @@ export default function DiceRollerPage() {
 
         <button
           onClick={clearRolls}
-          className="px-4 py-2 text-sm rounded transition-colors hover:opacity-90 disabled:opacity-50"
+          className="w-full px-3 py-1.5 text-xs rounded transition-colors hover:opacity-90 disabled:opacity-50 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
           style={{
             backgroundColor: '#8B7355',
             color: '#FDFAF4',
@@ -291,18 +223,38 @@ export default function DiceRollerPage() {
         </button>
       </div>
 
+      {rollAlert && (
+        <div
+          className="fixed inset-x-4 top-24 z-30 flex items-center justify-between gap-3 rounded-lg border px-3 py-2 shadow-lg sm:inset-x-auto sm:right-6 sm:w-auto sm:min-w-72"
+          style={{ backgroundColor: '#FDFAF4', borderColor: '#8B7355', color: '#2C2416' }}
+          role="status"
+          aria-live="polite"
+        >
+          <span className="min-w-0 flex-1 break-words text-sm font-semibold">{rollAlert}</span>
+          <button
+            type="button"
+            onClick={() => setRollAlert(null)}
+            className="shrink-0 px-1 text-lg leading-none"
+            style={{ color: '#7A6F5C' }}
+            aria-label="Dismiss roll alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-80px)]">
+      <div className="flex min-h-[calc(100vh-80px)] flex-col md:h-[calc(100vh-80px)] md:flex-row">
         {/* Left Panel - Roll Inputs */}
         <div
-          className="w-1/3 border-r overflow-y-auto p-6 flex flex-col gap-4"
+          className="order-2 w-full min-w-0 border-b overflow-y-auto p-4 flex flex-col gap-4 sm:p-6 md:order-1 md:w-1/3 md:border-b-0 md:border-r"
           style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC' }}
         >
           {/* Tab Switcher */}
           <div className="flex gap-2 mb-4">
             <button
               onClick={() => setActiveTab('custom')}
-              className="flex-1 py-2 px-3 text-sm rounded transition-all border"
+              className="min-w-0 flex-1 px-2 py-1.5 text-xs rounded transition-all border sm:px-3 sm:py-2 sm:text-sm"
               style={{
                 backgroundColor: activeTab === 'custom' ? '#8B7355' : '#EDE8DC',
                 color: activeTab === 'custom' ? '#FDFAF4' : '#5C4F38',
@@ -313,7 +265,7 @@ export default function DiceRollerPage() {
             </button>
             <button
               onClick={() => setActiveTab('character')}
-              className="flex-1 py-2 px-3 text-sm rounded transition-all border"
+              className="min-w-0 flex-1 px-2 py-1.5 text-xs rounded transition-all border sm:px-3 sm:py-2 sm:text-sm"
               style={{
                 backgroundColor: activeTab === 'character' ? '#8B7355' : '#EDE8DC',
                 color: activeTab === 'character' ? '#FDFAF4' : '#5C4F38',
@@ -326,97 +278,11 @@ export default function DiceRollerPage() {
 
           {/* Custom Rolls Tab */}
           {activeTab === 'custom' && (
-            <div className="space-y-4">
-              <div className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
-                Custom Presets
-              </div>
-
-              {customPresets.length === 0 && !showAddPreset && (
-                <p className="text-xs text-center" style={{ color: '#7A6F5C' }}>
-                  No presets yet
-                </p>
-              )}
-
-              {customPresets.map((preset: CustomRollPreset) => (
-                <CustomRollPresetCard
-                  key={preset.id}
-                  preset={preset}
-                  onRoll={handleRoll}
-                  onDelete={deletePreset}
-                  isRolling={rollingStat === `preset-${preset.id}`}
-                />
-              ))}
-
-              {showAddPreset ? (
-                <div
-                  className="rounded-lg border p-3 space-y-3"
-                  style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
-                >
-                  <input
-                    type="text"
-                    placeholder="Preset name"
-                    value={newPresetName}
-                    onChange={(e) => setNewPresetName(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded outline-none border focus:border-stone-400 transition-colors"
-                    style={{
-                      backgroundColor: '#F5F0E8',
-                      borderColor: '#DDD8CC',
-                      color: '#2C2416',
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="e.g., 1d20 + 3"
-                    value={newPresetExpr}
-                    onChange={(e) => setNewPresetExpr(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded outline-none border focus:border-stone-400 transition-colors font-mono"
-                    style={{
-                      backgroundColor: '#F5F0E8',
-                      borderColor: '#DDD8CC',
-                      color: '#2C2416',
-                    }}
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={addPreset}
-                      className="flex-1 py-2 text-xs font-semibold rounded transition-colors hover:opacity-90"
-                      style={{
-                        backgroundColor: '#8B7355',
-                        color: '#FDFAF4',
-                      }}
-                    >
-                      Add
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowAddPreset(false)
-                        setNewPresetName('')
-                        setNewPresetExpr('')
-                      }}
-                      className="flex-1 py-2 text-xs font-medium rounded transition-colors"
-                      style={{
-                        backgroundColor: '#EDE8DC',
-                        color: '#5C4F38',
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowAddPreset(true)}
-                  className="w-full py-2 text-xs font-medium rounded transition-colors border"
-                  style={{
-                    backgroundColor: '#F5F0E8',
-                    borderColor: '#DDD8CC',
-                    color: '#5C4F38',
-                  }}
-                >
-                  + New Preset
-                </button>
-              )}
-            </div>
+            <CustomRolls
+              onRoll={handleRoll}
+              rollingStat={rollingStat}
+              onError={setError}
+            />
           )}
 
           {/* Character Rolls Tab */}
@@ -682,7 +548,7 @@ export default function DiceRollerPage() {
     type="button"
     onClick={isFiring ? handleWeaponDamage : handleWeaponHitRoll}
     disabled={rollingStat === weaponRollKey || isOutOfAmmo || isReloading}
-    className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+    className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
     style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
   >
     {isOutOfAmmo
@@ -703,7 +569,7 @@ export default function DiceRollerPage() {
       (!isFiring && isFullAmmo) ||
       (isFiring && ammoToConsume <= 0)
     }
-    className="flex-1 py-2 text-xs font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+    className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
     style={{
       backgroundColor: isFiring ? '#EDE8DC' : isOutOfAmmo ? '#A85C4B' : '#EDE8DC',
       color: !isFiring && isOutOfAmmo ? '#FDFAF4' : '#5C4F38',
@@ -751,126 +617,7 @@ export default function DiceRollerPage() {
         </div>
 
         {/* Right Panel - Roll Log */}
-        <div
-          className="w-2/3 overflow-y-auto p-6"
-          style={{ backgroundColor: '#F5F0E8' }}
-        >
-          <div className="space-y-3">
-            {rolls.length === 0 ? (
-              <div className="text-center py-12">
-                <p
-                  className="text-sm"
-                  style={{ color: '#7A6F5C' }}
-                >
-                  No rolls yet
-                </p>
-              </div>
-            ) : (
-              rolls.map((roll) => (
-                <div
-                  key={roll.id}
-                  className="rounded-lg border p-4"
-                  style={{
-                    backgroundColor: '#FDFAF4',
-                    borderColor: '#DDD8CC',
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    <div className="flex-1 min-w-0">
-                      {roll.label && (
-                        <p
-                          className="text-sm font-semibold mb-1"
-                          style={{ color: '#2C2416' }}
-                        >
-                          {roll.label}
-                        </p>
-                      )}
-                      <p
-                        className="text-xs"
-                        style={{ color: '#7A6F5C' }}
-                      >
-                        {roll.timestamp}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      {roll.attempts ? (
-                        <div className="flex gap-2">
-                          {roll.attempts.map((attempt, index) => (
-                            <div
-                              key={`${roll.id}-summary-${index}`}
-                              className="rounded border px-2 py-1"
-                              style={{
-                                borderColor: index === roll.chosenAttemptIndex ? '#8B7355' : '#DDD8CC',
-                                backgroundColor: index === roll.chosenAttemptIndex ? '#F3EBDD' : '#FDFAF4',
-                              }}
-                            >
-                              <p className="text-2xl font-bold font-mono" style={{ color: '#8B7355' }}>
-                                {attempt.total}
-                              </p>
-                              <p className="text-xs" style={{ color: '#7A6F5C' }}>
-                                {index === roll.chosenAttemptIndex ? 'Chosen' : `Roll ${index + 1}`}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-2xl font-bold font-mono" style={{ color: '#8B7355' }}>
-                          {roll.total}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-1 pt-2 border-t" style={{ borderColor: '#DDD8CC' }}>
-                    <p
-                      className="text-xs font-mono"
-                      style={{ color: '#2C2416' }}
-                    >
-                      {roll.expression}
-                    </p>
-                    {roll.attempts && (
-                      <div className="space-y-2 pt-1">
-                        <p className="text-xs capitalize" style={{ color: '#7A6F5C' }}>
-                          {roll.rollMode}
-                        </p>
-                        {roll.attempts.map((attempt, index) => (
-                          <div
-                            key={`${roll.id}-attempt-${index}`}
-                            className="rounded border px-2 py-1"
-                            style={{
-                              borderColor: index === roll.chosenAttemptIndex ? '#8B7355' : '#DDD8CC',
-                              backgroundColor: index === roll.chosenAttemptIndex ? '#F3EBDD' : '#FDFAF4',
-                            }}
-                          >
-                            <p className="text-xs font-mono" style={{ color: '#2C2416' }}>
-                              Attempt {index + 1}: {attempt.total}
-                              {index === roll.chosenAttemptIndex && ' — Chosen'}
-                            </p>
-                            <p className="text-xs font-mono" style={{ color: '#7A6F5C' }}>
-                              [{attempt.allRolls.join(', ')}]
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p
-                      className="text-xs font-mono"
-                      style={{ color: '#7A6F5C' }}
-                    >
-                      = {roll.resolvedExpr}
-                    </p>
-                    <p
-                      className="text-xs font-mono break-all"
-                      style={{ color: '#7A6F5C' }}
-                    >
-                      [{roll.allRolls.join(', ')}]
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <RollLog rolls={rolls} onVisibilityChange={handleRollLogVisibilityChange} />
       </div>
     </div>
   )

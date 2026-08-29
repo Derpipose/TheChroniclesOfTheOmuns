@@ -42,7 +42,7 @@ export function CustomRollPresetCard({
         <button
           onClick={() => onRoll(preset.expression, preset.name, `preset-${preset.id}`)}
           disabled={isRolling}
-          className="flex-1 py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
           style={{
             backgroundColor: '#8B7355',
             color: '#FDFAF4',
@@ -52,7 +52,7 @@ export function CustomRollPresetCard({
         </button>
         <button
           onClick={() => onDelete(preset.id)}
-          className="py-2 px-3 text-xs rounded transition-colors hover:opacity-90"
+          className="shrink-0 px-2 py-1.5 text-[11px] rounded transition-colors hover:opacity-90 sm:px-3 sm:py-2 sm:text-xs"
           style={{
             backgroundColor: '#EDE8DC',
             color: '#5C4F38',
