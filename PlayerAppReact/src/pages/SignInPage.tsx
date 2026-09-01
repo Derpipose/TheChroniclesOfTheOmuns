@@ -22,7 +22,7 @@ export default function SignInPage() {
     setLoading(true)
     try {
       if (tab === 'sign-up') {
-        const res = await fetch(`${BASE_URL}/players/register`, {
+        const res = await fetch(`${BASE_URL}/api/players/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ displayName, email }),
