@@ -29,11 +29,10 @@ public class SciFiSubraceService(AppDbContext db) {
         db.ScifiSubraces.Add(subrace);
         if (raceExists.HasSubraces == false) {
             raceExists.SetHasSubraces(true);
-            var raceStats = await db.RaceStats
-                .Where(rs => !rs.Modifiers.Any() && !rs.FreeStatPicks.Any())
-                .FirstOrDefaultAsync();
+            var raceStats = (await db.RaceStats.ToListAsync())
+    .FirstOrDefault(rs => !rs.Modifiers.Any() && !rs.FreeStatPicks.Any());
 
-            raceExists.SetRaceStats(raceStats ?? new RaceStats(new List<RaceStatModifier>(), new List<int>())); 
+            raceExists.SetRaceStats(raceStats ?? new RaceStats(new List<RaceStatModifier>(), new List<int>()));
 
         }
         await db.SaveChangesAsync();
