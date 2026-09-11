@@ -263,7 +263,7 @@ export default function AddWeaponInstancePage() {
                         className="rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50"
                         style={{
                             backgroundColor: 'var(--color-accent)',
-                            color: 'var(--color-text)',
+                            color: 'var(--color-text-30)',
                         }}
                     >
                         {createWeaponInstance.isPending

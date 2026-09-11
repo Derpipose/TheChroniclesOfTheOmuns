@@ -387,7 +387,7 @@ export default function UpdateWeaponInstancePage() {
                             className="w-full rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
                             style={{
                                 backgroundColor: 'var(--color-accent)',
-                                color: 'var(--color-text)',
+                                color: 'var(--color-text-30)',
                             }}
                         >
                             {saving ? 'Saving...' : 'Save Changes'}

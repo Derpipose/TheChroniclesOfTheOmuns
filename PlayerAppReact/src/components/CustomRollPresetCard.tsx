@@ -45,7 +45,7 @@ export function CustomRollPresetCard({
           className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
           style={{
             backgroundColor: 'var(--color-accent)',
-            color: 'var(--color-text)',
+            color: 'var(--color-text-30)',
           }}
         >
           {isRolling ? 'Rolling' : 'Roll'}

@@ -215,7 +215,7 @@ export default function DiceRollerPage() {
           className="w-full px-3 py-1.5 text-xs rounded transition-colors hover:opacity-90 disabled:opacity-90 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
           style={{
             backgroundColor: 'var(--color-accent)',
-            color: 'var(--color-text)',
+            color: 'var(--color-text-30)',
           }}
           disabled={rolls.length === 0 || rollingStat !== null}
         >
@@ -226,7 +226,7 @@ export default function DiceRollerPage() {
       {rollAlert && (
         <div
           className="fixed inset-x-4 top-24 z-30 flex items-center justify-between gap-3 rounded-lg border px-3 py-2 shadow-lg sm:inset-x-auto sm:right-6 sm:w-auto sm:min-w-72"
-          style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-accent)', color: 'var(--color-text)' }}
+          style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-accent-30)', color: 'var(--color-text)' }}
           role="status"
           aria-live="polite"
         >
@@ -380,7 +380,7 @@ export default function DiceRollerPage() {
                                     className="w-full py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
                                     style={{
                                       backgroundColor: 'var(--color-accent)',
-                                      color: 'var(--color-text)',
+                                      color: 'var(--color-text-30)',
                                     }}
                                   >
                                     {rollingStat === label ? 'Rolling' : 'Roll'}
@@ -549,7 +549,7 @@ export default function DiceRollerPage() {
     onClick={isFiring ? handleWeaponDamage : handleWeaponHitRoll}
     disabled={rollingStat === weaponRollKey || isOutOfAmmo || isReloading}
     className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
-    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}
+    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
   >
     {isOutOfAmmo
       ? 'Out of Ammo'

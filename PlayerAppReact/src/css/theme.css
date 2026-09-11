@@ -1,131 +1,225 @@
 [data-theme="General"] {
-  --color-primary: #2C2825;
-  --color-primary-60: #77736D;
-  --color-primary-30: #B0ABA2;
+    --color-primary: #2C2825;
+    --color-primary-60: #77736D;
+    --color-primary-30: #B0ABA2;
 
-  --color-secondary: #8C1F28;
-  --color-secondary-60: #B16D6E;
-  --color-secondary-30: #CCA8A3;
+    --color-secondary: #8C1F28;
+    --color-secondary-60: #B16D6E;
+    --color-secondary-30: #CCA8A3;
 
-  --color-text: #181614;
-  --color-text-60: #6B6862;
-  --color-text-30: #AAA69D;
+    --color-text: #181614;
+    --color-text-60: #AAA69D;
+    /* swapped: now lighter */
+    --color-text-30: #6B6862;
+    /* swapped: now darker for buttons */
 
-  --color-background: #E8E3D8;
-  --color-background-60: #F1EEE8;
-  --color-background-30: #F8F7F3;
+    --color-background: #E8E3D8;
+    --color-background-60: #F1EEE8;
+    --color-background-30: #F8F7F3;
 
-  --color-accent: #C9A84C;
-  --color-accent-60: #D5C084;
-  --color-accent-30: #DFD1AE;
+    --color-accent: #C9A84C;
+    --color-accent-60: #D5C084;
+    --color-accent-30: #DFD1AE;
 }
 
 [data-theme="Scifi"] {
-  --color-primary: #0B0F14;
-  --color-primary-60: #0D131C;
-  --color-primary-30: #0F1521;
+    --color-primary: #0B0F14;
+    --color-primary-60: #0D131C;
+    --color-primary-30: #0F1521;
 
-  --color-secondary: #1D9E9E;
-  --color-secondary-60: #18686E;
-  --color-secondary-30: #15404B;
+    --color-secondary: #1D9E9E;
+    --color-secondary-60: #18686E;
+    --color-secondary-30: #15404B;
 
-  --color-text: #E7ECEF;
-  --color-text-60: #91979F;
-  --color-text-30: #515863;
+    --color-text: #E7ECEF;
+    --color-text-60: #91979F;
+    --color-text-30: #515863;
 
-  --color-background: #111827;
-  --color-background-60: #3D424B;
-  --color-background-30: #5F6165;
+    --color-background: #111827;
+    --color-background-60: #3D424B;
+    --color-background-30: #5F6165;
 
-  --color-accent: #3DDC97;
-  --color-accent-60: #2B8E6A;
-  --color-accent-30: #1E5349;
+    --color-accent: #3DDC97;
+    --color-accent-60: #2B8E6A;
+    --color-accent-30: #1E5349;
 }
 
 [data-theme="Fantasy"] {
-  --color-primary: #3D2B1F;
-  --color-primary-60: #7B6343;
-  --color-primary-30: #AA8E5F;
+    --color-primary: #3D2B1F;
+    --color-primary-60: #7B6343;
+    --color-primary-30: #AA8E5F;
 
-  --color-secondary: #8A5A3B;
-  --color-secondary-60: #AA8054;
-  --color-secondary-30: #C19C67;
+    --color-secondary: #8A5A3B;
+    --color-secondary-60: #AA8054;
+    --color-secondary-30: #C19C67;
 
-  --color-text: #1B140F;
-  --color-text-60: #67563A;
-  --color-text-30: #A0875A;
+    --color-text: #1B140F;
+    --color-text-60: #A0875A;
+    --color-text-30: #1B140F;
+    /* Changed: now the darkest for accent buttons */
 
-  --color-background: #D9B87A;
-  --color-background-60: #E8D4AF;
-  --color-background-30: #F4EAD7;
+    --color-background: #D9B87A;
+    --color-background-60: #E8D4AF;
+    --color-background-30: #F4EAD7;
 
-  --color-accent: #6E3ACF;
-  --color-accent-60: #996CAD;
-  --color-accent-30: #B99294;
+    --color-accent: #6E3ACF;
+    --color-accent-60: #996CAD;
+    --color-accent-30: #B99294;
 }
 
 [data-theme="ScifiFantasyHybrid"] {
-  --color-primary: #2A2320;
-  --color-primary-60: #78716C;
-  --color-primary-30: #B2ACA4;
+    --color-primary: #2A2320;
+    --color-primary-60: #78716C;
+    --color-primary-30: #B2ACA4;
 
-  --color-secondary: #4FD8C4;
-  --color-secondary-60: #8EDECE;
-  --color-secondary-30: #BEE2D6;
+    --color-secondary: #4FD8C4;
+    --color-secondary-60: #8EDECE;
+    --color-secondary-30: #BEE2D6;
 
-  --color-text: #12100E;
-  --color-text-60: #6A6661;
-  --color-text-30: #ABA69F;
+    --color-text: #12100E;
+    --color-text-60: #ABA69F;
+    --color-text-30: #12100E;
+    /* Changed: now the darkest */
 
-  --color-background: #EDE7DD;
-  --color-background-60: #F4F1EB;
-  --color-background-30: #FAF8F5;
+    --color-background: #EDE7DD;
+    --color-background-60: #F4F1EB;
+    --color-background-30: #FAF8F5;
 
-  --color-accent: #B27A3E;
-  --color-accent-60: #CAA67E;
-  --color-accent-30: #DBC6AD;
+    --color-accent: #B27A3E;
+    --color-accent-60: #CAA67E;
+    --color-accent-30: #DBC6AD;
 }
 
 [data-theme="OvergrownRuins"] {
-  --color-primary: #2B3327;
-  --color-primary-60: #727768;
-  --color-primary-30: #A7A998;
+    --color-primary: #2B3327;
+    --color-primary-60: #727768;
+    --color-primary-30: #A7A998;
 
-  --color-secondary: #6E8362;
-  --color-secondary-60: #9AA78B;
-  --color-secondary-30: #BBC1AA;
+    --color-secondary: #9C8355;
+    --color-secondary-60: #B6A783;
+    --color-secondary-30: #C9C1A6;
 
-  --color-text: #171B15;
-  --color-text-60: #66685D;
-  --color-text-30: #A1A293;
+    --color-text: #171B15;
+    --color-text-60: #66685D;
+    --color-text-30: #171B15;
+    /* Changed: now the darkest */
 
-  --color-background: #DCDCC9;
-  --color-background-60: #EAEADF;
-  --color-background-30: #F4F4EF;
+    --color-background: #D9CCC0;
+    /* Slightly darker, more stone-like */
+    --color-background-60: #E8DFD5;
+    --color-background-30: #F4EFEA;
 
-  --color-accent: #9C8355;
-  --color-accent-60: #B6A783;
-  --color-accent-30: #C9C1A6;
+    --color-accent: #6E8362;
+    /* Changed: now the moss/vegetation */
+    --color-accent-60: #9AA78B;
+    --color-accent-30: #BBC1AA;
 }
 
 [data-theme="VoidDeepSpace"] {
-  --color-primary: #0D0E14;
-  --color-primary-60: #13141D;
-  --color-primary-30: #171823;
+    --color-primary: #0D0E14;
+    --color-primary-60: #13141D;
+    --color-primary-30: #171823;
 
-  --color-secondary: #4A5578;
-  --color-secondary-60: #373F59;
-  --color-secondary-30: #292E41;
+    --color-secondary: #4A5578;
+    --color-secondary-60: #373F59;
+    --color-secondary-30: #292E41;
 
-  --color-text: #c7c7e8;
-  --color-text-60: #8D8E99;
-  --color-text-30: #545562;
+    --color-text: #c7c7e8;
+    --color-text-60: #8D8E99;
+    --color-text-30: #545562;
 
-  --color-background: #1B1D2A;
-  --color-background-60: #43454C;
-  --color-background-30: #626266;
+    --color-background: #1B1D2A;
+    --color-background-60: #43454C;
+    --color-background-30: #626266;
 
-  --color-accent: #b59add;
-  --color-accent-60: #7e7199;
-  --color-accent-30: #3E3A50;
+    --color-accent: #b59add;
+    --color-accent-60: #7e7199;
+    --color-accent-30: #3E3A50;
+}
+
+[data-theme="Null"] {
+    --color-primary: #0A0B10;
+    --color-primary-60: #0F101A;
+    --color-primary-30: #141620;
+
+    --color-secondary: #3D2F52;
+    --color-secondary-60: #2A1F38;
+    --color-secondary-30: #1A1225;
+
+    --color-text: #9A9AAD;
+    --color-text-60: #6B6B7D;
+    --color-text-30: #4A4A56;
+
+    --color-background: #12141F;
+    --color-background-60: #1F212D;
+    --color-background-30: #2A2C38;
+
+    --color-accent: #B56CFF;
+    --color-accent-60: #6B3B99;
+    --color-accent-30: #2D1F42;
+}
+[data-theme="Cryo"] {
+    --color-primary: #0A0B10;
+    --color-primary-60: #0F101A;
+    --color-primary-30: #141620;
+
+    --color-secondary: #2D4A63;
+    --color-secondary-60: #1F3447;
+    --color-secondary-30: #152A39;
+
+    --color-text: #D5E8F5;
+    --color-text-60: #8D9BA5;
+    --color-text-30: #56616A;
+
+    --color-background: #1B1D2A;
+    --color-background-60: #3D424C;
+    --color-background-30: #5A5F68;
+
+    --color-accent: #7FE7FF;
+    --color-accent-60: #4BA8D1;
+    --color-accent-30: #1F4A5F;
+}
+
+[data-theme="Blaze"] {
+    --color-primary: #0D0E14;
+    --color-primary-60: #13141D;
+    --color-primary-30: #171823;
+
+    --color-secondary: #6B2A2F;
+    --color-secondary-60: #4A1F23;
+    --color-secondary-30: #321619;
+
+    --color-text: #E8D0D0;
+    --color-text-60: #9D8B8B;
+    --color-text-30: #625758;
+
+    --color-background: #1B1D2A;
+    --color-background-60: #43454C;
+    --color-background-30: #626266;
+
+    --color-accent: #FF6B1A;
+    --color-accent-60: #D94517;
+    --color-accent-30: #6B2E1A;
+}
+
+[data-theme="Volt"] {
+    --color-primary: #0D0E14;
+    --color-primary-60: #13141D;
+    --color-primary-30: #171823;
+
+    --color-secondary: #264662;
+    --color-secondary-60: #1A3449;
+    --color-secondary-30: #112340;
+
+    --color-text: #D5DCE5;
+    --color-text-60: #8D969F;
+    --color-text-30: #555D65;
+
+    --color-background: #1B1D2A;
+    --color-background-60: #43454C;
+    --color-background-30: #626266;
+
+    --color-accent: #FFE047;
+    --color-accent-60: #B5941F;
+    --color-accent-30: #5C5218;
 }
