@@ -124,7 +124,7 @@ export default function UpdateWeaponInstancePage() {
     return (
         <div
             className="min-h-screen"
-            style={{ backgroundColor: '#F5F0E8' }}
+            style={{ backgroundColor: 'var(--color-background)' }}
         >
             {/* Header */}
             <NavBar title="Edit Weapon" />
@@ -135,13 +135,13 @@ export default function UpdateWeaponInstancePage() {
                 <div
                     className="rounded-2xl border p-6 flex flex-col gap-4"
                     style={{
-                        backgroundColor: '#FDFAF4',
-                        borderColor: '#DDD8CC',
+                        backgroundColor: 'var(--color-background-30)',
+                        borderColor: 'var(--color-primary-30)',
                     }}
                 >
                     <h2
                         className="text-sm font-semibold uppercase tracking-wide"
-                        style={{ color: '#7A6F5C' }}
+                        style={{ color: 'var(--color-text-60)' }}
                     >
                         Select Weapon
                     </h2>
@@ -150,7 +150,7 @@ export default function UpdateWeaponInstancePage() {
                     <label className="flex flex-col gap-2">
                         <span
                             className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: '#7A6F5C' }}
+                            style={{ color: 'var(--color-text-60)' }}
                         >
                             Character
                         </span>
@@ -158,14 +158,14 @@ export default function UpdateWeaponInstancePage() {
                         {charactersLoading ? (
                             <p
                                 className="text-sm"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 Loading characters...
                             </p>
                         ) : characters.length === 0 ? (
                             <p
                                 className="text-sm"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 No characters found.
                             </p>
@@ -175,9 +175,9 @@ export default function UpdateWeaponInstancePage() {
                                 onChange={handleCharacterChange}
                                 className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
                                 style={{
-                                    backgroundColor: '#F5F0E8',
-                                    borderColor: '#DDD8CC',
-                                    color: '#2C2416',
+                                    backgroundColor: 'var(--color-background)',
+                                    borderColor: 'var(--color-primary-30)',
+                                    color: 'var(--color-text)',
                                 }}
                             >
                                 {characters.map((character) => (
@@ -196,7 +196,7 @@ export default function UpdateWeaponInstancePage() {
                     <label className="flex flex-col gap-2">
                         <span
                             className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: '#7A6F5C' }}
+                            style={{ color: 'var(--color-text-60)' }}
                         >
                             Weapon
                         </span>
@@ -204,14 +204,14 @@ export default function UpdateWeaponInstancePage() {
                         {weaponsLoading ? (
                             <p
                                 className="text-sm"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 Loading weapons...
                             </p>
                         ) : weapons.length === 0 ? (
                             <p
                                 className="text-sm"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 This character has no weapons.
                             </p>
@@ -221,9 +221,9 @@ export default function UpdateWeaponInstancePage() {
                                 onChange={handleWeaponChange}
                                 className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
                                 style={{
-                                    backgroundColor: '#F5F0E8',
-                                    borderColor: '#DDD8CC',
-                                    color: '#2C2416',
+                                    backgroundColor: 'var(--color-background)',
+                                    borderColor: 'var(--color-primary-30)',
+                                    color: 'var(--color-text)',
                                 }}
                             >
                                 {weapons.map((weapon) => (
@@ -244,21 +244,21 @@ export default function UpdateWeaponInstancePage() {
                     <div
                         className="rounded-2xl border p-6 flex flex-col gap-5"
                         style={{
-                            backgroundColor: '#FDFAF4',
-                            borderColor: '#DDD8CC',
+                            backgroundColor: 'var(--color-background-30)',
+                            borderColor: 'var(--color-primary-30)',
                         }}
                     >
                         <div>
                             <p
                                 className="text-xs font-medium uppercase tracking-wide"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 Weapon
                             </p>
 
                             <h2
                                 className="text-lg font-semibold mt-1"
-                                style={{ color: '#2C2416' }}
+                                style={{ color: 'var(--color-text)' }}
                             >
                                 {selectedWeapon.name}
                             </h2>
@@ -268,7 +268,7 @@ export default function UpdateWeaponInstancePage() {
                         <label className="flex flex-col gap-2">
                             <span
                                 className="text-xs font-medium uppercase tracking-wide"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 Nickname
                             </span>
@@ -282,15 +282,15 @@ export default function UpdateWeaponInstancePage() {
                                 placeholder={selectedWeapon.name}
                                 className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
                                 style={{
-                                    backgroundColor: '#F5F0E8',
-                                    borderColor: '#DDD8CC',
-                                    color: '#2C2416',
+                                    backgroundColor: 'var(--color-background)',
+                                    borderColor: 'var(--color-primary-30)',
+                                    color: 'var(--color-text)',
                                 }}
                             />
 
                             <span
                                 className="text-xs"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 Leave blank to use the weapon's normal name.
                             </span>
@@ -305,14 +305,14 @@ export default function UpdateWeaponInstancePage() {
                             className="rounded-lg border px-4 py-3 flex items-center justify-between transition-opacity hover:opacity-90"
                             style={{
                                 backgroundColor: favorite
-                                    ? '#EDE8DC'
-                                    : '#F5F0E8',
-                                borderColor: '#DDD8CC',
+                                    ? 'var(--color-background-60)'
+                                    : 'var(--color-background)',
+                                borderColor: 'var(--color-primary-30)',
                             }}
                         >
                             <span
                                 className="text-sm font-medium"
-                                style={{ color: '#2C2416' }}
+                                style={{ color: 'var(--color-text)' }}
                             >
                                 Favorite
                             </span>
@@ -321,8 +321,8 @@ export default function UpdateWeaponInstancePage() {
                                 className="text-lg"
                                 style={{
                                     color: favorite
-                                        ? '#8B7355'
-                                        : '#7A6F5C',
+                                        ? 'var(--color-accent)'
+                                        : 'var(--color-text-60)',
                                 }}
                             >
                                 {favorite ? '★' : '☆'}
@@ -332,18 +332,18 @@ export default function UpdateWeaponInstancePage() {
                         {/* Weapon information */}
                         <div
                             className="rounded-lg px-3 py-3 flex flex-col gap-1"
-                            style={{ backgroundColor: '#EDE8DC' }}
+                            style={{ backgroundColor: 'var(--color-background-60)' }}
                         >
                             <p
                                 className="text-xs"
-                                style={{ color: '#7A6F5C' }}
+                                style={{ color: 'var(--color-text-60)' }}
                             >
                                 Ammo
                             </p>
 
                             <p
                                 className="text-sm font-semibold"
-                                style={{ color: '#2C2416' }}
+                                style={{ color: 'var(--color-text)' }}
                             >
                                 {selectedWeapon.currentAmmo}/
                                 {selectedWeapon.ammoCapacity}
@@ -354,9 +354,9 @@ export default function UpdateWeaponInstancePage() {
                             <div
                                 className="rounded-lg p-3 text-sm"
                                 style={{
-                                    backgroundColor: '#F5F0E8',
-                                    color: '#A85C4B',
-                                    border: '1px solid #DDD8CC',
+                                    backgroundColor: 'var(--color-background)',
+                                    color: 'var(--color-secondary)',
+                                    border: '1px solid var(--color-primary-30)',
                                 }}
                             >
                                 {error}
@@ -386,8 +386,8 @@ export default function UpdateWeaponInstancePage() {
                             }
                             className="w-full rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
                             style={{
-                                backgroundColor: '#8B7355',
-                                color: '#FDFAF4',
+                                backgroundColor: 'var(--color-accent)',
+                                color: 'var(--color-text)',
                             }}
                         >
                             {saving ? 'Saving...' : 'Save Changes'}

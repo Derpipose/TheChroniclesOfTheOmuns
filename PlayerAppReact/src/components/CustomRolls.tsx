@@ -69,12 +69,12 @@ export default function CustomRolls({
 
   return (
     <div className="space-y-4">
-      <div className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+      <div className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
         Custom Presets
       </div>
 
       {presets.length === 0 && !showAddPreset && (
-        <p className="text-xs text-center" style={{ color: '#7A6F5C' }}>
+        <p className="text-xs text-center" style={{ color: 'var(--color-text-60)' }}>
           No presets yet
         </p>
       )}
@@ -92,7 +92,7 @@ export default function CustomRolls({
       {showAddPreset ? (
         <div
           className="rounded-lg border p-3 space-y-3"
-          style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+          style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
         >
           <input
             type="text"
@@ -100,7 +100,7 @@ export default function CustomRolls({
             value={newPresetName}
             onChange={(event) => setNewPresetName(event.target.value)}
             className="w-full px-3 py-2 text-sm rounded outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
           />
           <input
             type="text"
@@ -108,20 +108,20 @@ export default function CustomRolls({
             value={newPresetExpr}
             onChange={(event) => setNewPresetExpr(event.target.value)}
             className="w-full px-3 py-2 text-sm rounded outline-none border focus:border-stone-400 transition-colors font-mono"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
           />
           <div className="flex gap-2">
             <button
               onClick={addPreset}
               className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 sm:py-2 sm:text-xs"
-              style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
+              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}
             >
               Add
             </button>
             <button
               onClick={cancelAddPreset}
               className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-medium rounded transition-colors sm:py-2 sm:text-xs"
-              style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}
+              style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text)' }}
             >
               Cancel
             </button>
@@ -131,7 +131,7 @@ export default function CustomRolls({
         <button
           onClick={() => setShowAddPreset(true)}
           className="w-full py-2 text-xs font-medium rounded transition-colors border"
-          style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#5C4F38' }}
+          style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
         >
           + New Preset
         </button>

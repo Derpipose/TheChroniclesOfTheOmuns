@@ -10,6 +10,8 @@ import DevPage from './pages/DevPage'
 import DiceRollerPage from './pages/DiceRollerPage'
 import AddWeaponInstancePage from './pages/AddWeaponInstancePage'
 import UpdateWeaponInstancePage from './pages/UpdateWeaponInstancePage'
+import { ThemeSync } from './theme/ThemeSync.tsx'
+import PlayerSettingsPage from './pages/PlayerSettings.tsx'
 
 const queryClient = new QueryClient()
 
@@ -17,62 +19,74 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/sign-in" replace />} />
-          <Route path="/sign-in" element={
-            <PublicOnlyRoute>
-              <SignInPage />
-            </PublicOnlyRoute>
-          } />
-          <Route path="/characters" element={
-            <ProtectedRoute>
-              <CharactersPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/characters/add" element={
-            <ProtectedRoute>
-              <AddCharacterPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/character/:id" element={
-            <ProtectedRoute>
-              <CharacterViewPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/character/:id/edit" element={
-            <ProtectedRoute>
-              <EditCharacterPage />
-            </ProtectedRoute>
-          } />
+        <ThemeSync>
+          <Routes>
+            <Route path="/" element={<Navigate to="/sign-in" replace />} />
 
+            <Route path="/sign-in" element={
+              <PublicOnlyRoute>
+                <SignInPage />
+              </PublicOnlyRoute>
+            } />
 
+            <Route path="/characters" element={
+              <ProtectedRoute>
+                <CharactersPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/dev" element={
-            <ProtectedRoute>
-              <DevPage />
-            </ProtectedRoute>
-          } />
+            <Route path="/characters/add" element={
+              <ProtectedRoute>
+                <AddCharacterPage />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/rolldice" element={
-            <ProtectedRoute>
+            <Route path="/character/:id" element={
+              <ProtectedRoute>
+                <CharacterViewPage />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/character/:id/edit" element={
+              <ProtectedRoute>
+                <EditCharacterPage />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/rolldice" element={
+              <ProtectedRoute>
                 <DiceRollerPage />
-            </ProtectedRoute>
-          } />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/addweapon" element={
-            <ProtectedRoute>
+            <Route path="/addweapon" element={
+              <ProtectedRoute>
                 <AddWeaponInstancePage />
-            </ProtectedRoute>
-          } />
+              </ProtectedRoute>
+            } />
 
-          <Route path="/editweapon" element={
-            <ProtectedRoute>
+            <Route path="/editweapon" element={
+              <ProtectedRoute>
                 <UpdateWeaponInstancePage />
-            </ProtectedRoute>
-          } />
-        </Routes>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/playersettings" element={
+              <ProtectedRoute>
+                <PlayerSettingsPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Developer Tools and more restricted routes */}
+
+            <Route path="/dev" element={
+              <ProtectedRoute>
+                <DevPage />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </ThemeSync>
       </BrowserRouter>
     </QueryClientProvider>
-
   )
 }
