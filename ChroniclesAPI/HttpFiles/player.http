@@ -1,5 +1,5 @@
 ### Register a new player
-POST http://localhost:5237/players/register
+POST http://localhost:5237/player/register
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 ###
 
 ### Try to register duplicate email (should return 409)
-POST http://localhost:5237/players/register
+POST http://localhost:5237/player/register
 Content-Type: application/json
 
 {

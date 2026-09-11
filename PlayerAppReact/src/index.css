@@ -1,1 +1,21 @@
 @import "tailwindcss";
+@import "./css/theme.css";
+
+/* Nav bar buttons: tint toward the accent colour on hover/focus */
+.nav-btn {
+  background-color: var(--color-background-60);
+  color: var(--color-text);
+  border: 2px solid var(--color-primary-30);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-btn:hover,
+.nav-btn:focus-visible {
+  background-color: var(--color-accent-30);
+  color: var(--color-primary);
+  border-color: var(--color-accent);
+}
+
+.nav-btn:active {
+  background-color: var(--color-accent-60);
+}

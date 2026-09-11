@@ -9,7 +9,7 @@ using PlayerApp.Models.Enums;
 namespace ChroniclesAPI.Controllers;
 
 [ApiController]
-[Route("api/players")]
+[Route("api/player")]
 public class PlayerController(AppDbContext db, PlayerContext playerContext) : ControllerBase
 {
     [HttpPost("register")]

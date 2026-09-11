@@ -177,15 +177,15 @@ export default function DiceRollerPage() {
   ) : []
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
         <NavBar title="Dice Roller" />
       {/* Header */}
       <div
         className="sticky top-0 z-20 border-b px-4 py-3 shadow-sm sm:px-6 sm:py-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
-        style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+        style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
       >
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+          <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
             Roll mode
           </span>
           {(['standard', 'advantage', 'disadvantage'] as RollMode[]).map((mode) => (
@@ -193,9 +193,9 @@ export default function DiceRollerPage() {
               key={mode}
                 className="flex items-center gap-1 rounded border px-1.5 py-1.5 text-[11px] capitalize cursor-pointer sm:px-2 sm:py-2 sm:text-xs"
               style={{
-                backgroundColor: rollMode === mode ? '#EDE8DC' : '#FDFAF4',
-                borderColor: '#DDD8CC',
-                color: '#5C4F38',
+                backgroundColor: rollMode === mode ? 'var(--color-background-60)' : 'var(--color-background-30)',
+                borderColor: 'var(--color-primary-30)',
+                color: 'var(--color-text)',
               }}
             >
               <input
@@ -212,10 +212,10 @@ export default function DiceRollerPage() {
 
         <button
           onClick={clearRolls}
-          className="w-full px-3 py-1.5 text-xs rounded transition-colors hover:opacity-90 disabled:opacity-50 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
+          className="w-full px-3 py-1.5 text-xs rounded transition-colors hover:opacity-90 disabled:opacity-90 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
           style={{
-            backgroundColor: '#8B7355',
-            color: '#FDFAF4',
+            backgroundColor: 'var(--color-accent)',
+            color: 'var(--color-text)',
           }}
           disabled={rolls.length === 0 || rollingStat !== null}
         >
@@ -226,7 +226,7 @@ export default function DiceRollerPage() {
       {rollAlert && (
         <div
           className="fixed inset-x-4 top-24 z-30 flex items-center justify-between gap-3 rounded-lg border px-3 py-2 shadow-lg sm:inset-x-auto sm:right-6 sm:w-auto sm:min-w-72"
-          style={{ backgroundColor: '#FDFAF4', borderColor: '#8B7355', color: '#2C2416' }}
+          style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-accent)', color: 'var(--color-text)' }}
           role="status"
           aria-live="polite"
         >
@@ -235,7 +235,7 @@ export default function DiceRollerPage() {
             type="button"
             onClick={() => setRollAlert(null)}
             className="shrink-0 px-1 text-lg leading-none"
-            style={{ color: '#7A6F5C' }}
+            style={{ color: 'var(--color-text-60)' }}
             aria-label="Dismiss roll alert"
           >
             ×
@@ -248,7 +248,7 @@ export default function DiceRollerPage() {
         {/* Left Panel - Roll Inputs */}
         <div
           className="order-2 w-full min-w-0 border-b overflow-y-auto p-4 flex flex-col gap-4 sm:p-6 md:order-1 md:w-1/3 md:border-b-0 md:border-r"
-          style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC' }}
+          style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)' }}
         >
           {/* Tab Switcher */}
           <div className="flex gap-2 mb-4">
@@ -256,9 +256,9 @@ export default function DiceRollerPage() {
               onClick={() => setActiveTab('custom')}
               className="min-w-0 flex-1 px-2 py-1.5 text-xs rounded transition-all border sm:px-3 sm:py-2 sm:text-sm"
               style={{
-                backgroundColor: activeTab === 'custom' ? '#8B7355' : '#EDE8DC',
-                color: activeTab === 'custom' ? '#FDFAF4' : '#5C4F38',
-                borderColor: '#DDD8CC',
+                backgroundColor: activeTab === 'custom' ? 'var(--color-accent)' : 'var(--color-background-60)',
+                color: activeTab === 'custom' ? 'var(--color-text-30)' : 'var(--color-text)',
+                borderColor: 'var(--color-primary-30)',
               }}
             >
               Custom
@@ -267,9 +267,9 @@ export default function DiceRollerPage() {
               onClick={() => setActiveTab('character')}
               className="min-w-0 flex-1 px-2 py-1.5 text-xs rounded transition-all border sm:px-3 sm:py-2 sm:text-sm"
               style={{
-                backgroundColor: activeTab === 'character' ? '#8B7355' : '#EDE8DC',
-                color: activeTab === 'character' ? '#FDFAF4' : '#5C4F38',
-                borderColor: '#DDD8CC',
+                backgroundColor: activeTab === 'character' ? 'var(--color-accent)' : 'var(--color-background-60)',
+                color: activeTab === 'character' ? 'var(--color-text-30)' : 'var(--color-text)',
+                borderColor: 'var(--color-primary-30)',
               }}
             >
               Character
@@ -288,27 +288,27 @@ export default function DiceRollerPage() {
           {/* Character Rolls Tab */}
           {activeTab === 'character' && (
             <div className="space-y-4">
-              <div className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+              <div className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
                 Character Rolls
               </div>
 
               {charactersLoading ? (
-                <p className="text-sm" style={{ color: '#7A6F5C' }}>
+                <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
                   Loading characters...
                 </p>
               ) : activeCharacters.length === 0 ? (
                 <div
                   className="rounded-lg border p-4 text-center"
-                  style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+                  style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
                 >
-                  <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+                  <p className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>
                     No active characters available.
                   </p>
                 </div>
               ) : (
                 <>
                   <label className="flex flex-col gap-2">
-                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
                       Select Character
                     </span>
                     <select
@@ -316,9 +316,9 @@ export default function DiceRollerPage() {
                       onChange={(event) => setSelectedCharacterId(Number(event.target.value))}
                       className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors"
                       style={{
-                        backgroundColor: '#FDFAF4',
-                        borderColor: '#DDD8CC',
-                        color: '#2C2416',
+                        backgroundColor: 'var(--color-background-30)',
+                        borderColor: 'var(--color-primary-30)',
+                        color: 'var(--color-text)',
                       }}
                     >
                       {activeCharacters.map((character) => (
@@ -330,18 +330,18 @@ export default function DiceRollerPage() {
                   </label>
 
                   {selectedCharacter && (
-                    <p className="text-xs" style={{ color: '#7A6F5C' }}>
-                      Selected: <span className="font-semibold" style={{ color: '#2C2416' }}>{selectedCharacter.name}</span>
+                    <p className="text-xs" style={{ color: 'var(--color-text-60)' }}>
+                      Selected: <span className="font-semibold" style={{ color: 'var(--color-text)' }}>{selectedCharacter.name}</span>
                     </p>
                   )}
 
                   {statsLoading || adjustedLoading ? (
-                    <p className="text-sm" style={{ color: '#7A6F5C' }}>
+                    <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
                       Loading character stats...
                     </p>
                   ) : effectiveStats ? (
                     <div className="space-y-4">
-                      <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                      <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
                         Character Stats
                       </h2>
 
@@ -355,14 +355,14 @@ export default function DiceRollerPage() {
                                 <div
                                   key={label}
                                   className="rounded-lg border p-3 space-y-2"
-                                  style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+                                  style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
                                 >
                                   <div className="flex items-center justify-between gap-2">
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-sm font-semibold" style={{ color: '#2C2416' }}>
+                                      <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>
                                         {label}
                                       </p>
-                                      <p className="text-xs mt-1" style={{ color: '#7A6F5C' }}>
+                                      <p className="text-xs mt-1" style={{ color: 'var(--color-text-60)' }}>
                                         Score: {score} | Mod: {modifier >= 0 ? `+${modifier}` : modifier}
                                       </p>
                                     </div>
@@ -379,8 +379,8 @@ export default function DiceRollerPage() {
                                     disabled={rollingStat === label}
                                     className="w-full py-2 text-xs font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
                                     style={{
-                                      backgroundColor: '#8B7355',
-                                      color: '#FDFAF4',
+                                      backgroundColor: 'var(--color-accent)',
+                                      color: 'var(--color-text)',
                                     }}
                                   >
                                     {rollingStat === label ? 'Rolling' : 'Roll'}
@@ -395,24 +395,24 @@ export default function DiceRollerPage() {
                       <div className="pt-2">
   <h2
     className="text-sm font-semibold uppercase tracking-wide"
-    style={{ color: '#7A6F5C' }}
+    style={{ color: 'var(--color-text-60)' }}
   >
     Weapons
   </h2>
 
   {weaponsLoading ? (
-    <p className="text-sm mt-2" style={{ color: '#7A6F5C' }}>
+    <p className="text-sm mt-2" style={{ color: 'var(--color-text-60)' }}>
       Loading weapons...
     </p>
   ) : selectedWeapons.length === 0 ? (
     <div
       className="rounded-lg border p-4 mt-2 text-center"
       style={{
-        backgroundColor: '#FDFAF4',
-        borderColor: '#DDD8CC',
+        backgroundColor: 'var(--color-background-30)',
+        borderColor: 'var(--color-primary-30)',
       }}
     >
-      <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+      <p className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>
         This character has no weapons.
       </p>
     </div>
@@ -499,8 +499,8 @@ export default function DiceRollerPage() {
             key={weapon.id}
             className="rounded-lg border p-3 space-y-2 transition-opacity"
             style={{
-                backgroundColor: isOutOfAmmo ? '#F3E2DE' : '#FDFAF4',
-                borderColor: isOutOfAmmo ? '#C98A7D' : '#DDD8CC',
+                backgroundColor: isOutOfAmmo ? 'var(--color-secondary-30)' : 'var(--color-background-30)',
+                borderColor: isOutOfAmmo ? 'var(--color-secondary-60)' : 'var(--color-primary-30)',
                 opacity: 1,
             }}
           >
@@ -508,21 +508,21 @@ export default function DiceRollerPage() {
               <div className="flex-1 min-w-0">
                 <p
                   className="text-sm font-semibold"
-                  style={{ color: '#2C2416' }}
+                  style={{ color: 'var(--color-text)' }}
                 >
                   {weapon.nickname || weapon.name}
                 </p>
 
                 <p
                   className="text-xs mt-1 font-mono"
-                  style={{ color: '#7A6F5C' }}
+                  style={{ color: 'var(--color-text-60)' }}
                 >
                   {damageFormula} {modifierExpression}
                 </p>
 
                 <p
                   className="text-xs mt-1"
-                  style={{ color: '#7A6F5C' }}
+                  style={{ color: 'var(--color-text-60)' }}
                 >
                   ROF: {rateOfFire}
                   {' || '}
@@ -536,7 +536,7 @@ export default function DiceRollerPage() {
                 <span
                   className="text-xs"
                   title="Favorite"
-                  style={{ color: '#8B7355' }}
+                  style={{ color: 'var(--color-accent)' }}
                 >
                   ★
                 </span>
@@ -549,7 +549,7 @@ export default function DiceRollerPage() {
     onClick={isFiring ? handleWeaponDamage : handleWeaponHitRoll}
     disabled={rollingStat === weaponRollKey || isOutOfAmmo || isReloading}
     className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
-    style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
+    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}
   >
     {isOutOfAmmo
       ? 'Out of Ammo'
@@ -571,9 +571,9 @@ export default function DiceRollerPage() {
     }
     className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
     style={{
-      backgroundColor: isFiring ? '#EDE8DC' : isOutOfAmmo ? '#A85C4B' : '#EDE8DC',
-      color: !isFiring && isOutOfAmmo ? '#FDFAF4' : '#5C4F38',
-      border: !isFiring && isOutOfAmmo ? '1px solid #8F493C' : '1px solid #DDD8CC',
+      backgroundColor: isFiring ? 'var(--color-background-60)' : isOutOfAmmo ? 'var(--color-secondary)' : 'var(--color-background-60)',
+      color: !isFiring && isOutOfAmmo ? 'var(--color-background-30)' : 'var(--color-text)',
+      border: !isFiring && isOutOfAmmo ? '1px solid var(--color-secondary)' : '1px solid var(--color-primary-30)',
     }}
   >
     {isFiring
@@ -593,9 +593,9 @@ export default function DiceRollerPage() {
                   ) : (
                     <div
                       className="rounded-lg border p-4 text-center"
-                      style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+                      style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
                     >
-                      <p className="text-sm font-medium" style={{ color: '#2C2416' }}>
+                      <p className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>
                         No stats found for this character.
                       </p>
                     </div>
@@ -609,7 +609,7 @@ export default function DiceRollerPage() {
           {error && (
             <div
               className="rounded-lg p-3 text-sm"
-              style={{ backgroundColor: '#F5F0E8', color: '#A85C4B', border: '1px solid #DDD8CC' }}
+              style={{ backgroundColor: 'var(--color-background)', color: 'var(--color-secondary)', border: '1px solid var(--color-primary-30)' }}
             >
               {error}
             </div>
