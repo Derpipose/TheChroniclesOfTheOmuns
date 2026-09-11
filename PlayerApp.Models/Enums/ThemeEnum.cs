@@ -10,5 +10,7 @@ public enum ThemeEnum {
     Blaze = 6,
     Volt = 7,
     Cryo = 8,
-    Null = 9
+    Null = 9,
+    Stormgate = 10,
+    Aurora = 11,
 }

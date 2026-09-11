@@ -223,3 +223,46 @@
     --color-accent-60: #B5941F;
     --color-accent-30: #5C5218;
 }
+[data-theme="Stormgate"] {
+    --color-primary: #0A0B10;
+    --color-primary-60: #0F101A;
+    --color-primary-30: #141620;
+
+    --color-secondary: #008000;
+    --color-secondary-60: #006600;
+    --color-secondary-30: #004400;
+
+    --color-text: #D5E8F5;
+    --color-text-60: #7A8E9D;
+    --color-text-30: #4A5562;
+
+    --color-background: #0D1A0D;
+    --color-background-60: #1A2A1A;
+    --color-background-30: #253A25;
+
+    --color-accent: #0077FF;
+    --color-accent-60: #0055CC;
+    --color-accent-30: #003366;
+}
+
+[data-theme="Aurora"] {
+    --color-primary: #0A1428;
+    --color-primary-60: #0F1A35;
+    --color-primary-30: #141F42;
+
+    --color-secondary: #6A4C93;
+    --color-secondary-60: #4A3570;
+    --color-secondary-30: #32244D;
+
+    --color-text: #D5E8F5;
+    --color-text-60: #7A8E9D;
+    --color-text-30: #4A5562;
+
+    --color-background: #0D1620;
+    --color-background-60: #1B2A3A;
+    --color-background-30: #2A3F52;
+
+    --color-accent: #00FF88;
+    --color-accent-60: #00CC6F;
+    --color-accent-30: #006B3A;
+}
