@@ -13,4 +13,6 @@ public enum ThemeEnum {
     Null = 9,
     Stormgate = 10,
     Aurora = 11,
+    Royalty = 12,
+    DarkLord = 13,
 }
