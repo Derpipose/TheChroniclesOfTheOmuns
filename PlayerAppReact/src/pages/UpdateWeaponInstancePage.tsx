@@ -3,6 +3,7 @@ import { useCharacters, useScifiCharacterByCharacterId } from '../hooks/useChara
 import {
     useScifiWeaponInstances,
     useScifiWeaponInstance,
+    useDeleteScifiWeaponInstance,
     useRenameWeapon,
     useToggleFavorite,
 } from '../hooks/useScifiWeaponInstance'
@@ -27,6 +28,7 @@ export default function UpdateWeaponInstancePage() {
 
     const renameMutation = useRenameWeapon()
     const favoriteMutation = useToggleFavorite()
+    const deleteMutation = useDeleteScifiWeaponInstance()
 
     const [nickname, setNickname] = useState('')
     const [favorite, setFavorite] = useState(false)
@@ -118,6 +120,26 @@ export default function UpdateWeaponInstancePage() {
             )
         } finally {
             setSaving(false)
+        }
+    }
+
+    const handleDelete = async () => {
+        if (!selectedWeapon) return
+
+        const weaponName = selectedWeapon.nickname || selectedWeapon.name
+        if (!window.confirm(`Delete ${weaponName} from this character?`)) return
+
+        try {
+            setError(null)
+            setSuccess(false)
+            await deleteMutation.mutateAsync(selectedWeapon.id)
+            setSelectedWeaponId('')
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to delete weapon.'
+            )
         }
     }
 
@@ -382,7 +404,8 @@ export default function UpdateWeaponInstancePage() {
                             disabled={
                                 saving ||
                                 renameMutation.isPending ||
-                                favoriteMutation.isPending
+                                favoriteMutation.isPending ||
+                                deleteMutation.isPending
                             }
                             className="w-full rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
                             style={{
@@ -391,6 +414,27 @@ export default function UpdateWeaponInstancePage() {
                             }}
                         >
                             {saving ? 'Saving...' : 'Save Changes'}
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleDelete}
+                            disabled={
+                                saving ||
+                                renameMutation.isPending ||
+                                favoriteMutation.isPending ||
+                                deleteMutation.isPending
+                            }
+                            className="w-full rounded-lg border py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+                            style={{
+                                backgroundColor: 'var(--color-secondary-30)',
+                                borderColor: 'var(--color-secondary-60)',
+                                color: 'var(--color-secondary)',
+                            }}
+                        >
+                            {deleteMutation.isPending
+                                ? 'Deleting...'
+                                : 'Delete Weapon'}
                         </button>
                     </div>
                 )}
