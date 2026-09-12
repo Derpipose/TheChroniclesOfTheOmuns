@@ -226,32 +226,32 @@ export default function EditCharacterPage() {
   }, [scifiCharacter, activeRaceStats]);
 
   return (
-  <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
-    <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-      <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: '#7A6F5C' }}>
+  <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
+    <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
+      <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
         ← Back
       </button>
-      <h1 className="text-lg font-semibold" style={{ color: '#2C2416' }}>Edit Character</h1>
+      <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>Edit Character</h1>
     </div>
 
     <div className="max-w-md mx-auto px-6 py-8">
-      <div className="rounded-2xl border p-6 flex flex-col gap-5" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
+      <div className="rounded-2xl border p-6 flex flex-col gap-5" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
 
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Name</label>
+          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Name</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
             placeholder="Character name"
           />
         </div>
 
         {/* Race dropdown — options from `races`, onChange sets raceId, also reset subraceId to undefined when race changes */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Race</label>
+          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Race</label>
           <select
             value={raceId ?? ''}
             onChange={(e) => {
@@ -260,7 +260,7 @@ export default function EditCharacterPage() {
               setSubraceId(undefined) // Reset subrace when race changes
             }}
             className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
           >
             <option value="">Select a race</option>
             {races?.map((race) => (
@@ -274,12 +274,12 @@ export default function EditCharacterPage() {
         {/* Subrace dropdown — only rendered if showSubraceDropdown is true, options from `subraces` */}
         {showSubraceDropdown && (
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Subrace</label>
+            <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Subrace</label>
             <select
               value={subraceId ?? ''}
               onChange={(e) => setSubraceId(e.target.value ? parseInt(e.target.value) : undefined)}
               className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-              style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+              style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
             >
               <option value="">Select a subrace</option>
               {subraces?.map((subrace) => (
@@ -293,12 +293,12 @@ export default function EditCharacterPage() {
 
         {/* Class dropdown — options from `classes` */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Class</label>
+          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</label>
           <select
             value={classId ?? ''}
             onChange={(e) => setClassId(e.target.value ? parseInt(e.target.value) : undefined)}
             className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
           >
             <option value="">Select a class</option>
             {classes?.map((cls) => (
@@ -311,12 +311,12 @@ export default function EditCharacterPage() {
 
         {/* Background dropdown — options from `backgrounds` */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Background</label>
+          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</label>
           <select
             value={backgroundId ?? ''}
             onChange={(e) => setBackgroundId(e.target.value ? parseInt(e.target.value) : undefined)}
             className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
           >
             <option value="">Select a background</option>
             {backgrounds?.map((bg) => (
@@ -339,10 +339,10 @@ export default function EditCharacterPage() {
 
             return (
               <div key={label} className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>{label}</label>
+                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label}</label>
 
                 {isLocked ? (
-                  <span className="text-sm" style={{ color: '#2C2416' }}>
+                  <span className="text-sm" style={{ color: 'var(--color-text)' }}>
                     {/* render: {racialMod} (locked by race) */}
                     {racialMod} (locked by race)
                   </span>
@@ -360,9 +360,9 @@ export default function EditCharacterPage() {
                         setValue(String(clamped));
                       }}
                       className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
-                      style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+                      style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                     />
-                    <span className="text-sm" style={{ color: '#7A6F5C' }}>
+                    <span className="text-sm" style={{ color: 'var(--color-text-60)' }}>
                       {/* render: + {racialMod} (racial) + 10 = {finalValue} */}
                       + {racialMod} (racial) + 10 = {finalValue}
                     </span>
@@ -377,7 +377,7 @@ export default function EditCharacterPage() {
           <div className="flex flex-col gap-4">
             {activeRaceStats.freeStatPicks.map((amount, index) => (
               <div key={index} className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
                   Apply the +{amount} pick
                 </label>
                 <div className="flex flex-wrap gap-3">
@@ -407,7 +407,7 @@ export default function EditCharacterPage() {
         {/* Level input */}
 
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Level (Currenly set to only 1)</label>
+          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Level (Currenly set to only 1)</label>
           <input
             type="number"
             min="1"
@@ -416,17 +416,17 @@ export default function EditCharacterPage() {
             disabled = {true}
             onChange={(e) => setLevel(e.target.value)}
             className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
           />
         </div>
 
-        {error && <p className="text-sm" style={{ color: '#A85C4B' }}>{error}</p>}
+        {error && <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>{error}</p>}
 
         <div className="flex gap-3 mt-2">
-          <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors" style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}>
+          <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text)' }}>
             Cancel
           </button>
-          <button onClick={handleSave} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50" style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}>
+          <button onClick={handleSave} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}>
             {submitting ? 'Saving…' : 'Save Character'}
           </button>
         </div>

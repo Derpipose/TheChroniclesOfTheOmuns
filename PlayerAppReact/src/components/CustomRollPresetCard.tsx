@@ -20,19 +20,19 @@ export function CustomRollPresetCard({
   return (
     <div
       className="rounded-lg border p-3 space-y-2"
-      style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}
+      style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p
             className="text-sm font-semibold truncate"
-            style={{ color: '#2C2416' }}
+            style={{ color: 'var(--color-text)' }}
           >
             {preset.name}
           </p>
           <p
             className="text-xs mt-1 break-all font-mono"
-            style={{ color: '#7A6F5C' }}
+            style={{ color: 'var(--color-text-60)' }}
           >
             {preset.expression}
           </p>
@@ -44,8 +44,8 @@ export function CustomRollPresetCard({
           disabled={isRolling}
           className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
           style={{
-            backgroundColor: '#8B7355',
-            color: '#FDFAF4',
+            backgroundColor: 'var(--color-accent)',
+            color: 'var(--color-text)',
           }}
         >
           {isRolling ? 'Rolling' : 'Roll'}
@@ -54,8 +54,8 @@ export function CustomRollPresetCard({
           onClick={() => onDelete(preset.id)}
           className="shrink-0 px-2 py-1.5 text-[11px] rounded transition-colors hover:opacity-90 sm:px-3 sm:py-2 sm:text-xs"
           style={{
-            backgroundColor: '#EDE8DC',
-            color: '#5C4F38',
+            backgroundColor: 'var(--color-background-60)',
+            color: 'var(--color-text)',
           }}
         >
           ×

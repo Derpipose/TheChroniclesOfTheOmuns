@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using PlayerApp.Models.Enums;
 
 namespace PlayerApp.Models;
 
@@ -7,6 +8,9 @@ public class Player {
     public int Id { get; set; }
     public string DisplayName { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
+
+    public ThemeEnum Theme { get; set; } = ThemeEnum.General;
+
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime? LastLoginAt { get; private set; }
 
@@ -30,6 +34,9 @@ public class Player {
     }
     public void SetEmail(string email) {
         Email = email;
+    }
+    public void SetTheme(ThemeEnum theme) {
+        Theme = theme;
     }
 
     [Conditional("DEBUG")]

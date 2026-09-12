@@ -37,57 +37,57 @@ export default function CharacterViewPage() {
 
     if (characterLoading || scifiLoading || adjustedStatsLoading) {
         return (
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F5F0E8' }}>
-            <p className="text-sm" style={{ color: '#7A6F5C' }}>Loading character...</p>
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
+            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>Loading character...</p>
         </div>
         )
     }
 
     if (!character) {
         return (
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F5F0E8' }}>
-            <p className="text-sm" style={{ color: '#7A6F5C' }}>Character not found.</p>
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
+            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>Character not found.</p>
         </div>
         )
     }
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
-        <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: '#7A6F5C' }}>
+        <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
+        <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-30)' }}>
+            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
             ← Back
             </button>
-            <h1 className="text-lg font-semibold" style={{ color: '#2C2416' }}>{character.name}</h1>
+            <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>{character.name}</h1>
         </div>
 
         <div className="max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
 
             {/* Overview card */}
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
+            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
             <div className="flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>{character.name}</span>
+                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{character.name}</span>
             </div>
             <div>
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
-                    backgroundColor: character.active ? '#E4EEE4' : '#EDE8DC',
-                    color: character.active ? '#3D5C3D' : '#5C4F38',
+                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
+                    color: character.active ? '#3D5C3D' : 'var(--color-primary)',
                 }}>{setting}</span>
                 <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
-                    backgroundColor: character.active ? '#E4EEE4' : '#EDE8DC',
-                    color: character.active ? '#3D5C3D' : '#5C4F38',
+                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
+                    color: character.active ? '#3D5C3D' : 'var(--color-primary)',
                 }}
                 >
                 {character.active ? 'Active' : 'In Edit Mode'}
                 </span>
             </div>
             <div className="flex items-center gap-3">
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-primary)' }}>
                 Level {character.level}
                 </span>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: '#EDE8DC', color: '#5C4F38' }}>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-primary)' }}>
                 {character.maxHealth} HP
                 </span>
             </div>
@@ -95,28 +95,28 @@ export default function CharacterViewPage() {
 
             {/* Scifi details card */}
             {scifiCharacter && (
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#7A6F5C' }}>Details</h2>
-                <div className="flex flex-col gap-2 text-sm" style={{ color: '#2C2416' }}>
-                <p><span style={{ color: '#7A6F5C' }}>Race:</span> {race?.name ?? '—'}</p>
+            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Details</h2>
+                <div className="flex flex-col gap-2 text-sm" style={{ color: 'var(--color-text)' }}>
+                <p><span style={{ color: 'var(--color-text-60)' }}>Race:</span> {race?.name ?? '—'}</p>
                 {scifiCharacter.scifiSubraceId && (
-                    <p><span style={{ color: '#7A6F5C' }}>Subrace:</span> {subrace?.subRaceName ?? '—'}</p>
+                    <p><span style={{ color: 'var(--color-text-60)' }}>Subrace:</span> {subrace?.subRaceName ?? '—'}</p>
                 )}
-                <p><span style={{ color: '#7A6F5C' }}>Class:</span> {scifiClass?.name ?? '—'}</p>
-                <p><span style={{ color: '#7A6F5C' }}>Background:</span> {background?.name ?? '—'}</p>
+                <p><span style={{ color: 'var(--color-text-60)' }}>Class:</span> {scifiClass?.name ?? '—'}</p>
+                <p><span style={{ color: 'var(--color-text-60)' }}>Background:</span> {background?.name ?? '—'}</p>
                 </div>
             </div>
             )}
 
             {/* Stats card */}
             { adjustedStats && (
-            <div className="rounded-2xl border p-6" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: '#7A6F5C' }}>Stats</h2>
+            <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-60)' }}>Stats</h2>
                 <div className="grid grid-cols-2 gap-3">
                 {statEntries.map(({ label, value }) => (
-                    <div key={label} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: '#EDE8DC' }}>
-                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>{label}</span>
-                    <span className="text-sm font-semibold" style={{ color: '#2C2416' }}>{value}</span>
+                    <div key={label} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: 'var(--color-primary-30)' }}>
+                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text)' }}>{label}</span>
+                    <span className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{value}</span>
                     </div>
                 ))}
                 </div>
@@ -127,7 +127,7 @@ export default function CharacterViewPage() {
             <button
                 onClick={() => navigate(`/character/${characterId}/edit`)}
                 className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-                style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
+                style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}
             >
                 Edit Character
             </button>
