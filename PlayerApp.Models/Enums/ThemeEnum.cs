@@ -6,5 +6,13 @@ public enum ThemeEnum {
     Scifi = 2,
     ScifiFantasyHybrid = 3,
     OvergrownRuins = 4,
-    VoidDeepSpace = 5
+    VoidDeepSpace = 5,
+    Blaze = 6,
+    Volt = 7,
+    Cryo = 8,
+    Null = 9,
+    Stormgate = 10,
+    Aurora = 11,
+    Royalty = 12,
+    DarkLord = 13,
 }

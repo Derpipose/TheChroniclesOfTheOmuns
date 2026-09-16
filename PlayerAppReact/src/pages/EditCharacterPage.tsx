@@ -423,10 +423,10 @@ export default function EditCharacterPage() {
         {error && <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>{error}</p>}
 
         <div className="flex gap-3 mt-2">
-          <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text)' }}>
+          <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text-30)' }}>
             Cancel
           </button>
-          <button onClick={handleSave} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}>
+          <button onClick={handleSave} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}>
             {submitting ? 'Saving…' : 'Save Character'}
           </button>
         </div>
