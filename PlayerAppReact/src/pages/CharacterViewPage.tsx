@@ -60,7 +60,8 @@ export default function CharacterViewPage() {
             <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>{character.name}</h1>
         </div>
 
-        <div className="max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
+        {/* Mobile layout (unchanged) */}
+        <div className="lg:hidden max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
 
             {/* Overview card */}
             <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
@@ -131,6 +132,164 @@ export default function CharacterViewPage() {
             >
                 Edit Character
             </button>
+            </div>
+        </div>
+
+        {/* Desktop layout */}
+        <div className="hidden lg:flex lg:flex-col gap-6 max-w-6xl mx-auto px-10 py-10">
+
+            {/* Hero */}
+            <div className="rounded-2xl border p-6 flex items-center justify-between gap-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                <div className="flex items-center gap-5">
+                    <div
+                        className="w-20 h-20 rounded-xl border-2 flex items-center justify-center text-3xl font-bold shrink-0"
+                        style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)', color: 'var(--color-text)' }}
+                    >
+                        {character.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <h2 className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>{character.name}</h2>
+                        <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
+                            {[race?.name, scifiClass?.name, `Level ${character.level}`].filter(Boolean).join(' • ')}
+                        </p>
+                        {background && (
+                            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
+                                Background: <span style={{ color: 'var(--color-text)' }}>{background.name}</span>
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full"
+                        style={{
+                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
+                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                        }}>{setting}</span>
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full"
+                        style={{
+                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
+                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                        }}>{character.active ? 'Active' : 'In Edit Mode'}</span>
+                    <button
+                        onClick={() => navigate(`/character/${characterId}/edit`)}
+                        className="rounded-lg px-5 py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
+                        style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
+                    >
+                        Edit Character
+                    </button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-6 items-start">
+                {/* Vitals + Stats */}
+                <div className="flex flex-col gap-6">
+                    {adjustedStats && (
+                        <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
+                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
+                                </div>
+                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>HP</span>
+                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.currentHealth} / {adjustedStats.maxHealth}</span>
+                                </div>
+                            </div>
+                            <div className="rounded-full h-2 overflow-hidden" style={{ backgroundColor: 'var(--color-primary-30)' }}>
+                                <div
+                                    className="h-full rounded-full"
+                                    style={{
+                                        width: `${adjustedStats.maxHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
+                                        backgroundColor: '#4C8B4C',
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {adjustedStats && (
+                        <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                            <h2 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-60)' }}>Ability Scores</h2>
+                            <div className="grid grid-cols-3 gap-3">
+                                {statEntries.map(({ label, value }) => (
+                                    <div key={label} className="rounded-xl border flex flex-col items-center justify-center gap-1 py-3" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label.slice(0, 3)}</span>
+                                        <span className="text-lg font-bold" style={{ color: 'var(--color-text)' }}>{value}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Racial traits */}
+                <div className="flex flex-col gap-6">
+                    {race && (
+                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Racial Traits</h2>
+                            <div>
+                                {race.description ? (
+                                    <details className="group">
+                                        <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                                            <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
+                                            {race.name}
+                                        </summary>
+                                        <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{race.description}</p>
+                                    </details>
+                                ) : (
+                                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{race.name}</p>
+                                )}
+                            </div>
+                            {subrace && (
+                                <div className="pt-3 border-t" style={{ borderColor: 'var(--color-primary-30)' }}>
+                                    {subrace.description ? (
+                                        <details className="group">
+                                            <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                                                <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
+                                                {subrace.subRaceName}
+                                            </summary>
+                                            <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{subrace.description}</p>
+                                        </details>
+                                    ) : (
+                                        <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{subrace.subRaceName}</p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {scifiClass && (
+                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class Features</h2>
+                            <div>
+                                <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{scifiClass.name}</p>
+                                {scifiClass.description && <p className="text-sm mt-1" style={{ color: 'var(--color-text-60)' }}>{scifiClass.description}</p>}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Background */}
+                <div className="flex flex-col gap-6">
+                    {background && (
+                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</h2>
+                            <div>
+                                {background.description ? (
+                                    <details className="group">
+                                        <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                                            <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
+                                            {background.name}
+                                        </summary>
+                                        <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{background.description}</p>
+                                    </details>
+                                ) : (
+                                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{background.name}</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
         </div>

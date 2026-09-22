@@ -156,199 +156,228 @@ export default function AddCharacterPage() {
       <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>Add Character</h1>
     </div>
 
-    <div className="max-w-md mx-auto px-6 py-8">
-      <div className="rounded-2xl border p-6 flex flex-col gap-5" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
+    <div className="max-w-md mx-auto px-6 py-8 lg:max-w-none lg:px-12 lg:py-10">
+      <div className="rounded-2xl border p-6 flex flex-col gap-5 lg:p-10 lg:gap-8" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
 
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-            placeholder="Character name"
-          />
-        </div>
+        <div className="flex flex-col gap-5 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start">
+          {/* Identity section — name + level */}
+          <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
+            <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+              Identity
+            </h2>
 
-        {/* Race dropdown — options from `races`, onChange sets raceId, also reset subraceId to undefined when race changes */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Race</label>
-          <select
-            value={raceId ?? ''}
-            onChange={(e) => {
-              const selectedId = e.target.value ? parseInt(e.target.value) : undefined
-              setRaceId(selectedId)
-              setSubraceId(undefined) // Reset subrace when race changes
-            }}
-            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-          >
-            <option value="">Select a race</option>
-            {races?.map((race) => (
-              <option key={race.id} value={race.id}>
-                {race.name}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                placeholder="Character name"
+              />
+            </div>
 
-        {/* Subrace dropdown — only rendered if showSubraceDropdown is true, options from `subraces` */}
-        {showSubraceDropdown && (
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Subrace</label>
-            <select
-              value={subraceId ?? ''}
-              onChange={(e) => setSubraceId(e.target.value ? parseInt(e.target.value) : undefined)}
-              className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-              style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-            >
-              <option value="">Select a subrace</option>
-              {subraces?.map((subrace) => (
-                <option key={subrace.id} value={subrace.id}>
-                  {subrace.subRaceName}
-                </option>
-              ))}
-            </select>
+            {/* Level input */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Level (Currenly set to only 1)</label>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={level}
+                disabled = {true}
+                onChange={(e) => setLevel(e.target.value)}
+                className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+              />
+            </div>
           </div>
-        )}
 
-        {/* Class dropdown — options from `classes` */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</label>
-          <select
-            value={classId ?? ''}
-            onChange={(e) => setClassId(e.target.value ? parseInt(e.target.value) : undefined)}
-            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-          >
-            <option value="">Select a class</option>
-            {classes?.map((cls) => (
-              <option key={cls.id} value={cls.id}>
-                {cls.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Origin section — race + subrace */}
+          <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
+            <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+              Origin
+            </h2>
 
-        {/* Background dropdown — options from `backgrounds` */}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</label>
-          <select
-            value={backgroundId ?? ''}
-            onChange={(e) => setBackgroundId(e.target.value ? parseInt(e.target.value) : undefined)}
-            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-          >
-            <option value="">Select a background</option>
-            {backgrounds?.map((bg) => (
-              <option key={bg.id} value={bg.id}>
-                {bg.name}
-              </option>
-            ))}
-          </select>
-        </div>
+            {/* Race dropdown — options from `races`, onChange sets raceId, also reset subraceId to undefined when race changes */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Race</label>
+              <select
+                value={raceId ?? ''}
+                onChange={(e) => {
+                  const selectedId = e.target.value ? parseInt(e.target.value) : undefined
+                  setRaceId(selectedId)
+                  setSubraceId(undefined) // Reset subrace when race changes
+                }}
+                className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+              >
+                <option value="">Select a race</option>
+                {races?.map((race) => (
+                  <option key={race.id} value={race.id}>
+                    {race.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
-        <div className="grid grid-cols-2 gap-3">
-          {statFields.map(({ label, value, setValue }) => {
-            const racialEntry = activeRaceStats?.modifiers.find((m) => m.stat === label);
-            const isLocked = racialEntry?.isLocked ?? false;
-            // Uses getRacialModifierForStat (not racialEntry directly) so that
-            // pick-assigned bonuses show up live, alongside fixed racial modifiers.
-            const racialMod = getRacialModifierForStat(label);
-            const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + racialMod + 10;
-
-            return (
-              <div key={label} className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label}</label>
-
-                {isLocked ? (
-                  <span className="text-sm" style={{ color: 'var(--color-text)' }}>
-                    {/* render: {racialMod} (locked by race) */}
-                    {racialMod} (locked by race)
-                  </span>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={value}
-                      onChange={(e) => setValue(e.target.value)}
-                      onBlur={(e) => {
-                        const num = parseInt(e.target.value, 10);
-                        const clamped = isNaN(num) ? 1 : Math.min(10, Math.max(1, num));
-                        setValue(String(clamped));
-                      }}
-                      className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
-                      style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-                    />
-                    <span className="text-sm" style={{ color: 'var(--color-text-60)' }}>
-                      {/* render: + {racialMod} (racial) + 10 = {finalValue} */}
-                      + {racialMod} (racial) + 10 = {finalValue}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {activeRaceStats && activeRaceStats.freeStatPicks.length > 0 && (
-          <div className="flex flex-col gap-4">
-            {activeRaceStats.freeStatPicks.map((amount, index) => (
-              <div key={index} className="flex flex-col gap-1">
-                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
-                  Apply the +{amount} pick
-                </label>
-                <div className="flex flex-wrap gap-3">
-                  {getEligibleStatsForPick(index).map((stat) => (
-                    <label key={stat} className="flex items-center gap-1 text-sm">
-                      <input
-                        type="radio"
-                        name={`pick-${index}`}
-                        checked={pickAssignments[index] === stat}
-                        onChange={() => {
-                          setPickAssignments((prev) => {
-                            const newAssignments = [...prev];
-                            newAssignments[index] = stat;
-                            return newAssignments;
-                          });
-                        }}
-                      />
-                      {stat}
-                    </label>
+            {/* Subrace dropdown — only rendered if showSubraceDropdown is true, options from `subraces` */}
+            {showSubraceDropdown && (
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Subrace</label>
+                <select
+                  value={subraceId ?? ''}
+                  onChange={(e) => setSubraceId(e.target.value ? parseInt(e.target.value) : undefined)}
+                  className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                  style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                >
+                  <option value="">Select a subrace</option>
+                  {subraces?.map((subrace) => (
+                    <option key={subrace.id} value={subrace.id}>
+                      {subrace.subRaceName}
+                    </option>
                   ))}
-                </div>
+                </select>
               </div>
-            ))}
+            )}
           </div>
-        )}
 
-        {/* Level input */}
+          {/* Path section — class + background */}
+          <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
+            <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+              Path
+            </h2>
 
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Level (Currenly set to only 1)</label>
-          <input
-            type="number"
-            min="1"
-            max="20"
-            value={level}
-            disabled = {true}
-            onChange={(e) => setLevel(e.target.value)}
-            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
-          />
+            {/* Class dropdown — options from `classes` */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</label>
+              <select
+                value={classId ?? ''}
+                onChange={(e) => setClassId(e.target.value ? parseInt(e.target.value) : undefined)}
+                className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+              >
+                <option value="">Select a class</option>
+                {classes?.map((cls) => (
+                  <option key={cls.id} value={cls.id}>
+                    {cls.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Background dropdown — options from `backgrounds` */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</label>
+              <select
+                value={backgroundId ?? ''}
+                onChange={(e) => setBackgroundId(e.target.value ? parseInt(e.target.value) : undefined)}
+                className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+              >
+                <option value="">Select a background</option>
+                {backgrounds?.map((bg) => (
+                  <option key={bg.id} value={bg.id}>
+                    {bg.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats section — ability scores + free stat picks */}
+        <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
+          <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+            Stats
+          </h2>
+
+          {/* Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+            {statFields.map(({ label, value, setValue }) => {
+              const racialEntry = activeRaceStats?.modifiers.find((m) => m.stat === label);
+              const isLocked = racialEntry?.isLocked ?? false;
+              // Uses getRacialModifierForStat (not racialEntry directly) so that
+              // pick-assigned bonuses show up live, alongside fixed racial modifiers.
+              const racialMod = getRacialModifierForStat(label);
+              const finalValue = isLocked ? racialMod : (parseInt(value) || 0) + racialMod + 10;
+
+              return (
+                <div key={label} className="flex flex-col gap-1">
+                  <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label}</label>
+
+                  {isLocked ? (
+                    <span className="text-sm" style={{ color: 'var(--color-text)' }}>
+                      {/* render: {racialMod} (locked by race) */}
+                      {racialMod} (locked by race)
+                    </span>
+                  ) : (
+                    <div className="flex items-center gap-2 lg:flex-col lg:items-start">
+                      <input
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        onBlur={(e) => {
+                          const num = parseInt(e.target.value, 10);
+                          const clamped = isNaN(num) ? 1 : Math.min(10, Math.max(1, num));
+                          setValue(String(clamped));
+                        }}
+                        className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
+                        style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                      />
+                      <span className="text-sm" style={{ color: 'var(--color-text-60)' }}>
+                        {/* render: + {racialMod} (racial) + 10 = {finalValue} */}
+                        + {racialMod} (racial) + 10 = {finalValue}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {activeRaceStats && activeRaceStats.freeStatPicks.length > 0 && (
+            <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:gap-8">
+              {activeRaceStats.freeStatPicks.map((amount, index) => (
+                <div key={index} className="flex flex-col gap-1">
+                  <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
+                    Apply the +{amount} pick
+                  </label>
+                  <div className="flex flex-wrap gap-3">
+                    {getEligibleStatsForPick(index).map((stat) => (
+                      <label key={stat} className="flex items-center gap-1 text-sm">
+                        <input
+                          type="radio"
+                          name={`pick-${index}`}
+                          checked={pickAssignments[index] === stat}
+                          onChange={() => {
+                            setPickAssignments((prev) => {
+                              const newAssignments = [...prev];
+                              newAssignments[index] = stat;
+                              return newAssignments;
+                            });
+                          }}
+                        />
+                        {stat}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {error && <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>{error}</p>}
 
-        <div className="flex gap-3 mt-2">
-          <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text)' }}>
+        <div className="flex gap-3 mt-2 lg:justify-end">
+          <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text)' }}>
             Cancel
           </button>
-          <button onClick={handleAdd} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50" style={{ backgroundColor: 'var(--color-accent-30)', color: 'var(--color-text)' }}>
+          <button onClick={handleAdd} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50 lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-accent-30)', color: 'var(--color-text)' }}>
             {submitting ? 'Adding…' : 'Add Character'}
           </button>
         </div>
