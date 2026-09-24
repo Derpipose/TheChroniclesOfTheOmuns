@@ -2,6 +2,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useCharacter, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useScifiBackgrounds, useScifiClasses, useScifiRaces, useScifiSubracesByRace } from '../hooks/useScifiReference'
 import { useScifiStatsByCharacterId } from '../hooks/useScifiStats'
+import { useEffect, useState } from 'react'
+import { CharacterNotes } from '../components/CharacterNotes'
 
 export default function CharacterViewPage() {
     const { id } = useParams()
@@ -12,6 +14,8 @@ export default function CharacterViewPage() {
     const { data: character, isLoading: characterLoading } = useCharacter(characterId ?? 0)
     const { data: scifiCharacter, isLoading: scifiLoading } = useScifiCharacterByCharacterId(characterId ?? 0)
     const { data: adjustedStats, isLoading: adjustedStatsLoading } = useScifiStatsByCharacterId(characterId)
+
+    const [notes, setNotes] = useState('')
 
     const { data: races } = useScifiRaces()
     const { data: subraces } = useScifiSubracesByRace(scifiCharacter?.scifiRaceId ?? 0)
@@ -34,6 +38,11 @@ export default function CharacterViewPage() {
             { label: 'Intelligence', value: adjustedStats?.intelligence },
         ]
         : []
+
+    useEffect(() => {
+        if (!character) return;
+        setNotes(character.notes)
+    }, [character])
 
     if (characterLoading || scifiLoading || adjustedStatsLoading) {
         return (
@@ -133,6 +142,12 @@ export default function CharacterViewPage() {
                 Edit Character
             </button>
             </div>
+
+            {/* Notes card */}
+            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Notes</h2>
+                <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
+            </div>
         </div>
 
         {/* Desktop layout */}
@@ -181,7 +196,7 @@ export default function CharacterViewPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-6 items-start">
-                {/* Vitals + Stats */}
+                {/* Column 1: Vitals + Stats (unchanged) */}
                 <div className="flex flex-col gap-6">
                     {adjustedStats && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
@@ -222,7 +237,7 @@ export default function CharacterViewPage() {
                     )}
                 </div>
 
-                {/* Racial traits */}
+                {/* Column 2: Racial traits + Class Features + Background */}
                 <div className="flex flex-col gap-6">
                     {race && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
@@ -267,10 +282,7 @@ export default function CharacterViewPage() {
                             </div>
                         </div>
                     )}
-                </div>
 
-                {/* Background */}
-                <div className="flex flex-col gap-6">
                     {background && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
                             <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</h2>
@@ -289,6 +301,13 @@ export default function CharacterViewPage() {
                             </div>
                         </div>
                     )}
+                </div>
+
+                {/* Column 3: Notes */}
+                <div className="flex flex-col gap-6">
+                    <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                        <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
+                    </div>
                 </div>
             </div>
         </div>

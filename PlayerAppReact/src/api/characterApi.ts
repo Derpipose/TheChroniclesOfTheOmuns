@@ -19,6 +19,7 @@ export async function getCharacterById(id: number): Promise<Character> {
 export async function createCharacter(payload: {
   name: string
   level: number
+  notes: string
 }): Promise<Character> {
   const res = await apiFetch(`${BASE_URL}/api/character`, {
     method: 'POST',
@@ -37,4 +38,13 @@ export async function updateCharacter(id: number, payload: Partial<Character>): 
   })
   if (!res.ok) throw new Error('Failed to update character')
   return res.json()
+}
+
+export async function updateCharacterNotes(id: number, notes: string) {
+  const res = await apiFetch(`${BASE_URL}/api/character/${id}/notes`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json'},
+    body: JSON.stringify(notes),
+  })
+  if (!res.ok) throw new Error('Failed to update character notes')
 }
