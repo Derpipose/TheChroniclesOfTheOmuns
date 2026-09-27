@@ -5,6 +5,7 @@
 *.user
 .env
 
+docker-compose.dev.yaml
 
 AppPlan.md
 # ImportedCode/

@@ -16,7 +16,7 @@ export default function CharactersPage() {
           <button
             onClick={() => navigate('/characters/add')}
             className="rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}
+            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
           >
             Add Character
           </button>

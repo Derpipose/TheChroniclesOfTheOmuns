@@ -114,7 +114,7 @@ export default function CustomRolls({
             <button
               onClick={addPreset}
               className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 sm:py-2 sm:text-xs"
-              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text)' }}
+              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
             >
               Add
             </button>
