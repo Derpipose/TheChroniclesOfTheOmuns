@@ -8,6 +8,7 @@ export interface Character {
   setting: Setting
   maxHealth: number
   active: boolean
+  notes: string
 }
 
 export interface CreateScifiCharacter {

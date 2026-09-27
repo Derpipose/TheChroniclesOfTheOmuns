@@ -1,17 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
+import { ThemeSync } from './theme/ThemeSync.tsx'
 import SignInPage from './pages/SignInPage'
 import CharactersPage from './pages/CharactersPage'
 import CharacterViewPage from './pages/CharacterViewPage'
-import AddCharacterPage from './pages/AddCharacterPage'
-import EditCharacterPage from './pages/EditCharacterPage.tsx'
-import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import DevPage from './pages/DevPage'
 import DiceRollerPage from './pages/DiceRollerPage'
 import AddWeaponInstancePage from './pages/AddWeaponInstancePage'
 import UpdateWeaponInstancePage from './pages/UpdateWeaponInstancePage'
-import { ThemeSync } from './theme/ThemeSync.tsx'
 import PlayerSettingsPage from './pages/PlayerSettings.tsx'
+import CharacterFormPage from './pages/CharacterForm.tsx'
 
 const queryClient = new QueryClient()
 
@@ -37,7 +36,8 @@ export default function App() {
 
             <Route path="/characters/add" element={
               <ProtectedRoute>
-                <AddCharacterPage />
+                <CharacterFormPage mode="add" />
+
               </ProtectedRoute>
             } />
 
@@ -49,7 +49,7 @@ export default function App() {
 
             <Route path="/character/:id/edit" element={
               <ProtectedRoute>
-                <EditCharacterPage />
+                <CharacterFormPage mode="edit" />
               </ProtectedRoute>
             } />
 

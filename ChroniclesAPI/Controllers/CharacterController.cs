@@ -71,6 +71,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
 
         var character = new Character(playerContext.PlayerId, request.Name);
         character.SetLevel(request.Level);
+        character.SetNotes(request.Notes);
 
         db.Characters.Add(character);
         await db.SaveChangesAsync();
@@ -149,7 +150,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
             stats.Charisma,
             stats.Intelligence));
 
-    public record CreateCharacterDto(string Name, int Level = 1);
+    public record CreateCharacterDto(string Name, int Level = 1, string Notes = "");
     public record CharacterDetailsDto(int Id, string Name, int Level, SettingEnum Setting, int MaxHealth, bool IsActive);
     public record UpdateCharacterDto(string? Name, int? MaxHealth, int? Level, bool? IsActive);
     public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int MaxHealth, bool IsActive, string Notes, CharacterStatsResponseDto? CharacterStats);
