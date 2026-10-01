@@ -95,6 +95,13 @@ public class Character {
         return BaseArmorClass + bonus;
     }
 
+    public int GetDamageResist(IEnumerable<ICharacterModifier> modifiers) {
+        var bonus = modifiers
+            .Where(m => m.ModifierType == ModifierType.DamageResist)
+            .Sum(m => m.Amount);
+        return bonus;
+    }
+
     public int GetStat(IEnumerable<ICharacterModifier> modifiers, ModifierType statType, int baseValue) {
         var bonus = modifiers
             .Where(m => m.ModifierType == statType)

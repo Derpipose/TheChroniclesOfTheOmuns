@@ -275,7 +275,7 @@ export default function CharacterViewPage() {
 
                     {scifiClass && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class Features</h2>
+                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</h2>
                             <div>
                                 <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{scifiClass.name}</p>
                                 {scifiClass.description && <p className="text-sm mt-1" style={{ color: 'var(--color-text-60)' }}>{scifiClass.description}</p>}

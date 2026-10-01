@@ -6,6 +6,7 @@ export interface AdjustedStats {
   wisdom: number
   charisma: number
   armorClass: number
+  damageResist:number
   maxHealth: number
   currentHealth: number
 }

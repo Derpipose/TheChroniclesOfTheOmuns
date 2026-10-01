@@ -110,6 +110,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             Wisdom: scifiCharacter.Character.GetStat(modifiers, ModifierType.Wisdom, characterStats.Wisdom),
             Charisma: scifiCharacter.Character.GetStat(modifiers, ModifierType.Charisma, characterStats.Charisma),
             ArmorClass: scifiCharacter.Character.GetArmorClass(modifiers),
+            DamageResist: scifiCharacter.Character.GetDamageResist(modifiers),
             MaxHealth: scifiCharacter.Character.GetMaxHealth(modifiers),
             CurrentHealth: scifiCharacter.Character.CurrentHealth
         );
@@ -369,7 +370,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
     public record StatPickDto(StatType Stat, int Amount);
     public record StatModifierResponseDto(ModifierType Stat, int Amount, ModifierSource Source);
-    public record AdjustedStatsDto(int Strength, int Dexterity, int Constitution, int Intelligence, int Wisdom, int Charisma, int ArmorClass, int MaxHealth, int CurrentHealth);
+    public record AdjustedStatsDto(int Strength, int Dexterity, int Constitution, int Intelligence, int Wisdom, int Charisma, int ArmorClass, int DamageResist, int MaxHealth, int CurrentHealth);
     public record ScifiCharacterWithStatsDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, AdjustedStatsDto AdjustedStats, List<StatModifierResponseDto> Modifiers);
     public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null);
     public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null);
