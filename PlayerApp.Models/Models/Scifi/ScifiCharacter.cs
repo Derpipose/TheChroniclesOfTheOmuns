@@ -132,7 +132,7 @@ public class ScifiCharacter {
             return;
         
         if (scifiClass == null) {
-            Character.SetMaxHealth(0);
+            Character.SetBaseHealth(0);
             Character.SetCurrentHealth(0);
             return;
         }
@@ -147,7 +147,7 @@ public class ScifiCharacter {
 
         int health = constitution * 2 + hitDiceMax + conMod;
 
-        Character.SetMaxHealth(health);
+        Character.SetBaseHealth(health);
         Character.SetCurrentHealth(health);
     }
 

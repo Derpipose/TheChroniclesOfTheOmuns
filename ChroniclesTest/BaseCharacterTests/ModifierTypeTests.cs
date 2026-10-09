@@ -11,7 +11,7 @@ public class ModifierTypeTests {
     [Fact]
     public void GetMaxHealth_NoModifiers_ReturnsBaseHealth() {
         Character character = new(1, "TestCharacter");
-        character.SetMaxHealth(20);
+        character.SetBaseHealth(20);
 
         Assert.Equal(20, character.GetMaxHealth(new List<ICharacterModifier>()));
     }
@@ -19,7 +19,7 @@ public class ModifierTypeTests {
     [Fact]
     public void GetMaxHealth_SingleHealthModifier_AddsBonus() {
         Character character = new(1, "TestCharacter");
-        character.SetMaxHealth(20);
+        character.SetBaseHealth(20);
         IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
             new TestModifier {
                 ModifierType = ModifierType.Health,
@@ -33,7 +33,7 @@ public class ModifierTypeTests {
     [Fact]
     public void GetMaxHealth_MultipleHealthModifiers_SumsAllBonuses() {
         Character character = new(1, "TestCharacter");
-        character.SetMaxHealth(20);
+        character.SetBaseHealth(20);
         IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
             new TestModifier {
                 ModifierType = ModifierType.Health,
@@ -55,7 +55,7 @@ public class ModifierTypeTests {
     [Fact]
     public void GetMaxHealth_NegativeHealthModifier_ReducesTotal() {
         Character character = new(1, "TestCharacter");
-        character.SetMaxHealth(20);
+        character.SetBaseHealth(20);
         IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
             new TestModifier {
                 ModifierType = ModifierType.Health,
@@ -69,7 +69,7 @@ public class ModifierTypeTests {
     [Fact]
     public void GetMaxHealth_IgnoresNonHealthModifiers() {
         Character character = new(1, "TestCharacter");
-        character.SetMaxHealth(20);
+        character.SetBaseHealth(20);
         IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier> {
             new TestModifier {
                 ModifierType = ModifierType.Strength,
@@ -160,7 +160,7 @@ public class ModifierTypeTests {
     [Fact]
     public void MixedModifiers_EachGetterOnlyPullsItsOwnType() {
         Character character = new(1, "TestCharacter");
-        character.SetMaxHealth(30);
+        character.SetBaseHealth(30);
 
         IEnumerable<ICharacterModifier> Modifiers = new List<ICharacterModifier>{
             new TestModifier {

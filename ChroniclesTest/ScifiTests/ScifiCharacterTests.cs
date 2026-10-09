@@ -327,7 +327,7 @@ public class ScifiCharacterTests {
         int expectedConMod = (expectedConstitution - 10) / 2; //
         int expectedHitDiceMax = scifiClass.HitDice.Sides(); // D10
         int expectedHealth = expectedConstitution * 2 + expectedHitDiceMax + expectedConMod;
-        Assert.Equal(expectedHealth, character.MaxHealth);
+        Assert.Equal(expectedHealth, character.BaseHealth);
 
     }
 
@@ -360,7 +360,7 @@ public class ScifiCharacterTests {
         int expectedConMod = (expectedConstitution - 10) / 2; //
         int expectedHitDiceMax = scifiClass.HitDice.Sides(); // D10
         int expectedHealth = expectedConstitution * 2 + expectedHitDiceMax + expectedConMod;
-        Assert.Equal(expectedHealth, character.MaxHealth);
+        Assert.Equal(expectedHealth, character.BaseHealth);
 
     }
 

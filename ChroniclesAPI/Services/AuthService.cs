@@ -50,7 +50,7 @@ public class AuthService(AppDbContext db, IConfiguration config)// will need IRe
             // Console.WriteLine("Email sent successfully");
         }
         catch (Exception ex) {
-            // Console.WriteLine($"Email send failed: {ex.Message}");
+            Console.WriteLine($"Email send failed: {ex.Message}");
             return false;
         }
 

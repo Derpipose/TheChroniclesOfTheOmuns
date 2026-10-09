@@ -190,7 +190,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             return BadRequest(new { message = "ScifiRace must be set before assigning a ScifiSubrace." });
 
         character.SetSetting(SettingEnum.Scifi);
-        character.SetMaxHealth(0);
+        character.SetBaseHealth(0);
 
         var scifiCharacter = new ScifiCharacter(character.Id);
         CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id)
