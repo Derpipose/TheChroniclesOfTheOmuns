@@ -363,4 +363,123 @@ public class ScifiCharacterTests {
         Assert.Equal(expectedHealth, character.MaxHealth);
 
     }
+
+    [Fact]
+    public void SetScifiRace_Throws_WhenModifiersPushStatBelowMinimum() {
+        Character character = new Character(1, "TestCharacter");
+        character.SimulatePersist(1);
+        ScifiCharacter scifiCharacter = new ScifiCharacter(character.Id);
+        scifiCharacter.SimulatePersist(1);
+        CharacterStats stats = new CharacterStats(character.Id);
+
+        ScifiRace scifiRace = new ScifiRace("TestSubType", "TestRace", "Test description", true, 1, 30, 0, 0);
+        scifiRace.SimulatePersist(1);
+        scifiRace.SetRaceStats(new RaceStats(
+            modifiers: new List<RaceStatModifier> { new RaceStatModifier(StatType.Constitution, -2) },
+            freeStatPicks: null));
+
+        Assert.Throws<InvalidOperationException>(() => scifiCharacter.SetScifiRace(scifiRace, [], null, stats));
+
+        // Raising the base stat first makes the same race valid
+        Character other = new Character(1, "Other");
+        stats.SetStat(StatType.Constitution, 12, other);
+        scifiCharacter.SetScifiRace(scifiRace, [], null, stats);
+    }
+
+    [Fact]
+    public void SetStat_Throws_WhenModifiersPushStatBelowMinimum() {
+        Character character = new Character(1, "TestCharacter");
+        CharacterStats stats = new CharacterStats(1);
+        var modifiers = new List<ICharacterModifier> {
+            new ScifiCharacterModifier(1, ModifierType.Constitution, -3, ModifierSource.Race)
+        };
+
+        Assert.Throws<InvalidOperationException>(() => stats.SetStat(StatType.Constitution, 12, character, modifiers));
+        stats.SetStat(StatType.Constitution, 13, character, modifiers);
+        Assert.Equal(10, stats.GetStat(StatType.Constitution, modifiers));
+    }
+
+    // GetArmorClass
+
+    private static (ScifiCharacter scifiCharacter, CharacterStats stats) BuildAcCharacter(bool withRace = true, bool withClass = true, bool withBackground = true) {
+        Character character = new Character(1, "TestCharacter");
+        character.SimulatePersist(1);
+        ScifiCharacter scifiCharacter = new ScifiCharacter(character.Id);
+        scifiCharacter.SimulatePersist(1);
+        scifiCharacter.SimulateSetCharacter(character);
+
+        ScifiRace? race = withRace ? new ScifiRace("TestSubType", "TestRace", "Test description", true, 1, 30, 0, 0) : null;
+        ScifiClass? scifiClass = withClass ? new ScifiClass("TestClass", DiceType.D10, "Test") : null;
+        ScifiBackground? background = withBackground ? new ScifiBackground("TestBackground", "Test description") : null;
+        scifiCharacter.SimulateSetNavigations(race, scifiClass, background);
+
+        return (scifiCharacter, new CharacterStats(character.Id));
+    }
+
+    [Fact]
+    public void GetArmorClass_DefaultStats_Is10() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+
+        Assert.Equal(10, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_AddsDexterityModifier() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+        stats.SetStat(StatType.Dexterity, 14, scifiCharacter.Character!); // +2
+
+        Assert.Equal(12, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_UsesDexterityAfterModifiers() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.Dexterity, 4, ModifierSource.Race)); // 10 + 4 = 14 -> +2
+
+        Assert.Equal(12, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_AddsArmorClassModifiers() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.ArmorClass, 3, ModifierSource.Talent));
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.Strength, 4, ModifierSource.Race)); // unrelated, ignored
+
+        Assert.Equal(13, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_NegativeArmorClassModifier_ReducesValue() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.ArmorClass, -1, ModifierSource.Talent));
+
+        Assert.Equal(9, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_IgnoresHealthAndOtherStatModifiers() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.Health, 10, ModifierSource.Class));
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.Strength, 3, ModifierSource.Race));
+
+        Assert.Equal(10, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_CombinesDexterityAndArmorClassModifiers() {
+        var (scifiCharacter, stats) = BuildAcCharacter();
+        stats.SetStat(StatType.Dexterity, 16, scifiCharacter.Character!); // +3
+        scifiCharacter.Modifiers.Add(new ScifiCharacterModifier(1, ModifierType.ArmorClass, 2, ModifierSource.Talent));
+
+        Assert.Equal(15, scifiCharacter.GetArmorClass(stats));
+    }
+
+    [Fact]
+    public void GetArmorClass_Works_WithoutRaceClassBackgroundOrCharacter() {
+        // Edit-mode characters may not have these assigned (or loaded) yet
+        ScifiCharacter scifiCharacter = new ScifiCharacter(1);
+        CharacterStats stats = new CharacterStats(1);
+
+        Assert.Equal(10, scifiCharacter.GetArmorClass(stats));
+    }
 }

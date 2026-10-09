@@ -59,11 +59,6 @@ public class Character {
         UpdateLastModified();
     }
 
-    public void SetBaseArmorClass(int baseArmorClass) {
-        BaseArmorClass = baseArmorClass;
-        UpdateLastModified();
-    }
-
 
     public void SetActive() {
         IsActive = true;
@@ -86,13 +81,6 @@ public class Character {
             .Where(m => m.ModifierType == ModifierType.Health)
             .Sum(m => m.Amount);
         return MaxHealth + bonus;
-    }
-
-    public int GetArmorClass(IEnumerable<ICharacterModifier> modifiers) {
-        var bonus = modifiers
-            .Where(m => m.ModifierType == ModifierType.ArmorClass)
-            .Sum(m => m.Amount);
-        return BaseArmorClass + bonus;
     }
 
     public int GetDamageResist(IEnumerable<ICharacterModifier> modifiers) {

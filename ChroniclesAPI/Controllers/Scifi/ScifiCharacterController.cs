@@ -103,13 +103,13 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         var modifiers = scifiCharacter.Modifiers.Cast<ICharacterModifier>();
 
         var adjusted = new AdjustedStatsDto(
-            Strength: scifiCharacter.Character!.GetStat(modifiers, ModifierType.Strength, characterStats.Strength),
-            Dexterity: scifiCharacter.Character.GetStat(modifiers, ModifierType.Dexterity, characterStats.Dexterity),
-            Constitution: scifiCharacter.Character.GetStat(modifiers, ModifierType.Constitution, characterStats.Constitution),
-            Intelligence: scifiCharacter.Character.GetStat(modifiers, ModifierType.Intelligence, characterStats.Intelligence),
-            Wisdom: scifiCharacter.Character.GetStat(modifiers, ModifierType.Wisdom, characterStats.Wisdom),
-            Charisma: scifiCharacter.Character.GetStat(modifiers, ModifierType.Charisma, characterStats.Charisma),
-            ArmorClass: scifiCharacter.Character.GetArmorClass(modifiers),
+            Strength: characterStats.GetStat(StatType.Strength, modifiers),
+            Dexterity: characterStats.GetStat(StatType.Dexterity, modifiers),
+            Constitution: characterStats.GetStat(StatType.Constitution, modifiers),
+            Intelligence: characterStats.GetStat(StatType.Intelligence, modifiers),
+            Wisdom: characterStats.GetStat(StatType.Wisdom, modifiers),
+            Charisma: characterStats.GetStat(StatType.Charisma, modifiers),
+            ArmorClass: scifiCharacter.GetArmorClass(characterStats),
             DamageResist: scifiCharacter.Character.GetDamageResist(modifiers),
             MaxHealth: scifiCharacter.Character.GetMaxHealth(modifiers),
             CurrentHealth: scifiCharacter.Character.CurrentHealth
@@ -193,6 +193,8 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         character.SetMaxHealth(0);
 
         var scifiCharacter = new ScifiCharacter(character.Id);
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id)
+                                ?? new CharacterStats(character.Id);
 
         if (request.ScifiRaceId is not null) {
             var race = await db.ScifiRaces
@@ -208,7 +210,11 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
             var picks = (request.StatPicks ?? []).Select(sp => (sp.Stat, sp.Amount)).ToList();
 
-            scifiCharacter.SetScifiRace(race, picks, subrace);
+            try {
+                scifiCharacter.SetScifiRace(race, picks, subrace, stats);
+            } catch (InvalidOperationException ex) {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         if (request.ScifiClassId is not null) {
@@ -228,8 +234,6 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             : scifiCharacter.ScifiClass;
 
         db.ScifiCharacters.Add(scifiCharacter);
-        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == character.Id)
-                                ?? new CharacterStats(character.Id);
 
         if (!db.CharacterStats.Local.Contains(stats))
             db.CharacterStats.Add(stats);
@@ -267,6 +271,9 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         if (scifiCharacter.Character!.IsActive)
             return BadRequest(new { message = "Cannot update ScifiCharacter assignments for an active character." });
 
+        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == scifiCharacter.CharacterId)
+            ?? new CharacterStats(scifiCharacter.CharacterId);
+
         // Race: 0 = clear, valid ID = set/change, null = no change (unless subrace alone is changing)
         if (request.ScifiRaceId == 0) {
             scifiCharacter.ClearScifiRace();
@@ -298,7 +305,11 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
             var picks = (request.StatPicks ?? []).Select(sp => (sp.Stat, sp.Amount)).ToList();
 
-            scifiCharacter.SetScifiRace(race, picks, subrace);
+            try {
+                scifiCharacter.SetScifiRace(race, picks, subrace, stats);
+            } catch (InvalidOperationException ex) {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // Class: 0 = clear, valid ID = set, null = no change
@@ -327,9 +338,6 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 return BadRequest(new { message = "ScifiBackground not found." });
             scifiCharacter.SetScifiBackground(background.Id);
         }
-
-        CharacterStats stats = await db.CharacterStats.FirstOrDefaultAsync(cs => cs.CharacterId == scifiCharacter.CharacterId)
-            ?? new CharacterStats(scifiCharacter.CharacterId);
 
         // CHANGED: was `request.ScifiClassId is not null`, which incorrectly matched
         // the "clear" sentinel (0) too, causing FirstAsync(c => c.Id == 0) to throw.

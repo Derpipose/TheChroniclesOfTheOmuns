@@ -19,11 +19,11 @@ public class AuthService(AppDbContext db, IConfiguration config)// will need IRe
     {
         var player = await db.Players.FirstOrDefaultAsync(p => p.Email == email);
         if (player is null) {
-            Console.WriteLine($"No player found for email: {email}");
+            // Console.WriteLine($"No player found for email: {email}");
             return false;
         }
 
-        Console.WriteLine($"Player found: {player.Id} - {player.Email}");
+        // Console.WriteLine($"Player found: {player.Id} - {player.Email}");
 
         // Invalidate any existing unused codes for this player
         var existing = await db.AuthCodes
@@ -43,14 +43,14 @@ public class AuthService(AppDbContext db, IConfiguration config)// will need IRe
         });
 
         await db.SaveChangesAsync();
-        Console.WriteLine("OTP saved to DB");
+        // Console.WriteLine("OTP saved to DB");
 
         try {
             await SendEmailAsync(email, otp);
-            Console.WriteLine("Email sent successfully");
+            // Console.WriteLine("Email sent successfully");
         }
         catch (Exception ex) {
-            Console.WriteLine($"Email send failed: {ex.Message}");
+            // Console.WriteLine($"Email send failed: {ex.Message}");
             return false;
         }
 
