@@ -9,8 +9,7 @@ public class Character {
     public int PlayerId { get; private set; } = 0;
     public int Level { get; private set; } = 1;
     public SettingEnum Setting { get; private set; } = SettingEnum.Unregistered;
-    public int BaseHealth { get; private set; } = 0;
-    public int BaseArmorClass { get; private set; } = 10;
+    public int BaseHealth { get; private set; } = 0; // Level 1 base health. Modifiers will act to increase it. Gotta be able to reverse it for some feats
 
     public int CurrentHealth { get; private set; } = 0;
     public int Id { get; private set; }

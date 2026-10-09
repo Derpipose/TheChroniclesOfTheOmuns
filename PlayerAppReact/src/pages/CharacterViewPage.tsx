@@ -80,17 +80,17 @@ export default function CharacterViewPage() {
             <div>
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
-                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                    backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                    color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
                 }}>{setting}</span>
                 <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
-                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                    backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                    color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
                 }}
                 >
-                {character.active ? 'Active' : 'In Edit Mode'}
+                {character.isActive ? 'Active' : 'In Edit Mode'}
                 </span>
             </div>
             <div className="flex items-center gap-3">
@@ -98,7 +98,7 @@ export default function CharacterViewPage() {
                 Level {character.level}
                 </span>
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                {character.maxHealth} HP
+                {character.currentHealth} HP
                 </span>
             </div>
             </div>
@@ -177,14 +177,14 @@ export default function CharacterViewPage() {
                 <div className="flex items-center gap-3 shrink-0">
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                         style={{
-                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                            backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                            color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
                         }}>{setting}</span>
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                         style={{
-                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
-                        }}>{character.active ? 'Active' : 'In Edit Mode'}</span>
+                            backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                            color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
+                        }}>{character.isActive ? 'Active' : 'In Edit Mode'}</span>
                     <button
                         onClick={() => navigate(`/character/${characterId}/edit`)}
                         className="rounded-lg px-5 py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
@@ -214,7 +214,7 @@ export default function CharacterViewPage() {
                                 <div
                                     className="h-full rounded-full"
                                     style={{
-                                        width: `${adjustedStats.maxHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
+                                        width: `${adjustedStats.currentHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
                                         backgroundColor: '#4C8B4C',
                                     }}
                                 />
