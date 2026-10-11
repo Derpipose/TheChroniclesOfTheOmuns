@@ -62,7 +62,7 @@ export default function CharacterViewPage() {
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="sticky top-0 z-30 border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-30)' }}>
+        <div className="app-header" style={{ backgroundColor: 'var(--color-background-60)' }}>
             <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
             ← Back
             </button>
@@ -257,7 +257,7 @@ export default function CharacterViewPage() {
                             <div>
                                 {race.description ? (
                                     <details className="group">
-                                        <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                                        <summary className="collapse-summary">
                                             <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
                                             {race.name}
                                         </summary>
@@ -271,7 +271,7 @@ export default function CharacterViewPage() {
                                 <div className="pt-3 border-t" style={{ borderColor: 'var(--color-primary-30)' }}>
                                     {subrace.description ? (
                                         <details className="group">
-                                            <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                                            <summary className="collapse-summary">
                                                 <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
                                                 {subrace.subRaceName}
                                             </summary>
@@ -301,7 +301,7 @@ export default function CharacterViewPage() {
                             <div>
                                 {background.description ? (
                                     <details className="group">
-                                        <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
+                                        <summary className="collapse-summary">
                                             <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
                                             {background.name}
                                         </summary>

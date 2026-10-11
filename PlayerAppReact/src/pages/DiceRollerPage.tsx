@@ -177,13 +177,10 @@ export default function DiceRollerPage() {
   ) : []
 
   return (
-    <div className="flex h-screen flex-col" style={{ backgroundColor: 'var(--color-background)' }}>
+    <div className="dice-page">
       <NavBar title="Dice Roller" />
       {/* Header */}
-      <div
-        className="shrink-0 border-b px-4 py-3 shadow-sm sm:px-6 sm:py-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
-        style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
-      >
+      <div className="dice-toolbar">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
             Roll mode
@@ -244,12 +241,9 @@ export default function DiceRollerPage() {
       )}
 
       {/* Main Content */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row md:overflow-hidden">
+      <div className="dice-main">
         {/* Left Panel - Roll Inputs */}
-        <div
-          className="order-2 w-full min-w-0 shrink-0 border-b overflow-y-auto md:shrink p-4 flex flex-col gap-4 sm:p-6 md:order-1 md:w-1/3 md:border-b-0 md:border-r"
-          style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)' }}
-        >
+        <div className="dice-inputs">
           {/* Tab Switcher */}
           <div className="flex gap-2 mb-4">
             <button

@@ -3,6 +3,7 @@
 
 /* Nav bar buttons: tint toward the accent colour on hover/focus */
 .nav-btn {
+  @apply shrink-0 whitespace-nowrap rounded px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm;
   background-color: var(--color-background-60);
   color: var(--color-text);
   border: 2px solid var(--color-primary-30);
@@ -18,4 +19,62 @@
 
 .nav-btn:active {
   background-color: var(--color-accent-60);
+}
+/* Sticky top bars (nav bar and per-page header bars) */
+.app-header {
+  @apply sticky top-0 z-30 flex flex-wrap items-center gap-3 border-b px-4 py-3 sm:px-6 sm:py-4;
+  background-color: var(--color-background-30);
+  border-color: var(--color-primary-30);
+}
+
+/* Dice roller: fixed-height page; panels scroll on their own at md+ */
+.dice-page {
+  @apply flex h-screen flex-col;
+  background-color: var(--color-background);
+}
+
+.dice-toolbar {
+  @apply flex shrink-0 flex-col items-stretch gap-3 border-b px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4;
+  background-color: var(--color-background-30);
+  border-color: var(--color-primary-30);
+}
+
+.dice-main {
+  @apply flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row md:overflow-hidden;
+}
+
+.dice-inputs {
+  @apply order-2 flex w-full min-w-0 shrink-0 flex-col gap-4 overflow-y-auto border-b p-4 sm:p-6 md:order-1 md:w-1/3 md:shrink md:border-b-0 md:border-r;
+  background-color: var(--color-background);
+  border-color: var(--color-primary-30);
+}
+
+.roll-log {
+  @apply order-1 max-h-[22rem] w-full min-w-0 shrink-0 overflow-y-auto p-4 sm:max-h-[28rem] sm:p-6 md:order-2 md:max-h-none md:w-2/3 md:shrink;
+  background-color: var(--color-background-60);
+}
+
+/* Form pieces */
+.field-input {
+  @apply rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-stone-400;
+}
+
+.btn {
+  @apply rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50;
+}
+
+/* Character form: column card on desktop, plain stack on mobile */
+.form-section {
+  @apply flex flex-col gap-5 lg:rounded-2xl lg:border lg:border-[var(--color-primary-30)] lg:p-6;
+}
+
+.section-title {
+  @apply hidden border-b pb-2 text-xs font-semibold uppercase tracking-wide lg:block;
+  color: var(--color-text);
+  border-color: var(--color-primary-30);
+}
+
+.collapse-summary {
+  @apply flex cursor-pointer list-none items-center gap-2 text-sm font-semibold;
+  color: var(--color-text);
 }

@@ -245,7 +245,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="sticky top-0 z-30 border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
+            <div className="app-header">
             <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
                 ← Back
             </button>
@@ -259,8 +259,8 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 {/* Column 1: Identity + Stats */}
                 <div className="flex flex-col gap-5">
                     {/* Identity section — name + level */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                         Identity
                         </h2>
 
@@ -270,7 +270,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                            className="field-input"
                             style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                             placeholder="Character name"
                         />
@@ -286,15 +286,15 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             value={level}
                             disabled = {true}
                             onChange={(e) => setLevel(e.target.value)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                            className="field-input"
                             style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                         />
                         </div>
                     </div>
 
                     {/* Stats section — ability scores + free stat picks */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                             Stats
                         </h2>
 
@@ -327,7 +327,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                                         const clamped = isNaN(num) ? 1 : Math.min(10, Math.max(1, num));
                                         setValue(String(clamped));
                                         }}
-                                        className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
+                                        className="field-input w-16"
                                         style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                                     />
                                     <span className="text-sm" style={{ color: 'var(--color-text-60)' }}>
@@ -376,8 +376,8 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 {/* Column 2: Origin + Path */}
                 <div className="flex flex-col gap-5">
                     {/* Origin section — race + subrace */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                         Origin
                         </h2>
 
@@ -390,7 +390,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             setRaceId(selectedId)
                             setSubraceId(undefined)
                             }}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                            className="field-input"
                             style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                         >
                             <option value="">Select a race</option>
@@ -408,7 +408,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             <select
                             value={subraceId ?? ''}
                             onChange={(e) => setSubraceId(e.target.value ? parseInt(e.target.value) : undefined)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                            className="field-input"
                             style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                             >
                             <option value="">Select a subrace</option>
@@ -423,8 +423,8 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                     </div>
 
                     {/* Path section — class + background */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                         Path
                         </h2>
 
@@ -433,7 +433,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                         <select
                             value={classId ?? ''}
                             onChange={(e) => setClassId(e.target.value ? parseInt(e.target.value) : undefined)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                            className="field-input"
                             style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                         >
                             <option value="">Select a class</option>
@@ -450,7 +450,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                         <select
                             value={backgroundId ?? ''}
                             onChange={(e) => setBackgroundId(e.target.value ? parseInt(e.target.value) : undefined)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                            className="field-input"
                             style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
                         >
                             <option value="">Select a background</option>
@@ -465,8 +465,8 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 </div>
 
                 {/* Column 3: Notes */}
-                <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                    <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                <div className="form-section">
+                    <h2 className="section-title">
                     Notes
                     </h2>
                     <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
@@ -479,7 +479,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text-30)' }}>
                     Cancel
                 </button>
-                <button onClick={handleSubmit} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50 lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}>
+                <button onClick={handleSubmit} disabled={submitting} className="btn flex-1 lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}>
                     {submitting ? (mode === 'add' ? 'Creating…' : 'Saving…') : (mode === 'add' ? 'Create Character' : 'Save Character')}
                 </button>
                 </div>

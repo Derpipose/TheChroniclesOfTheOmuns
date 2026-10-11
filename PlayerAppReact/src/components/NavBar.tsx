@@ -17,13 +17,7 @@ export default function NavBar({ title = 'Character Vault' }: NavBarProps) {
   const navigate = useNavigate()
 
   return (
-    <div
-      className="sticky top-0 z-30 border-b px-4 py-3 sm:px-6 sm:py-4 flex flex-wrap items-center gap-3"
-      style={{
-        backgroundColor: 'var(--color-background-30)',
-        borderColor: 'var(--color-primary-30)',
-      }}
-    >
+    <div className="app-header">
       <h1
         className="text-lg font-semibold shrink-0"
         style={{ color: 'var(--color-text)' }}
@@ -36,7 +30,7 @@ export default function NavBar({ title = 'Character Vault' }: NavBarProps) {
           <button
             key={link.to}
             onClick={() => navigate(link.to)}
-            className="nav-btn shrink-0 whitespace-nowrap px-2 py-1.5 text-xs rounded sm:px-3 sm:py-2 sm:text-sm"
+            className="nav-btn"
           >
             {link.label}
           </button>

@@ -260,7 +260,7 @@ export default function AddWeaponInstancePage() {
                             !selectedScifiCharacter ||
                             createWeaponInstance.isPending
                         }
-                        className="rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50"
+                        className="btn"
                         style={{
                             backgroundColor: 'var(--color-accent)',
                             color: 'var(--color-text-30)',

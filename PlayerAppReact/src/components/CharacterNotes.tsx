@@ -36,7 +36,7 @@ export function CharacterNotes({ characterId, notes, onNotesChange }: CharacterN
         onChange={handleNotesChange}
         onBlur={handleSaveNotes}
         rows={4}
-        className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+        className="field-input"
         style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
       />
     </div>
