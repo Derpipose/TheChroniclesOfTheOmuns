@@ -74,7 +74,9 @@ The dice page avoids double scrollbars by making the page a fixed-height flex co
 | [Card](src/components/Card.tsx) | `title?`, `description?`, `className?` | Wraps `card` and `card-title`. Add layout utilities (`flex flex-col gap-4`) through `className`. |
 | [Pill](src/components/Pill.tsx) | `variant?: 'neutral' \| 'accent' \| 'active'` | Wraps the `pill` classes. |
 
-Local helpers in [CharacterViewPage.tsx](src/pages/CharacterViewPage.tsx): `StatTile`, `DetailRow`, `Expandable` (a `<details>` with a rotating chevron, or plain text when there is no description) and `CenteredMessage`. Local helpers in [DevPage.tsx](src/pages/DevPage.tsx): `Field` (label wrapping a control) and `EnumSelect` (select generated from a const-object enum). Promote any of these to `src/components/` if a second page needs them.
+Character view pieces live in [src/components/CharacterViewPage/](src/components/CharacterViewPage/): `OverviewCard`, `DetailsCard` and `StatListCard` (mobile), `HeroCard`, `VitalsCard`, `AbilityScoresCard` and `TraitCards` (desktop), plus `StatTile`, `DetailRow`, `Expandable`, `StatusPills` and `CenteredMessage`. [CharacterViewPage.tsx](src/pages/CharacterViewPage.tsx) fetches the data and composes them.
+
+Dev page pieces live in [src/components/DevPage/](src/components/DevPage/): `SeedButton` (seed row with status), `Field` (label wrapping a control), `EnumSelect` (select generated from a const-object enum), `AddWeaponCard` and `DeleteWeaponCard` (each owns its own state and mutations). [DevPage.tsx](src/pages/DevPage.tsx) only composes them.
 
 ## Known exceptions and gaps
 

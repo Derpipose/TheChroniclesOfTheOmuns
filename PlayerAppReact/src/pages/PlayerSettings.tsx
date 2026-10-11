@@ -12,7 +12,7 @@ export default function PlayerSettingsPage() {
 
   return (
     <div className="page">
-      <NavBar />
+      <NavBar title="Settings" />
       <div className="max-w-2xl mx-auto px-6 py-8 flex flex-col gap-5">
         <h2 className="page-title">Settings</h2>
 
