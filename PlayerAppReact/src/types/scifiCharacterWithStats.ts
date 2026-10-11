@@ -16,14 +16,3 @@ export interface StatModifierDto {
   amount: number
   source: number
 }
-
-export interface ScifiCharacterWithStats {
-  id: number
-  characterId: number
-  scifiRaceId?: number | null
-  scifiSubraceId?: number | null
-  scifiClassId?: number | null
-  scifiBackgroundId?: number | null
-  adjustedStats: AdjustedStats
-  modifiers: StatModifierDto[]
-}

@@ -93,12 +93,18 @@ export default function CharacterViewPage() {
                 {character.isActive ? 'Active' : 'In Edit Mode'}
                 </span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
                 Level {character.level}
                 </span>
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
                 {character.currentHealth} HP
+                </span>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
+                AC {adjustedStats?.armorClass ?? '—'}
+                </span>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
+                DR {adjustedStats?.damageResist ?? '—'}
                 </span>
             </div>
             </div>
@@ -201,9 +207,15 @@ export default function CharacterViewPage() {
                     {adjustedStats && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
-                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
+                                <div className="flex flex-col gap-3">
+                                    <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-2" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
+                                        <span className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
+                                    </div>
+                                    <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-2" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>DR</span>
+                                        <span className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.damageResist}</span>
+                                    </div>
                                 </div>
                                 <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
                                     <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>HP</span>
