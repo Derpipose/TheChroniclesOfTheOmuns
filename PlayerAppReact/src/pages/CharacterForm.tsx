@@ -245,7 +245,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
+            <div className="sticky top-0 z-30 border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
             <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
                 ← Back
             </button>

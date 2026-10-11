@@ -44,7 +44,7 @@ export default function RollLog({ rolls, onVisibilityChange }: RollLogProps) {
   return (
     <div
       ref={rollLogRef}
-      className="order-1 max-h-[22rem] w-full min-w-0 overflow-y-auto p-4 sm:max-h-[28rem] sm:p-6 md:order-2 md:max-h-none md:w-2/3"
+      className="order-1 max-h-[22rem] w-full min-w-0 shrink-0 overflow-y-auto md:shrink p-4 sm:max-h-[28rem] sm:p-6 md:order-2 md:max-h-none md:w-2/3"
       style={{ backgroundColor: 'var(--color-background-60)' }}
     >
       <div className="space-y-3">

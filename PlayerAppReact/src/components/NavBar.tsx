@@ -18,7 +18,7 @@ export default function NavBar({ title = 'Character Vault' }: NavBarProps) {
 
   return (
     <div
-      className="border-b px-4 py-3 sm:px-6 sm:py-4 flex flex-wrap items-center gap-3"
+      className="sticky top-0 z-30 border-b px-4 py-3 sm:px-6 sm:py-4 flex flex-wrap items-center gap-3"
       style={{
         backgroundColor: 'var(--color-background-30)',
         borderColor: 'var(--color-primary-30)',

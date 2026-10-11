@@ -177,11 +177,11 @@ export default function DiceRollerPage() {
   ) : []
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-        <NavBar title="Dice Roller" />
+    <div className="flex h-screen flex-col" style={{ backgroundColor: 'var(--color-background)' }}>
+      <NavBar title="Dice Roller" />
       {/* Header */}
       <div
-        className="sticky top-0 z-20 border-b px-4 py-3 shadow-sm sm:px-6 sm:py-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
+        className="shrink-0 border-b px-4 py-3 shadow-sm sm:px-6 sm:py-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between"
         style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
       >
         <div className="flex flex-wrap items-center gap-2">
@@ -244,10 +244,10 @@ export default function DiceRollerPage() {
       )}
 
       {/* Main Content */}
-      <div className="flex min-h-[calc(100vh-80px)] flex-col md:h-[calc(100vh-80px)] md:flex-row">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row md:overflow-hidden">
         {/* Left Panel - Roll Inputs */}
         <div
-          className="order-2 w-full min-w-0 border-b overflow-y-auto p-4 flex flex-col gap-4 sm:p-6 md:order-1 md:w-1/3 md:border-b-0 md:border-r"
+          className="order-2 w-full min-w-0 shrink-0 border-b overflow-y-auto md:shrink p-4 flex flex-col gap-4 sm:p-6 md:order-1 md:w-1/3 md:border-b-0 md:border-r"
           style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)' }}
         >
           {/* Tab Switcher */}
