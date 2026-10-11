@@ -145,8 +145,7 @@ export default function UpdateWeaponInstancePage() {
 
     return (
         <div
-            className="min-h-screen"
-            style={{ backgroundColor: 'var(--color-background)' }}
+            className="page"
         >
             {/* Header */}
             <NavBar title="Edit Weapon" />
@@ -155,15 +154,10 @@ export default function UpdateWeaponInstancePage() {
 
                 {/* Selection */}
                 <div
-                    className="rounded-2xl border p-6 flex flex-col gap-4"
-                    style={{
-                        backgroundColor: 'var(--color-background-30)',
-                        borderColor: 'var(--color-primary-30)',
-                    }}
+                    className="rounded-2xl border p-6 flex flex-col gap-4 panel"
                 >
                     <h2
-                        className="text-sm font-semibold uppercase tracking-wide"
-                        style={{ color: 'var(--color-text-60)' }}
+                        className="card-title"
                     >
                         Select Weapon
                     </h2>
@@ -171,23 +165,20 @@ export default function UpdateWeaponInstancePage() {
                     {/* Character */}
                     <label className="flex flex-col gap-2">
                         <span
-                            className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: 'var(--color-text-60)' }}
+                            className="label"
                         >
                             Character
                         </span>
 
                         {charactersLoading ? (
                             <p
-                                className="text-sm"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-sm fg-muted"
                             >
                                 Loading characters...
                             </p>
                         ) : characters.length === 0 ? (
                             <p
-                                className="text-sm"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-sm fg-muted"
                             >
                                 No characters found.
                             </p>
@@ -195,12 +186,7 @@ export default function UpdateWeaponInstancePage() {
                             <select
                                 value={selectedCharacterId}
                                 onChange={handleCharacterChange}
-                                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
-                                style={{
-                                    backgroundColor: 'var(--color-background)',
-                                    borderColor: 'var(--color-primary-30)',
-                                    color: 'var(--color-text)',
-                                }}
+                                className="field-input w-full"
                             >
                                 {characters.map((character) => (
                                     <option
@@ -217,23 +203,20 @@ export default function UpdateWeaponInstancePage() {
                     {/* Weapon */}
                     <label className="flex flex-col gap-2">
                         <span
-                            className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: 'var(--color-text-60)' }}
+                            className="label"
                         >
                             Weapon
                         </span>
 
                         {weaponsLoading ? (
                             <p
-                                className="text-sm"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-sm fg-muted"
                             >
                                 Loading weapons...
                             </p>
                         ) : weapons.length === 0 ? (
                             <p
-                                className="text-sm"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-sm fg-muted"
                             >
                                 This character has no weapons.
                             </p>
@@ -241,12 +224,7 @@ export default function UpdateWeaponInstancePage() {
                             <select
                                 value={selectedWeaponId}
                                 onChange={handleWeaponChange}
-                                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
-                                style={{
-                                    backgroundColor: 'var(--color-background)',
-                                    borderColor: 'var(--color-primary-30)',
-                                    color: 'var(--color-text)',
-                                }}
+                                className="field-input w-full"
                             >
                                 {weapons.map((weapon) => (
                                     <option
@@ -264,23 +242,17 @@ export default function UpdateWeaponInstancePage() {
                 {/* Weapon editor */}
                 {selectedWeapon && (
                     <div
-                        className="rounded-2xl border p-6 flex flex-col gap-5"
-                        style={{
-                            backgroundColor: 'var(--color-background-30)',
-                            borderColor: 'var(--color-primary-30)',
-                        }}
+                        className="rounded-2xl border p-6 flex flex-col gap-5 panel"
                     >
                         <div>
                             <p
-                                className="text-xs font-medium uppercase tracking-wide"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="label"
                             >
                                 Weapon
                             </p>
 
                             <h2
-                                className="text-lg font-semibold mt-1"
-                                style={{ color: 'var(--color-text)' }}
+                                className="text-lg font-semibold mt-1 fg"
                             >
                                 {selectedWeapon.name}
                             </h2>
@@ -289,8 +261,7 @@ export default function UpdateWeaponInstancePage() {
                         {/* Nickname */}
                         <label className="flex flex-col gap-2">
                             <span
-                                className="text-xs font-medium uppercase tracking-wide"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="label"
                             >
                                 Nickname
                             </span>
@@ -302,17 +273,11 @@ export default function UpdateWeaponInstancePage() {
                                     setNickname(event.target.value)
                                 }
                                 placeholder={selectedWeapon.name}
-                                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
-                                style={{
-                                    backgroundColor: 'var(--color-background)',
-                                    borderColor: 'var(--color-primary-30)',
-                                    color: 'var(--color-text)',
-                                }}
+                                className="field-input w-full"
                             />
 
                             <span
-                                className="text-xs"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-xs fg-muted"
                             >
                                 Leave blank to use the weapon's normal name.
                             </span>
@@ -324,28 +289,16 @@ export default function UpdateWeaponInstancePage() {
                             onClick={() =>
                                 setFavorite((current) => !current)
                             }
-                            className="rounded-lg border px-4 py-3 flex items-center justify-between transition-opacity hover:opacity-90"
-                            style={{
-                                backgroundColor: favorite
-                                    ? 'var(--color-background-60)'
-                                    : 'var(--color-background)',
-                                borderColor: 'var(--color-primary-30)',
-                            }}
+                            className={`rounded-lg border border-subtle px-4 py-3 flex items-center justify-between transition-opacity hover:opacity-90 ${favorite ? 'bg-soft' : 'bg-page'}`}
                         >
                             <span
-                                className="text-sm font-medium"
-                                style={{ color: 'var(--color-text)' }}
+                                className="text-sm font-medium fg"
                             >
                                 Favorite
                             </span>
 
                             <span
-                                className="text-lg"
-                                style={{
-                                    color: favorite
-                                        ? 'var(--color-accent)'
-                                        : 'var(--color-text-60)',
-                                }}
+                                className={`text-lg ${favorite ? 'fg-accent' : 'fg-muted'}`}
                             >
                                 {favorite ? '★' : '☆'}
                             </span>
@@ -353,19 +306,16 @@ export default function UpdateWeaponInstancePage() {
 
                         {/* Weapon information */}
                         <div
-                            className="rounded-lg px-3 py-3 flex flex-col gap-1"
-                            style={{ backgroundColor: 'var(--color-background-60)' }}
+                            className="rounded-lg px-3 py-3 flex flex-col gap-1 bg-soft"
                         >
                             <p
-                                className="text-xs"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-xs fg-muted"
                             >
                                 Ammo
                             </p>
 
                             <p
-                                className="text-sm font-semibold"
-                                style={{ color: 'var(--color-text)' }}
+                                className="text-sm font-semibold fg"
                             >
                                 {selectedWeapon.currentAmmo}/
                                 {selectedWeapon.ammoCapacity}
@@ -374,12 +324,7 @@ export default function UpdateWeaponInstancePage() {
 
                         {error && (
                             <div
-                                className="rounded-lg p-3 text-sm"
-                                style={{
-                                    backgroundColor: 'var(--color-background)',
-                                    color: 'var(--color-secondary)',
-                                    border: '1px solid var(--color-primary-30)',
-                                }}
+                                className="alert-error"
                             >
                                 {error}
                             </div>
@@ -387,12 +332,7 @@ export default function UpdateWeaponInstancePage() {
 
                         {success && (
                             <div
-                                className="rounded-lg p-3 text-sm"
-                                style={{
-                                    backgroundColor: '#E4EEE4',
-                                    color: '#3D5C3D',
-                                    border: '1px solid #C9D9C9',
-                                }}
+                                className="alert-success"
                             >
                                 Weapon updated successfully.
                             </div>
@@ -407,11 +347,7 @@ export default function UpdateWeaponInstancePage() {
                                 favoriteMutation.isPending ||
                                 deleteMutation.isPending
                             }
-                            className="w-full rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
-                            style={{
-                                backgroundColor: 'var(--color-accent)',
-                                color: 'var(--color-text-30)',
-                            }}
+                            className="btn btn-accent w-full"
                         >
                             {saving ? 'Saving...' : 'Save Changes'}
                         </button>
@@ -425,12 +361,7 @@ export default function UpdateWeaponInstancePage() {
                                 favoriteMutation.isPending ||
                                 deleteMutation.isPending
                             }
-                            className="w-full rounded-lg border py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
-                            style={{
-                                backgroundColor: 'var(--color-secondary-30)',
-                                borderColor: 'var(--color-secondary-60)',
-                                color: 'var(--color-secondary)',
-                            }}
+                            className="btn btn-danger w-full border"
                         >
                             {deleteMutation.isPending
                                 ? 'Deleting...'

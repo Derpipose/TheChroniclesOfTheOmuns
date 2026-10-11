@@ -66,35 +66,3 @@ export async function deleteScifiCharacter(id: number): Promise<void> {
     throw new Error(`Failed to delete scifi character with id ${id}: ${response.statusText}`)
   }
 }
-
-import type { ScifiCharacterWithStats } from '../types/scifiCharacterWithStats'
-import type { CharacterStats } from '../types/characterStats'
-
-export async function getScifiCharacterWithAdjustedStats(scifiCharacterId: number): Promise<CharacterStats | null> {
-  const response = await apiFetch(`${BASE_URL}/api/scifi/scifiCharacter/${scifiCharacterId}/with-stats`)
-
-  if (!response.ok) {
-    // if 404, return null to let callers fall back
-    if (response.status === 404) return null
-    throw new Error(`Failed to fetch scifi character with adjusted stats for id ${scifiCharacterId}: ${response.statusText}`)
-  }
-
-  const scifi = await response.json() as ScifiCharacterWithStats
-
-  if (!scifi || !scifi.adjustedStats) return null
-
-  const adjusted = scifi.adjustedStats
-
-  const result: CharacterStats = {
-    id: 0,
-    characterId: scifi.characterId,
-    strength: adjusted.strength,
-    constitution: adjusted.constitution,
-    dexterity: adjusted.dexterity,
-    wisdom: adjusted.wisdom,
-    charisma: adjusted.charisma,
-    intelligence: adjusted.intelligence,
-  }
-
-  return result
-}

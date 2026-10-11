@@ -235,12 +235,12 @@ public class ScifiWeaponInstanceServiceTests {
 
         // Create base characters
         var characterBase1 = new Character(1, "Character1");
-        characterBase1.SetMaxHealth(10);
+        characterBase1.SetBaseHealth(10);
         characterBase1.SetLevel(1);
         db.Characters.Add(characterBase1);
 
         var characterBase2 = new Character(2, "Character2");
-        characterBase2.SetMaxHealth(10);
+        characterBase2.SetBaseHealth(10);
         characterBase2.SetLevel(1);
         db.Characters.Add(characterBase2);
         await db.SaveChangesAsync();
@@ -395,7 +395,7 @@ public class ScifiWeaponInstanceServiceTests {
     // Helper methods
     private static async Task<ScifiCharacter> CreateScifiCharacterAsync(AppDbContext db, int characterId, string name) {
         var character = new Character(characterId, name);
-        character.SetMaxHealth(10);
+        character.SetBaseHealth(10);
         character.SetLevel(1);
         db.Characters.Add(character);
 

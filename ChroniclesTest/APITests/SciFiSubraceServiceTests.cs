@@ -323,7 +323,7 @@ public class SciFiSubraceServiceTests {
                 FreeStatPicks: new List<int> { 3 })));
 
         var raceCharacterBase = new Character(1, "Zorak");
-        raceCharacterBase.SetMaxHealth(10);
+        raceCharacterBase.SetBaseHealth(10);
         raceCharacterBase.SetLevel(1);
         db.Characters.Add(raceCharacterBase);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -334,7 +334,7 @@ public class SciFiSubraceServiceTests {
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var subraceCharacterBase = new Character(1, "Ember");
-        subraceCharacterBase.SetMaxHealth(10);
+        subraceCharacterBase.SetBaseHealth(10);
         subraceCharacterBase.SetLevel(1);
         db.Characters.Add(subraceCharacterBase);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -394,7 +394,7 @@ public class SciFiSubraceServiceTests {
                 FreeStatPicks: new List<int> { 3 })));
 
         var characterBase = new Character(1, "Ember");
-        characterBase.SetMaxHealth(10);
+        characterBase.SetBaseHealth(10);
         characterBase.SetLevel(1);
         db.Characters.Add(characterBase);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);

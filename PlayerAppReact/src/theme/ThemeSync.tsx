@@ -9,7 +9,7 @@ export function ThemeSync({ children }: { children: React.ReactNode }) {
   document.documentElement.setAttribute('data-theme', getTheme())
 
   useEffect(() => {
-    console.log("player", player)
+    // console.log("player", player)
     if (player) {
       setTheme(player.theme)
     }

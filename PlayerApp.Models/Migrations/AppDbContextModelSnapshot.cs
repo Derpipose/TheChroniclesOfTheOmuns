@@ -61,7 +61,7 @@ namespace PlayerApp.Models.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BaseArmorClass")
+                    b.Property<int>("BaseHealth")
                         .HasColumnType("integer");
 
                     b.Property<int>("CurrentHealth")
@@ -74,9 +74,6 @@ namespace PlayerApp.Models.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Level")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MaxHealth")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")

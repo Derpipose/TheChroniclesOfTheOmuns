@@ -27,14 +27,14 @@ public class BaseCharacterTests {
     [Fact]
     public void TestCharacterHealth() {
         Character character = new Character(1, "TestCharacter");
-        Assert.Equal(0, character.MaxHealth);
+        Assert.Equal(0, character.BaseHealth);
     }
 
     [Fact]
     public void SetMaxHealthCharacter() {
         Character character = new Character(1, "TestCharacter");
-        character.SetMaxHealth(100);
-        Assert.Equal(100, character.MaxHealth);
+        character.SetBaseHealth(100);
+        Assert.Equal(100, character.BaseHealth);
     }
 
     [Fact]

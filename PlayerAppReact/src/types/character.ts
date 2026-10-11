@@ -6,8 +6,8 @@ export interface Character {
   name: string
   level: number
   setting: Setting
-  maxHealth: number
-  active: boolean
+  currentHealth: number
+  isActive: boolean
   notes: string
 }
 

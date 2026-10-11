@@ -4,6 +4,15 @@ import { useScifiBackgrounds, useScifiClasses, useScifiRaces, useScifiSubracesBy
 import { useScifiStatsByCharacterId } from '../hooks/useScifiStats'
 import { useEffect, useState } from 'react'
 import { CharacterNotes } from '../components/CharacterNotes'
+import Card from '../components/Card'
+import AbilityScoresCard from '../components/CharacterViewPage/AbilityScoresCard'
+import CenteredMessage from '../components/CharacterViewPage/CenteredMessage'
+import DetailsCard from '../components/CharacterViewPage/DetailsCard'
+import HeroCard from '../components/CharacterViewPage/HeroCard'
+import OverviewCard from '../components/CharacterViewPage/OverviewCard'
+import StatListCard from '../components/CharacterViewPage/StatListCard'
+import { BackgroundCard, ClassCard, RacialTraitsCard } from '../components/CharacterViewPage/TraitCards'
+import VitalsCard from '../components/CharacterViewPage/VitalsCard'
 
 export default function CharacterViewPage() {
     const { id } = useParams()
@@ -45,272 +54,83 @@ export default function CharacterViewPage() {
     }, [character])
 
     if (characterLoading || scifiLoading || adjustedStatsLoading) {
-        return (
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
-            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>Loading character...</p>
-        </div>
-        )
+        return <CenteredMessage>Loading character...</CenteredMessage>
     }
 
     if (!character) {
-        return (
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
-            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>Character not found.</p>
-        </div>
-        )
+        return <CenteredMessage>Character not found.</CenteredMessage>
     }
 
+    const goToEdit = () => navigate(`/character/${characterId}/edit`)
+    const notesEditor = <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
+
     return (
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-30)' }}>
-            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
-            ← Back
-            </button>
-            <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>{character.name}</h1>
-        </div>
-
-        {/* Mobile layout (unchanged) */}
-        <div className="lg:hidden max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
-
-            {/* Overview card */}
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-            <div className="flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{character.name}</span>
-            </div>
-            <div>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{
-                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.active ? '#3D5C3D' : 'var(--color-text)',
-                }}>{setting}</span>
-                <span
-                className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{
-                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.active ? '#3D5C3D' : 'var(--color-text)',
-                }}
-                >
-                {character.active ? 'Active' : 'In Edit Mode'}
-                </span>
-            </div>
-            <div className="flex items-center gap-3">
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                Level {character.level}
-                </span>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                {character.maxHealth} HP
-                </span>
-            </div>
+        <div className="page">
+            <div className="app-header bg-soft">
+                <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline fg-muted">
+                    ← Back
+                </button>
+                <h1 className="text-lg font-semibold fg">{character.name}</h1>
             </div>
 
-            {/* Scifi details card */}
-            {scifiCharacter && (
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Details</h2>
-                <div className="flex flex-col gap-2 text-sm" style={{ color: 'var(--color-text)' }}>
-                <p><span style={{ color: 'var(--color-text-60)' }}>Race:</span> {race?.name ?? '—'}</p>
-                {scifiCharacter.scifiSubraceId && (
-                    <p><span style={{ color: 'var(--color-text-60)' }}>Subrace:</span> {subrace?.subRaceName ?? '—'}</p>
+            {/* Mobile layout */}
+            <div className="lg:hidden max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
+                <OverviewCard character={character} adjustedStats={adjustedStats} setting={setting} />
+
+                {scifiCharacter && (
+                    <DetailsCard
+                        race={race?.name}
+                        subrace={subrace?.subRaceName}
+                        showSubrace={Boolean(scifiCharacter.scifiSubraceId)}
+                        characterClass={scifiClass?.name}
+                        background={background?.name}
+                    />
                 )}
-                <p><span style={{ color: 'var(--color-text-60)' }}>Class:</span> {scifiClass?.name ?? '—'}</p>
-                <p><span style={{ color: 'var(--color-text-60)' }}>Background:</span> {background?.name ?? '—'}</p>
-                </div>
-            </div>
-            )}
 
-            {/* Stats card */}
-            { adjustedStats && (
-            <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-60)' }}>Stats</h2>
-                <div className="grid grid-cols-2 gap-3">
-                {statEntries.map(({ label, value }) => (
-                    <div key={label} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: 'var(--color-primary-30)' }}>
-                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text)' }}>{label}</span>
-                    <span className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{value}</span>
+                {adjustedStats && <StatListCard statEntries={statEntries} />}
+
+                <div className="flex gap-3">
+                    <button onClick={goToEdit} className="btn btn-accent flex-1">Edit Character</button>
+                </div>
+
+                <Card title="Notes" className="flex flex-col gap-3">
+                    {notesEditor}
+                </Card>
+            </div>
+
+            {/* Desktop layout */}
+            <div className="hidden lg:flex lg:flex-col gap-6 max-w-6xl mx-auto px-10 py-10">
+                <HeroCard
+                    character={character}
+                    raceName={race?.name}
+                    characterClass={scifiClass?.name}
+                    background={background}
+                    setting={setting}
+                    onEdit={goToEdit}
+                />
+
+                <div className="grid grid-cols-3 gap-6 items-start">
+                    {/* Column 1: Vitals + Stats */}
+                    <div className="flex flex-col gap-6">
+                        {adjustedStats && <VitalsCard adjustedStats={adjustedStats} />}
+                        {adjustedStats && <AbilityScoresCard statEntries={statEntries} />}
                     </div>
-                ))}
-                </div>
-            </div>
-            )}
 
-            <div className="flex gap-3">
-            <button
-                onClick={() => navigate(`/character/${characterId}/edit`)}
-                className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-                style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
-            >
-                Edit Character
-            </button>
-            </div>
-
-            {/* Notes card */}
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Notes</h2>
-                <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
-            </div>
-        </div>
-
-        {/* Desktop layout */}
-        <div className="hidden lg:flex lg:flex-col gap-6 max-w-6xl mx-auto px-10 py-10">
-
-            {/* Hero */}
-            <div className="rounded-2xl border p-6 flex items-center justify-between gap-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <div className="flex items-center gap-5">
-                    <div
-                        className="w-20 h-20 rounded-xl border-2 flex items-center justify-center text-3xl font-bold shrink-0"
-                        style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)', color: 'var(--color-text)' }}
-                    >
-                        {character.name.charAt(0).toUpperCase()}
+                    {/* Column 2: Racial traits + Class + Background */}
+                    <div className="flex flex-col gap-6">
+                        {race && <RacialTraitsCard race={race} subrace={subrace} />}
+                        {scifiClass && <ClassCard scifiClass={scifiClass} />}
+                        {background && <BackgroundCard background={background} />}
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <h2 className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>{character.name}</h2>
-                        <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
-                            {[race?.name, scifiClass?.name, `Level ${character.level}`].filter(Boolean).join(' • ')}
-                        </p>
-                        {background && (
-                            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
-                                Background: <span style={{ color: 'var(--color-text)' }}>{background.name}</span>
-                            </p>
-                        )}
-                    </div>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                        style={{
-                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
-                        }}>{setting}</span>
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                        style={{
-                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
-                        }}>{character.active ? 'Active' : 'In Edit Mode'}</span>
-                    <button
-                        onClick={() => navigate(`/character/${characterId}/edit`)}
-                        className="rounded-lg px-5 py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-                        style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
-                    >
-                        Edit Character
-                    </button>
-                </div>
-            </div>
 
-            <div className="grid grid-cols-3 gap-6 items-start">
-                {/* Column 1: Vitals + Stats (unchanged) */}
-                <div className="flex flex-col gap-6">
-                    {adjustedStats && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
-                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
-                                </div>
-                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>HP</span>
-                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.currentHealth} / {adjustedStats.maxHealth}</span>
-                                </div>
-                            </div>
-                            <div className="rounded-full h-2 overflow-hidden" style={{ backgroundColor: 'var(--color-primary-30)' }}>
-                                <div
-                                    className="h-full rounded-full"
-                                    style={{
-                                        width: `${adjustedStats.maxHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
-                                        backgroundColor: '#4C8B4C',
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {adjustedStats && (
-                        <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-60)' }}>Ability Scores</h2>
-                            <div className="grid grid-cols-3 gap-3">
-                                {statEntries.map(({ label, value }) => (
-                                    <div key={label} className="rounded-xl border flex flex-col items-center justify-center gap-1 py-3" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label.slice(0, 3)}</span>
-                                        <span className="text-lg font-bold" style={{ color: 'var(--color-text)' }}>{value}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Column 2: Racial traits + Class Features + Background */}
-                <div className="flex flex-col gap-6">
-                    {race && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Racial Traits</h2>
-                            <div>
-                                {race.description ? (
-                                    <details className="group">
-                                        <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
-                                            <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
-                                            {race.name}
-                                        </summary>
-                                        <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{race.description}</p>
-                                    </details>
-                                ) : (
-                                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{race.name}</p>
-                                )}
-                            </div>
-                            {subrace && (
-                                <div className="pt-3 border-t" style={{ borderColor: 'var(--color-primary-30)' }}>
-                                    {subrace.description ? (
-                                        <details className="group">
-                                            <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
-                                                <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
-                                                {subrace.subRaceName}
-                                            </summary>
-                                            <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{subrace.description}</p>
-                                        </details>
-                                    ) : (
-                                        <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{subrace.subRaceName}</p>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {scifiClass && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class Features</h2>
-                            <div>
-                                <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{scifiClass.name}</p>
-                                {scifiClass.description && <p className="text-sm mt-1" style={{ color: 'var(--color-text-60)' }}>{scifiClass.description}</p>}
-                            </div>
-                        </div>
-                    )}
-
-                    {background && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</h2>
-                            <div>
-                                {background.description ? (
-                                    <details className="group">
-                                        <summary className="text-sm font-semibold cursor-pointer list-none flex items-center gap-2" style={{ color: 'var(--color-text)' }}>
-                                            <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
-                                            {background.name}
-                                        </summary>
-                                        <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{background.description}</p>
-                                    </details>
-                                ) : (
-                                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{background.name}</p>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Column 3: Notes */}
-                <div className="flex flex-col gap-6">
-                    <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                        <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
+                    {/* Column 3: Notes */}
+                    <div className="flex flex-col gap-6">
+                        <Card className="flex flex-col gap-3">
+                            {notesEditor}
+                        </Card>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     )
 }

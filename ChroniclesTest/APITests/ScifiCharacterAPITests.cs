@@ -39,7 +39,7 @@ public class ScifiCharacterHealthTests {
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // conMod for CON 14 = (14-10)/2 = 2; health = 14*2 + 8 (D8) + 2 = 38
-        Assert.Equal(38, character.MaxHealth);
+        Assert.Equal(38, character.BaseHealth);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class ScifiCharacterHealthTests {
             .FirstAsync(c => c.Id == character.Id, TestContext.Current.CancellationToken);
 
         // conMod = 2; health = 14*2 + 12 (D12) + 2 = 42, NOT the D8 value (38)
-        Assert.Equal(42, finalCharacter.MaxHealth);
+        Assert.Equal(42, finalCharacter.BaseHealth);
     }
 
     [Fact]
@@ -105,6 +105,6 @@ public class ScifiCharacterHealthTests {
 
         scifiCharacter.UpdateHealth(stats, null);
 
-        Assert.Equal(0, character.MaxHealth);
+        Assert.Equal(0, character.BaseHealth);
     }
 }

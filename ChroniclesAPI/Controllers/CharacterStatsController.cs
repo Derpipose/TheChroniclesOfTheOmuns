@@ -2,6 +2,7 @@ using ChroniclesAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PlayerApp.Models;
 using PlayerApp.Models.Database;
 using PlayerApp.Models.Enums;
 
@@ -54,12 +55,17 @@ public class CharacterStatsController(AppDbContext db, PlayerContext playerConte
         if (stats is null)
             return NotFound(new { message = $"Stats for character {characterId} were not found." });
 
-        stats.SetStat(StatType.Strength, request.Strength, character);
-        stats.SetStat(StatType.Constitution, request.Constitution, character);
-        stats.SetStat(StatType.Dexterity, request.Dexterity, character);
-        stats.SetStat(StatType.Wisdom, request.Wisdom, character);
-        stats.SetStat(StatType.Charisma, request.Charisma, character);
-        stats.SetStat(StatType.Intelligence, request.Intelligence, character);
+        var modifiers = await LoadModifiers(characterId);
+        try {
+            stats.SetStat(StatType.Strength, request.Strength, character, modifiers);
+            stats.SetStat(StatType.Constitution, request.Constitution, character, modifiers);
+            stats.SetStat(StatType.Dexterity, request.Dexterity, character, modifiers);
+            stats.SetStat(StatType.Wisdom, request.Wisdom, character, modifiers);
+            stats.SetStat(StatType.Charisma, request.Charisma, character, modifiers);
+            stats.SetStat(StatType.Intelligence, request.Intelligence, character, modifiers);
+        } catch (Exception ex) when (ex is ArgumentException or InvalidOperationException) {
+            return BadRequest(new { message = ex.Message });
+        }
 
         await db.SaveChangesAsync();
         return Ok(new CharacterStatsResponseDto(
@@ -90,12 +96,16 @@ public class CharacterStatsController(AppDbContext db, PlayerContext playerConte
         if (stats is null)
             return NotFound(new { message = $"Stats for character {characterId} were not found." });
 
-        if (request.Value > 0)
-            stats.IncreaseStat(request.Stat, request.Value, character);
-        else if (request.Value < 0)
-            stats.DecreaseStat(request.Stat, Math.Abs(request.Value), character);
-        else
-            return BadRequest(new { message = "Value cannot be zero." });
+        try {
+            if (request.Value > 0)
+                stats.IncreaseStat(request.Stat, request.Value, character);
+            else if (request.Value < 0)
+                stats.DecreaseStat(request.Stat, Math.Abs(request.Value), character, await LoadModifiers(characterId));
+            else
+                return BadRequest(new { message = "Value cannot be zero." });
+        } catch (InvalidOperationException ex) {
+            return BadRequest(new { message = ex.Message });
+        }
 
         await db.SaveChangesAsync();
         return Ok(new CharacterStatsResponseDto(
@@ -108,6 +118,13 @@ public class CharacterStatsController(AppDbContext db, PlayerContext playerConte
             stats.Charisma,
             stats.Intelligence));
     }
+
+    private async Task<List<ICharacterModifier>> LoadModifiers(int characterId) =>
+        (await db.ScifiCharacterModifiers
+            .Where(m => db.ScifiCharacters.Any(sc => sc.Id == m.ScifiCharacterId && sc.CharacterId == characterId))
+            .ToListAsync())
+        .Cast<ICharacterModifier>()
+        .ToList();
 
     public record BulkUpdateStatsDto(int Strength, int Constitution, int Dexterity, int Wisdom, int Charisma, int Intelligence);
     public record UpdateSingleStatDto(StatType Stat, int Value);
