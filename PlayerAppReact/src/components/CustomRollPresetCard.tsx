@@ -19,20 +19,17 @@ export function CustomRollPresetCard({
 }: CustomRollPresetCardProps) {
   return (
     <div
-      className="rounded-lg border p-3 space-y-2"
-      style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
+      className="rounded-lg border p-3 space-y-2 panel"
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p
-            className="text-sm font-semibold truncate"
-            style={{ color: 'var(--color-text)' }}
+            className="text-sm font-semibold truncate fg"
           >
             {preset.name}
           </p>
           <p
-            className="text-xs mt-1 break-all font-mono"
-            style={{ color: 'var(--color-text-60)' }}
+            className="text-xs mt-1 break-all font-mono fg-muted"
           >
             {preset.expression}
           </p>
@@ -42,21 +39,13 @@ export function CustomRollPresetCard({
         <button
           onClick={() => onRoll(preset.expression, preset.name, `preset-${preset.id}`)}
           disabled={isRolling}
-          className="min-w-0 flex-1 px-1 py-1.5 text-[11px] font-semibold rounded transition-colors hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed sm:py-2 sm:text-xs"
-          style={{
-            backgroundColor: 'var(--color-accent)',
-            color: 'var(--color-text-30)',
-          }}
+          className="btn-sm btn-accent min-w-0 flex-1 font-semibold"
         >
           {isRolling ? 'Rolling' : 'Roll'}
         </button>
         <button
           onClick={() => onDelete(preset.id)}
-          className="shrink-0 px-2 py-1.5 text-[11px] rounded transition-colors hover:opacity-90 sm:px-3 sm:py-2 sm:text-xs"
-          style={{
-            backgroundColor: 'var(--color-background-60)',
-            color: 'var(--color-text)',
-          }}
+          className="btn-sm btn-neutral shrink-0"
         >
           ×
         </button>

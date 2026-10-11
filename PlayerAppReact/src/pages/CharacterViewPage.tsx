@@ -2,8 +2,54 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useCharacter, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useScifiBackgrounds, useScifiClasses, useScifiRaces, useScifiSubracesByRace } from '../hooks/useScifiReference'
 import { useScifiStatsByCharacterId } from '../hooks/useScifiStats'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { CharacterNotes } from '../components/CharacterNotes'
+import Card from '../components/Card'
+import Pill from '../components/Pill'
+
+const EDIT_BTN = 'btn btn-accent'
+
+function CenteredMessage({ children }: { children: ReactNode }) {
+    return (
+        <div className="page flex items-center justify-center">
+            <p className="text-sm fg-muted">{children}</p>
+        </div>
+    )
+}
+
+function StatTile({ label, value, py = 'py-3', labelSize = 'text-xs', valueSize = 'text-lg' }: {
+    label: string
+    value: ReactNode
+    py?: string
+    labelSize?: string
+    valueSize?: string
+}) {
+    return (
+        <div className={`stat-tile ${py}`}>
+            <span className={`stat-tile-label ${labelSize}`}>{label}</span>
+            <span className={`stat-tile-value ${valueSize}`}>{value}</span>
+        </div>
+    )
+}
+
+function DetailRow({ label, value }: { label: string; value?: string | null }) {
+    return <p><span className="fg-muted">{label}:</span> {value ?? '—'}</p>
+}
+
+/** A name that expands to show its description, or plain text when there is none. */
+function Expandable({ name, description }: { name: string; description?: string | null }) {
+    if (!description) return <p className="text-sm font-semibold fg">{name}</p>
+
+    return (
+        <details className="group">
+            <summary className="collapse-summary">
+                <span className="fg-muted transition-transform group-open:rotate-90">›</span>
+                {name}
+            </summary>
+            <p className="text-sm mt-1 pl-4 fg-muted">{description}</p>
+        </details>
+    )
+}
 
 export default function CharacterViewPage() {
     const { id } = useParams()
@@ -45,281 +91,180 @@ export default function CharacterViewPage() {
     }, [character])
 
     if (characterLoading || scifiLoading || adjustedStatsLoading) {
-        return (
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
-            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>Loading character...</p>
-        </div>
-        )
+        return <CenteredMessage>Loading character...</CenteredMessage>
     }
 
     if (!character) {
-        return (
-        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
-            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>Character not found.</p>
-        </div>
-        )
+        return <CenteredMessage>Character not found.</CenteredMessage>
     }
 
+    const goToEdit = () => navigate(`/character/${characterId}/edit`)
+    const healthPercent = adjustedStats && adjustedStats.currentHealth > 0
+        ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100)
+        : 0
+    const notesEditor = <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
+
     return (
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="app-header" style={{ backgroundColor: 'var(--color-background-60)' }}>
-            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
+        <div className="page">
+        <div className="app-header bg-soft">
+            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline fg-muted">
             ← Back
             </button>
-            <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>{character.name}</h1>
+            <h1 className="text-lg font-semibold fg">{character.name}</h1>
         </div>
 
-        {/* Mobile layout (unchanged) */}
+        {/* Mobile layout */}
         <div className="lg:hidden max-w-md mx-auto px-6 py-8 flex flex-col gap-5">
 
             {/* Overview card */}
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-            <div className="flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{character.name}</span>
-            </div>
-            <div>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{
-                    backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
-                }}>{setting}</span>
-                <span
-                className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{
-                    backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
-                }}
-                >
-                {character.isActive ? 'Active' : 'In Edit Mode'}
-                </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                Level {character.level}
-                </span>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                {character.currentHealth} HP
-                </span>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                AC {adjustedStats?.armorClass ?? '—'}
-                </span>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                DR {adjustedStats?.damageResist ?? '—'}
-                </span>
-            </div>
-            </div>
+            <Card className="flex flex-col gap-3">
+                <span className="card-title font-medium">{character.name}</span>
+                <div>
+                    <Pill variant={character.isActive ? 'active' : 'neutral'}>{setting}</Pill>
+                    <Pill variant={character.isActive ? 'active' : 'neutral'}>{character.isActive ? 'Active' : 'In Edit Mode'}</Pill>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                    <Pill>Level {character.level}</Pill>
+                    <Pill>{character.currentHealth} HP</Pill>
+                    <Pill>AC {adjustedStats?.armorClass ?? '—'}</Pill>
+                    <Pill>DR {adjustedStats?.damageResist ?? '—'}</Pill>
+                </div>
+            </Card>
 
             {/* Scifi details card */}
             {scifiCharacter && (
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Details</h2>
-                <div className="flex flex-col gap-2 text-sm" style={{ color: 'var(--color-text)' }}>
-                <p><span style={{ color: 'var(--color-text-60)' }}>Race:</span> {race?.name ?? '—'}</p>
-                {scifiCharacter.scifiSubraceId && (
-                    <p><span style={{ color: 'var(--color-text-60)' }}>Subrace:</span> {subrace?.subRaceName ?? '—'}</p>
-                )}
-                <p><span style={{ color: 'var(--color-text-60)' }}>Class:</span> {scifiClass?.name ?? '—'}</p>
-                <p><span style={{ color: 'var(--color-text-60)' }}>Background:</span> {background?.name ?? '—'}</p>
-                </div>
-            </div>
+                <Card title="Details" className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2 text-sm fg">
+                        <DetailRow label="Race" value={race?.name} />
+                        {scifiCharacter.scifiSubraceId && <DetailRow label="Subrace" value={subrace?.subRaceName} />}
+                        <DetailRow label="Class" value={scifiClass?.name} />
+                        <DetailRow label="Background" value={background?.name} />
+                    </div>
+                </Card>
             )}
 
             {/* Stats card */}
-            { adjustedStats && (
-            <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-60)' }}>Stats</h2>
-                <div className="grid grid-cols-2 gap-3">
-                {statEntries.map(({ label, value }) => (
-                    <div key={label} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: 'var(--color-primary-30)' }}>
-                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text)' }}>{label}</span>
-                    <span className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{value}</span>
+            {adjustedStats && (
+                <Card title="Stats">
+                    <div className="grid grid-cols-2 gap-3 mt-3">
+                        {statEntries.map(({ label, value }) => (
+                            <div key={label} className="row-chip">
+                                <span className="text-xs font-medium uppercase tracking-wide fg">{label}</span>
+                                <span className="text-sm font-semibold fg">{value}</span>
+                            </div>
+                        ))}
                     </div>
-                ))}
-                </div>
-            </div>
+                </Card>
             )}
 
             <div className="flex gap-3">
-            <button
-                onClick={() => navigate(`/character/${characterId}/edit`)}
-                className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-                style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
-            >
-                Edit Character
-            </button>
+                <button onClick={goToEdit} className={`${EDIT_BTN} flex-1`}>Edit Character</button>
             </div>
 
             {/* Notes card */}
-            <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Notes</h2>
-                <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
-            </div>
+            <Card title="Notes" className="flex flex-col gap-3">
+                {notesEditor}
+            </Card>
         </div>
 
         {/* Desktop layout */}
         <div className="hidden lg:flex lg:flex-col gap-6 max-w-6xl mx-auto px-10 py-10">
 
             {/* Hero */}
-            <div className="rounded-2xl border p-6 flex items-center justify-between gap-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+            <Card className="flex items-center justify-between gap-6">
                 <div className="flex items-center gap-5">
                     <div
-                        className="w-20 h-20 rounded-xl border-2 flex items-center justify-center text-3xl font-bold shrink-0"
-                        style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)', color: 'var(--color-text)' }}
+                        className="avatar"
                     >
                         {character.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex flex-col gap-1">
-                        <h2 className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>{character.name}</h2>
-                        <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
+                        <h2 className="text-3xl font-bold fg">{character.name}</h2>
+                        <p className="text-sm fg-muted">
                             {[race?.name, scifiClass?.name, `Level ${character.level}`].filter(Boolean).join(' • ')}
                         </p>
                         {background && (
-                            <p className="text-sm" style={{ color: 'var(--color-text-60)' }}>
-                                Background: <span style={{ color: 'var(--color-text)' }}>{background.name}</span>
+                            <p className="text-sm fg-muted">
+                                Background: <span className="fg">{background.name}</span>
                             </p>
                         )}
                     </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                        style={{
-                            backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
-                        }}>{setting}</span>
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                        style={{
-                            backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
-                        }}>{character.isActive ? 'Active' : 'In Edit Mode'}</span>
-                    <button
-                        onClick={() => navigate(`/character/${characterId}/edit`)}
-                        className="rounded-lg px-5 py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
-                        style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
-                    >
-                        Edit Character
-                    </button>
+                    <Pill variant={character.isActive ? 'active' : 'neutral'}>{setting}</Pill>
+                    <Pill variant={character.isActive ? 'active' : 'neutral'}>{character.isActive ? 'Active' : 'In Edit Mode'}</Pill>
+                    <button onClick={goToEdit} className={`${EDIT_BTN} px-5`}>Edit Character</button>
                 </div>
-            </div>
+            </Card>
 
             <div className="grid grid-cols-3 gap-6 items-start">
-                {/* Column 1: Vitals + Stats (unchanged) */}
+                {/* Column 1: Vitals + Stats */}
                 <div className="flex flex-col gap-6">
                     {adjustedStats && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
+                        <Card className="flex flex-col gap-4">
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="flex flex-col gap-3">
-                                    <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-2" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
-                                        <span className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
-                                    </div>
-                                    <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-2" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>DR</span>
-                                        <span className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.damageResist}</span>
-                                    </div>
+                                    <StatTile label="AC" value={adjustedStats.armorClass} py="py-2" valueSize="text-xl" />
+                                    <StatTile label="DR" value={adjustedStats.damageResist} py="py-2" valueSize="text-xl" />
                                 </div>
-                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>HP</span>
-                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.currentHealth} / {adjustedStats.maxHealth}</span>
-                                </div>
-                            </div>
-                            <div className="rounded-full h-2 overflow-hidden" style={{ backgroundColor: 'var(--color-primary-30)' }}>
-                                <div
-                                    className="h-full rounded-full"
-                                    style={{
-                                        width: `${adjustedStats.currentHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
-                                        backgroundColor: '#4C8B4C',
-                                    }}
+                                <StatTile
+                                    label="HP"
+                                    value={`${adjustedStats.currentHealth} / ${adjustedStats.maxHealth}`}
+                                    py="py-4"
+                                    valueSize="text-2xl"
                                 />
                             </div>
-                        </div>
+                            <div className="progress">
+                                <div className="progress-fill" style={{ width: `${healthPercent}%` }} />
+                            </div>
+                        </Card>
                     )}
 
                     {adjustedStats && (
-                        <div className="rounded-2xl border p-6" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-60)' }}>Ability Scores</h2>
-                            <div className="grid grid-cols-3 gap-3">
+                        <Card title="Ability Scores">
+                            <div className="grid grid-cols-3 gap-3 mt-3">
                                 {statEntries.map(({ label, value }) => (
-                                    <div key={label} className="rounded-xl border flex flex-col items-center justify-center gap-1 py-3" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label.slice(0, 3)}</span>
-                                        <span className="text-lg font-bold" style={{ color: 'var(--color-text)' }}>{value}</span>
-                                    </div>
+                                    <StatTile key={label} label={label.slice(0, 3)} value={value} labelSize="text-[10px]" />
                                 ))}
                             </div>
-                        </div>
+                        </Card>
                     )}
                 </div>
 
                 {/* Column 2: Racial traits + Class Features + Background */}
                 <div className="flex flex-col gap-6">
                     {race && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Racial Traits</h2>
-                            <div>
-                                {race.description ? (
-                                    <details className="group">
-                                        <summary className="collapse-summary">
-                                            <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
-                                            {race.name}
-                                        </summary>
-                                        <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{race.description}</p>
-                                    </details>
-                                ) : (
-                                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{race.name}</p>
-                                )}
-                            </div>
+                        <Card title="Racial Traits" className="flex flex-col gap-3">
+                            <Expandable name={race.name} description={race.description} />
                             {subrace && (
-                                <div className="pt-3 border-t" style={{ borderColor: 'var(--color-primary-30)' }}>
-                                    {subrace.description ? (
-                                        <details className="group">
-                                            <summary className="collapse-summary">
-                                                <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
-                                                {subrace.subRaceName}
-                                            </summary>
-                                            <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{subrace.description}</p>
-                                        </details>
-                                    ) : (
-                                        <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{subrace.subRaceName}</p>
-                                    )}
+                                <div className="pt-3 border-t border-subtle">
+                                    <Expandable name={subrace.subRaceName} description={subrace.description} />
                                 </div>
                             )}
-                        </div>
+                        </Card>
                     )}
 
                     {scifiClass && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</h2>
+                        <Card title="Class" className="flex flex-col gap-3">
                             <div>
-                                <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{scifiClass.name}</p>
-                                {scifiClass.description && <p className="text-sm mt-1" style={{ color: 'var(--color-text-60)' }}>{scifiClass.description}</p>}
+                                <p className="text-sm font-semibold fg">{scifiClass.name}</p>
+                                {scifiClass.description && <p className="text-sm mt-1 fg-muted">{scifiClass.description}</p>}
                             </div>
-                        </div>
+                        </Card>
                     )}
 
                     {background && (
-                        <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</h2>
-                            <div>
-                                {background.description ? (
-                                    <details className="group">
-                                        <summary className="collapse-summary">
-                                            <span className="transition-transform group-open:rotate-90" style={{ color: 'var(--color-text-60)' }}>›</span>
-                                            {background.name}
-                                        </summary>
-                                        <p className="text-sm mt-1 pl-4" style={{ color: 'var(--color-text-60)' }}>{background.description}</p>
-                                    </details>
-                                ) : (
-                                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{background.name}</p>
-                                )}
-                            </div>
-                        </div>
+                        <Card title="Background" className="flex flex-col gap-3">
+                            <Expandable name={background.name} description={background.description} />
+                        </Card>
                     )}
                 </div>
 
                 {/* Column 3: Notes */}
                 <div className="flex flex-col gap-6">
-                    <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                        <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
-                    </div>
+                    <Card className="flex flex-col gap-3">
+                        {notesEditor}
+                    </Card>
                 </div>
             </div>
         </div>

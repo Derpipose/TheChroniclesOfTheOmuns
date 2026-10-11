@@ -57,6 +57,9 @@
 /* Form pieces */
 .field-input {
   @apply rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-stone-400;
+  background-color: var(--color-background);
+  border-color: var(--color-primary-30);
+  color: var(--color-text);
 }
 
 .btn {
@@ -77,4 +80,229 @@
 .collapse-summary {
   @apply flex cursor-pointer list-none items-center gap-2 text-sm font-semibold;
   color: var(--color-text);
+}
+
+/* Text colors */
+.fg {
+  color: var(--color-text);
+}
+
+.fg-muted {
+  color: var(--color-text-60);
+}
+
+/* Cards and the small elements inside them */
+.card {
+  @apply rounded-2xl border p-6;
+  background-color: var(--color-background-60);
+  border-color: var(--color-primary-60);
+}
+
+.card-title {
+  @apply text-xs font-semibold uppercase tracking-wide;
+  color: var(--color-text-60);
+}
+
+.pill {
+  @apply rounded-full px-2.5 py-1 text-xs font-medium;
+  background-color: var(--color-primary-30);
+  color: var(--color-text);
+}
+
+.pill-accent {
+  background-color: var(--color-accent-30);
+  color: var(--color-primary);
+}
+
+.pill-active {
+  background-color: #E4EEE4;
+  color: #3D5C3D;
+}
+
+.stat-tile {
+  @apply flex flex-col items-center justify-center gap-1 rounded-xl border;
+  background-color: var(--color-primary-30);
+  border-color: var(--color-primary-60);
+}
+
+.stat-tile-label {
+  @apply font-medium uppercase tracking-wide;
+  color: var(--color-text-60);
+}
+
+.stat-tile-value {
+  @apply font-bold;
+  color: var(--color-text);
+}
+
+.btn-accent {
+  background-color: var(--color-accent);
+  color: var(--color-text-30);
+}
+
+/* Page and typography */
+.page {
+  @apply min-h-screen;
+  background-color: var(--color-background);
+}
+
+.page-title {
+  @apply text-xl font-semibold;
+  color: var(--color-text);
+}
+
+.label {
+  @apply text-xs font-medium uppercase tracking-wide;
+  color: var(--color-text-60);
+}
+
+.empty-state {
+  @apply py-20 text-center;
+  color: var(--color-text-60);
+}
+
+/* Bordered surface; pair with rounded-*, border and padding utilities */
+.panel {
+  background-color: var(--color-background-30);
+  border-color: var(--color-primary-30);
+}
+
+/* Small buttons (preset and roll actions); pair with btn-accent or btn-neutral */
+.btn-sm {
+  @apply rounded px-2 py-1.5 text-[11px] transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:px-3 sm:py-2 sm:text-xs;
+}
+
+.btn-neutral {
+  background-color: var(--color-background-60);
+  color: var(--color-text);
+}
+
+/* Selectable option button (theme picker); add choice-btn-active when selected */
+.choice-btn {
+  @apply rounded-xl border px-4 py-3 text-left text-sm font-medium transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50;
+  background-color: var(--color-background-30);
+  border-color: var(--color-primary-30);
+  color: var(--color-text);
+}
+
+.choice-btn-active {
+  background-color: var(--color-accent-30);
+  border-color: var(--color-accent);
+  color: var(--color-primary);
+}
+
+/* Single-purpose color helpers */
+.fg-accent { color: var(--color-accent); }
+.fg-danger { color: var(--color-secondary); }
+.fg-success { color: #4A7C59; }
+.bg-soft { background-color: var(--color-background-60); }
+.bg-tint { background-color: var(--color-primary-30); }
+.border-subtle { border-color: var(--color-primary-30); }
+
+.avatar {
+  @apply flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border-2 text-3xl font-bold;
+  background-color: var(--color-primary-30);
+  border-color: var(--color-primary-60);
+  color: var(--color-text);
+}
+
+/* Progress bar: set the fill width inline */
+.progress {
+  @apply h-2 overflow-hidden rounded-full;
+  background-color: var(--color-primary-30);
+}
+
+.progress-fill {
+  @apply h-full rounded-full;
+  background-color: #4C8B4C;
+}
+
+.row-chip {
+  @apply flex items-center justify-between rounded-lg px-3 py-2;
+  background-color: var(--color-primary-30);
+}
+
+.bg-page { background-color: var(--color-background); }
+
+/* Inline messages */
+.alert-error {
+  @apply rounded-lg border p-3 text-sm;
+  background-color: var(--color-background);
+  border-color: var(--color-primary-30);
+  color: var(--color-secondary);
+}
+
+.alert-success {
+  @apply rounded-lg border p-3 text-sm;
+  background-color: #E4EEE4;
+  border-color: #C9D9C9;
+  color: #3D5C3D;
+}
+
+.btn-danger {
+  background-color: var(--color-secondary-30);
+  border-color: var(--color-secondary-60);
+  color: var(--color-secondary);
+}
+
+/* Tab switcher and mode chips; add the -active class when selected */
+.tab-btn {
+  @apply min-w-0 flex-1 rounded border px-2 py-1.5 text-xs transition-all sm:px-3 sm:py-2 sm:text-sm;
+  background-color: var(--color-background-60);
+  border-color: var(--color-primary-30);
+  color: var(--color-text);
+}
+
+.tab-btn-active {
+  background-color: var(--color-accent);
+  color: var(--color-text-30);
+}
+
+.mode-chip {
+  @apply flex cursor-pointer items-center gap-1 rounded border px-1.5 py-1.5 text-[11px] capitalize sm:px-2 sm:py-2 sm:text-xs;
+  background-color: var(--color-background-30);
+  border-color: var(--color-primary-30);
+  color: var(--color-text);
+}
+
+.mode-chip-active {
+  background-color: var(--color-background-60);
+}
+
+.toast {
+  @apply fixed z-30 flex items-center justify-between gap-3 rounded-lg border px-3 py-2 shadow-lg;
+  background-color: var(--color-background-30);
+  border-color: var(--color-accent-30);
+  color: var(--color-text);
+}
+
+.panel-danger {
+  background-color: var(--color-secondary-30);
+  border-color: var(--color-secondary-60);
+}
+
+.btn-alert {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-background-30);
+}
+
+.roll-attempt {
+  @apply rounded border;
+  background-color: var(--color-background-30);
+  border-color: var(--color-primary-30);
+}
+
+.roll-attempt-chosen {
+  background-color: var(--color-accent-30);
+  border-color: var(--color-accent);
+}
+
+.status-dot {
+  @apply inline-block h-2 w-2 shrink-0 rounded-full;
+  background-color: var(--color-primary-60);
+}
+
+.status-dot-active {
+  background-color: #5C8A5C;
 }

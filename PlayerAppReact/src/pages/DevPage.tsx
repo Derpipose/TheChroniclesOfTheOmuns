@@ -1,4 +1,5 @@
 import NavBar from '../components/NavBar'
+import Card from '../components/Card'
 import { useDevSeeding } from '../hooks/useDevSeeding'
 import type { SeedResult, SeedStatus } from '../types/devSeed'
 import { useState, type ReactNode } from 'react'
@@ -9,11 +10,11 @@ import {
 } from '../hooks/useScifiWeapon'
 import { StatType, DamageType, EnergyType, ScifiAmmoType, WeaponRange, } from '../types/scifiWeapon'
 
-const statusColor = (s: SeedStatus) => {
-  if (s === 'success') return '#4A7C59'
-  if (s === 'error') return 'var(--color-secondary)'
-  if (s === 'loading') return 'var(--color-accent)'
-  return 'var(--color-text-60)'
+const statusClass = (s: SeedStatus) => {
+  if (s === 'success') return 'fg-success'
+  if (s === 'error') return 'fg-danger'
+  if (s === 'loading') return 'fg-accent'
+  return 'fg-muted'
 }
 
 const statusLabel = (s: SeedStatus) => {
@@ -23,39 +24,10 @@ const statusLabel = (s: SeedStatus) => {
   return 'Not run'
 }
 
-const controlStyle = {
-  backgroundColor: 'var(--color-background)',
-  borderColor: 'var(--color-primary-30)',
-  color: 'var(--color-text)',
-}
-
-function Card({ title, description, children }: {
-  title: string
-  description?: string
-  children: ReactNode
-}) {
-  return (
-    <div
-      className="mt-6 rounded-xl border p-5 flex flex-col gap-4"
-      style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
-    >
-      <div>
-        <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
-          {title}
-        </h2>
-        {description && (
-          <p className="text-xs mt-1" style={{ color: 'var(--color-text-60)' }}>{description}</p>
-        )}
-      </div>
-      {children}
-    </div>
-  )
-}
-
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium" style={{ color: 'var(--color-text-60)' }}>{label}</label>
+      <label className="text-xs font-medium fg-muted">{label}</label>
       {children}
     </div>
   )
@@ -73,7 +45,6 @@ function EnumSelect<T extends string>({ label, value, options, onChange }: {
         value={value}
         onChange={(event) => onChange(event.target.value as T)}
         className="field-input"
-        style={controlStyle}
       >
         {Object.values(options).map((option) => (
           <option key={option} value={option}>{option}</option>
@@ -182,27 +153,25 @@ export default function DevPage() {
     table: keyof SeedResult
   }) => (
     <div
-      className="rounded-xl border px-5 py-4 flex flex-col gap-1"
-      style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}
+      className="rounded-xl border px-5 py-4 flex flex-col gap-1 panel"
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-semibold" style={{ color: 'var(--color-text)' }}>{label}</p>
-          <p className="text-xs mt-0.5" style={{ color: statusColor(status[table]) }}>
+          <p className="font-semibold fg">{label}</p>
+          <p className={`text-xs mt-0.5 ${statusClass(status[table])}`}>
             {statusLabel(status[table])}
           </p>
         </div>
         <button
           onClick={onClick}
           disabled={status[table] === 'loading'}
-          className="btn px-4"
-          style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
+          className="btn px-4 btn-accent"
         >
           Seed
         </button>
       </div>
       {messages[table] && (
-        <p className="text-xs break-words" style={{ color: 'var(--color-text-60)' }}>
+        <p className="text-xs break-words fg-muted">
           {messages[table]}
         </p>
       )}
@@ -210,13 +179,13 @@ export default function DevPage() {
   )
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
+    <div className="page">
       <NavBar title="Dev Tools" />
 
       <div className="max-w-2xl mx-auto px-6 py-8">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold" style={{ color: 'var(--color-text)' }}>Database Seeding</h2>
-          <p className="text-sm mt-1" style={{ color: 'var(--color-text-60)' }}>
+          <h2 className="page-title">Database Seeding</h2>
+          <p className="text-sm mt-1 fg-muted">
             Seed tables in order — talents must be seeded before classes and backgrounds.
           </p>
         </div>
@@ -230,7 +199,7 @@ export default function DevPage() {
           <SeedButton label="6. Seed Weapons" onClick={seedWeapons} table="weapons" />
         </div>
 
-        <Card title="Add Weapon Blueprint" description="Create a weapon directly in the database for testing and seeding.">
+        <Card className="mt-6 flex flex-col gap-4" title="Add Weapon Blueprint" description="Create a weapon directly in the database for testing and seeding.">
           <Field label="Name">
             <input
               type="text"
@@ -238,7 +207,6 @@ export default function DevPage() {
               onChange={(e) => setWeaponName(e.target.value)}
               placeholder="e.g. Plasma Rifle"
               className="field-input"
-              style={controlStyle}
             />
           </Field>
 
@@ -250,7 +218,6 @@ export default function DevPage() {
                 onChange={(e) => setDamageFormula(e.target.value)}
                 placeholder="e.g. 2d6"
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
             <Field label="Rate of Fire">
@@ -260,7 +227,6 @@ export default function DevPage() {
                 onChange={(e) => setRateOfFire(e.target.value)}
                 placeholder="e.g. 1/Action"
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
           </div>
@@ -285,7 +251,6 @@ export default function DevPage() {
                 value={ammoCapacity}
                 onChange={(e) => setAmmoCapacity(Number(e.target.value))}
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
             <Field label="Reload Time (Actions)">
@@ -295,7 +260,6 @@ export default function DevPage() {
                 value={reloadTimeInActions}
                 onChange={(e) => setReloadTimeInActions(Number(e.target.value))}
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
           </div>
@@ -309,7 +273,6 @@ export default function DevPage() {
                 value={criticalRange}
                 onChange={(e) => setCriticalRange(Number(e.target.value))}
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
             <Field label="Critical Multiplier">
@@ -319,7 +282,6 @@ export default function DevPage() {
                 value={criticalMultiplier}
                 onChange={(e) => setCriticalMultiplier(Number(e.target.value))}
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
             <Field label="Critical Fail Range">
@@ -331,7 +293,6 @@ export default function DevPage() {
                 onChange={(e) => setCriticalFailRange(e.target.value)}
                 placeholder="Optional"
                 className="field-input"
-                style={controlStyle}
               />
             </Field>
           </div>
@@ -339,21 +300,21 @@ export default function DevPage() {
           <button
             onClick={handleCreateWeapon}
             disabled={createScifiWeapon.isPending || !canCreateWeapon}
-            className="btn"
-            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}
+            className="btn btn-accent"
           >
             {createScifiWeapon.isPending ? 'Creating...' : 'Add Weapon to Database'}
           </button>
 
           {createScifiWeapon.isError && (
-            <p className="text-xs" style={{ color: 'var(--color-secondary)' }}>Failed to create weapon.</p>
+            <p className="text-xs fg-danger">Failed to create weapon.</p>
           )}
           {createScifiWeapon.isSuccess && (
-            <p className="text-xs" style={{ color: '#4A7C59' }}>Weapon created successfully.</p>
+            <p className="text-xs fg-success">Weapon created successfully.</p>
           )}
         </Card>
 
         <Card
+          className="mt-6 flex flex-col gap-4"
           title="Delete Weapon Blueprint"
           description="Search for a blueprint, select it, and remove it from the database."
         >
@@ -363,7 +324,6 @@ export default function DevPage() {
             onChange={(event) => setWeaponSearch(event.target.value)}
             placeholder="Search weapon blueprints"
             className="field-input"
-            style={controlStyle}
           />
 
           <select
@@ -372,7 +332,6 @@ export default function DevPage() {
               setSelectedWeaponId(event.target.value ? Number(event.target.value) : '')
             }
             className="field-input"
-            style={controlStyle}
           >
             <option value="">Select a weapon blueprint</option>
             {filteredWeapons.map((weapon) => (
@@ -384,18 +343,13 @@ export default function DevPage() {
             type="button"
             onClick={handleDeleteWeapon}
             disabled={!selectedWeaponId || deleteScifiWeapon.isPending}
-            className="btn border"
-            style={{
-              backgroundColor: 'var(--color-secondary-30)',
-              borderColor: 'var(--color-secondary-60)',
-              color: 'var(--color-secondary)',
-            }}
+            className="btn btn-danger border"
           >
             {deleteScifiWeapon.isPending ? 'Deleting...' : 'Delete Blueprint'}
           </button>
 
           {deleteScifiWeapon.isError && (
-            <p className="text-xs" style={{ color: 'var(--color-secondary)' }}>
+            <p className="text-xs fg-danger">
               Failed to delete weapon blueprint. Please try again.
             </p>
           )}

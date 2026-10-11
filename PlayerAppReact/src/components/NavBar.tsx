@@ -19,8 +19,7 @@ export default function NavBar({ title = 'Character Vault' }: NavBarProps) {
   return (
     <div className="app-header">
       <h1
-        className="text-lg font-semibold shrink-0"
-        style={{ color: 'var(--color-text)' }}
+        className="text-lg font-semibold shrink-0 fg"
       >
         {title}
       </h1>

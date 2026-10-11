@@ -66,12 +66,10 @@ export default function AddWeaponInstancePage() {
     if (charactersLoading || weaponsLoading) {
         return (
             <div
-                className="min-h-screen flex items-center justify-center"
-                style={{ backgroundColor: 'var(--color-background)' }}
+                className="page flex items-center justify-center"
             >
                 <p
-                    className="text-sm"
-                    style={{ color: 'var(--color-text-60)' }}
+                    className="text-sm fg-muted"
                 >
                     Loading...
                 </p>
@@ -81,8 +79,7 @@ export default function AddWeaponInstancePage() {
 
     return (
         <div
-            className="min-h-screen"
-            style={{ backgroundColor: 'var(--color-background)' }}
+            className="page"
         >
                 <NavBar title="Edit Weapon" />
 
@@ -91,15 +88,10 @@ export default function AddWeaponInstancePage() {
 
                 {/* Add weapon card */}
                 <div
-                    className="rounded-2xl border p-6 flex flex-col gap-4"
-                    style={{
-                        backgroundColor: 'var(--color-background-30)',
-                        borderColor: 'var(--color-primary-30)',
-                    }}
+                    className="rounded-2xl border p-6 flex flex-col gap-4 panel"
                 >
                     <h2
-                        className="text-sm font-semibold uppercase tracking-wide"
-                        style={{ color: 'var(--color-text-60)' }}
+                        className="card-title"
                     >
                         Add Weapon
                     </h2>
@@ -108,8 +100,7 @@ export default function AddWeaponInstancePage() {
                     <div className="flex flex-col gap-2">
                         <label
                             htmlFor="character"
-                            className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: 'var(--color-text-60)' }}
+                            className="label"
                         >
                             Character
                         </label>
@@ -118,12 +109,7 @@ export default function AddWeaponInstancePage() {
                             id="character"
                             value={selectedCharacterId}
                             onChange={(e) => setSelectedCharacterId(Number(e.target.value))}
-                            className="rounded-lg border px-3 py-2 text-sm outline-none"
-                            style={{
-                                backgroundColor: 'var(--color-background)',
-                                borderColor: 'var(--color-primary-30)',
-                                color: 'var(--color-text)',
-                            }}
+                            className="field-input"
                         >
                             <option value={0}>Select a character...</option>
 
@@ -139,8 +125,7 @@ export default function AddWeaponInstancePage() {
                     <div className="flex flex-col gap-2">
                         <label
                             htmlFor="weapon"
-                            className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: 'var(--color-text-60)' }}
+                            className="label"
                         >
                             Weapon
                         </label>
@@ -149,12 +134,7 @@ export default function AddWeaponInstancePage() {
     <button
         type="button"
         onClick={() => setWeaponDropdownOpen((open) => !open)}
-        className="w-full rounded-lg border px-3 py-2 text-sm text-left outline-none"
-        style={{
-            backgroundColor: 'var(--color-background)',
-            borderColor: 'var(--color-primary-30)',
-            color: selectedWeaponId ? 'var(--color-text)' : 'var(--color-text-60)',
-        }}
+        className={`field-input w-full text-left ${selectedWeaponId ? '' : 'fg-muted'}`}
     >
         {selectedWeaponId
             ? weapons?.find((weapon) => weapon.id === selectedWeaponId)?.name
@@ -163,11 +143,7 @@ export default function AddWeaponInstancePage() {
 
     {weaponDropdownOpen && (
         <div
-            className="absolute z-10 mt-1 w-full rounded-lg border p-2 shadow-sm"
-            style={{
-                backgroundColor: 'var(--color-background-30)',
-                borderColor: 'var(--color-primary-30)',
-            }}
+            className="absolute z-10 mt-1 w-full rounded-lg border p-2 shadow-sm panel"
         >
             <input
                 type="text"
@@ -175,19 +151,13 @@ export default function AddWeaponInstancePage() {
                 onChange={(e) => setWeaponSearch(e.target.value)}
                 placeholder="Search weapons..."
                 autoFocus
-                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
-                style={{
-                    backgroundColor: 'var(--color-background)',
-                    borderColor: 'var(--color-primary-30)',
-                    color: 'var(--color-text)',
-                }}
+                className="field-input w-full"
             />
 
             <div className="mt-2 max-h-60 overflow-y-auto">
                 {filteredWeapons.length === 0 ? (
                     <p
-                        className="px-3 py-2 text-sm"
-                        style={{ color: 'var(--color-text-60)' }}
+                        className="px-3 py-2 text-sm fg-muted"
                     >
                         No weapons found.
                     </p>
@@ -201,14 +171,7 @@ export default function AddWeaponInstancePage() {
                                 setWeaponSearch('')
                                 setWeaponDropdownOpen(false)
                             }}
-                            className="w-full rounded-lg px-3 py-2 text-left text-sm transition-colors hover:opacity-80"
-                            style={{
-                                backgroundColor:
-                                    selectedWeaponId === weapon.id
-                                        ? 'var(--color-background-60)'
-                                        : 'transparent',
-                                color: 'var(--color-text)',
-                            }}
+                            className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors hover:opacity-80 fg ${selectedWeaponId === weapon.id ? 'bg-soft' : ''}`}
                         >
                             {weapon.name}
                         </button>
@@ -223,26 +186,22 @@ export default function AddWeaponInstancePage() {
                     {/* Selected weapon preview */}
                     {selectedWeapon && (
                         <div
-                            className="rounded-lg p-3 flex flex-col gap-1"
-                            style={{ backgroundColor: 'var(--color-background-60)' }}
+                            className="rounded-lg p-3 flex flex-col gap-1 bg-soft"
                         >
                             <span
-                                className="text-xs font-medium uppercase tracking-wide"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="label"
                             >
                                 Selected Weapon
                             </span>
 
                             <span
-                                className="text-sm font-semibold"
-                                style={{ color: 'var(--color-text)' }}
+                                className="text-sm font-semibold fg"
                             >
                                 {selectedWeapon.name}
                             </span>
 
                             <span
-                                className="text-xs"
-                                style={{ color: 'var(--color-text-60)' }}
+                                className="text-xs fg-muted"
                             >
                                 {selectedWeapon.damageFormula} •{' '}
                                 {selectedWeapon.damageType} •{' '}
@@ -260,11 +219,7 @@ export default function AddWeaponInstancePage() {
                             !selectedScifiCharacter ||
                             createWeaponInstance.isPending
                         }
-                        className="btn"
-                        style={{
-                            backgroundColor: 'var(--color-accent)',
-                            color: 'var(--color-text-30)',
-                        }}
+                        className="btn btn-accent"
                     >
                         {createWeaponInstance.isPending
                             ? 'Adding...'
@@ -273,8 +228,7 @@ export default function AddWeaponInstancePage() {
 
                     {createWeaponInstance.isError && (
                         <p
-                            className="text-xs"
-                            style={{ color: 'var(--color-secondary)' }}
+                            className="text-xs fg-danger"
                         >
                             Failed to add weapon. Please try again.
                         </p>
@@ -282,8 +236,7 @@ export default function AddWeaponInstancePage() {
 
                     {createWeaponInstance.isSuccess && (
                         <p
-                            className="text-xs"
-                            style={{ color: '#3D5C3D' }}
+                            className="text-xs fg-success"
                         >
                             {selectedWeapon?.name ?? 'Weapon'} added to{' '}
                             {selectedCharacter?.name ?? 'character'}.
@@ -294,23 +247,17 @@ export default function AddWeaponInstancePage() {
                 {/* Existing weapons */}
                 {selectedCharacterId > 0 && (
     <div
-        className="rounded-2xl border p-6 flex flex-col gap-3"
-        style={{
-            backgroundColor: 'var(--color-background-30)',
-            borderColor: 'var(--color-primary-30)',
-        }}
+        className="rounded-2xl border p-6 flex flex-col gap-3 panel"
     >
         <div className="flex items-center justify-between">
             <h2
-                className="text-sm font-semibold uppercase tracking-wide"
-                style={{ color: 'var(--color-text-60)' }}
+                className="card-title"
             >
                 {selectedCharacter?.name ?? 'Character'}'s Weapons
             </h2>
 
             <span
-                className="text-xs"
-                style={{ color: 'var(--color-text-60)' }}
+                className="text-xs fg-muted"
             >
                 {existingWeapons?.length ?? 0}
             </span>
@@ -318,15 +265,13 @@ export default function AddWeaponInstancePage() {
 
         {existingWeaponsLoading ? (
             <p
-                className="text-sm"
-                style={{ color: 'var(--color-text-60)' }}
+                className="text-sm fg-muted"
             >
                 Loading weapons...
             </p>
         ) : existingWeapons?.length === 0 ? (
             <p
-                className="text-sm"
-                style={{ color: 'var(--color-text-60)' }}
+                className="text-sm fg-muted"
             >
                 This character has no weapons.
             </p>
@@ -335,12 +280,10 @@ export default function AddWeaponInstancePage() {
                 {existingWeapons?.map((weapon) => (
                     <details
                         key={weapon.id}
-                        className="rounded-lg overflow-hidden"
-                        style={{ backgroundColor: 'var(--color-background-60)' }}
+                        className="rounded-lg overflow-hidden bg-soft"
                     >
                         <summary
-                            className="list-none [&::-webkit-details-marker]:hidden px-3 py-3 flex items-center justify-between cursor-pointer"
-                            style={{ color: 'var(--color-text)' }}
+                            className="list-none [&::-webkit-details-marker]:hidden px-3 py-3 flex items-center justify-between cursor-pointer fg"
                         >
                             <div className="flex items-center gap-2">
 
@@ -352,8 +295,7 @@ export default function AddWeaponInstancePage() {
                                     {weapon.nickname &&
                                         weapon.nickname !== weapon.name && (
                                             <span
-                                                className="text-xs"
-                                                style={{ color: 'var(--color-text-60)' }}
+                                                className="text-xs fg-muted"
                                             >
                                                 {weapon.name}
                                             </span>
@@ -372,8 +314,7 @@ export default function AddWeaponInstancePage() {
                                 )}
 
                                 <span
-                                    className="text-xs"
-                                    style={{ color: 'var(--color-text-60)' }}
+                                    className="text-xs fg-muted"
                                 >
                                     {weapon.currentAmmo}/{weapon.ammoCapacity}
                                 </span>
@@ -381,20 +322,17 @@ export default function AddWeaponInstancePage() {
                         </summary>
 
                         <div
-                            className="border-t px-3 py-3 flex flex-col gap-3"
-                            style={{ borderColor: 'var(--color-primary-30)' }}
+                            className="border-t px-3 py-3 flex flex-col gap-3 border-subtle"
                         >
                             <div className="grid grid-cols-2 gap-2">
                                 <div>
                                     <span
-                                        className="text-xs uppercase tracking-wide"
-                                        style={{ color: 'var(--color-text-60)' }}
+                                        className="text-xs uppercase tracking-wide fg-muted"
                                     >
                                         Damage
                                     </span>
                                     <p
-                                        className="text-sm font-semibold"
-                                        style={{ color: 'var(--color-text)' }}
+                                        className="text-sm font-semibold fg"
                                     >
                                         {weapon.damageFormula}
                                     </p>
@@ -402,14 +340,12 @@ export default function AddWeaponInstancePage() {
 
                                 <div>
                                     <span
-                                        className="text-xs uppercase tracking-wide"
-                                        style={{ color: 'var(--color-text-60)' }}
+                                        className="text-xs uppercase tracking-wide fg-muted"
                                     >
                                         Damage Type
                                     </span>
                                     <p
-                                        className="text-sm font-semibold"
-                                        style={{ color: 'var(--color-text)' }}
+                                        className="text-sm font-semibold fg"
                                     >
                                         {weapon.damageType}
                                     </p>
@@ -417,14 +353,12 @@ export default function AddWeaponInstancePage() {
 
                                 <div>
                                     <span
-                                        className="text-xs uppercase tracking-wide"
-                                        style={{ color: 'var(--color-text-60)' }}
+                                        className="text-xs uppercase tracking-wide fg-muted"
                                     >
                                         Modifier
                                     </span>
                                     <p
-                                        className="text-sm font-semibold"
-                                        style={{ color: 'var(--color-text)' }}
+                                        className="text-sm font-semibold fg"
                                     >
                                         {weapon.modifierStat}
                                     </p>
@@ -432,14 +366,12 @@ export default function AddWeaponInstancePage() {
 
                                 <div>
                                     <span
-                                        className="text-xs uppercase tracking-wide"
-                                        style={{ color: 'var(--color-text-60)' }}
+                                        className="text-xs uppercase tracking-wide fg-muted"
                                     >
                                         Range
                                     </span>
                                     <p
-                                        className="text-sm font-semibold"
-                                        style={{ color: 'var(--color-text)' }}
+                                        className="text-sm font-semibold fg"
                                     >
                                         {weapon.rangeCategory}
                                     </p>
@@ -447,14 +379,12 @@ export default function AddWeaponInstancePage() {
 
                                 <div>
                                     <span
-                                        className="text-xs uppercase tracking-wide"
-                                        style={{ color: 'var(--color-text-60)' }}
+                                        className="text-xs uppercase tracking-wide fg-muted"
                                     >
                                         Rate of Fire
                                     </span>
                                     <p
-                                        className="text-sm font-semibold"
-                                        style={{ color: 'var(--color-text)' }}
+                                        className="text-sm font-semibold fg"
                                     >
                                         {weapon.rateOfFire}
                                     </p>
@@ -462,14 +392,12 @@ export default function AddWeaponInstancePage() {
 
                                 <div>
                                     <span
-                                        className="text-xs uppercase tracking-wide"
-                                        style={{ color: 'var(--color-text-60)' }}
+                                        className="text-xs uppercase tracking-wide fg-muted"
                                     >
                                         Reload
                                     </span>
                                     <p
-                                        className="text-sm font-semibold"
-                                        style={{ color: 'var(--color-text)' }}
+                                        className="text-sm font-semibold fg"
                                     >
                                         {weapon.reloadTimeInActions} actions
                                     </p>
@@ -477,12 +405,10 @@ export default function AddWeaponInstancePage() {
                             </div>
 
                             <div
-                                className="border-t pt-3"
-                                style={{ borderColor: 'var(--color-primary-30)' }}
+                                className="border-t pt-3 border-subtle"
                             >
                                 <span
-                                    className="text-xs font-medium uppercase tracking-wide"
-                                    style={{ color: 'var(--color-text-60)' }}
+                                    className="label"
                                 >
                                     Critical
                                 </span>
@@ -490,14 +416,12 @@ export default function AddWeaponInstancePage() {
                                 <div className="grid grid-cols-3 gap-2 mt-2">
                                     <div>
                                         <span
-                                            className="text-xs"
-                                            style={{ color: 'var(--color-text-60)' }}
+                                            className="text-xs fg-muted"
                                         >
                                             Range
                                         </span>
                                         <p
-                                            className="text-sm font-semibold"
-                                            style={{ color: 'var(--color-text)' }}
+                                            className="text-sm font-semibold fg"
                                         >
                                             {weapon.criticalRange}+
                                         </p>
@@ -505,14 +429,12 @@ export default function AddWeaponInstancePage() {
 
                                     <div>
                                         <span
-                                            className="text-xs"
-                                            style={{ color: 'var(--color-text-60)' }}
+                                            className="text-xs fg-muted"
                                         >
                                             Multiplier
                                         </span>
                                         <p
-                                            className="text-sm font-semibold"
-                                            style={{ color: 'var(--color-text)' }}
+                                            className="text-sm font-semibold fg"
                                         >
                                             ×{weapon.criticalMultiplier}
                                         </p>
@@ -520,14 +442,12 @@ export default function AddWeaponInstancePage() {
 
                                     <div>
                                         <span
-                                            className="text-xs"
-                                            style={{ color: 'var(--color-text-60)' }}
+                                            className="text-xs fg-muted"
                                         >
                                             Fail
                                         </span>
                                         <p
-                                            className="text-sm font-semibold"
-                                            style={{ color: 'var(--color-text)' }}
+                                            className="text-sm font-semibold fg"
                                         >
                                             {weapon.criticalFailRange
                                                 ? `${weapon.criticalFailRange}-`
@@ -538,20 +458,17 @@ export default function AddWeaponInstancePage() {
                             </div>
 
                             <div
-                                className="border-t pt-3"
-                                style={{ borderColor: 'var(--color-primary-30)' }}
+                                className="border-t pt-3 border-subtle"
                             >
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
                                         <span
-                                            className="text-xs uppercase tracking-wide"
-                                            style={{ color: 'var(--color-text-60)' }}
+                                            className="text-xs uppercase tracking-wide fg-muted"
                                         >
                                             Energy Type
                                         </span>
                                         <p
-                                            className="text-sm font-semibold"
-                                            style={{ color: 'var(--color-text)' }}
+                                            className="text-sm font-semibold fg"
                                         >
                                             {weapon.energyType}
                                         </p>
@@ -559,14 +476,12 @@ export default function AddWeaponInstancePage() {
 
                                     <div>
                                         <span
-                                            className="text-xs uppercase tracking-wide"
-                                            style={{ color: 'var(--color-text-60)' }}
+                                            className="text-xs uppercase tracking-wide fg-muted"
                                         >
                                             Ammo Type
                                         </span>
                                         <p
-                                            className="text-sm font-semibold"
-                                            style={{ color: 'var(--color-text)' }}
+                                            className="text-sm font-semibold fg"
                                         >
                                             {weapon.ammoType}
                                         </p>

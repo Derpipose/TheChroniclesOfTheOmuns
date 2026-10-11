@@ -25,8 +25,7 @@ export function CharacterNotes({ characterId, notes, onNotesChange }: CharacterN
     <div className="flex flex-col gap-1">
       <label
         htmlFor={`character-notes-${characterId ?? 'new'}`}
-        className="text-xs font-medium uppercase tracking-wide"
-        style={{ color: 'var(--color-text-60)' }}
+        className="label"
       >
         Notes
       </label>
@@ -37,7 +36,6 @@ export function CharacterNotes({ characterId, notes, onNotesChange }: CharacterN
         onBlur={handleSaveNotes}
         rows={4}
         className="field-input"
-        style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
       />
     </div>
   )
