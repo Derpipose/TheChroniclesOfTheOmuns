@@ -17,7 +17,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
     public async Task<ActionResult<CharacterDetailsDto>> GetCharacterDetails(int id) {
         var character = await db.Characters
             .Where(c => c.Id == id && c.PlayerId == playerContext.PlayerId)
-            .Select(c => new CharacterDetailsDto(c.Id, c.Name, c.Level, c.Setting, c.MaxHealth, c.IsActive))
+            .Select(c => new CharacterDetailsDto(c.Id, c.Name, c.Level, c.Setting, c.CurrentHealth, c.IsActive))
             .FirstOrDefaultAsync();
 
         if (character is null)
@@ -31,7 +31,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
         var characters = await db.Characters
             .Where(c => c.PlayerId == playerContext.PlayerId)
             .OrderBy(c => c.Id)
-            .Select(c => new CharacterDetailsDto(c.Id, c.Name, c.Level, c.Setting, c.MaxHealth, c.IsActive))
+            .Select(c => new CharacterDetailsDto(c.Id, c.Name, c.Level, c.Setting, c.CurrentHealth, c.IsActive))
             .ToListAsync();
 
         return Ok(characters);
@@ -92,7 +92,6 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
             return NotFound(new { message = $"Character {id} was not found." });
 
         if (request.Name is not null) character.SetName(request.Name);
-        if (request.MaxHealth is not null) character.SetMaxHealth(request.MaxHealth.Value);
         if (request.Level is not null) character.SetLevel(request.Level.Value);
         if (request.IsActive is true) character.SetActive();
 
@@ -137,7 +136,7 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
         character.PlayerId,
         character.Level,
         character.Setting,
-        character.MaxHealth,
+        character.CurrentHealth,
         character.IsActive,
         character.Notes,
         stats is null ? null : new CharacterStatsResponseDto(
@@ -151,11 +150,13 @@ public class CharacterController(AppDbContext db, PlayerContext playerContext) :
             stats.Intelligence));
 
     public record CreateCharacterDto(string Name, int Level = 1, string Notes = "");
-    public record CharacterDetailsDto(int Id, string Name, int Level, SettingEnum Setting, int MaxHealth, bool IsActive);
-    public record UpdateCharacterDto(string? Name, int? MaxHealth, int? Level, bool? IsActive);
-    public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int MaxHealth, bool IsActive, string Notes, CharacterStatsResponseDto? CharacterStats);
+    public record CharacterDetailsDto(int Id, string Name, int Level, SettingEnum Setting, int CurrentHealth, bool IsActive);
+    public record UpdateCharacterDto(string? Name, int? Level, bool? IsActive);
+    public record CharacterResponseDto(int Id, string Name, int PlayerId, int Level, SettingEnum Setting, int CurrentHealth, bool IsActive, string Notes, CharacterStatsResponseDto? CharacterStats);
     public record CharacterStatsResponseDto(int Id, int CharacterId, int Strength, int Constitution, int Dexterity, int Wisdom, int Charisma, int Intelligence);
 }
+
+
 // Eventually we will need a "getSettingsForCharacter" endpoint that will look at the different setting tables and 
 // return a list of settings that the character has a sub in. We will use that to correctly call the right
 // endpoints for character creation and updates. For right now, we don't need to worry about that since we only have

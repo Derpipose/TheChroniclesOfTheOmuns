@@ -9,8 +9,7 @@ public class Character {
     public int PlayerId { get; private set; } = 0;
     public int Level { get; private set; } = 1;
     public SettingEnum Setting { get; private set; } = SettingEnum.Unregistered;
-    public int MaxHealth { get; private set; } = 0;
-    public int BaseArmorClass { get; private set; } = 10;
+    public int BaseHealth { get; private set; } = 0; // Level 1 base health. Modifiers will act to increase it. Gotta be able to reverse it for some feats
 
     public int CurrentHealth { get; private set; } = 0;
     public int Id { get; private set; }
@@ -51,16 +50,8 @@ public class Character {
         UpdateLastModified();
     }
 
-    public void SetMaxHealth(int maxHealth) {
-        MaxHealth = maxHealth;
-        if (CurrentHealth > MaxHealth) {
-            CurrentHealth = MaxHealth;
-        }
-        UpdateLastModified();
-    }
-
-    public void SetBaseArmorClass(int baseArmorClass) {
-        BaseArmorClass = baseArmorClass;
+    public void SetBaseHealth(int baseHealth) {
+        BaseHealth = baseHealth;
         UpdateLastModified();
     }
 
@@ -85,14 +76,14 @@ public class Character {
         var bonus = modifiers
             .Where(m => m.ModifierType == ModifierType.Health)
             .Sum(m => m.Amount);
-        return MaxHealth + bonus;
+        return BaseHealth + bonus;
     }
 
-    public int GetArmorClass(IEnumerable<ICharacterModifier> modifiers) {
+    public int GetDamageResist(IEnumerable<ICharacterModifier> modifiers) {
         var bonus = modifiers
-            .Where(m => m.ModifierType == ModifierType.ArmorClass)
+            .Where(m => m.ModifierType == ModifierType.DamageResist)
             .Sum(m => m.Amount);
-        return BaseArmorClass + bonus;
+        return bonus;
     }
 
     public int GetStat(IEnumerable<ICharacterModifier> modifiers, ModifierType statType, int baseValue) {

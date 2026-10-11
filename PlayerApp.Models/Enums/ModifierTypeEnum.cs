@@ -9,7 +9,8 @@ public enum ModifierType {
     Charisma = 5,
     ArmorClass = 6,
     Health = 7,
-    Unassigned = 8
+    Unassigned = 8,
+    DamageResist = 9
 }
 
 public enum ModifierSource {
@@ -18,5 +19,6 @@ public enum ModifierSource {
     RacePick = 2,
     SubracePick = 3,
     Class = 4,
-    Background = 5
+    Background = 5,
+    Talent = 6
 }

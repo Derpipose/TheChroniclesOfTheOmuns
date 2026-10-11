@@ -45,8 +45,8 @@ export default function CharactersPage() {
                   <div className="flex items-center gap-2">
                     <span
                       className="inline-block w-2 h-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: char.active ? '#5C8A5C' : 'var(--color-primary-60)' }}
-                      title={char.active ? 'Active' : 'In Edit Mode'}
+                      style={{ backgroundColor: char.isActive ? '#5C8A5C' : 'var(--color-primary-60)' }}
+                      title={char.isActive ? 'Active' : 'In Edit Mode'}
                     />
                     <div>
                       <p className="font-semibold" style={{ color: 'var(--color-text)' }}>{char.name}</p>
@@ -57,17 +57,17 @@ export default function CharactersPage() {
                     <span
                       className="text-xs font-medium px-2.5 py-1 rounded-full"
                       style={{
-                        backgroundColor: char.active ? '#E4EEE4' : 'var(--color-accent-30)',
-                        color: char.active ? '#3D5C3D' : 'var(--color-primary)',
+                        backgroundColor: char.isActive ? '#E4EEE4' : 'var(--color-accent-30)',
+                        color: char.isActive ? '#3D5C3D' : 'var(--color-primary)',
                       }}
                     >
-                      {char.active ? 'Active' : 'In Edit Mode'}
+                      {char.isActive ? 'Active' : 'In Edit Mode'}
                     </span>
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-accent-30)', color: 'var(--color-primary)' }}>
                       Level {char.level}
                     </span>
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-accent-30)', color: 'var(--color-primary)' }}>
-                      {char.maxHealth} HP
+                      {char.currentHealth} HP
                     </span>
                   </div>
                 </div>

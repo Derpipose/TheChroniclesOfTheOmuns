@@ -31,7 +31,7 @@ public class ScifiCharacter {
     protected ScifiCharacter() {
         // EF Core needs this to materialize entities
     }
-    public void SetScifiRace(ScifiRace scifiRace, List<(StatType stat, int modifier)> modifiers, ScifiSubrace? scifiSubrace = null) {
+    public void SetScifiRace(ScifiRace scifiRace, List<(StatType stat, int modifier)> modifiers, ScifiSubrace? scifiSubrace = null, CharacterStats? stats = null) {
         ClearScifiRace();
         if (scifiRace.Id == 0)
             throw new InvalidOperationException(
@@ -48,8 +48,7 @@ public class ScifiCharacter {
         }
 
         SetRaceModifiers(modifiers, scifiRace, scifiSubrace);
-
-
+        stats?.EnsureAllMeetMinimum(GetAllModifiers());
     }
 
     private void SetRaceModifiers(List<(StatType stat, int modifier)> modifiers, ScifiRace? scifiRace = null, ScifiSubrace? scifiSubrace = null) {
@@ -75,7 +74,7 @@ public class ScifiCharacter {
     private void ApplyModifiers(List<(StatType stat, int modifier)> picks, RaceStats raceStats, ModifierSource fixedSource, ModifierSource pickSource) {
         // Assign fixed racial modifiers unconditionally
         foreach (var stat in raceStats.Modifiers ?? Enumerable.Empty<RaceStatModifier>()) {
-            var modType = ToModifierType(stat.Stat);
+            var modType = CharacterStats.ToModifierType(stat.Stat);
             Modifiers.Add(new ScifiCharacterModifier(Id, modType, stat.Modifier, fixedSource));
         }
 
@@ -100,7 +99,7 @@ public class ScifiCharacter {
             if (!pool.Remove(pick.modifier))
                 throw new InvalidOperationException("The submitted pick amount is not available in the free stat picks for this race/subrace.");
 
-            var modType = ToModifierType(pick.stat);
+            var modType = CharacterStats.ToModifierType(pick.stat);
             Modifiers.Add(new ScifiCharacterModifier(Id, modType, pick.modifier, pickSource));
         }
 
@@ -128,9 +127,12 @@ public class ScifiCharacter {
     public void UpdateHealth(CharacterStats stats, ScifiClass? scifiClass) {
         if (Character is null)
             throw new InvalidOperationException("ScifiCharacter must have an associated Character before health can be set.");
+
+        if (Character.IsActive)
+            return;
         
         if (scifiClass == null) {
-            Character.SetMaxHealth(0);
+            Character.SetBaseHealth(0);
             Character.SetCurrentHealth(0);
             return;
         }
@@ -139,25 +141,34 @@ public class ScifiCharacter {
             return;
         
         int hitDiceMax = scifiClass.HitDice.Sides();
-        int conBonus = Character.GetModifierBonus(GetAllModifiers(), ModifierType.Constitution);
-        int constitution = stats.Constitution + conBonus;
-        int conMod = (constitution - 10) / 2;
+        var modifiers = GetAllModifiers();
+        int constitution = stats.GetStat(StatType.Constitution, modifiers);
+        int conMod = stats.GetStatModifier(StatType.Constitution, modifiers);
 
         int health = constitution * 2 + hitDiceMax + conMod;
 
-        Character.SetMaxHealth(health);
+        Character.SetBaseHealth(health);
         Character.SetCurrentHealth(health);
     }
 
-    public void ScifiCharacterSetBaseArmorClass(CharacterStats stats) {
-        if (Character is null)
-            throw new InvalidOperationException("ScifiCharacter must have an associated Character before AC can be set.");
+    // public void ScifiCharacterSetBaseArmorClass(CharacterStats stats) {
+    //     if (Character is null)
+    //         throw new InvalidOperationException("ScifiCharacter must have an associated Character before AC can be set.");
         
-        if (ScifiRace != null) {
-            int dexmod = stats.GetStatModifier(StatType.Dexterity);
-            int baseAC = 10 + dexmod;
-            Character.SetBaseArmorClass(baseAC);
-        }
+    //     if (ScifiRace != null) {
+    //         int dexmod = stats.GetStatModifier(StatType.Dexterity, GetAllModifiers());
+    //         int baseAC = 10 + dexmod;
+    //         Character.SetBaseArmorClass(baseAC);
+    //     }
+    // }
+
+    public int GetArmorClass(CharacterStats stats) {
+        var modifiers = GetAllModifiers();
+
+        int dexmod = stats.GetStatModifier(StatType.Dexterity, modifiers);
+        int ACModifiers = modifiers.Where(m => m.ModifierType == ModifierType.ArmorClass).Sum(m => m.Amount);
+        int totalAC = 10 + dexmod + ACModifiers;
+        return totalAC;
     }
 
     public IEnumerable<ICharacterModifier> GetAllModifiers() {
@@ -183,16 +194,6 @@ public class ScifiCharacter {
         ScifiBackgroundId = null;
     }
 
-    private static ModifierType ToModifierType(StatType stat) => stat switch {
-        StatType.Strength => ModifierType.Strength,
-        StatType.Dexterity => ModifierType.Dexterity,
-        StatType.Constitution => ModifierType.Constitution,
-        StatType.Intelligence => ModifierType.Intelligence,
-        StatType.Wisdom => ModifierType.Wisdom,
-        StatType.Charisma => ModifierType.Charisma,
-        _ => throw new ArgumentOutOfRangeException(nameof(stat), "Unknown stat type.")
-    };
-
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
         Id = id;
@@ -201,5 +202,12 @@ public class ScifiCharacter {
     [Conditional("DEBUG")]
     public void SimulateSetCharacter(Character character) {
         Character = character;
+    }
+
+    [Conditional("DEBUG")]
+    public void SimulateSetNavigations(ScifiRace? race, ScifiClass? scifiClass, ScifiBackground? background) {
+        ScifiRace = race;
+        ScifiClass = scifiClass;
+        ScifiBackground = background;
     }
 }

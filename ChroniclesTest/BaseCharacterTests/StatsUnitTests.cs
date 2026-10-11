@@ -30,7 +30,7 @@ public class StatsUnitTests {
         stats.SetStat(StatType.Dexterity, 13, character);
         stats.SetStat(StatType.Wisdom, 12, character);
         stats.SetStat(StatType.Charisma, 10, character);
-        stats.SetStat(StatType.Intelligence, 8, character);
+        stats.SetStat(StatType.Intelligence, 11, character);
 
         // Assert
         Assert.Equal(15, stats.Strength);
@@ -38,7 +38,7 @@ public class StatsUnitTests {
         Assert.Equal(13, stats.Dexterity);
         Assert.Equal(12, stats.Wisdom);
         Assert.Equal(10, stats.Charisma);
-        Assert.Equal(8, stats.Intelligence);
+        Assert.Equal(11, stats.Intelligence);
     }
 
     [Fact]
@@ -78,10 +78,21 @@ public class StatsUnitTests {
         character.SetActive();
 
         stats.IncreaseStat(StatType.Strength, 5, character);
+        stats.IncreaseStat(StatType.Constitution, 5, character);
         stats.DecreaseStat(StatType.Constitution, 3, character);
 
         Assert.Equal(15, stats.Strength);
-        Assert.Equal(7, stats.Constitution);
+        Assert.Equal(12, stats.Constitution);
+    }
+
+    [Fact]
+    public void DecreaseStatBelowMinimumThrows() {
+        Character character = new Character(1, "TestCharacter");
+        CharacterStats stats = new CharacterStats(1);
+        character.SetActive();
+
+        Assert.Throws<InvalidOperationException>(() => stats.DecreaseStat(StatType.Constitution, 1, character));
+        Assert.Equal(CharacterStats.MinStat, stats.Constitution);
     }
 
     [Fact]
@@ -123,9 +134,9 @@ public class StatsUnitTests {
         Character character = new Character(1, "TestCharacter");
         CharacterStats stats = new CharacterStats(1);
 
-        stats.SetStat(StatType.Dexterity, 1, character);
+        stats.SetStat(StatType.Dexterity, CharacterStats.MinStat, character);
 
-        Assert.Equal(1, stats.Dexterity);
+        Assert.Equal(CharacterStats.MinStat, stats.Dexterity);
     }
 
     [Fact]

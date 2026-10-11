@@ -5,7 +5,7 @@ import RollLog, { type DiceRoll, type RollMode } from '../components/RollLog'
 import NavBar from '../components/NavBar'
 import { useCharacter, useCharacters, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
-import { useScifiCharacterWithStats } from '../hooks/useScifiCharacterWithStats'
+import { useScifiStatsByCharacterId } from '../hooks/useScifiStats'
 import {
   useScifiWeaponInstances,
   useUseAmmo,
@@ -36,11 +36,11 @@ export default function DiceRollerPage() {
   const { data: selectedStats, isLoading: statsLoading } = useCharacterStats(selectedCharacterId || 0)
 
 
-  const { data: selectedAdjustedScifi, isLoading: adjustedLoading } = useScifiCharacterWithStats(selectedScifiCharacter?.id)
+  const { data: selectedScifiStats, isLoading: adjustedLoading } = useScifiStatsByCharacterId(selectedCharacter?.id)
 
-  console.debug('selectedAdjustedScifi', selectedAdjustedScifi)
+  console.debug('selectedScifiStats', selectedScifiStats)
 
-  const effectiveStats = selectedAdjustedScifi ?? selectedStats
+  const effectiveStats = selectedScifiStats ?? selectedStats
 
   const { data: selectedWeapons = [], isLoading: weaponsLoading } =
   useScifiWeaponInstances(selectedScifiCharacter?.id || 0)

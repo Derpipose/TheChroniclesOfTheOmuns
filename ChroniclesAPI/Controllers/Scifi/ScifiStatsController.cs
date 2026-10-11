@@ -1,7 +1,6 @@
 using ChroniclesAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticAssets;
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Models;
 using PlayerApp.Models.Database;
@@ -27,7 +26,6 @@ public class ScifiStatsController(AppDbContext db, PlayerContext playerContext) 
 
         var scifiCharacter = await db.ScifiCharacters
             .Include(sc => sc.Modifiers)
-            .Include(sc => sc.Character)
             .FirstOrDefaultAsync(sc => sc.CharacterId == characterId);
 
         if (scifiCharacter is null)
@@ -40,19 +38,20 @@ public class ScifiStatsController(AppDbContext db, PlayerContext playerContext) 
         var modifiers = scifiCharacter.Modifiers.Cast<ICharacterModifier>();
 
         var adjusted = new AdjustedStatsDto(
-            Strength: scifiCharacter.Character!.GetStat(modifiers, ModifierType.Strength, characterStats.Strength),
-            Dexterity: scifiCharacter.Character.GetStat(modifiers, ModifierType.Dexterity, characterStats.Dexterity),
-            Constitution: scifiCharacter.Character.GetStat(modifiers, ModifierType.Constitution, characterStats.Constitution),
-            Intelligence: scifiCharacter.Character.GetStat(modifiers, ModifierType.Intelligence, characterStats.Intelligence),
-            Wisdom: scifiCharacter.Character.GetStat(modifiers, ModifierType.Wisdom, characterStats.Wisdom),
-            Charisma: scifiCharacter.Character.GetStat(modifiers, ModifierType.Charisma, characterStats.Charisma),
-            ArmorClass: scifiCharacter.Character.GetArmorClass(modifiers),
-            MaxHealth: scifiCharacter.Character.GetMaxHealth(modifiers),
-            CurrentHealth: scifiCharacter.Character.CurrentHealth
+            Strength: characterStats.GetStat(StatType.Strength, modifiers),
+            Dexterity: characterStats.GetStat(StatType.Dexterity, modifiers),
+            Constitution: characterStats.GetStat(StatType.Constitution, modifiers),
+            Intelligence: characterStats.GetStat(StatType.Intelligence, modifiers),
+            Wisdom: characterStats.GetStat(StatType.Wisdom, modifiers),
+            Charisma: characterStats.GetStat(StatType.Charisma, modifiers),
+            ArmorClass: scifiCharacter.GetArmorClass(characterStats),
+            DamageResist: character.GetDamageResist(modifiers),
+            MaxHealth: character.GetMaxHealth(modifiers),
+            CurrentHealth: character.CurrentHealth
         );
 
         return Ok(adjusted);
     }
 
-    public record AdjustedStatsDto(int Strength, int Dexterity, int Constitution, int Intelligence, int Wisdom, int Charisma, int ArmorClass, int MaxHealth, int CurrentHealth);
+    public record AdjustedStatsDto(int Strength, int Dexterity, int Constitution, int Intelligence, int Wisdom, int Charisma, int ArmorClass, int DamageResist, int MaxHealth, int CurrentHealth);
 }

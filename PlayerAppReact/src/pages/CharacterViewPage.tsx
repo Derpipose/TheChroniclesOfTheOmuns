@@ -80,25 +80,31 @@ export default function CharacterViewPage() {
             <div>
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
-                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                    backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                    color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
                 }}>{setting}</span>
                 <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
                 style={{
-                    backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                    color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                    backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                    color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
                 }}
                 >
-                {character.active ? 'Active' : 'In Edit Mode'}
+                {character.isActive ? 'Active' : 'In Edit Mode'}
                 </span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
                 Level {character.level}
                 </span>
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
-                {character.maxHealth} HP
+                {character.currentHealth} HP
+                </span>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
+                AC {adjustedStats?.armorClass ?? '—'}
+                </span>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}>
+                DR {adjustedStats?.damageResist ?? '—'}
                 </span>
             </div>
             </div>
@@ -177,14 +183,14 @@ export default function CharacterViewPage() {
                 <div className="flex items-center gap-3 shrink-0">
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                         style={{
-                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
+                            backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                            color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
                         }}>{setting}</span>
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full"
                         style={{
-                            backgroundColor: character.active ? '#E4EEE4' : 'var(--color-primary-30)',
-                            color: character.active ? '#3D5C3D' : 'var(--color-text)',
-                        }}>{character.active ? 'Active' : 'In Edit Mode'}</span>
+                            backgroundColor: character.isActive ? '#E4EEE4' : 'var(--color-primary-30)',
+                            color: character.isActive ? '#3D5C3D' : 'var(--color-text)',
+                        }}>{character.isActive ? 'Active' : 'In Edit Mode'}</span>
                     <button
                         onClick={() => navigate(`/character/${characterId}/edit`)}
                         className="rounded-lg px-5 py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75"
@@ -201,9 +207,15 @@ export default function CharacterViewPage() {
                     {adjustedStats && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-4" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
-                                    <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
-                                    <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
+                                <div className="flex flex-col gap-3">
+                                    <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-2" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>AC</span>
+                                        <span className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.armorClass}</span>
+                                    </div>
+                                    <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-2" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
+                                        <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>DR</span>
+                                        <span className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>{adjustedStats.damageResist}</span>
+                                    </div>
                                 </div>
                                 <div className="rounded-xl border flex flex-col items-center justify-center gap-1 py-4" style={{ backgroundColor: 'var(--color-primary-30)', borderColor: 'var(--color-primary-60)' }}>
                                     <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>HP</span>
@@ -214,7 +226,7 @@ export default function CharacterViewPage() {
                                 <div
                                     className="h-full rounded-full"
                                     style={{
-                                        width: `${adjustedStats.maxHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
+                                        width: `${adjustedStats.currentHealth > 0 ? Math.min(100, (adjustedStats.currentHealth / adjustedStats.maxHealth) * 100) : 0}%`,
                                         backgroundColor: '#4C8B4C',
                                     }}
                                 />
@@ -275,7 +287,7 @@ export default function CharacterViewPage() {
 
                     {scifiClass && (
                         <div className="rounded-2xl border p-6 flex flex-col gap-3" style={{ backgroundColor: 'var(--color-background-60)', borderColor: 'var(--color-primary-60)' }}>
-                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class Features</h2>
+                            <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</h2>
                             <div>
                                 <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{scifiClass.name}</p>
                                 {scifiClass.description && <p className="text-sm mt-1" style={{ color: 'var(--color-text-60)' }}>{scifiClass.description}</p>}

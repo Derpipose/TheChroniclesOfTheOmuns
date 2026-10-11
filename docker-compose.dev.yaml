@@ -46,7 +46,7 @@ services:
     container_name: chronicles_dev_react
     restart: unless-stopped
     environment:
-      VITE_API_BASE_URL: "http://localhost:5400"
+      VITE_API_BASE_URL: "http://derpserver.flyingfox-gourami.ts.net:5400"
     ports:
       - "5401:5173"
     volumes:
