@@ -125,7 +125,7 @@ export default function SignInPage() {
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                      className="field-input"
                       style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
                       placeholder="Your name"
                     />
@@ -140,7 +140,7 @@ export default function SignInPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                    className="field-input"
                     style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
                     placeholder="you@example.com"
                   />
@@ -149,7 +149,7 @@ export default function SignInPage() {
                 <button
                   onClick={handleRequestOtp}
                   disabled={loading}
-                  className="mt-2 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50"
+                  className="btn mt-2"
                   style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
                 >
                   {loading ? 'Sending...' : tab === 'sign-in' ? 'Send Code' : 'Create Account'}
@@ -169,7 +169,7 @@ export default function SignInPage() {
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
+                    className="field-input"
                     style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
                     placeholder="123456"
                   />
@@ -178,7 +178,7 @@ export default function SignInPage() {
                 <button
                   onClick={handleVerifyOtp}
                   disabled={loading}
-                  className="mt-2 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50"
+                  className="btn mt-2"
                   style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
                 >
                   {loading ? 'Verifying...' : 'Sign In'}

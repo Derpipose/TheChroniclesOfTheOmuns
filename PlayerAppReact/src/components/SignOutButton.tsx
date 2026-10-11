@@ -14,7 +14,7 @@ export default function SignOutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="nav-btn shrink-0 whitespace-nowrap px-2 py-1.5 text-xs rounded sm:px-3 sm:py-2 sm:text-sm"
+      className="nav-btn"
     >
       Sign out
     </button>

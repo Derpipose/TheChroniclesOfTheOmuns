@@ -244,41 +244,40 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
     }, [scifiCharacter, activeRaceStats]);
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="border-b px-6 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
-            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline" style={{ color: 'var(--color-text-60)' }}>
+        <div className="page">
+            <div className="app-header">
+            <button onClick={() => navigate('/characters')} className="text-sm transition-colors hover:underline fg-muted">
                 ← Back
             </button>
-            <h1 className="text-lg font-semibold" style={{ color: 'var(--color-text)' }}>{mode === 'add' ? 'Add Character' : mode === 'edit' ? 'Edit Character' : 'How did you get here?????? Seriously?? HOW DID YOU GET HERE???'}</h1>
+            <h1 className="text-lg font-semibold fg">{mode === 'add' ? 'Add Character' : mode === 'edit' ? 'Edit Character' : 'How did you get here?????? Seriously?? HOW DID YOU GET HERE???'}</h1>
             </div>
 
             <div className="max-w-md mx-auto px-6 py-8 lg:max-w-none lg:px-12 lg:py-10">
-            <div className="rounded-2xl border p-6 flex flex-col gap-5 lg:p-10 lg:gap-8" style={{ backgroundColor: 'var(--color-background-30)', borderColor: 'var(--color-primary-30)' }}>
+            <div className="rounded-2xl border p-6 flex flex-col gap-5 lg:p-10 lg:gap-8 panel">
 
                 <div className="flex flex-col gap-5 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start">
                 {/* Column 1: Identity + Stats */}
                 <div className="flex flex-col gap-5">
                     {/* Identity section — name + level */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                         Identity
                         </h2>
 
                         <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Name</label>
+                        <label className="label">Name</label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                            className="field-input"
                             placeholder="Character name"
                         />
                         </div>
 
                         {/* Level input */}
                         <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Level (Currenly set to only 1)</label>
+                        <label className="label">Level (Currenly set to only 1)</label>
                         <input
                             type="number"
                             min="1"
@@ -286,15 +285,14 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             value={level}
                             disabled = {true}
                             onChange={(e) => setLevel(e.target.value)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                            className="field-input"
                         />
                         </div>
                     </div>
 
                     {/* Stats section — ability scores + free stat picks */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                             Stats
                         </h2>
 
@@ -308,10 +306,10 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
 
                             return (
                                 <div key={label} className="flex flex-col gap-1">
-                                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>{label}</label>
+                                <label className="label">{label}</label>
 
                                 {isLocked ? (
-                                    <span className="text-sm" style={{ color: 'var(--color-text)' }}>
+                                    <span className="text-sm fg">
                                     {racialMod} (locked by race)
                                     </span>
                                 ) : (
@@ -327,10 +325,9 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                                         const clamped = isNaN(num) ? 1 : Math.min(10, Math.max(1, num));
                                         setValue(String(clamped));
                                         }}
-                                        className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors w-16"
-                                        style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                                        className="field-input w-16"
                                     />
-                                    <span className="text-sm" style={{ color: 'var(--color-text-60)' }}>
+                                    <span className="text-sm fg-muted">
                                         + {racialMod} (racial) + 10 = {finalValue}
                                     </span>
                                     </div>
@@ -344,7 +341,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             <div className="flex flex-col gap-4">
                             {activeRaceStats.freeStatPicks.map((amount, index) => (
                                 <div key={index} className="flex flex-col gap-1">
-                                <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>
+                                <label className="label">
                                     Apply the +{amount} pick
                                 </label>
                                 <div className="flex flex-wrap gap-3">
@@ -376,13 +373,13 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 {/* Column 2: Origin + Path */}
                 <div className="flex flex-col gap-5">
                     {/* Origin section — race + subrace */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                         Origin
                         </h2>
 
                         <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Race</label>
+                        <label className="label">Race</label>
                         <select
                             value={raceId ?? ''}
                             onChange={(e) => {
@@ -390,8 +387,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             setRaceId(selectedId)
                             setSubraceId(undefined)
                             }}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                            className="field-input"
                         >
                             <option value="">Select a race</option>
                             {races?.map((race) => (
@@ -404,12 +400,11 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
 
                         {showSubraceDropdown && (
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Subrace</label>
+                            <label className="label">Subrace</label>
                             <select
                             value={subraceId ?? ''}
                             onChange={(e) => setSubraceId(e.target.value ? parseInt(e.target.value) : undefined)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                            className="field-input"
                             >
                             <option value="">Select a subrace</option>
                             {subraces?.map((subrace) => (
@@ -423,18 +418,17 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                     </div>
 
                     {/* Path section — class + background */}
-                    <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                        <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                    <div className="form-section">
+                        <h2 className="section-title">
                         Path
                         </h2>
 
                         <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Class</label>
+                        <label className="label">Class</label>
                         <select
                             value={classId ?? ''}
                             onChange={(e) => setClassId(e.target.value ? parseInt(e.target.value) : undefined)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                            className="field-input"
                         >
                             <option value="">Select a class</option>
                             {classes?.map((cls) => (
@@ -446,12 +440,11 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                         </div>
 
                         <div className="flex flex-col gap-1">
-                        <label className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-text-60)' }}>Background</label>
+                        <label className="label">Background</label>
                         <select
                             value={backgroundId ?? ''}
                             onChange={(e) => setBackgroundId(e.target.value ? parseInt(e.target.value) : undefined)}
-                            className="rounded-lg px-3 py-2 text-sm outline-none border focus:border-stone-400 transition-colors"
-                            style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-primary-30)', color: 'var(--color-text)' }}
+                            className="field-input"
                         >
                             <option value="">Select a background</option>
                             {backgrounds?.map((bg) => (
@@ -465,21 +458,21 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 </div>
 
                 {/* Column 3: Notes */}
-                <div className="flex flex-col gap-5 lg:rounded-2xl lg:border lg:p-6 lg:border-[var(--color-primary-30)]">
-                    <h2 className="hidden lg:block text-xs font-semibold uppercase tracking-wide pb-2 border-b" style={{ color: 'var(--color-text)', borderColor: 'var(--color-primary-30)' }}>
+                <div className="form-section">
+                    <h2 className="section-title">
                     Notes
                     </h2>
                     <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
                 </div>
                 </div>
 
-                {error && <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>{error}</p>}
+                {error && <p className="text-sm fg-danger">{error}</p>}
 
                 <div className="flex gap-3 mt-2 lg:justify-end">
-                <button onClick={() => navigate('/characters')} className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-background-60)', color: 'var(--color-text-30)' }}>
+                <button onClick={() => navigate('/characters')} className="btn btn-neutral flex-1 lg:flex-none lg:px-8">
                     Cancel
                 </button>
-                <button onClick={handleSubmit} disabled={submitting} className="flex-1 rounded-lg py-2 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-75 disabled:opacity-50 lg:flex-none lg:px-8" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-30)' }}>
+                <button onClick={handleSubmit} disabled={submitting} className="btn flex-1 lg:flex-none lg:px-8 btn-accent">
                     {submitting ? (mode === 'add' ? 'Creating…' : 'Saving…') : (mode === 'add' ? 'Create Character' : 'Save Character')}
                 </button>
                 </div>
