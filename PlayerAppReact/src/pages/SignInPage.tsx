@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { setToken } from '../auth/tokenStorage'
+import { useAuth } from '../auth/AuthContext'
 
 type Tab = 'sign-in' | 'sign-up'
 type Step = 'email' | 'otp'
@@ -16,6 +16,7 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { signIn } = useAuth()
 
   const handleRequestOtp = async () => {
     setError(null)
@@ -64,7 +65,7 @@ export default function SignInPage() {
       }
 
       const data = await res.json()
-      setToken(data.token) // Store the token in localStorage using the setToken function
+      signIn(data.token)
       navigate('/characters')
     } catch {
       setError('Something went wrong. Please try again.')

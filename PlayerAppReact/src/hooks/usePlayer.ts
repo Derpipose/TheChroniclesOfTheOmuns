@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPlayer, setPlayerTheme } from "../api/playerApi";
-import { getToken } from "../auth/tokenStorage";
+import { useAuth } from "../auth/AuthContext";
 import { setTheme } from "../theme/themeStorage";
 
 export function usePlayer() {
+    const { isAuthenticated } = useAuth()
     return useQuery({
         queryKey: ['player'],
         queryFn: getPlayer,
-        enabled: !!getToken(), // Only fetch player data if a token exists
+        enabled: isAuthenticated, // Only fetch player data if a token exists
     })
 }
 

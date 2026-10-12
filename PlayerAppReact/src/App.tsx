@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ProtectedRoute, PublicOnlyRoute } from './auth/ProtectedRoute'
 import { ThemeSync } from './theme/ThemeSync.tsx'
+import { AuthProvider } from './auth/AuthContext.tsx'
 import SignInPage from './pages/SignInPage'
 import CharactersPage from './pages/CharactersPage'
 import CharacterViewPage from './pages/CharacterViewPage'
@@ -17,10 +18,11 @@ const queryClient = new QueryClient()
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeSync>
-          <Routes>
-            <Route path="/" element={<Navigate to="/sign-in" replace />} />
+      <AuthProvider>
+        <BrowserRouter>
+          <ThemeSync>
+            <Routes>
+              <Route path="/" element={<Navigate to="/sign-in" replace />} />
 
             <Route path="/sign-in" element={
               <PublicOnlyRoute>
@@ -83,10 +85,11 @@ export default function App() {
               <ProtectedRoute>
                 <DevPage />
               </ProtectedRoute>
-            } />
-          </Routes>
-        </ThemeSync>
-      </BrowserRouter>
+              } />
+            </Routes>
+          </ThemeSync>
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
