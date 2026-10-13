@@ -68,7 +68,7 @@
 
 /* Character form: column card on desktop, plain stack on mobile */
 .form-section {
-  @apply flex flex-col gap-5 lg:rounded-2xl lg:border lg:border-[var(--color-primary-30)] lg:p-6;
+  @apply flex flex-col gap-5 lg:rounded-2xl lg:border lg:border-[var(--color-primary-30)] lg:bg-[var(--color-background-30)] lg:p-6;
 }
 
 .section-title {
@@ -93,7 +93,7 @@
 
 /* Cards and the small elements inside them */
 .card {
-  @apply rounded-2xl border p-6;
+  @apply rounded-2xl border p-6 shadow-md;
   background-color: var(--color-background-60);
   border-color: var(--color-primary-60);
 }
@@ -163,6 +163,7 @@
 
 /* Bordered surface; pair with rounded-*, border and padding utilities */
 .panel {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
   background-color: var(--color-background-30);
   border-color: var(--color-primary-30);
 }

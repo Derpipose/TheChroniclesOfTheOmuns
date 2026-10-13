@@ -200,10 +200,9 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
 
     useEffect(() => {
         if (!rawStats) return;
-        // ??? — set strength/constitution/dexterity/wisdom/charisma/intelligence from rawStats
+        //       set strength/constitution/dexterity/wisdom/charisma/intelligence from rawStats
         //       BUT recall: rawStats holds the FINAL stored value (raw, already +10'd),
         //       while the input field expects the ORIGINAL dice-roll number.
-        //       What math undoes that, given a stat's current racial modifier?
         setStrength(String(rawStats.strength - 10));
         setConstitution(String(rawStats.constitution - 10));
         setDexterity(String(rawStats.dexterity - 10));
@@ -253,7 +252,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
             </div>
 
             <div className="max-w-md mx-auto px-6 py-8 lg:max-w-none lg:px-12 lg:py-10">
-            <div className="rounded-2xl border p-6 flex flex-col gap-5 lg:p-10 lg:gap-8 panel">
+            <div className="rounded-2xl border p-6 flex flex-col gap-5 lg:p-10 lg:gap-8 bg-soft border-subtle">
 
                 <div className="flex flex-col gap-5 lg:grid lg:grid-cols-3 lg:gap-6 lg:items-start">
                 {/* Column 1: Identity + Stats */}

@@ -12,6 +12,7 @@ import AddWeaponInstancePage from './pages/AddWeaponInstancePage'
 import UpdateWeaponInstancePage from './pages/UpdateWeaponInstancePage'
 import PlayerSettingsPage from './pages/PlayerSettings.tsx'
 import CharacterFormPage from './pages/CharacterForm.tsx'
+import ThemesPage from './pages/ThemesPage.tsx'
 
 const queryClient = new QueryClient()
 
@@ -78,6 +79,9 @@ export default function App() {
                 <PlayerSettingsPage />
               </ProtectedRoute>
             } />
+
+            {/* Theme preview sandbox; no auth so it works without the backend */}
+            <Route path="/themes" element={<ThemesPage />} />
 
             {/* Developer Tools and more restricted routes */}
 
