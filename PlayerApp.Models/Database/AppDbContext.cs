@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiCharacterModifier> ScifiCharacterModifiers => Set<ScifiCharacterModifier>();
     public DbSet<ScifiWeapon> ScifiWeapons { get; set; }
     public DbSet<ScifiWeaponInstance> ScifiWeaponInstances { get; set; }
+    public DbSet<ScifiCharacterTalent> ScifiCharacterTalents { get; set; }
 
     private static readonly JsonSerializerOptions ModifierJsonOptions = new() {
         Converters = { new JsonStringEnumConverter() }
