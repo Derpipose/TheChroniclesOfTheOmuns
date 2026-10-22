@@ -135,6 +135,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             // No HasMany(Instances) — blueprint doesn't know about instances
         });
 
+        modelBuilder.Entity<ScifiCharacterTalent>(entity => {
+            entity.HasKey(ct => new { ct.ScifiCharacterId, ct.ScifiTalentId });
+
+            entity.HasOne(ct => ct.ScifiCharacter)
+                .WithMany(sc => sc.Talents)
+                .HasForeignKey(ct => ct.ScifiCharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ct => ct.ScifiTalent)
+                .WithMany()
+                .HasForeignKey(ct => ct.ScifiTalentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(ct => ct.SourceType)
+                .HasConversion<string>();
+        });
+
 
     }
 }

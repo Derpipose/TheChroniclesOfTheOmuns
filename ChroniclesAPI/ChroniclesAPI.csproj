@@ -22,6 +22,7 @@
     <PackageReference Include="Resend" Version="0.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
     <ProjectReference Include="..\PlayerApp.Models\PlayerApp.Models.csproj" />
   </ItemGroup>
 
