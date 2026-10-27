@@ -150,10 +150,12 @@ public class ScifiCharacter {
     }
 
     public void ClearTalentsBySource(TalentSourceEnum sourceType) {
+        
         if(Character is null)
             throw new InvalidOperationException(
                 "ScifiCharacter must have an associated Character before talents can be cleared.");
-        if(Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class))
+        if(Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class
+                                    || sourceType == TalentSourceEnum.LevelUp ))
             throw new InvalidOperationException(
                 "Cannot remove these talents for an active character.");
         _talents.RemoveAll(t => t.SourceType == sourceType);

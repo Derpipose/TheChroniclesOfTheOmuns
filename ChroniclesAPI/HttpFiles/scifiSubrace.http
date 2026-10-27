@@ -1,0 +1,107 @@
+@baseUrl = http://localhost:5237
+@token = 
+@raceId = 3
+@subraceId = 1
+
+### Get a subrace by id
+GET {{baseUrl}}/api/scifi/scifisubrace/{{subraceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get a subrace by id with stats
+GET {{baseUrl}}/api/scifi/scifisubrace/{{subraceId}}/stats
+Authorization: Bearer {{token}}
+
+###
+
+### Get all subraces for a race
+GET {{baseUrl}}/api/scifi/scifisubrace/by-race/{{raceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get all subraces for a race with stats
+GET {{baseUrl}}/api/scifi/scifisubrace/by-race/{{raceId}}/stats
+Authorization: Bearer {{token}}
+
+###
+
+### Get subraces for a race that doesn't exist - expect 404
+GET {{baseUrl}}/api/scifi/scifisubrace/by-race/9999
+Authorization: Bearer {{token}}
+
+###
+
+### Create a subrace for a race
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{raceId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Gears",
+    "description": "",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Create a subrace with stat modifiers
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{raceId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Thunder",
+    "description": "Storm-callers of the Araka.",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 2, "modifier": 1, "isLocked": false }
+        ],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Update a subrace
+PUT {{baseUrl}}/api/scifi/scifisubrace/{{subraceId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "House Gears",
+    "description": "Engineers and shipwrights of the Araka.",
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 4, "modifier": 1, "isLocked": false }
+        ],
+        "freeStatPicks": []
+    }
+}
+
+###
+
+### Update a subrace - not found case
+PUT {{baseUrl}}/api/scifi/scifisubrace/9999
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subRaceName": "Ghost House",
+    "description": "Should 404.",
+    "raceStatsId": 0,
+    "raceStats": null
+}
+
+###
+
+### Delete a subrace
+DELETE {{baseUrl}}/api/scifi/scifisubrace/{{subraceId}}
+Authorization: Bearer {{token}}

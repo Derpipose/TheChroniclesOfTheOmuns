@@ -15,6 +15,12 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Get scifi character by character id
+GET {{baseUrl}}/api/scifi/scificharacter/by-character/{{characterId}}
+Authorization: Bearer {{token}}
+
+###
+
 ### Create a scifi character (minimal - no race/class/background)
 POST {{baseUrl}}/api/scifi/scificharacter
 Authorization: Bearer {{token}}
@@ -34,8 +40,27 @@ Content-Type: application/json
 {
     "characterId": {{characterId}},
     "scifiRaceId": 1,
+    "scifiSubraceId": 1,
     "scifiClassId": 1,
     "scifiBackgroundId": 1
+}
+
+###
+
+### Create a scifi character (with free stat picks; stat = StatType enum, 0 Str, 1 Con, 2 Dex, 3 Wis, 4 Cha, 5 Int)
+POST {{baseUrl}}/api/scifi/scificharacter
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "characterId": {{characterId}},
+    "scifiRaceId": 1,
+    "scifiClassId": 1,
+    "scifiBackgroundId": 1,
+    "statPicks": [
+        { "stat": 3, "amount": 1 },
+        { "stat": 4, "amount": 1 }
+    ]
 }
 
 ###
@@ -48,6 +73,20 @@ Content-Type: application/json
 {
     "scifiRaceId": 1,
     "scifiClassId": 1
+}
+
+###
+
+### Update scifi character - set subrace and free stat picks
+PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiSubraceId": 1,
+    "statPicks": [
+        { "stat": 3, "amount": 1 }
+    ]
 }
 
 ###

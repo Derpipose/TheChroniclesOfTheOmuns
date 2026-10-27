@@ -1,0 +1,228 @@
+@baseUrl = http://localhost:5237
+@token = 
+@instanceId = 1
+@scifiCharacterId = 1
+@weaponId = 1
+
+# Enums: damageType 0 Melee, 1 Kinetic, 2 Energy
+#        energyType 0 Physical, 1 Blaze, 2 Volt, 3 Null, 4 Cryo
+#        stat 0 Str, 1 Con, 2 Dex, 3 Wis, 4 Cha, 5 Int
+#        rangeCategory 0 None, 1 Melee, 2 Short, 3 Medium, 4 Long
+#        ammoType 0 None, 1 LesserGeneric, 2 Generic, 3 GreaterGeneric ... (see ScifiAmmoType)
+
+### Create a weapon instance from a blueprint
+POST {{baseUrl}}/api/scifi/weaponinstance
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiWeaponId": {{weaponId}},
+    "scifiCharacterId": {{scifiCharacterId}},
+    "scifiWeaponBlueprintId": {{weaponId}}
+}
+
+###
+
+### Get weapon instance by id
+GET {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get all weapon instances for a scifi character
+GET {{baseUrl}}/api/scifi/weaponinstance/character/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Rename a weapon
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/rename
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": "Old Faithful"
+}
+
+###
+
+### Toggle favorite
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/favorite
+Authorization: Bearer {{token}}
+
+###
+
+### Change owner (new scifi character id)
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/owner
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 2
+}
+
+###
+
+### Use ammo (amount spent)
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/use-ammo
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 3
+}
+
+###
+
+### Reload
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/reload
+Authorization: Bearer {{token}}
+
+###
+
+### Set current ammo
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/ammo
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 10
+}
+
+###
+
+### Set damage formula
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/damage-formula
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": "3d6"
+}
+
+###
+
+### Set damage type
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/damage-type
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "damageType": 2
+}
+
+###
+
+### Set energy type
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/energy-type
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "energyType": 1
+}
+
+###
+
+### Set modifier stat
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/modifier-stat
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "stat": 2
+}
+
+###
+
+### Set rate of fire
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/rate-of-fire
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": "Full-auto"
+}
+
+###
+
+### Set ammo type
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/ammo-type
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "ammoType": 5
+}
+
+###
+
+### Set ammo capacity
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/ammo-capacity
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 30
+}
+
+###
+
+### Set reload time (in actions)
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/reload-time
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 2
+}
+
+###
+
+### Set critical range
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/critical-range
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 19
+}
+
+###
+
+### Set critical multiplier
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/critical-multiplier
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 3
+}
+
+###
+
+### Set critical fail range
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/critical-fail-range
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "newValue": 2
+}
+
+###
+
+### Set range category
+PATCH {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}/range-category
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "range": 3
+}
+
+###
+
+### Delete a weapon instance
+DELETE {{baseUrl}}/api/scifi/weaponinstance/{{instanceId}}
+Authorization: Bearer {{token}}
