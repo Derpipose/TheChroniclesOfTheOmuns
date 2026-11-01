@@ -148,11 +148,16 @@ public class ScifiTalentTests {
     }
 
     [Fact]
-    public void AddTalent_Throws_WhenCharacterNotLoaded() {
-        var sc = new ScifiCharacter(1);
-        var talent = new ScifiTalent("Tough", "Description", "Ability");
+    public async Task AddTalent_Throws_WhenCharacterNotLoaded() {
+        // Persisted character and talent, so only the missing Character can trigger the throw
+        var (db, _, talent) = await SeedCharacterAndTalent();
+        await using var _ = db;
+        db.ChangeTracker.Clear();
+        var sc = await db.ScifiCharacters.FirstAsync(TestContext.Current.CancellationToken);
+        Assert.Null(sc.Character);
 
-        Assert.Throws<InvalidOperationException>(() => sc.AddTalent(talent, TalentSourceEnum.Class));
+        var ex = Assert.Throws<InvalidOperationException>(() => sc.AddTalent(talent, TalentSourceEnum.Class));
+        Assert.Contains("associated Character", ex.Message);
     }
 
     [Theory]
@@ -191,12 +196,15 @@ public class ScifiTalentTests {
         Assert.Equal(TalentSourceEnum.Class, remaining.SourceType);
     }
 
-    [Fact]
-    public async Task ClearTalentsBySource_Throws_ForBackground_WhenCharacterActive() {
+    [Theory]
+    [InlineData(TalentSourceEnum.Class)]
+    [InlineData(TalentSourceEnum.Background)]
+    [InlineData(TalentSourceEnum.LevelUp)]
+    public async Task ClearTalentsBySource_Throws_WhenCharacterActive(TalentSourceEnum source) {
         var (db, sc, _) = await SeedCharacterAndTalent(active: true);
         await using var _ = db;
 
-        Assert.Throws<InvalidOperationException>(() => sc.ClearTalentsBySource(TalentSourceEnum.Background));
+        Assert.Throws<InvalidOperationException>(() => sc.ClearTalentsBySource(source));
     }
 }
 
@@ -209,7 +217,7 @@ public class ScifiTalentControllerTests {
         };
         var accessor = Substitute.For<IHttpContextAccessor>();
         accessor.HttpContext.Returns(context);
-        return new ScifiTalentController(db, new PlayerContext(accessor));
+        return new ScifiTalentController(db, new PlayerContext(accessor), new ScifiTalentService(db));
     }
 
     private static async Task<ScifiTalent> AddTalent(AppDbContext db, string name, string perk = "", string perkAmount = "") {
@@ -480,7 +488,7 @@ public class ScifiTalentControllerTests {
     }
 
     [Fact]
-    public async Task GetTalentPicks_OverlapMismatch_ReturnsBadRequest_WhenNoClassMatchesBackground() {
+    public async Task GetTalentPicks_OverlapMismatch_ReturnsOnlyGranted_WhenNoClassMatchesBackground() {
         await using var db = TestDb.Create();
         var soldier = new ScifiClass("Soldier", DiceType.D12);
         var background = new ScifiBackground("Hermit", "Lives alone", hasClassOverlap: true);
@@ -492,7 +500,7 @@ public class ScifiTalentControllerTests {
 
         var result = await CreateController(db).GetTalentPicks(sc.CharacterId);
 
-        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.DoesNotContain(Picks(result), p => p.IsPickable);
     }
 
     [Fact]
@@ -529,5 +537,329 @@ public class ScifiTalentControllerTests {
         var picks = Picks(await CreateController(db).GetTalentPicks(sc.CharacterId));
 
         Assert.Empty(picks);
+    }
+
+    // SelectTalentPick
+
+    private static async Task<(ScifiCharacter sc, ScifiTalent classTalent, ScifiTalent bgA, ScifiTalent bgB)> SeedPickScenario(AppDbContext db) {
+        var classTalent = await AddTalent(db, "Gunnery");
+        var bgA = await AddTalent(db, "Haggler");
+        var bgB = await AddTalent(db, "Appraiser");
+        var scifiClass = new ScifiClass("Soldier", DiceType.D12);
+        var background = new ScifiBackground("Merchant", "Sells things");
+        db.ScifiClasses.Add(scifiClass);
+        db.ScifiBackgrounds.Add(background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        db.ScifiClassTalents.Add(new ScifiClassTalent(scifiClass.Id, classTalent.Id));
+        db.ScifiBackgroundTalents.AddRange(
+            new ScifiBackgroundTalent(background.Id, bgA.Id),
+            new ScifiBackgroundTalent(background.Id, bgB.Id));
+        var sc = await AddScifiCharacter(db);
+        await SetClassAndBackground(db, sc, scifiClass, background);
+        return (sc, classTalent, bgA, bgB);
+    }
+
+    private static async Task<List<ScifiCharacterTalent>> BackgroundTalents(AppDbContext db, int characterId) {
+        var loaded = await db.ScifiCharacters.Include(s => s.Talents).FirstAsync(s => s.CharacterId == characterId, TestContext.Current.CancellationToken);
+        return loaded.Talents.Where(t => t.SourceType == TalentSourceEnum.Background).ToList();
+    }
+
+    [Fact]
+    public async Task SelectTalentPick_SavesValidPick() {
+        await using var db = TestDb.Create();
+        var (sc, _, bgA, _) = await SeedPickScenario(db);
+
+        var result = await CreateController(db).SelectTalentPick(sc.CharacterId, bgA.Id);
+
+        Assert.IsType<OkResult>(result);
+        var saved = Assert.Single(await BackgroundTalents(db, sc.CharacterId));
+        Assert.Equal(bgA.Id, saved.ScifiTalentId);
+    }
+
+    [Fact]
+    public async Task SelectTalentPick_ReplacesPreviousPick() {
+        await using var db = TestDb.Create();
+        var (sc, _, bgA, bgB) = await SeedPickScenario(db);
+        var controller = CreateController(db);
+        await controller.SelectTalentPick(sc.CharacterId, bgA.Id);
+
+        var result = await controller.SelectTalentPick(sc.CharacterId, bgB.Id);
+
+        Assert.IsType<OkResult>(result);
+        var saved = Assert.Single(await BackgroundTalents(db, sc.CharacterId));
+        Assert.Equal(bgB.Id, saved.ScifiTalentId);
+    }
+
+    [Fact]
+    public async Task SelectTalentPick_ReselectingSamePick_IsNoOp() {
+        await using var db = TestDb.Create();
+        var (sc, _, bgA, _) = await SeedPickScenario(db);
+        var controller = CreateController(db);
+        await controller.SelectTalentPick(sc.CharacterId, bgA.Id);
+
+        var result = await controller.SelectTalentPick(sc.CharacterId, bgA.Id);
+
+        Assert.IsType<OkResult>(result);
+        var saved = Assert.Single(await BackgroundTalents(db, sc.CharacterId));
+        Assert.Equal(bgA.Id, saved.ScifiTalentId);
+    }
+
+    [Fact]
+    public async Task SelectTalentPick_ReturnsBadRequest_WhenTalentNotInPool() {
+        await using var db = TestDb.Create();
+        var (sc, _, _, _) = await SeedPickScenario(db);
+        var outsider = await AddTalent(db, "Outsider");
+
+        var result = await CreateController(db).SelectTalentPick(sc.CharacterId, outsider.Id);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Empty(await BackgroundTalents(db, sc.CharacterId));
+    }
+
+    [Fact]
+    public async Task SelectTalentPick_ReturnsBadRequest_WhenTalentIsClassGranted() {
+        await using var db = TestDb.Create();
+        var (sc, classTalent, _, _) = await SeedPickScenario(db);
+
+        var result = await CreateController(db).SelectTalentPick(sc.CharacterId, classTalent.Id);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Empty(await BackgroundTalents(db, sc.CharacterId));
+    }
+
+    [Fact]
+    public async Task SelectTalentPick_ReturnsConflict_WhenCharacterActive() {
+        await using var db = TestDb.Create();
+        var (sc, _, bgA, _) = await SeedPickScenario(db);
+        var loaded = await db.ScifiCharacters.Include(s => s.Character).FirstAsync(TestContext.Current.CancellationToken);
+        loaded.Character!.SetActive();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var result = await CreateController(db).SelectTalentPick(sc.CharacterId, bgA.Id);
+
+        Assert.IsType<ConflictObjectResult>(result);
+        Assert.Empty(await BackgroundTalents(db, sc.CharacterId));
+    }
+}
+
+public class ScifiTalentSyncTests {
+    private static async Task<ScifiTalent> AddTalent(AppDbContext db, string name) {
+        var talent = new ScifiTalent(name, $"{name} description", $"{name} ability");
+        db.ScifiTalents.Add(talent);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        return talent;
+    }
+
+    private static async Task<ScifiClass> AddClass(AppDbContext db, string name, params ScifiTalent[] granted) {
+        var scifiClass = new ScifiClass(name, DiceType.D12);
+        db.ScifiClasses.Add(scifiClass);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        db.ScifiClassTalents.AddRange(granted.Select(t => new ScifiClassTalent(scifiClass.Id, t.Id)));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        return scifiClass;
+    }
+
+    private static async Task<ScifiBackground> AddBackground(AppDbContext db, string name, bool overlap, params ScifiTalent[] talents) {
+        var background = new ScifiBackground(name, $"{name} description", hasClassOverlap: overlap);
+        db.ScifiBackgrounds.Add(background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        db.ScifiBackgroundTalents.AddRange(talents.Select(t => new ScifiBackgroundTalent(background.Id, t.Id)));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        return background;
+    }
+
+    private static async Task<ScifiCharacter> AddScifiCharacter(AppDbContext db) {
+        var character = new Character(1, "Rook");
+        db.Characters.Add(character);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var sc = new ScifiCharacter(character.Id);
+        db.ScifiCharacters.Add(sc);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        return await Load(db, sc.Id);
+    }
+
+    // Reloads with everything the sync needs, picking up FK changes the way the controller does
+    private static async Task<ScifiCharacter> Load(AppDbContext db, int id) {
+        db.ChangeTracker.DetectChanges();
+        return await db.ScifiCharacters
+            .Include(s => s.Character)
+            .Include(s => s.ScifiClass)
+            .Include(s => s.ScifiBackground)
+            .Include(s => s.Talents)
+            .FirstAsync(s => s.Id == id, TestContext.Current.CancellationToken);
+    }
+
+    private static async Task Sync(AppDbContext db, ScifiCharacter sc) {
+        db.ChangeTracker.DetectChanges();
+        await new ScifiTalentService(db).SyncTalentsAsync(sc);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+    }
+
+    private static async Task<List<(int TalentId, TalentSourceEnum Source)>> Stored(AppDbContext db, int scId) =>
+        (await db.Set<ScifiCharacterTalent>().Where(t => t.ScifiCharacterId == scId).ToListAsync(TestContext.Current.CancellationToken))
+            .Select(t => (t.ScifiTalentId, t.SourceType)).OrderBy(t => t.ScifiTalentId).ToList();
+
+    [Fact]
+    public async Task Sync_BothSet_AddsClassTalents() {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var s2 = await AddTalent(db, "Armor");
+        var b1 = await AddTalent(db, "Haggler");
+        var soldier = await AddClass(db, "Soldier", s1, s2);
+        var merchant = await AddBackground(db, "Merchant", false, b1);
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(soldier.Id);
+        sc.SetScifiBackground(merchant.Id);
+        sc = await Load(db, sc.Id);
+
+        await Sync(db, sc);
+
+        Assert.Equal(
+            [(s1.Id, TalentSourceEnum.Class), (s2.Id, TalentSourceEnum.Class)],
+            await Stored(db, sc.Id));
+    }
+
+    [Fact]
+    public async Task Sync_ClassChanges_RemovesOldClassTalentsAndAddsNew() {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var m1 = await AddTalent(db, "Triage");
+        var b1 = await AddTalent(db, "Haggler");
+        var soldier = await AddClass(db, "Soldier", s1);
+        var medic = await AddClass(db, "Medic", m1);
+        var merchant = await AddBackground(db, "Merchant", false, b1);
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(soldier.Id);
+        sc.SetScifiBackground(merchant.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+
+        sc.SetScifiClass(medic.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+
+        Assert.Equal([(m1.Id, TalentSourceEnum.Class)], await Stored(db, sc.Id));
+    }
+
+    [Fact]
+    public async Task Sync_ClassChangesToMismatch_ClearsPickNoLongerInPool() {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var m1 = await AddTalent(db, "Triage");
+        var b1 = await AddTalent(db, "Field Medicine");
+        var soldier = await AddClass(db, "Soldier", s1);
+        var medic = await AddClass(db, "Medic", m1);
+        var medicBg = await AddBackground(db, "Medic", true, b1); // overlap
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(medic.Id); // matches background: pick from background's own talents
+        sc.SetScifiBackground(medicBg.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+        sc.AddTalent(b1, TalentSourceEnum.Background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        sc.SetScifiClass(soldier.Id); // mismatch: pool is now the Medic class's talents
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+
+        Assert.Equal([(s1.Id, TalentSourceEnum.Class)], await Stored(db, sc.Id));
+    }
+
+    [Fact]
+    public async Task Sync_ClassChanges_KeepsValidPickWhenBackgroundHasNoOverlap() {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var m1 = await AddTalent(db, "Triage");
+        var b1 = await AddTalent(db, "Haggler");
+        var soldier = await AddClass(db, "Soldier", s1);
+        var medic = await AddClass(db, "Medic", m1);
+        var merchant = await AddBackground(db, "Merchant", false, b1);
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(soldier.Id);
+        sc.SetScifiBackground(merchant.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+        sc.AddTalent(b1, TalentSourceEnum.Background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        sc.SetScifiClass(medic.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+
+        Assert.Equal(
+            [(m1.Id, TalentSourceEnum.Class), (b1.Id, TalentSourceEnum.Background)],
+            await Stored(db, sc.Id));
+    }
+
+    [Fact]
+    public async Task Sync_NewClassGrantsCurrentPick_ClearsPickWithoutDuplicateError() {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var shared = await AddTalent(db, "Haggler");
+        var soldier = await AddClass(db, "Soldier", s1);
+        var trader = await AddClass(db, "Trader", shared);
+        var merchant = await AddBackground(db, "Merchant", false, shared);
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(soldier.Id);
+        sc.SetScifiBackground(merchant.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+        sc.AddTalent(shared, TalentSourceEnum.Background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        sc.SetScifiClass(trader.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+
+        Assert.Equal([(shared.Id, TalentSourceEnum.Class)], await Stored(db, sc.Id));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Sync_ClassOrBackgroundCleared_ClearsBothSources(bool clearClass) {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var b1 = await AddTalent(db, "Haggler");
+        var soldier = await AddClass(db, "Soldier", s1);
+        var merchant = await AddBackground(db, "Merchant", false, b1);
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(soldier.Id);
+        sc.SetScifiBackground(merchant.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+        sc.AddTalent(b1, TalentSourceEnum.Background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(2, (await Stored(db, sc.Id)).Count);
+
+        if (clearClass) sc.ClearScifiClass(); else sc.ClearScifiBackground();
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+
+        Assert.Empty(await Stored(db, sc.Id));
+    }
+
+    [Fact]
+    public async Task Sync_RunTwice_MakesNoChangesTheSecondTime() {
+        await using var db = TestDb.Create();
+        var s1 = await AddTalent(db, "Gunnery");
+        var b1 = await AddTalent(db, "Haggler");
+        var soldier = await AddClass(db, "Soldier", s1);
+        var merchant = await AddBackground(db, "Merchant", false, b1);
+        var sc = await AddScifiCharacter(db);
+        sc.SetScifiClass(soldier.Id);
+        sc.SetScifiBackground(merchant.Id);
+        sc = await Load(db, sc.Id);
+        await Sync(db, sc);
+        sc.AddTalent(b1, TalentSourceEnum.Background);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var before = await Stored(db, sc.Id);
+
+        db.ChangeTracker.DetectChanges();
+        await Sync(db, sc);
+        db.ChangeTracker.DetectChanges();
+
+        Assert.False(db.ChangeTracker.HasChanges());
+        Assert.Equal(before, await Stored(db, sc.Id));
     }
 }

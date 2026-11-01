@@ -12,7 +12,7 @@ namespace ChroniclesAPI.Controllers;
 [ApiController]
 [Route("api/scifi/[controller]")]
 [Authorize]
-public class ScifiCharacterController(AppDbContext db, PlayerContext playerContext) : ControllerBase {
+public class ScifiCharacterController(AppDbContext db, PlayerContext playerContext, ScifiTalentService scifiTalentService) : ControllerBase {
 
     [HttpGet]
     public async Task<IActionResult> GetAll() {
@@ -186,8 +186,13 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             db.CharacterStats.Add(stats);
 
         scifiCharacter.UpdateHealth(stats, classForHealth);
-
         await db.SaveChangesAsync();
+
+        if(request.ScifiClassId is not null && request.ScifiBackgroundId is not null){
+            await scifiTalentService.SyncTalentsAsync(scifiCharacter);
+            await db.SaveChangesAsync();
+        }
+
 
         return Ok(new ScifiCharacterResponseDto(
             scifiCharacter.Id,
@@ -210,6 +215,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             .Include(sc => sc.ScifiSubrace)
             .Include(sc => sc.ScifiClass)
             .Include(sc => sc.ScifiBackground)
+            .Include(sc => sc.Talents)
             .FirstOrDefaultAsync(sc => sc.Id == id && sc.Character!.PlayerId == playerContext.PlayerId);
 
         if (scifiCharacter is null)
@@ -285,11 +291,12 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 return BadRequest(new { message = "ScifiBackground not found." });
             scifiCharacter.SetScifiBackground(background.Id);
         }
+        
+        if(request.ScifiClassId is not null || request.ScifiBackgroundId is not null) {
+            db.ChangeTracker.DetectChanges(); // Ensure EF Core is aware of the changes before syncing talents
+            await scifiTalentService.SyncTalentsAsync(scifiCharacter);
+        }
 
-        // CHANGED: was `request.ScifiClassId is not null`, which incorrectly matched
-        // the "clear" sentinel (0) too, causing FirstAsync(c => c.Id == 0) to throw.
-        // Now: cleared -> null; genuinely changed (nonzero) -> reload it fresh;
-        // untouched -> trust the already-.Include()'d nav property.
         var classForHealth = scifiClassCleared ? null : scifiClass ?? scifiCharacter.ScifiClass;
 
         scifiCharacter.UpdateHealth(stats, classForHealth);

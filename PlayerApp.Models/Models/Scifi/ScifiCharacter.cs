@@ -149,17 +149,6 @@ public class ScifiCharacter {
         _talents.Add(new ScifiCharacterTalent(Id, talent.Id, sourceType));
     }
 
-    public void ClearTalentsBySource(TalentSourceEnum sourceType) {
-        
-        if(Character is null)
-            throw new InvalidOperationException(
-                "ScifiCharacter must have an associated Character before talents can be cleared.");
-        if(Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class
-                                    || sourceType == TalentSourceEnum.LevelUp ))
-            throw new InvalidOperationException(
-                "Cannot remove these talents for an active character.");
-        _talents.RemoveAll(t => t.SourceType == sourceType);
-    }
 
     public void UpdateHealth(CharacterStats stats, ScifiClass? scifiClass) {
         if (Character is null)
@@ -219,6 +208,36 @@ public class ScifiCharacter {
     public void ClearScifiBackground() {
         ScifiBackgroundId = null;
     }
+
+    public void ClearTalentsBySource(TalentSourceEnum sourceType) {
+        
+        if(Character is null)
+            throw new InvalidOperationException(
+                "ScifiCharacter must have an associated Character before talents can be cleared.");
+        if(Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class
+                                    || sourceType == TalentSourceEnum.LevelUp ))
+            throw new InvalidOperationException(
+                "Cannot remove these talents for an active character.");
+        _talents.RemoveAll(t => t.SourceType == sourceType);
+    }
+
+    public void RemoveTalent(int talentId) {
+        if (Character is null)
+            throw new InvalidOperationException(
+                "ScifiCharacter must have an associated Character before talents can be removed.");
+        if (Character.IsActive)
+            throw new InvalidOperationException(
+                "Cannot remove talents for an active character.");
+
+        _talents.RemoveAll(t => t.ScifiTalentId == talentId);
+    }
+
+
+
+
+
+
+
 
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
