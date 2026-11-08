@@ -11,19 +11,23 @@ public class ScifiTalentService(AppDbContext db) {
 
     // Caller has already loaded the character (class, background) and checked both are set
     public async Task<TalentPool> GetTalentPoolAsync(ScifiCharacter scifiCharacter) {
+        return await GetTalentPoolAsync(scifiCharacter.ScifiClass!, scifiCharacter.ScifiBackground!);
+    }
+
+    public async Task<TalentPool> GetTalentPoolAsync(ScifiClass scifiClass, ScifiBackground scifiBackground) {
         // 1. granted = the class's talents
         var classTalents = await db.ScifiClassTalents
-            .Where(ct => ct.ScifiClassId == scifiCharacter.ScifiClassId)
+            .Where(ct => ct.ScifiClassId == scifiClass.Id)
             .Select(ct => ct.ScifiTalent!)
             .ToListAsync();
 
         // Pool: depends on the overlap rule
         List<ScifiTalent> poolTalents;
 
-        if (scifiCharacter.ScifiBackground!.HasClassOverlap && scifiCharacter.ScifiClass!.Name != scifiCharacter.ScifiBackground.Name) {
+        if (scifiBackground.HasClassOverlap && scifiClass.Name != scifiBackground.Name) {
             // Mismatch: pick from the class that shares the background's name
             var matchingClass = await db.ScifiClasses
-                .FirstOrDefaultAsync(c => c.Name == scifiCharacter.ScifiBackground.Name);
+                .FirstOrDefaultAsync(c => c.Name == scifiBackground.Name);
 
             if (matchingClass is null)
                 return new TalentPool(classTalents, new List<ScifiTalent>());
@@ -35,10 +39,11 @@ public class ScifiTalentService(AppDbContext db) {
         } else {
             // No overlap, or class matches: pick from the background's own talents
             poolTalents = await db.ScifiBackgroundTalents
-                .Where(bt => bt.ScifiBackgroundId == scifiCharacter.ScifiBackgroundId)
+                .Where(bt => bt.ScifiBackgroundId == scifiBackground.Id)
                 .Select(bt => bt.ScifiTalent!)
                 .ToListAsync();
         }
+
         // 2. pickable = namesake class talents (overlap + mismatch) or background talents
         //  remove from pickable anything already in granted
         var pickable = poolTalents.Where(p => !classTalents.Any(g => g.Id == p.Id)).ToList();

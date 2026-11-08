@@ -36,6 +36,53 @@ public class ScifiTalentController(AppDbContext db, PlayerContext playerContext,
         return Ok(talent);
     }
 
+    [HttpGet("PreviewTalentPool/{classId:int}/{backgroundId:int}")]
+    public async Task<IActionResult> PreviewTalentPool(int classId, int backgroundId) {
+        if (classId <= 0 || backgroundId <= 0)
+            return BadRequest(new { message = "Invalid class or background ID." });
+
+        var scifiClass = await db.ScifiClasses
+            .FirstOrDefaultAsync(c => c.Id == classId);
+
+        if (scifiClass is null)
+            return NotFound(new { message = $"ScifiClass {classId} was not found." });
+
+        var scifiBackground = await db.ScifiBackgrounds
+            .FirstOrDefaultAsync(b => b.Id == backgroundId);
+
+        if (scifiBackground is null)
+            return NotFound(new { message = $"ScifiBackground {backgroundId} was not found." });
+
+        var (classTalents, poolTalents) = await scifiTalentService.GetTalentPoolAsync(scifiClass, scifiBackground);
+
+        var granted = classTalents.Select(t => 
+                    new ScifiTalentPickPreviewDto(
+                        t.Id, 
+                        t.Name, 
+                        t.Description, 
+                        t.Ability, 
+                        t.Perk, 
+                        t.PerkAmount,
+                        false
+                    )).ToList();
+
+        var pickable = poolTalents.Select(t => 
+                    new ScifiTalentPickPreviewDto(
+                        t.Id, 
+                        t.Name, 
+                        t.Description, 
+                        t.Ability, 
+                        t.Perk, 
+                        t.PerkAmount,
+                        true
+                    )).ToList();
+
+        // Put the two together. Yay!
+        var talentPicks = granted.Concat(pickable).ToList();
+
+        return Ok(talentPicks);
+    }
+
     [HttpGet("TalentPicks/{characterId:int}")]
     public async Task<IActionResult> GetTalentPicks(int characterId) {
         if (characterId <= 0)
@@ -136,4 +183,5 @@ public class ScifiTalentController(AppDbContext db, PlayerContext playerContext,
 
     public record ScifiTalentResponseDto(int Id, string Name, string Description, string Ability, string Perk, string PerkAmount);
     public record ScifiTalentPicksResponseDto(int Id, string Name, string Description, string Ability, string Perk, string PerkAmount, bool IsPickable, bool IsSelected);
+    public record ScifiTalentPickPreviewDto(int Id, string Name, string Description, string Ability, string Perk, string PerkAmount, bool IsPickable);
 }

@@ -164,32 +164,44 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             }
         }
 
+        // Declare these before the class/background blocks so they're usable later
+        ScifiClass? scifiClass = null;
+        ScifiBackground? background = null;
+
         if (request.ScifiClassId is not null) {
-            var scifiClass = await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId);
+            scifiClass = await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId);
             scifiCharacter.SetScifiClass(scifiClass.Id);
         }
 
         if (request.ScifiBackgroundId is not null) {
-            var background = await db.ScifiBackgrounds.FirstAsync(b => b.Id == request.ScifiBackgroundId);
+            background = await db.ScifiBackgrounds.FirstAsync(b => b.Id == request.ScifiBackgroundId);
             scifiCharacter.SetScifiBackground(background.Id);
         }
 
-        // Unchanged: this is a brand-new ScifiCharacter, so scifiCharacter.ScifiClass
-        // is guaranteed null when ScifiClassId wasn't provided — no bug here.
-        var classForHealth = request.ScifiClassId is not null
-            ? await db.ScifiClasses.FirstAsync(c => c.Id == request.ScifiClassId)
-            : scifiCharacter.ScifiClass;
+        // Validate the pick before anything is saved
+        ScifiTalent? pickedTalent = null;
+        if (request.BackgroundTalentId is not null) {
+            if (scifiClass is null || background is null)
+                return BadRequest(new { message = "Cannot pick a background talent without both a class and background set." });
+
+            var pool = await scifiTalentService.GetTalentPoolAsync(scifiClass, background);
+            pickedTalent = pool.Pickable.FirstOrDefault(t => t.Id == request.BackgroundTalentId);
+            if (pickedTalent is null)
+                return BadRequest(new { message = "Background talent pick is not valid for the current class and background." });
+        }
 
         db.ScifiCharacters.Add(scifiCharacter);
 
         if (!db.CharacterStats.Local.Contains(stats))
             db.CharacterStats.Add(stats);
 
-        scifiCharacter.UpdateHealth(stats, classForHealth);
+        scifiCharacter.UpdateHealth(stats, scifiClass);
         await db.SaveChangesAsync();
 
-        if(request.ScifiClassId is not null && request.ScifiBackgroundId is not null){
+        if (request.ScifiClassId is not null && request.ScifiBackgroundId is not null) {
             await scifiTalentService.SyncTalentsAsync(scifiCharacter);
+            if (pickedTalent is not null)
+                scifiCharacter.AddTalent(pickedTalent, TalentSourceEnum.Background);
             await db.SaveChangesAsync();
         }
 
@@ -297,6 +309,27 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             await scifiTalentService.SyncTalentsAsync(scifiCharacter);
         }
 
+        if(request.BackgroundTalentId is not null) {
+
+            if(scifiCharacter.ScifiClass is null || scifiCharacter.ScifiBackground is null) {
+                return BadRequest(new { message = "Cannot pick a background talent without both a class and background set." });
+            }
+
+            var talentPool = await scifiTalentService.GetTalentPoolAsync(scifiCharacter);
+            var talent = talentPool.Pickable.FirstOrDefault(t => t.Id == request.BackgroundTalentId);
+            if(talent is null) {
+                return BadRequest(new { message = "Background talent pick is not valid for the current class and background." });
+            }
+            
+            var currentPick = scifiCharacter.Talents.FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background);
+
+            if (currentPick?.ScifiTalentId != talent.Id) {
+                // Remove the current background talent
+                scifiCharacter.ClearTalentsBySource(TalentSourceEnum.Background);
+                scifiCharacter.AddTalent(talent, TalentSourceEnum.Background);
+            }
+        }
+
         var classForHealth = scifiClassCleared ? null : scifiClass ?? scifiCharacter.ScifiClass;
 
         scifiCharacter.UpdateHealth(stats, classForHealth);
@@ -332,8 +365,8 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
 
     public record StatPickDto(StatType Stat, int Amount);
     public record StatModifierResponseDto(ModifierType Stat, int Amount, ModifierSource Source);
-    public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null);
-    public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null);
+    public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null, int? BackgroundTalentId = null);
+    public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null, int? BackgroundTalentId = null);
     public record ScifiCharacterResponseDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatModifierResponseDto> StatBonuses);
     public record ScifiCharacterSummaryDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId);
 }
