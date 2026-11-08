@@ -98,6 +98,102 @@
   border-color: var(--color-primary-60);
 }
 
+/* PanelCard: parchment-style section wrapper (icon + serif title + divider) */
+/* Scooped (concave) corners. Every layer is cut with the same four corner circles, all
+   centred on the card's true corners, so the arcs stay concentric:
+   card background = outer line, ::before = paper fill (inset 1px), ::after = inner ring (inset 4px).
+   --r is the hole radius for the layer, --o is how far the layer is inset from the card edge. */
+.panel-card {
+  --c: 14px; /* notch radius; raise for deeper scoops */
+  position: relative;
+  isolation: isolate;
+  height: fit-content; /* shrink/grow to content, even inside a stretching grid row */
+  background-color: var(--color-primary-60);
+  --r: var(--c);
+  --o: 0px;
+}
+
+.panel-card,
+.panel-card::before,
+.panel-card::after {
+  --hole: transparent calc(var(--r) - 0.5px), #000 calc(var(--r) + 0.5px);
+  -webkit-mask-image:
+    radial-gradient(circle at calc(0% - var(--o)) calc(0% - var(--o)), var(--hole)),
+    radial-gradient(circle at calc(100% + var(--o)) calc(0% - var(--o)), var(--hole)),
+    radial-gradient(circle at calc(0% - var(--o)) calc(100% + var(--o)), var(--hole)),
+    radial-gradient(circle at calc(100% + var(--o)) calc(100% + var(--o)), var(--hole));
+  mask-image:
+    radial-gradient(circle at calc(0% - var(--o)) calc(0% - var(--o)), var(--hole)),
+    radial-gradient(circle at calc(100% + var(--o)) calc(0% - var(--o)), var(--hole)),
+    radial-gradient(circle at calc(0% - var(--o)) calc(100% + var(--o)), var(--hole)),
+    radial-gradient(circle at calc(100% + var(--o)) calc(100% + var(--o)), var(--hole));
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.panel-card::before,
+.panel-card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.panel-card::before {
+  --o: 1px;
+  --r: calc(var(--c) + 1px);
+  inset: 1px;
+  background-color: var(--color-background-60);
+}
+
+/* Inner ring: straight 1px border (cut by the mask near corners) plus arcs drawn in the scoops */
+.panel-card::after {
+  --o: 4px;
+  --r: calc(var(--c) + 4px);
+  --arc: transparent calc(var(--r) - 0.5px), var(--color-primary-30) calc(var(--r) - 0.5px),
+    var(--color-primary-30) calc(var(--r) + 0.5px), transparent calc(var(--r) + 0.5px);
+  inset: 4px;
+  border: 1px solid var(--color-primary-30);
+  background-origin: border-box;
+  background-image:
+    radial-gradient(circle at calc(0% - var(--o)) calc(0% - var(--o)), var(--arc)),
+    radial-gradient(circle at calc(100% + var(--o)) calc(0% - var(--o)), var(--arc)),
+    radial-gradient(circle at calc(0% - var(--o)) calc(100% + var(--o)), var(--arc)),
+    radial-gradient(circle at calc(100% + var(--o)) calc(100% + var(--o)), var(--arc));
+}
+
+.panel-card-header {
+  @apply mx-4 flex items-center justify-between gap-2 border-b pt-3 pb-2;
+  border-color: var(--color-primary-30);
+}
+
+.panel-card-toggle {
+  @apply flex flex-1 items-center gap-3 text-left;
+  color: var(--color-text);
+}
+
+button.panel-card-toggle { @apply cursor-pointer; }
+
+.panel-card-icon {
+  @apply flex shrink-0 items-center [&>svg]:h-7 [&>svg]:w-7;
+  color: var(--color-primary);
+}
+
+.panel-card-title {
+  @apply text-xl font-semibold;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--color-text);
+}
+
+.panel-card-chevron {
+  @apply ml-auto transition-transform;
+  color: var(--color-text-60);
+}
+
+.panel-card-body {
+  @apply px-4 pt-3 pb-4;
+}
+
 .card-title {
   @apply text-xs font-semibold uppercase tracking-wide;
   color: var(--color-text-60);

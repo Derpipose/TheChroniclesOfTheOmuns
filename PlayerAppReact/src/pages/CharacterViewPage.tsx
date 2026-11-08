@@ -4,7 +4,8 @@ import { useScifiBackgrounds, useScifiClasses, useScifiRaces, useScifiSubracesBy
 import { useScifiStatsByCharacterId } from '../hooks/useScifiStats'
 import { useEffect, useState } from 'react'
 import { CharacterNotes } from '../components/CharacterNotes'
-import Card from '../components/Card'
+import PanelCard from '../components/PanelCard'
+import { ScrollText } from 'lucide-react'
 import AbilityScoresCard from '../components/CharacterViewPage/AbilityScoresCard'
 import CenteredMessage from '../components/CharacterViewPage/CenteredMessage'
 import DetailsCard from '../components/CharacterViewPage/DetailsCard'
@@ -93,9 +94,9 @@ export default function CharacterViewPage() {
                     <button onClick={goToEdit} className="btn btn-accent flex-1">Edit Character</button>
                 </div>
 
-                <Card title="Notes" className="flex flex-col gap-3">
+                <PanelCard title="Notes" icon={<ScrollText />} collapsible>
                     {notesEditor}
-                </Card>
+                </PanelCard>
             </div>
 
             {/* Desktop layout */}
@@ -125,9 +126,9 @@ export default function CharacterViewPage() {
 
                     {/* Column 3: Notes */}
                     <div className="flex flex-col gap-6">
-                        <Card className="flex flex-col gap-3">
+                        <PanelCard title="Notes" icon={<ScrollText />} collapsible>
                             {notesEditor}
-                        </Card>
+                        </PanelCard>
                     </div>
                 </div>
             </div>

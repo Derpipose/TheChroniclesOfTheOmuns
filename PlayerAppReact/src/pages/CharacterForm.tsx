@@ -9,6 +9,8 @@ import type {StatPick} from '../types/character'
 import { useCharacter, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
 import { CharacterNotes } from '../components/CharacterNotes'
+import PanelCard from '../components/PanelCard'
+import { Compass, Dices, Globe, ScrollText, User } from 'lucide-react'
 
 export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
     const navigate = useNavigate()
@@ -258,10 +260,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 {/* Column 1: Identity + Stats */}
                 <div className="flex flex-col gap-5">
                     {/* Identity section — name + level */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                        Identity
-                        </h2>
+                    <PanelCard title="Identity" icon={<User />} bodyClassName="flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1">
                         <label className="label">Name</label>
@@ -287,13 +286,10 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             className="field-input"
                         />
                         </div>
-                    </div>
+                    </PanelCard>
 
                     {/* Stats section — ability scores + free stat picks */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                            Stats
-                        </h2>
+                    <PanelCard title="Stats" icon={<Dices />} bodyClassName="flex flex-col gap-5">
 
                         {/* Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
                         <div className="flex flex-col gap-3">
@@ -366,16 +362,13 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             ))}
                             </div>
                         )}
-                    </div>
+                    </PanelCard>
                 </div>
 
                 {/* Column 2: Origin + Path */}
                 <div className="flex flex-col gap-5">
                     {/* Origin section — race + subrace */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                        Origin
-                        </h2>
+                    <PanelCard title="Origin" icon={<Globe />} bodyClassName="flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1">
                         <label className="label">Race</label>
@@ -414,13 +407,10 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             </select>
                         </div>
                         )}
-                    </div>
+                    </PanelCard>
 
                     {/* Path section — class + background */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                        Path
-                        </h2>
+                    <PanelCard title="Path" icon={<Compass />} bodyClassName="flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1">
                         <label className="label">Class</label>
@@ -453,16 +443,13 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             ))}
                         </select>
                         </div>
-                    </div>
+                    </PanelCard>
                 </div>
 
                 {/* Column 3: Notes */}
-                <div className="form-section">
-                    <h2 className="section-title">
-                    Notes
-                    </h2>
+                <PanelCard title="Notes" icon={<ScrollText />} collapsible bodyClassName="flex flex-col gap-5">
                     <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
-                </div>
+                </PanelCard>
                 </div>
 
                 {error && <p className="text-sm fg-danger">{error}</p>}

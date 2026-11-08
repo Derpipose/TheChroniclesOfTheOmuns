@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTalentPicksByCharacterId, selectTalentForCharacter } from '../api/scifiTalentApi';
-import type { ScifiTalentPick } from '../types/scifiTalent';
+import { getTalentPicksByCharacterId, selectTalentForCharacter, previewScifiTalentPicks } from '../api/scifiTalentApi';
+import type { ScifiTalentPick, ScifiTalentPreview } from '../types/scifiTalent';
 
 export function useTalentPicksByCharacterId(characterId: number, scifiClassId: string | null, scifiBackgroundId: string | null) {
   return useQuery<ScifiTalentPick[]>({
@@ -18,4 +18,13 @@ export function useSelectTalentPick(characterId: number){
             queryClient.invalidateQueries({ queryKey: ['talentPicks', characterId] });
         },
     });
+}
+
+export function useScifiTalentPicksPreview(scifiClassId: string | null, scifiBackgroundId: string | null) {
+  return useQuery<ScifiTalentPreview[]>({
+    queryKey: ['scifiTalentPicksPreview', scifiClassId, scifiBackgroundId],
+    queryFn: () => previewScifiTalentPicks(Number(scifiClassId), Number(scifiBackgroundId)),
+    enabled: !!scifiClassId && !!scifiBackgroundId,
+    staleTime: Infinity,
+  });
 }

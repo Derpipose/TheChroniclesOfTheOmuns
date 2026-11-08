@@ -11,3 +11,8 @@ export interface ScifiTalentPick extends ScifiTalent {
   isPickable: boolean
   isSelected: boolean
 }
+
+export interface ScifiTalentPreview extends ScifiTalent {
+  isPickable: boolean
+}
+
