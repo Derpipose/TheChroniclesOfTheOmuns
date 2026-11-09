@@ -47,8 +47,12 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 sc.Modifiers
                     .Where(m => m.ModifierType != ModifierType.ArmorClass && m.ModifierType != ModifierType.Health)
                     .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
-                    .ToList()))
-            .FirstOrDefaultAsync();
+                    .ToList(),
+                sc.Talents
+                    .Where(t => t.SourceType == TalentSourceEnum.Background)
+                    .Select(t => (int?)t.ScifiTalentId)
+                    .FirstOrDefault()
+            )).FirstOrDefaultAsync();
 
         if (scifiCharacter is null)
             return NotFound(new { message = $"ScifiCharacter {id} was not found." });
@@ -71,8 +75,12 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 sc.Modifiers
                     .Where(m => m.ModifierType != ModifierType.ArmorClass && m.ModifierType != ModifierType.Health)
                     .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
-                    .ToList()))
-            .FirstOrDefaultAsync();
+                    .ToList(),
+                sc.Talents
+                    .Where(t => t.SourceType == TalentSourceEnum.Background)
+                    .Select(t => (int?)t.ScifiTalentId)
+                    .FirstOrDefault()
+                )).FirstOrDefaultAsync();
 
         if (scifiCharacter is null)
             return NotFound(new { message = $"ScifiCharacter for Character {characterId} was not found." });
@@ -204,6 +212,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 scifiCharacter.AddTalent(pickedTalent, TalentSourceEnum.Background);
             await db.SaveChangesAsync();
         }
+        
 
 
         return Ok(new ScifiCharacterResponseDto(
@@ -216,7 +225,11 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             scifiCharacter.Modifiers
                 .Where(m => m.ModifierType != ModifierType.ArmorClass && m.ModifierType != ModifierType.Health)
                 .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
-                .ToList()));
+                .ToList(),
+            scifiCharacter.Talents
+                .FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background)
+                ?.ScifiTalentId
+            ));
     }
 
     [HttpPatch("{id:int}")]
@@ -346,7 +359,11 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             scifiCharacter.Modifiers
                 .Where(m => m.ModifierType != ModifierType.ArmorClass && m.ModifierType != ModifierType.Health)
                 .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
-                .ToList()));
+                .ToList(),
+            scifiCharacter.Talents
+                .FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background)
+                ?.ScifiTalentId
+            ));
     }
 
     [HttpDelete("{id:int}")]
@@ -367,6 +384,6 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
     public record StatModifierResponseDto(ModifierType Stat, int Amount, ModifierSource Source);
     public record CreateScifiCharacterDto(int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null, int? BackgroundTalentId = null);
     public record UpdateScifiCharacterDto(int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatPickDto>? StatPicks = null, int? BackgroundTalentId = null);
-    public record ScifiCharacterResponseDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatModifierResponseDto> StatBonuses);
+    public record ScifiCharacterResponseDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId, List<StatModifierResponseDto> StatBonuses, int? BackgroundTalentId);
     public record ScifiCharacterSummaryDto(int Id, int CharacterId, int? ScifiRaceId, int? ScifiSubraceId, int? ScifiClassId, int? ScifiBackgroundId);
 }
