@@ -14,6 +14,8 @@ import OverviewCard from '../components/CharacterViewPage/OverviewCard'
 import StatListCard from '../components/CharacterViewPage/StatListCard'
 import { BackgroundCard, ClassCard, RacialTraitsCard } from '../components/CharacterViewPage/TraitCards'
 import VitalsCard from '../components/CharacterViewPage/VitalsCard'
+import TalentsCard from '../components/CharacterViewPage/talentsCard'
+import { useScifiTalentPicksPreview } from '../hooks/useTalent'
 
 export default function CharacterViewPage() {
     const { id } = useParams()
@@ -53,6 +55,13 @@ export default function CharacterViewPage() {
         if (!character) return;
         setNotes(character.notes)
     }, [character])
+
+    const { data: talentPool } = useScifiTalentPicksPreview(
+        scifiCharacter?.scifiClassId,
+        scifiCharacter?.scifiBackgroundId
+    )
+
+    const talents = talentPool?.filter((t) => !t.isPickable || t.id === scifiCharacter?.backgroundTalentId) || []
 
     if (characterLoading || scifiLoading || adjustedStatsLoading) {
         return <CenteredMessage>Loading character...</CenteredMessage>
@@ -122,6 +131,7 @@ export default function CharacterViewPage() {
                         {race && <RacialTraitsCard race={race} subrace={subrace} />}
                         {scifiClass && <ClassCard scifiClass={scifiClass} />}
                         {background && <BackgroundCard background={background} />}
+                        {scifiCharacter && <TalentsCard talents={talents} />}
                     </div>
 
                     {/* Column 3: Notes */}
