@@ -65,6 +65,21 @@ Content-Type: application/json
 
 ###
 
+### Create a scifi character (with background talent pick; must be in the pickable pool for the class + background, see scifiTalent.http)
+POST {{baseUrl}}/api/scifi/scificharacter
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "characterId": {{characterId}},
+    "scifiRaceId": 1,
+    "scifiClassId": 1,
+    "scifiBackgroundId": 1,
+    "backgroundTalentId": 1
+}
+
+###
+
 ### Update scifi character - set race and class, leave background alone
 PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
 Authorization: Bearer {{token}}
@@ -87,6 +102,30 @@ Content-Type: application/json
     "statPicks": [
         { "stat": 3, "amount": 1 }
     ]
+}
+
+###
+
+### Update scifi character - pick/change background talent (requires class and background to be set)
+PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "backgroundTalentId": 1
+}
+
+###
+
+### Update scifi character - change class and background (talents re-sync) and pick background talent
+PATCH {{baseUrl}}/api/scifi/scificharacter/{{scifiCharacterId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "scifiClassId": 2,
+    "scifiBackgroundId": 2,
+    "backgroundTalentId": 1
 }
 
 ###

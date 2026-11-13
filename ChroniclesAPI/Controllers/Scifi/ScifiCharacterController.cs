@@ -241,6 +241,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
             .Include(sc => sc.ScifiClass)
             .Include(sc => sc.ScifiBackground)
             .Include(sc => sc.Talents)
+            .Include(sc => sc.Modifiers)
             .FirstOrDefaultAsync(sc => sc.Id == id && sc.Character!.PlayerId == playerContext.PlayerId);
 
         if (scifiCharacter is null)

@@ -9,7 +9,7 @@ import { ScrollText } from 'lucide-react'
 import AbilityScoresCard from '../components/CharacterViewPage/AbilityScoresCard'
 import CenteredMessage from '../components/CharacterViewPage/CenteredMessage'
 import DetailsCard from '../components/CharacterViewPage/DetailsCard'
-import HeroCard from '../components/CharacterViewPage/HeroCard'
+import CharacterHeader from '../components/CharacterViewPage/CharacterHeader'
 import OverviewCard from '../components/CharacterViewPage/OverviewCard'
 import StatListCard from '../components/CharacterViewPage/StatListCard'
 import { BackgroundCard, ClassCard, RacialTraitsCard } from '../components/CharacterViewPage/TraitCards'
@@ -101,7 +101,7 @@ export default function CharacterViewPage() {
 
             {/* Desktop layout */}
             <div className="hidden lg:flex lg:flex-col gap-6 max-w-6xl mx-auto px-10 py-10">
-                <HeroCard
+                <CharacterHeader
                     character={character}
                     raceName={race?.name}
                     characterClass={scifiClass?.name}

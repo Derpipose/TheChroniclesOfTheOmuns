@@ -20,7 +20,7 @@ export function useSelectTalentPick(characterId: number){
     });
 }
 
-export function useScifiTalentPicksPreview(scifiClassId: string | null, scifiBackgroundId: string | null) {
+export function useScifiTalentPicksPreview(scifiClassId?: number, scifiBackgroundId?: number) {
   return useQuery<ScifiTalentPreview[]>({
     queryKey: ['scifiTalentPicksPreview', scifiClassId, scifiBackgroundId],
     queryFn: () => previewScifiTalentPicks(Number(scifiClassId), Number(scifiBackgroundId)),
