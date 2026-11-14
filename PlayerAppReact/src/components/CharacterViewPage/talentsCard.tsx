@@ -1,12 +1,13 @@
 import type { ScifiTalent } from '../../types/scifiTalent';
 import PanelCard from '../PanelCard';
 import { Star } from 'lucide-react';
+import Expandable from './Expandable';
 
 /** Displays a list of talents. */
 export default function TalentsCard({ talents }: { talents: ScifiTalent[] }) {
   return (
     <PanelCard title="Talents" icon={<Star />} bodyClassName="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-col gap-3">
         {talents.map((talent) => (
           <TalentTile key={talent.name} talent={talent} />
         ))}
@@ -16,13 +17,5 @@ export default function TalentsCard({ talents }: { talents: ScifiTalent[] }) {
 }
 
 export function TalentTile({ talent }: { talent: ScifiTalent }) {
-  return (
-    <div className="talent-tile">
-      <span className="talent-tile-name">{talent.name}</span>
-        <details className="talent-tile-description">
-          <summary className="talent-tile-summary">Description</summary>
-          <p>{talent.description}</p>
-        </details>
-    </div>
-  );
+  return <Expandable name={talent.name} description={talent.description} />;
 }
