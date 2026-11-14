@@ -1,6 +1,7 @@
 @baseUrl = http://localhost:5237
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJkZXJwaXBvc2VAZ21haWwuY29tIiwianRpIjoiZGEzODQ5YjYtMjMwMC00ZWVlLWEyNTgtNmQwMjE2NzZkZGU1IiwiZXhwIjoxNzg0MzQxNDY1LCJpc3MiOiJDaHJvbmljbGVzQVBJIiwiYXVkIjoiQ2hyb25pY2xlc1BsYXllcnMifQ.VymdarTvt1IAyM5LzQEUvH-f1vzaYNKKS1sbnsUIcZQ
+@token = HaNope
 @talentId = 2
+@characterId = 1
 
 ### Get all talents
 GET {{baseUrl}}/api/scifi/scifitalent
@@ -14,43 +15,6 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Create a talent
-POST {{baseUrl}}/api/scifi/scifitalent
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-{
-    "name": "Resourcefulness",
-    "description": "Ability to make do with what's available.",
-    "ability": "Once per session, improvise a tool or solution from available materials."
-}
-
-###
-
-### Update a talent
-PUT {{baseUrl}}/api/scifi/scifitalent/{{talentId}}
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-{
-    "name": "Resourcefulness",
-    "description": "Updated description.",
-    "ability": "Updated ability."
-}
-
-###
-
-### Partial update - name only
-PUT {{baseUrl}}/api/scifi/scifitalent/{{talentId}}
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-{
-    "name": "Resourcefulness Updated"
-}
-
-###
-
-### Delete a talent
-DELETE {{baseUrl}}/api/scifi/scifitalent/{{talentId}}
+### Get the talent picks for a character (class talents are granted, pool talents are pickable)
+GET {{baseUrl}}/api/scifi/scifitalent/TalentPicks/{{characterId}}
 Authorization: Bearer {{token}}

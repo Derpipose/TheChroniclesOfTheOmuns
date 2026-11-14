@@ -54,6 +54,15 @@ Content-Type: application/json
 
 ###
 
+### Update a character's notes (body is a raw JSON string)
+PATCH {{baseUrl}}/api/character/2/notes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+"Met the Araka pirates at the docks."
+
+###
+
 ### Delete a character
 DELETE {{baseUrl}}/api/character/1
 Authorization: Bearer {{token}}

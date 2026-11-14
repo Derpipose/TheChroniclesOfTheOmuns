@@ -2,21 +2,48 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 
-type Tab = 'sign-in' | 'sign-up'
-type Step = 'email' | 'otp'
+type Tab = 'send' | 'enter' | 'sign-up'
+
+const TAB_LABELS: Record<Tab, string> = {
+  'send': 'Send Code',
+  'enter': 'Enter Code',
+  'sign-up': 'Sign Up',
+}
+
+const EMAIL_KEY = 'signin-email'
+
+function loadEmail(): string {
+  try {
+    return sessionStorage.getItem(EMAIL_KEY) ?? ''
+  } catch {
+    return ''
+  }
+}
+
+function saveEmail(value: string) {
+  try {
+    sessionStorage.setItem(EMAIL_KEY, value)
+  } catch {
+    // ignore
+  }
+}
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5237'
 
 export default function SignInPage() {
-  const [tab, setTab] = useState<Tab>('sign-in')
-  const [step, setStep] = useState<Step>('email')
-  const [email, setEmail] = useState('')
+  const [tab, setTab] = useState<Tab>('send')
+  const [email, setEmailState] = useState(loadEmail)
   const [displayName, setDisplayName] = useState('')
   const [otp, setOtp] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { signIn } = useAuth()
+
+  const setEmail = (value: string) => {
+    setEmailState(value)
+    saveEmail(value)
+  }
 
   const handleRequestOtp = async () => {
     setError(null)
@@ -41,7 +68,7 @@ export default function SignInPage() {
         body: JSON.stringify({ email }),
       })
 
-      setStep('otp')
+      setTab('enter')
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
@@ -76,13 +103,12 @@ export default function SignInPage() {
 
   const handleTabChange = (t: Tab) => {
     setTab(t)
-    setStep('email')
     setError(null)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      step === 'email' ? handleRequestOtp() : handleVerifyOtp()
+      tab === 'enter' ? handleVerifyOtp() : handleRequestOtp()
     }
   }
 
@@ -96,7 +122,7 @@ export default function SignInPage() {
         <div className="rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: '#FDFAF4', borderColor: '#DDD8CC' }}>
           {/* Tabs */}
           <div className="flex" style={{ borderBottom: '1px solid #DDD8CC' }}>
-            {(['sign-in', 'sign-up'] as Tab[]).map((t) => (
+            {(['send', 'enter', 'sign-up'] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => handleTabChange(t)}
@@ -107,14 +133,14 @@ export default function SignInPage() {
                   borderBottom: tab === t ? '2px solid #8B7355' : '2px solid transparent',
                 }}
               >
-                {t === 'sign-in' ? 'Sign In' : 'Sign Up'}
+                {TAB_LABELS[t]}
               </button>
             ))}
           </div>
 
           {/* Form */}
           <div className="p-6 flex flex-col gap-4">
-            {step === 'email' ? (
+            {tab !== 'enter' ? (
               <>
                 {tab === 'sign-up' && (
                   <div className="flex flex-col gap-1">
@@ -153,14 +179,25 @@ export default function SignInPage() {
                   className="btn mt-2"
                   style={{ backgroundColor: '#8B7355', color: '#FDFAF4' }}
                 >
-                  {loading ? 'Sending...' : tab === 'sign-in' ? 'Send Code' : 'Create Account'}
+                  {loading ? 'Sending...' : tab === 'send' ? 'Send Code' : 'Create Account'}
                 </button>
               </>
             ) : (
               <>
-                <p className="text-sm" style={{ color: '#7A6F5C' }}>
-                  A login code was sent to <strong style={{ color: '#2C2416' }}>{email}</strong>
-                </p>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="field-input"
+                    style={{ backgroundColor: '#F5F0E8', borderColor: '#DDD8CC', color: '#2C2416' }}
+                    placeholder="you@example.com"
+                  />
+                </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-medium uppercase tracking-wide" style={{ color: '#7A6F5C' }}>
                     Login Code
@@ -185,11 +222,11 @@ export default function SignInPage() {
                   {loading ? 'Verifying...' : 'Sign In'}
                 </button>
                 <button
-                  onClick={() => { setStep('email'); setError(null) }}
+                  onClick={() => handleTabChange('send')}
                   className="text-xs text-center transition-colors hover:underline"
                   style={{ color: '#7A6F5C' }}
                 >
-                  ← Use a different email
+                  Need a new code?
                 </button>
               </>
             )}

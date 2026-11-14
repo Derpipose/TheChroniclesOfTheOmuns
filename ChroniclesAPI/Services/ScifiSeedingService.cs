@@ -41,9 +41,11 @@ public class ScifiSeedingService(
             if (existing is not null) {
                 existing.SetDescription(entry.Description);
                 existing.SetAbility(entry.Ability);
+                existing.SetPerk(entry.Perk);
+                existing.SetPerkAmount(entry.PerkAmount ?? string.Empty);
                 updated++;
             } else {
-                db.ScifiTalents.Add(new ScifiTalent(entry.Talent, entry.Description, entry.Ability));
+                db.ScifiTalents.Add(new ScifiTalent(entry.Talent, entry.Description, entry.Ability, entry.Perk, entry.PerkAmount ?? string.Empty));
                 created++;
             }
         }
@@ -484,7 +486,7 @@ public class ScifiSeedingService(
         string ClassOverflow,
         string Restricted);
 
-    public record ScifiTalentSeedDto(string Talent, string Description, string Ability);
+    public record ScifiTalentSeedDto(string Talent, string Description, string Ability, string Perk, string? PerkAmount);
 
     public record ScifiClassSeedDto(
         string Class,

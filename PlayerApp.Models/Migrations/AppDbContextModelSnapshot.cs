@@ -296,6 +296,25 @@ namespace PlayerApp.Models.Migrations
                     b.ToTable("ScifiCharacterModifiers");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterTalent", b =>
+                {
+                    b.Property<int>("ScifiCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScifiTalentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SourceType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ScifiCharacterId", "ScifiTalentId");
+
+                    b.HasIndex("ScifiTalentId");
+
+                    b.ToTable("ScifiCharacterTalents");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>
                 {
                     b.Property<int>("Id")
@@ -383,6 +402,14 @@ namespace PlayerApp.Models.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Perk")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PerkAmount")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -667,6 +694,25 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiCharacter");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterTalent", b =>
+                {
+                    b.HasOne("PlayerApp.Models.ScifiCharacter", "ScifiCharacter")
+                        .WithMany("Talents")
+                        .HasForeignKey("ScifiCharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlayerApp.Models.ScifiTalent", "ScifiTalent")
+                        .WithMany()
+                        .HasForeignKey("ScifiTalentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ScifiCharacter");
+
+                    b.Navigation("ScifiTalent");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiClassTalent", b =>
                 {
                     b.HasOne("PlayerApp.Models.ScifiClass", "ScifiClass")
@@ -738,6 +784,8 @@ namespace PlayerApp.Models.Migrations
             modelBuilder.Entity("PlayerApp.Models.ScifiCharacter", b =>
                 {
                     b.Navigation("Modifiers");
+
+                    b.Navigation("Talents");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.ScifiClass", b =>

@@ -238,7 +238,7 @@ Content-Type: application/json
 ###
 //Subraces (Araka Houses)
 ### Create subrace - House Gears
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -255,7 +255,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Thunder
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -272,7 +272,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Twilight
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -289,7 +289,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Remnants
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -306,7 +306,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Inferno
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -323,7 +323,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Devils
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -340,7 +340,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Kings
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -357,7 +357,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Exiles
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -374,7 +374,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Winter
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -391,7 +391,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Wolves
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -408,7 +408,7 @@ Content-Type: application/json
 ###
 
 ### Create subrace - House Judgement
-POST {{baseUrl}}/api/scifi/scifirace/{{arakaRaceId}}/subrace
+POST {{baseUrl}}/api/scifi/scifisubrace/race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -425,32 +425,32 @@ Content-Type: application/json
 ###
 
 ### Get all subraces for Araka
-GET {{baseUrl}}/api/scifi/scifirace/subrace/race/{{arakaRaceId}}
+GET {{baseUrl}}/api/scifi/scifisubrace/by-race/{{arakaRaceId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Get all subraces for a race that doesn't exist - expect 404
-GET {{baseUrl}}/api/scifi/scifirace/subrace/race/9999
+GET {{baseUrl}}/api/scifi/scifisubrace/by-race/9999
 Authorization: Bearer {{token}}
 
 ###
 @arakaSubraceId = 1
 
 ### Get subrace by id (House Gears, assuming it's the first subrace created = id 1)
-GET {{baseUrl}}/api/scifi/scifirace/subrace/{{arakaSubraceId}}
+GET {{baseUrl}}/api/scifi/scifisubrace/{{arakaSubraceId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Get subrace by id - not found case
-GET {{baseUrl}}/api/scifi/scifirace/subrace/9999
+GET {{baseUrl}}/api/scifi/scifisubrace/9999
 Authorization: Bearer {{token}}
 
 ###
 
 ### Update subrace (House Gears -> rename/description tweak)
-PUT {{baseUrl}}/api/scifi/scifirace/subrace/{{arakaSubraceId}}
+PUT {{baseUrl}}/api/scifi/scifisubrace/{{arakaSubraceId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -469,7 +469,7 @@ Content-Type: application/json
 ###
 
 ### Update subrace - not found case
-PUT {{baseUrl}}/api/scifi/scifirace/subrace/9999
+PUT {{baseUrl}}/api/scifi/scifisubrace/9999
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -483,11 +483,47 @@ Content-Type: application/json
 ###
 
 ### Delete subrace (House Judgement) - also clears the field on any character referencing it
-DELETE {{baseUrl}}/api/scifi/scifirace/subrace/11
+DELETE {{baseUrl}}/api/scifi/scifisubrace/11
 Authorization: Bearer {{token}}
 
 ###
 
 ### Delete subrace - not found case
-DELETE {{baseUrl}}/api/scifi/scifirace/subrace/9999
+DELETE {{baseUrl}}/api/scifi/scifisubrace/9999
+Authorization: Bearer {{token}}
+
+###
+
+### Get scifi race by id with stats
+GET {{baseUrl}}/api/scifi/scifirace/{{scifiRaceId}}/stats
+Authorization: Bearer {{token}}
+
+###
+
+### Update a scifi race
+PUT {{baseUrl}}/api/scifi/scifirace/{{scifiRaceId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "subType": "Alien",
+    "name": "Divaren",
+    "description": "Updated description.",
+    "isStarterRace": true,
+    "raceStatsId": 0,
+    "raceStats": {
+        "modifiers": [
+            { "stat": 0, "modifier": 2, "isLocked": true }
+        ],
+        "freeStatPicks": []
+    },
+    "speed": 30,
+    "adventuringAgeStart": 18,
+    "ageMax": 90
+}
+
+###
+
+### Delete a scifi race
+DELETE {{baseUrl}}/api/scifi/scifirace/{{scifiRaceId}}
 Authorization: Bearer {{token}}

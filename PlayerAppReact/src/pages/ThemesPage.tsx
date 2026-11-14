@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Card from '../components/Card'
 import Pill from '../components/Pill'
+import PanelCard from '../components/PanelCard'
+import { Feather, Heart, User } from 'lucide-react'
 import StatTile from '../components/CharacterViewPage/StatTile'
 import Expandable from '../components/CharacterViewPage/Expandable'
 import DetailRow from '../components/CharacterViewPage/DetailRow'
@@ -211,6 +213,27 @@ export default function ThemesPage() {
               <div className="rounded-lg border p-4 bg-tint border-subtle fg text-sm">Tinted background</div>
             </div>
           </Card>
+        </div>
+
+        {/* Panel cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+          <PanelCard title="Physical Description" icon={<User />}>
+            <DetailRow label="Height" value="6 ft" />
+            <DetailRow label="Weight" value="160 lb" />
+            <DetailRow label="Eye Color" value="Amber" />
+          </PanelCard>
+          <PanelCard
+            title="Class Features"
+            icon={<Feather />}
+            collapsible
+            action={<button className="btn-sm btn-neutral">Edit</button>}
+          >
+            <Expandable name="Spellcasting" description="You can cast wizard spells." />
+            <Expandable name="Arcane Recovery" description="Regain spell slots on a short rest." />
+          </PanelCard>
+          <PanelCard title="Hit Points" icon={<Heart />}>
+            <div className="row-chip"><span className="fg-muted">Current HP</span><span className="fg">38 / 38</span></div>
+          </PanelCard>
         </div>
 
         {/* Roll log */}

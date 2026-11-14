@@ -9,6 +9,9 @@ import type {StatPick} from '../types/character'
 import { useCharacter, useScifiCharacterByCharacterId } from '../hooks/useCharacters'
 import { useCharacterStats } from '../hooks/useCharacterStats'
 import { CharacterNotes } from '../components/CharacterNotes'
+import PanelCard from '../components/PanelCard'
+import { Compass, Dices, Globe, ScrollText, User } from 'lucide-react'
+import { useScifiTalentPicksPreview } from '../hooks/useTalent'
 
 export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
     const navigate = useNavigate()
@@ -29,11 +32,14 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
     const [backgroundId, setBackgroundId] = useState<number | undefined>(undefined)
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [backgroundTalentId, setBackgroundTalentId] = useState<number | null>(null)
+    const [infoTalentId, setInfoTalentId] = useState<number | null>(null)
 
     const { data: races } = useScifiRaces()
     const { data: subraces } = useScifiSubracesByRace(raceId)
     const { data: classes } = useScifiClasses()
     const { data: backgrounds } = useScifiBackgrounds()
+    const { data: talentPool } = useScifiTalentPicksPreview(classId, backgroundId)
 
     const [strength, setStrength] = useState('0')
     const [constitution, setConstitution] = useState('0')
@@ -107,6 +113,8 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
         .map((amount, index) => ({ stat: pickAssignments[index], amount }))
         .filter((pick): pick is StatPick => pick.stat !== null)
 
+    const infoTalent = talentPool?.find(t => t.id === (infoTalentId ?? backgroundTalentId))
+
     const handleSubmit = async () => {
 
         if (!name.trim()) {
@@ -132,6 +140,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                     scifiClassId : classId,
                     scifiBackgroundId : backgroundId,
                     statPicks,
+                    backgroundTalentId: classId && backgroundId ? backgroundTalentId : null,
                 })
                 resolvedCharacterId = addCharacterId
             } else {
@@ -157,6 +166,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                     scifiClassId: classId,
                     scifiBackgroundId: backgroundId,
                     statPicks,
+                    backgroundTalentId: classId && backgroundId ? backgroundTalentId : null,
                 })
             resolvedCharacterId = characterId! // or however you settle this
             }
@@ -196,13 +206,14 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
         setSubraceId(scifiCharacter.scifiSubraceId);
         setClassId(scifiCharacter.scifiClassId);
         setBackgroundId(scifiCharacter.scifiBackgroundId);
+        setBackgroundTalentId(scifiCharacter.backgroundTalentId);
     }, [scifiCharacter]);
 
     useEffect(() => {
         if (!rawStats) return;
-        //       set strength/constitution/dexterity/wisdom/charisma/intelligence from rawStats
-        //       BUT recall: rawStats holds the FINAL stored value (raw, already +10'd),
-        //       while the input field expects the ORIGINAL dice-roll number.
+        // set strength/constitution/dexterity/wisdom/charisma/intelligence from rawStats
+        // BUT recall: rawStats holds the FINAL stored value (raw, already +10'd),
+        // while the input field expects the ORIGINAL dice-roll number.
         setStrength(String(rawStats.strength - 10));
         setConstitution(String(rawStats.constitution - 10));
         setDexterity(String(rawStats.dexterity - 10));
@@ -220,7 +231,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
         if (!scifiCharacter || !activeRaceStats) return;
 
         const pickSourced = scifiCharacter.statBonuses.filter(
-            (m) => (m.source === 'RacePick' || m.source === 'SubRacePick') && m.stat !== 'Unassigned'
+            (m) => (m.source === 'RacePick' || m.source === 'SubracePick') && m.stat !== 'Unassigned'
         );
 
         const assignments: (string | null)[] = Array(activeRaceStats.freeStatPicks.length).fill(null);
@@ -242,6 +253,15 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
         setPickAssignments(assignments);
     }, [scifiCharacter, activeRaceStats]);
 
+    useEffect(() => {
+        if (!talentPool) return;
+        const stillValid = talentPool.some(t => t.isPickable && t.id === backgroundTalentId);
+        console.log('validity', { backgroundTalentId, stillValid, pool: talentPool });
+        if (backgroundTalentId !== null && !stillValid) {
+            setBackgroundTalentId(null);
+        }
+    }, [talentPool]);
+
     return (
         <div className="page">
             <div className="app-header">
@@ -258,10 +278,7 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                 {/* Column 1: Identity + Stats */}
                 <div className="flex flex-col gap-5">
                     {/* Identity section — name + level */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                        Identity
-                        </h2>
+                    <PanelCard title="Identity" icon={<User />} bodyClassName="flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1">
                         <label className="label">Name</label>
@@ -287,13 +304,10 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             className="field-input"
                         />
                         </div>
-                    </div>
+                    </PanelCard>
 
                     {/* Stats section — ability scores + free stat picks */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                            Stats
-                        </h2>
+                    <PanelCard title="Stats" icon={<Dices />} bodyClassName="flex flex-col gap-5">
 
                         {/* Stats inputs — strength, constitution, dexterity, wisdom, charisma, intelligence */}
                         <div className="flex flex-col gap-3">
@@ -366,16 +380,13 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             ))}
                             </div>
                         )}
-                    </div>
+                    </PanelCard>
                 </div>
 
                 {/* Column 2: Origin + Path */}
                 <div className="flex flex-col gap-5">
                     {/* Origin section — race + subrace */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                        Origin
-                        </h2>
+                    <PanelCard title="Origin" icon={<Globe />} bodyClassName="flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1">
                         <label className="label">Race</label>
@@ -414,13 +425,10 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             </select>
                         </div>
                         )}
-                    </div>
+                    </PanelCard>
 
                     {/* Path section — class + background */}
-                    <div className="form-section">
-                        <h2 className="section-title">
-                        Path
-                        </h2>
+                    <PanelCard title="Path" icon={<Compass />} bodyClassName="flex flex-col gap-5">
 
                         <div className="flex flex-col gap-1">
                         <label className="label">Class</label>
@@ -453,16 +461,62 @@ export default function CharacterFormPage({ mode }: { mode: 'add' | 'edit' }) {
                             ))}
                         </select>
                         </div>
-                    </div>
+                    </PanelCard>
+
+                    <PanelCard title="Class & Background Talents" icon={<Dices />} bodyClassName="flex flex-col gap-5">
+                        {(!classId || !backgroundId) && (
+                            <p className="text-sm fg-muted">
+                                Talents not added, class and background required.
+                            </p>
+                        )}
+
+                        {classId && backgroundId && (
+                            // Row: list on the left, info box on the right
+                            <div className="flex gap-4">
+
+                                {/* Left: the talent list */}
+                                <div
+                                    className="flex flex-col gap-4 flex-1"
+                                    onMouseLeave={() => setInfoTalentId(null)}
+                                >
+                                    {talentPool?.map((talent) => (
+                                        <label
+                                            key={talent.id}
+                                            className="flex items-center gap-2"
+                                            onMouseEnter={() => setInfoTalentId(talent.id)}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="backgroundTalent"
+                                                value={talent.id}
+                                                checked={backgroundTalentId === talent.id}
+                                                disabled={!talent.isPickable}
+                                                onChange={() => setBackgroundTalentId(talent.id)}
+                                            />
+                                            <span className={talent.isPickable ? '' : 'fg-muted'}>
+                                                {talent.name} {talent.isPickable ? '' : '(Class Granted)'}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+
+                                {/* Right: the info box */}
+                                {infoTalent && (
+                                    <aside className="flex-1 rounded-lg border-l-2 border-accent bg-[var(--color-background-30)] p-3">
+                                        <h3>{infoTalent.name}</h3>
+                                        <p>{infoTalent.description}</p>
+                                        <p>{infoTalent.ability}</p>
+                                    </aside>
+                                )}
+                            </div>
+                        )}
+                    </PanelCard>
                 </div>
 
                 {/* Column 3: Notes */}
-                <div className="form-section">
-                    <h2 className="section-title">
-                    Notes
-                    </h2>
+                <PanelCard title="Notes" icon={<ScrollText />} collapsible bodyClassName="flex flex-col gap-5">
                     <CharacterNotes characterId={characterId} notes={notes} onNotesChange={setNotes} />
-                </div>
+                </PanelCard>
                 </div>
 
                 {error && <p className="text-sm fg-danger">{error}</p>}

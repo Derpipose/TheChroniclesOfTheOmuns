@@ -15,6 +15,8 @@ public class ScifiCharacter {
     public int? ScifiBackgroundId { get; private set; }
     
     public ICollection<ScifiCharacterModifier> Modifiers { get; set; } = [];
+    private readonly List<ScifiCharacterTalent> _talents = [];
+    public IReadOnlyList<ScifiCharacterTalent> Talents => _talents;
 
 
     public ScifiRace? ScifiRace { get; private set; }
@@ -124,6 +126,30 @@ public class ScifiCharacter {
         ScifiBackgroundId = scifiBackgroundId;
     }
 
+    public void AddTalent(ScifiTalent talent, TalentSourceEnum sourceType) {
+        if (Character is null)
+            throw new InvalidOperationException(
+                "ScifiCharacter must have an associated Character before talents can be added.");
+        
+        if (Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class))
+            throw new InvalidOperationException(
+                "Cannot add these talents for an active character.");
+        
+        if (talent.Id == 0)
+            throw new InvalidOperationException(
+                "ScifiTalent must be persisted before being assigned to a ScifiCharacter.");
+
+        if (Id == 0)
+            throw new InvalidOperationException(
+                "ScifiCharacter must be persisted before a ScifiTalent can be assigned to it.");
+        
+        if (_talents.Any(t => t.ScifiTalentId == talent.Id ))
+            throw new InvalidOperationException(
+                "ScifiCharacter cannot have the same ScifiTalent assigned more than once.");
+        _talents.Add(new ScifiCharacterTalent(Id, talent.Id, sourceType));
+    }
+
+
     public void UpdateHealth(CharacterStats stats, ScifiClass? scifiClass) {
         if (Character is null)
             throw new InvalidOperationException("ScifiCharacter must have an associated Character before health can be set.");
@@ -150,17 +176,6 @@ public class ScifiCharacter {
         Character.SetBaseHealth(health);
         Character.SetCurrentHealth(health);
     }
-
-    // public void ScifiCharacterSetBaseArmorClass(CharacterStats stats) {
-    //     if (Character is null)
-    //         throw new InvalidOperationException("ScifiCharacter must have an associated Character before AC can be set.");
-        
-    //     if (ScifiRace != null) {
-    //         int dexmod = stats.GetStatModifier(StatType.Dexterity, GetAllModifiers());
-    //         int baseAC = 10 + dexmod;
-    //         Character.SetBaseArmorClass(baseAC);
-    //     }
-    // }
 
     public int GetArmorClass(CharacterStats stats) {
         var modifiers = GetAllModifiers();
@@ -193,6 +208,36 @@ public class ScifiCharacter {
     public void ClearScifiBackground() {
         ScifiBackgroundId = null;
     }
+
+    public void ClearTalentsBySource(TalentSourceEnum sourceType) {
+        
+        if(Character is null)
+            throw new InvalidOperationException(
+                "ScifiCharacter must have an associated Character before talents can be cleared.");
+        if(Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class
+                                    || sourceType == TalentSourceEnum.LevelUp ))
+            throw new InvalidOperationException(
+                "Cannot remove these talents for an active character.");
+        _talents.RemoveAll(t => t.SourceType == sourceType);
+    }
+
+    public void RemoveTalent(int talentId) {
+        if (Character is null)
+            throw new InvalidOperationException(
+                "ScifiCharacter must have an associated Character before talents can be removed.");
+        if (Character.IsActive)
+            throw new InvalidOperationException(
+                "Cannot remove talents for an active character.");
+
+        _talents.RemoveAll(t => t.ScifiTalentId == talentId);
+    }
+
+
+
+
+
+
+
 
     [Conditional("DEBUG")]
     public void SimulatePersist(int id) {
