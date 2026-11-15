@@ -1,4 +1,10 @@
+using System.Security.Claims;
+using ChroniclesAPI.Controllers;
+using ChroniclesAPI.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using PlayerApp.Models;
 using PlayerApp.Models.Dice;
 using PlayerApp.Models.Enums;
@@ -106,5 +112,64 @@ public class ScifiCharacterHealthTests {
         scifiCharacter.UpdateHealth(stats, null);
 
         Assert.Equal(0, character.BaseHealth);
+    }
+}
+
+public class ScifiCharacterUpdateEndpointTests {
+    private const int PlayerId = 1;
+
+    private static ScifiCharacterController CreateController(AppDbContext db) {
+        var context = new DefaultHttpContext {
+            User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, PlayerId.ToString())], "test"))
+        };
+        var accessor = Substitute.For<IHttpContextAccessor>();
+        accessor.HttpContext.Returns(context);
+        return new(db, new PlayerContext(accessor), new ScifiTalentService(db));
+    }
+
+    [Fact]
+    public async Task Update_SameRaceSubraceAndPicksTwice_LeavesExactlyOneSetOfRaceModifiers() {
+        await using var db = TestDb.Create();
+
+        // Race: fixed Strength +2 and one free pick of +1. Subrace has no stats of its own, so the race's stats win.
+        var raceStats = new RaceStats(new List<RaceStatModifier> { new(StatType.Strength, 2, false) }, new List<int> { 1 });
+        var subraceStats = new RaceStats(null, null);
+        db.RaceStats.AddRange(raceStats, subraceStats);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var race = new ScifiRace("TestSubType", "TestRace", "Test description", true, raceStats.Id, 30, 0, 0);
+        db.ScifiRaces.Add(race);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var subrace = new ScifiSubrace(race.Id, "TestSubrace", "Test description", subraceStats.Id);
+        db.ScifiSubraces.Add(subrace);
+
+        var character = new Character(PlayerId, "Rook");
+        db.Characters.Add(character);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var sc = new ScifiCharacter(character.Id);
+        db.ScifiCharacters.Add(sc);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var request = new ScifiCharacterController.UpdateScifiCharacterDto(
+            race.Id, subrace.Id, null, null,
+            [new ScifiCharacterController.StatPickDto(StatType.Wisdom, 1)]);
+
+        // Each call is a fresh request: new controller, nothing tracked
+        for (var i = 0; i < 2; i++) {
+            db.ChangeTracker.Clear();
+            var result = await CreateController(db).Update(sc.Id, request);
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        db.ChangeTracker.Clear();
+        var stored = await db.ScifiCharacterModifiers.AsNoTracking()
+            .Where(m => m.ScifiCharacterId == sc.Id)
+            .ToListAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(2, stored.Count);
+        Assert.Single(stored, m => m.ModifierType == ModifierType.Strength && m.Amount == 2 && m.Source == ModifierSource.Race);
+        Assert.Single(stored, m => m.ModifierType == ModifierType.Wisdom && m.Amount == 1 && m.Source == ModifierSource.RacePick);
     }
 }

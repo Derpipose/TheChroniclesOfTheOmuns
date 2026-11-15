@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiCharacterModifier> ScifiCharacterModifiers => Set<ScifiCharacterModifier>();
     public DbSet<ScifiWeapon> ScifiWeapons { get; set; }
     public DbSet<ScifiWeaponInstance> ScifiWeaponInstances { get; set; }
+    public DbSet<ScifiCharacterTalent> ScifiCharacterTalents { get; set; }
 
     private static readonly JsonSerializerOptions ModifierJsonOptions = new() {
         Converters = { new JsonStringEnumConverter() }
@@ -133,6 +134,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(e => e.CriticalRange).IsRequired().HasMaxLength(10);
             entity.Property(e => e.CriticalMultiplier).IsRequired().HasMaxLength(10);
             // No HasMany(Instances) — blueprint doesn't know about instances
+        });
+
+        modelBuilder.Entity<ScifiCharacterTalent>(entity => {
+            entity.HasKey(ct => new { ct.ScifiCharacterId, ct.ScifiTalentId });
+
+            entity.HasOne(ct => ct.ScifiCharacter)
+                .WithMany(sc => sc.Talents)
+                .HasForeignKey(ct => ct.ScifiCharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ct => ct.ScifiTalent)
+                .WithMany()
+                .HasForeignKey(ct => ct.ScifiTalentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(ct => ct.SourceType)
+                .HasConversion<string>();
         });
 
 

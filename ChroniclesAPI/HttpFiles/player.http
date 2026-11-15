@@ -1,5 +1,7 @@
+@token = 
+
 ### Register a new player
-POST http://localhost:5237/player/register
+POST http://localhost:5237/api/player/register
 Content-Type: application/json
 
 {
@@ -30,8 +32,25 @@ Content-Type: application/json
 
 ###
 
+### Set the player's theme (see ThemeEnum: 0 General ... 10 Stormgate, 13 DarkLord)
+POST http://localhost:5237/api/player/theme
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "theme": 10
+}
+
+###
+
+### Get the logged in player's details
+GET http://localhost:5237/api/player/details
+Authorization: Bearer {{token}}
+
+###
+
 ### Try to register duplicate email (should return 409)
-POST http://localhost:5237/player/register
+POST http://localhost:5237/api/player/register
 Content-Type: application/json
 
 {

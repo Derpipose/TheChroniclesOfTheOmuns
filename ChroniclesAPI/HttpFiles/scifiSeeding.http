@@ -1,0 +1,44 @@
+@baseUrl = http://localhost:5237
+@token = 
+# Optional: override the default seed data source with ?sourceUrl=
+@sourceUrl = https://example.com/seed.json
+
+### Seed talents (returns created / updated / total)
+POST {{baseUrl}}/api/scifi/scifiseeding/talents
+Authorization: Bearer {{token}}
+
+###
+
+### Seed talents from a custom source url
+POST {{baseUrl}}/api/scifi/scifiseeding/talents?sourceUrl={{sourceUrl}}
+Authorization: Bearer {{token}}
+
+###
+
+### Seed classes (returns created / updated / total / skippedClasses / skippedTalents)
+POST {{baseUrl}}/api/scifi/scifiseeding/classes
+Authorization: Bearer {{token}}
+
+###
+
+### Seed backgrounds (returns created / updated / total / skippedTalents)
+POST {{baseUrl}}/api/scifi/scifiseeding/backgrounds
+Authorization: Bearer {{token}}
+
+###
+
+### Seed races (returns created / skipped / total)
+POST {{baseUrl}}/api/scifi/scifiseeding/races
+Authorization: Bearer {{token}}
+
+###
+
+### Seed subraces (seed races first; returns created / skipped / total)
+POST {{baseUrl}}/api/scifi/scifiseeding/subraces
+Authorization: Bearer {{token}}
+
+###
+
+### Seed weapons (returns created / skipped / total)
+POST {{baseUrl}}/api/scifi/scifiseeding/weapons
+Authorization: Bearer {{token}}

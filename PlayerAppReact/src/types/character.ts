@@ -18,6 +18,7 @@ export interface CreateScifiCharacter {
   scifiClassId?: number
   scifiBackgroundId?: number
   statPicks?: StatPick[]
+  backgroundTalentId?: number | null
 }
 
 export interface UpdateScifiCharacter {
@@ -26,6 +27,7 @@ export interface UpdateScifiCharacter {
   scifiClassId?: number
   scifiBackgroundId?: number
   statPicks?: StatPick[]
+  backgroundTalentId?: number | null
 }
 
 export interface ScifiCharacter {
@@ -36,6 +38,7 @@ export interface ScifiCharacter {
   scifiClassId?: number
   scifiBackgroundId?: number
   statBonuses: StatModifier[]
+  backgroundTalentId: number | null
 }
 
 // Union for when you need to handle multiple subtypes

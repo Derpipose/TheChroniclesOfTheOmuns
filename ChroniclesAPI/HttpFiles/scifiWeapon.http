@@ -1,0 +1,86 @@
+@baseUrl = http://localhost:5237
+@token = 
+@weaponId = 1
+
+# Enums: damageType 0 Melee, 1 Kinetic, 2 Energy
+#        energyType 0 Physical, 1 Blaze, 2 Volt, 3 Null, 4 Cryo
+#        rangeCategory 0 None, 1 Melee, 2 Short, 3 Medium, 4 Long
+#        ammoType 0 None, 1 LesserGeneric, 2 Generic, 3 GreaterGeneric ... (see ScifiAmmoType)
+
+### Get all weapon blueprints
+GET {{baseUrl}}/api/scifi/weapon
+Authorization: Bearer {{token}}
+
+###
+
+### Get weapon blueprint by id
+GET {{baseUrl}}/api/scifi/weapon/{{weaponId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Create a weapon blueprint
+POST {{baseUrl}}/api/scifi/weapon
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Pulse Rifle",
+    "damageFormula": "2d8",
+    "ammoType": 2,
+    "damageType": 2,
+    "energyType": 2,
+    "rateOfFire": "Semi-auto",
+    "ammoCapacity": 24,
+    "criticalRange": 19,
+    "criticalMultiplier": 2,
+    "reloadTimeInActions": 1,
+    "rangeCategory": 3,
+    "criticalFailRange": 1
+}
+
+###
+
+### Create a weapon blueprint (defaults: crit 20 x2, reload 1)
+POST {{baseUrl}}/api/scifi/weapon
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Combat Knife",
+    "damageFormula": "1d6",
+    "ammoType": 0,
+    "damageType": 0,
+    "energyType": 0,
+    "rateOfFire": "1",
+    "ammoCapacity": 0,
+    "rangeCategory": 1
+}
+
+###
+
+### Update a weapon blueprint
+PATCH {{baseUrl}}/api/scifi/weapon/{{weaponId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Pulse Rifle Mk II",
+    "damageFormula": "2d10",
+    "ammoType": 2,
+    "damageType": 2,
+    "energyType": 2,
+    "rateOfFire": "Burst",
+    "ammoCapacity": 30,
+    "criticalRange": 19,
+    "criticalMultiplier": 3,
+    "reloadTimeInActions": 1,
+    "rangeCategory": 3,
+    "criticalFailRange": 2
+}
+
+###
+
+### Delete a weapon blueprint
+DELETE {{baseUrl}}/api/scifi/weapon/{{weaponId}}
+Authorization: Bearer {{token}}

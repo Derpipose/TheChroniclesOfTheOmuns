@@ -3,7 +3,7 @@ import type { ScifiBackground } from '../../types/scifiReference'
 import Card from '../Card'
 import StatusPills from './StatusPills'
 
-interface HeroCardProps {
+interface CharacterHeaderProps {
   character: Character
   raceName?: string
   characterClass?: string
@@ -13,7 +13,7 @@ interface HeroCardProps {
 }
 
 /** Desktop header card: initial, name, summary line, status and edit action. */
-export default function HeroCard({ character, raceName, characterClass, background, setting, onEdit }: HeroCardProps) {
+export default function CharacterHeader({ character, raceName, characterClass, background, setting, onEdit }: CharacterHeaderProps) {
   return (
     <Card className="flex items-center justify-between gap-6">
       <div className="flex items-center gap-5">

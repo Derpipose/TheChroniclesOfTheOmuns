@@ -2,6 +2,7 @@ import NavBar from '../components/NavBar'
 import { useDevSeeding } from '../hooks/useDevSeeding'
 import AddWeaponCard from '../components/DevPage/AddWeaponCard'
 import DeleteWeaponCard from '../components/DevPage/DeleteWeaponCard'
+import EditWeaponCard from '../components/DevPage/EditWeaponCard'
 import SeedButton from '../components/DevPage/SeedButton'
 
 export default function DevPage() {
@@ -51,7 +52,9 @@ export default function DevPage() {
 
         <AddWeaponCard />
         <DeleteWeaponCard />
+        <EditWeaponCard />
       </div>
     </div>
   )
 }
+

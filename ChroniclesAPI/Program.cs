@@ -53,6 +53,7 @@ builder.Services.AddScoped<PlayerContext>();
 builder.Services.AddScoped<SciFiRaceService>();
 builder.Services.AddScoped<SciFiSubraceService>();
 builder.Services.AddScoped<ScifiSeedingService>();
+builder.Services.AddScoped<ScifiTalentService>();
 builder.Services.AddScoped<ScifiWeaponService>();
 builder.Services.AddScoped<ScifiWeaponInstanceService>();
 

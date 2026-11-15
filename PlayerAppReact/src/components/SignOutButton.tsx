@@ -1,21 +1,17 @@
 import { useNavigate } from 'react-router-dom'
-import { clearToken } from '../auth/tokenStorage'
-import { clearTheme } from '../theme/themeStorage'
+import { useAuth } from '../auth/AuthContext'
 
 export default function SignOutButton() {
   const navigate = useNavigate()
+  const { signOut } = useAuth()
 
   const handleSignOut = () => {
-    clearToken()
-    clearTheme()
+    signOut()
     navigate('/sign-in')
   }
 
   return (
-    <button
-      onClick={handleSignOut}
-      className="nav-btn"
-    >
+    <button onClick={handleSignOut} className="nav-btn">
       Sign out
     </button>
   )
