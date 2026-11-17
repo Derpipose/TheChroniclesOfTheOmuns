@@ -58,7 +58,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasKey(ct => new { ct.ScifiClassId, ct.ScifiTalentId });
 
         modelBuilder.Entity<ScifiSkill>(entity => {
-            entity.Property(s => s.StatGoverner)
+            entity.Property(s => s.StatGovernor)
             .HasConversion<string>();
             entity.Property(s => s.SkillType)
             .HasConversion<string>();

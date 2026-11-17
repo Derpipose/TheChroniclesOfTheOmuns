@@ -296,6 +296,27 @@ namespace PlayerApp.Models.Migrations
                     b.ToTable("ScifiCharacterModifiers");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterSkill", b =>
+                {
+                    b.Property<int>("ScifiCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ScifiSkillId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SourceType")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SkillAmount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ScifiCharacterId", "ScifiSkillId", "SourceType");
+
+                    b.HasIndex("ScifiSkillId");
+
+                    b.ToTable("ScifiCharacterSkills");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiCharacterTalent", b =>
                 {
                     b.Property<int>("ScifiCharacterId")
@@ -352,6 +373,38 @@ namespace PlayerApp.Models.Migrations
                     b.HasIndex("ScifiTalentId");
 
                     b.ToTable("ScifiClassTalents");
+                });
+
+            modelBuilder.Entity("PlayerApp.Models.ScifiSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SkillKind")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SkillType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StatGovernor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name", "SkillKind")
+                        .IsUnique();
+
+                    b.ToTable("ScifiSkills");
                 });
 
             modelBuilder.Entity("PlayerApp.Models.ScifiSubrace", b =>
@@ -694,6 +747,25 @@ namespace PlayerApp.Models.Migrations
                     b.Navigation("ScifiCharacter");
                 });
 
+            modelBuilder.Entity("PlayerApp.Models.ScifiCharacterSkill", b =>
+                {
+                    b.HasOne("PlayerApp.Models.ScifiCharacter", "ScifiCharacter")
+                        .WithMany("Skills")
+                        .HasForeignKey("ScifiCharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlayerApp.Models.ScifiSkill", "ScifiSkill")
+                        .WithMany()
+                        .HasForeignKey("ScifiSkillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ScifiCharacter");
+
+                    b.Navigation("ScifiSkill");
+                });
+
             modelBuilder.Entity("PlayerApp.Models.ScifiCharacterTalent", b =>
                 {
                     b.HasOne("PlayerApp.Models.ScifiCharacter", "ScifiCharacter")
@@ -784,6 +856,8 @@ namespace PlayerApp.Models.Migrations
             modelBuilder.Entity("PlayerApp.Models.ScifiCharacter", b =>
                 {
                     b.Navigation("Modifiers");
+
+                    b.Navigation("Skills");
 
                     b.Navigation("Talents");
                 });

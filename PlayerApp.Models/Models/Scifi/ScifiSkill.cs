@@ -7,20 +7,20 @@ namespace PlayerApp.Models;
 public class ScifiSkill {
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
-    public StatType StatGoverner { get; private set; }
+    public StatType StatGovernor { get; private set; }
     public SkillType SkillType { get; private set; }
     public SkillKind SkillKind { get; private set; }
 
-    public ScifiSkill(string name, StatType governer, SkillType skillType, SkillKind skillKind) {
+    public ScifiSkill(string name, StatType Governor, SkillType skillType, SkillKind skillKind) {
         Name = name;
-        StatGoverner = governer;
+        StatGovernor = Governor;
         SkillType = skillType;
         SkillKind = skillKind;
     }
 
-    public void Update(string name, StatType governer, SkillType skillType, SkillKind skillKind) {
+    public void Update(string name, StatType Governor, SkillType skillType, SkillKind skillKind) {
         Name = name;
-        StatGoverner = governer;
+        StatGovernor = Governor;
         SkillType = skillType;
         SkillKind = skillKind;
     }
