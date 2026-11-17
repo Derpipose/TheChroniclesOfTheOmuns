@@ -49,7 +49,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                     .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
                     .ToList(),
                 sc.Talents
-                    .Where(t => t.SourceType == TalentSourceEnum.Background)
+                    .Where(t => t.SourceType == TalentSource.Background)
                     .Select(t => (int?)t.ScifiTalentId)
                     .FirstOrDefault()
             )).FirstOrDefaultAsync();
@@ -77,7 +77,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                     .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
                     .ToList(),
                 sc.Talents
-                    .Where(t => t.SourceType == TalentSourceEnum.Background)
+                    .Where(t => t.SourceType == TalentSource.Background)
                     .Select(t => (int?)t.ScifiTalentId)
                     .FirstOrDefault()
                 )).FirstOrDefaultAsync();
@@ -209,7 +209,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
         if (request.ScifiClassId is not null && request.ScifiBackgroundId is not null) {
             await scifiTalentService.SyncTalentsAsync(scifiCharacter);
             if (pickedTalent is not null)
-                scifiCharacter.AddTalent(pickedTalent, TalentSourceEnum.Background);
+                scifiCharacter.AddTalent(pickedTalent, TalentSource.Background);
             await db.SaveChangesAsync();
         }
         
@@ -227,7 +227,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
                 .ToList(),
             scifiCharacter.Talents
-                .FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background)
+                .FirstOrDefault(t => t.SourceType == TalentSource.Background)
                 ?.ScifiTalentId
             ));
     }
@@ -335,12 +335,12 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 return BadRequest(new { message = "Background talent pick is not valid for the current class and background." });
             }
             
-            var currentPick = scifiCharacter.Talents.FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background);
+            var currentPick = scifiCharacter.Talents.FirstOrDefault(t => t.SourceType == TalentSource.Background);
 
             if (currentPick?.ScifiTalentId != talent.Id) {
                 // Remove the current background talent
-                scifiCharacter.ClearTalentsBySource(TalentSourceEnum.Background);
-                scifiCharacter.AddTalent(talent, TalentSourceEnum.Background);
+                scifiCharacter.ClearTalentsBySource(TalentSource.Background);
+                scifiCharacter.AddTalent(talent, TalentSource.Background);
             }
         }
 
@@ -362,7 +362,7 @@ public class ScifiCharacterController(AppDbContext db, PlayerContext playerConte
                 .Select(m => new StatModifierResponseDto(m.ModifierType, m.Amount, m.Source))
                 .ToList(),
             scifiCharacter.Talents
-                .FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background)
+                .FirstOrDefault(t => t.SourceType == TalentSource.Background)
                 ?.ScifiTalentId
             ));
     }

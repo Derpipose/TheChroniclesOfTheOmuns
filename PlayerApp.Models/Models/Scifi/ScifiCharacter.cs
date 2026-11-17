@@ -15,6 +15,8 @@ public class ScifiCharacter {
     public int? ScifiBackgroundId { get; private set; }
     
     public ICollection<ScifiCharacterModifier> Modifiers { get; set; } = [];
+    private readonly List<ScifiCharacterSkill> _skills = [];
+    public IReadOnlyList<ScifiCharacterSkill> Skills => _skills;
     private readonly List<ScifiCharacterTalent> _talents = [];
     public IReadOnlyList<ScifiCharacterTalent> Talents => _talents;
 
@@ -126,12 +128,12 @@ public class ScifiCharacter {
         ScifiBackgroundId = scifiBackgroundId;
     }
 
-    public void AddTalent(ScifiTalent talent, TalentSourceEnum sourceType) {
+    public void AddTalent(ScifiTalent talent, TalentSource sourceType) {
         if (Character is null)
             throw new InvalidOperationException(
                 "ScifiCharacter must have an associated Character before talents can be added.");
         
-        if (Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class))
+        if (Character.IsActive && (sourceType == TalentSource.Background || sourceType == TalentSource.Class))
             throw new InvalidOperationException(
                 "Cannot add these talents for an active character.");
         
@@ -209,13 +211,13 @@ public class ScifiCharacter {
         ScifiBackgroundId = null;
     }
 
-    public void ClearTalentsBySource(TalentSourceEnum sourceType) {
+    public void ClearTalentsBySource(TalentSource sourceType) {
         
         if(Character is null)
             throw new InvalidOperationException(
                 "ScifiCharacter must have an associated Character before talents can be cleared.");
-        if(Character.IsActive && (sourceType == TalentSourceEnum.Background || sourceType == TalentSourceEnum.Class
-                                    || sourceType == TalentSourceEnum.LevelUp ))
+        if(Character.IsActive && (sourceType == TalentSource.Background || sourceType == TalentSource.Class
+                                    || sourceType == TalentSource.LevelUp ))
             throw new InvalidOperationException(
                 "Cannot remove these talents for an active character.");
         _talents.RemoveAll(t => t.SourceType == sourceType);

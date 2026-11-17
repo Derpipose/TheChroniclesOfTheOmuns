@@ -116,7 +116,7 @@ public class ScifiTalentController(AppDbContext db, PlayerContext playerContext,
                         false
                     )).ToList();
 
-        int selectedTalentId = character.Talents.FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background)?.ScifiTalentId ?? 0;
+        int selectedTalentId = character.Talents.FirstOrDefault(t => t.SourceType == TalentSource.Background)?.ScifiTalentId ?? 0;
 
         var pickable = poolTalents.Select(t => 
                     new ScifiTalentPicksResponseDto(
@@ -159,7 +159,7 @@ public class ScifiTalentController(AppDbContext db, PlayerContext playerContext,
         if (character.ScifiClass is null || character.ScifiBackground is null)
             return BadRequest(new { message = "Choose a class and background before selecting talents." });
         
-        var characterTalent = character.Talents.FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background);
+        var characterTalent = character.Talents.FirstOrDefault(t => t.SourceType == TalentSource.Background);
         // Player picked the same thing they had before. Or a save was triggered. Either way, we are fine to just return. 
         if (talentId == characterTalent?.ScifiTalentId)
             return Ok();
@@ -171,10 +171,10 @@ public class ScifiTalentController(AppDbContext db, PlayerContext playerContext,
             return BadRequest(new { message = "That talent isn't one of this character's background options." });
         
         // Clear any existing background talent
-        character.ClearTalentsBySource(TalentSourceEnum.Background);
+        character.ClearTalentsBySource(TalentSource.Background);
 
         // Add the new talent
-        character.AddTalent(talent, TalentSourceEnum.Background);
+        character.AddTalent(talent, TalentSource.Background);
         await db.SaveChangesAsync();
         return Ok();
     }

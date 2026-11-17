@@ -72,7 +72,7 @@ public class ScifiTalentPickEndpointTests {
         return sc;
     }
 
-    private static async Task<List<(int TalentId, TalentSourceEnum Source)>> Stored(AppDbContext db, int scId) =>
+    private static async Task<List<(int TalentId, TalentSource Source)>> Stored(AppDbContext db, int scId) =>
         (await db.Set<ScifiCharacterTalent>().AsNoTracking().Where(t => t.ScifiCharacterId == scId).ToListAsync(TestContext.Current.CancellationToken))
             .Select(t => (t.ScifiTalentId, t.SourceType)).OrderBy(t => t.ScifiTalentId).ToList();
 
@@ -95,7 +95,7 @@ public class ScifiTalentPickEndpointTests {
 
         Assert.IsType<OkObjectResult>(result);
         db.ChangeTracker.Clear();
-        Assert.Contains((bgA.Id, TalentSourceEnum.Background), await Stored(db, sc.Id));
+        Assert.Contains((bgA.Id, TalentSource.Background), await Stored(db, sc.Id));
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class ScifiTalentPickEndpointTests {
         Assert.IsType<BadRequestObjectResult>(result);
         db.ChangeTracker.Clear();
         Assert.Equal(classA.Id, await StoredClassId(db, sc.Id));
-        Assert.DoesNotContain(await Stored(db, sc.Id), t => t.Source == TalentSourceEnum.Background);
+        Assert.DoesNotContain(await Stored(db, sc.Id), t => t.Source == TalentSource.Background);
     }
 
     [Fact]
@@ -146,8 +146,8 @@ public class ScifiTalentPickEndpointTests {
         db.ChangeTracker.Clear();
         Assert.Equal(medic.Id, await StoredClassId(db, sc.Id));
         var stored = await Stored(db, sc.Id);
-        Assert.Contains((soldierTalent.Id, TalentSourceEnum.Background), stored);
-        Assert.Contains((medicTalent.Id, TalentSourceEnum.Class), stored);
+        Assert.Contains((soldierTalent.Id, TalentSource.Background), stored);
+        Assert.Contains((medicTalent.Id, TalentSource.Class), stored);
     }
 
     // Create
@@ -169,8 +169,8 @@ public class ScifiTalentPickEndpointTests {
         db.ChangeTracker.Clear();
         var stored = await Stored(db, dto.Id);
         Assert.Equal(2, stored.Count);
-        Assert.Contains((granted.Id, TalentSourceEnum.Class), stored);
-        Assert.Contains((bgA.Id, TalentSourceEnum.Background), stored);
+        Assert.Contains((granted.Id, TalentSource.Class), stored);
+        Assert.Contains((bgA.Id, TalentSource.Background), stored);
     }
 
     [Fact]

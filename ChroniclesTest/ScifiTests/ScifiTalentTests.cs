@@ -87,10 +87,10 @@ public class ScifiTalentTests {
     // ScifiCharacterTalent join entity
 
     [Theory]
-    [InlineData(TalentSourceEnum.Class)]
-    [InlineData(TalentSourceEnum.Background)]
-    [InlineData(TalentSourceEnum.LevelUp)]
-    public void CharacterTalent_Constructor_SetsIdsAndSource(TalentSourceEnum source) {
+    [InlineData(TalentSource.Class)]
+    [InlineData(TalentSource.Background)]
+    [InlineData(TalentSource.LevelUp)]
+    public void CharacterTalent_Constructor_SetsIdsAndSource(TalentSource source) {
         var characterTalent = new ScifiCharacterTalent(3, 7, source);
 
         Assert.Equal(3, characterTalent.ScifiCharacterId);
@@ -122,20 +122,20 @@ public class ScifiTalentTests {
         var (db, sc, talent) = await SeedCharacterAndTalent();
         await using var _ = db;
 
-        sc.AddTalent(talent, TalentSourceEnum.Background);
+        sc.AddTalent(talent, TalentSource.Background);
 
         var added = Assert.Single(sc.Talents);
         Assert.Equal(talent.Id, added.ScifiTalentId);
-        Assert.Equal(TalentSourceEnum.Background, added.SourceType);
+        Assert.Equal(TalentSource.Background, added.SourceType);
     }
 
     [Fact]
     public async Task AddTalent_Throws_WhenSameTalentAddedTwice() {
         var (db, sc, talent) = await SeedCharacterAndTalent();
         await using var _ = db;
-        sc.AddTalent(talent, TalentSourceEnum.Background);
+        sc.AddTalent(talent, TalentSource.Background);
 
-        Assert.Throws<InvalidOperationException>(() => sc.AddTalent(talent, TalentSourceEnum.Class));
+        Assert.Throws<InvalidOperationException>(() => sc.AddTalent(talent, TalentSource.Class));
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class ScifiTalentTests {
         await using var _ = db;
 
         Assert.Throws<InvalidOperationException>(() =>
-            sc.AddTalent(new ScifiTalent("Unsaved", "Description", "Ability"), TalentSourceEnum.Class));
+            sc.AddTalent(new ScifiTalent("Unsaved", "Description", "Ability"), TalentSource.Class));
     }
 
     [Fact]
@@ -156,14 +156,14 @@ public class ScifiTalentTests {
         var sc = await db.ScifiCharacters.FirstAsync(TestContext.Current.CancellationToken);
         Assert.Null(sc.Character);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => sc.AddTalent(talent, TalentSourceEnum.Class));
+        var ex = Assert.Throws<InvalidOperationException>(() => sc.AddTalent(talent, TalentSource.Class));
         Assert.Contains("associated Character", ex.Message);
     }
 
     [Theory]
-    [InlineData(TalentSourceEnum.Class)]
-    [InlineData(TalentSourceEnum.Background)]
-    public async Task AddTalent_Throws_ForClassOrBackground_WhenCharacterActive(TalentSourceEnum source) {
+    [InlineData(TalentSource.Class)]
+    [InlineData(TalentSource.Background)]
+    public async Task AddTalent_Throws_ForClassOrBackground_WhenCharacterActive(TalentSource source) {
         var (db, sc, talent) = await SeedCharacterAndTalent(active: true);
         await using var _ = db;
 
@@ -175,7 +175,7 @@ public class ScifiTalentTests {
         var (db, sc, talent) = await SeedCharacterAndTalent(active: true);
         await using var _ = db;
 
-        sc.AddTalent(talent, TalentSourceEnum.LevelUp);
+        sc.AddTalent(talent, TalentSource.LevelUp);
 
         Assert.Single(sc.Talents);
     }
@@ -187,20 +187,20 @@ public class ScifiTalentTests {
         var other = new ScifiTalent("Quick", "Description", "Ability");
         db.ScifiTalents.Add(other);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-        sc.AddTalent(talent, TalentSourceEnum.Background);
-        sc.AddTalent(other, TalentSourceEnum.Class);
+        sc.AddTalent(talent, TalentSource.Background);
+        sc.AddTalent(other, TalentSource.Class);
 
-        sc.ClearTalentsBySource(TalentSourceEnum.Background);
+        sc.ClearTalentsBySource(TalentSource.Background);
 
         var remaining = Assert.Single(sc.Talents);
-        Assert.Equal(TalentSourceEnum.Class, remaining.SourceType);
+        Assert.Equal(TalentSource.Class, remaining.SourceType);
     }
 
     [Theory]
-    [InlineData(TalentSourceEnum.Class)]
-    [InlineData(TalentSourceEnum.Background)]
-    [InlineData(TalentSourceEnum.LevelUp)]
-    public async Task ClearTalentsBySource_Throws_WhenCharacterActive(TalentSourceEnum source) {
+    [InlineData(TalentSource.Class)]
+    [InlineData(TalentSource.Background)]
+    [InlineData(TalentSource.LevelUp)]
+    public async Task ClearTalentsBySource_Throws_WhenCharacterActive(TalentSource source) {
         var (db, sc, _) = await SeedCharacterAndTalent(active: true);
         await using var _ = db;
 
@@ -399,7 +399,7 @@ public class ScifiTalentControllerTests {
         await SetClassAndBackground(db, sc, scifiClass, background);
 
         var loaded = await db.ScifiCharacters.Include(s => s.Character).FirstAsync(TestContext.Current.CancellationToken);
-        loaded.AddTalent(bgPicked, TalentSourceEnum.Background);
+        loaded.AddTalent(bgPicked, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var picks = Picks(await CreateController(db).GetTalentPicks(sc.CharacterId));
@@ -455,7 +455,7 @@ public class ScifiTalentControllerTests {
         await SetClassAndBackground(db, sc, soldier, background);
 
         var loaded = await db.ScifiCharacters.Include(s => s.Character).FirstAsync(TestContext.Current.CancellationToken);
-        loaded.AddTalent(pilotPicked, TalentSourceEnum.Background);
+        loaded.AddTalent(pilotPicked, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var picks = Picks(await CreateController(db).GetTalentPicks(sc.CharacterId));
@@ -561,7 +561,7 @@ public class ScifiTalentControllerTests {
 
     private static async Task<List<ScifiCharacterTalent>> BackgroundTalents(AppDbContext db, int characterId) {
         var loaded = await db.ScifiCharacters.Include(s => s.Talents).FirstAsync(s => s.CharacterId == characterId, TestContext.Current.CancellationToken);
-        return loaded.Talents.Where(t => t.SourceType == TalentSourceEnum.Background).ToList();
+        return loaded.Talents.Where(t => t.SourceType == TalentSource.Background).ToList();
     }
 
     [Fact]
@@ -695,7 +695,7 @@ public class ScifiTalentSyncTests {
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 
-    private static async Task<List<(int TalentId, TalentSourceEnum Source)>> Stored(AppDbContext db, int scId) =>
+    private static async Task<List<(int TalentId, TalentSource Source)>> Stored(AppDbContext db, int scId) =>
         (await db.Set<ScifiCharacterTalent>().Where(t => t.ScifiCharacterId == scId).ToListAsync(TestContext.Current.CancellationToken))
             .Select(t => (t.ScifiTalentId, t.SourceType)).OrderBy(t => t.ScifiTalentId).ToList();
 
@@ -715,7 +715,7 @@ public class ScifiTalentSyncTests {
         await Sync(db, sc);
 
         Assert.Equal(
-            [(s1.Id, TalentSourceEnum.Class), (s2.Id, TalentSourceEnum.Class)],
+            [(s1.Id, TalentSource.Class), (s2.Id, TalentSource.Class)],
             await Stored(db, sc.Id));
     }
 
@@ -738,7 +738,7 @@ public class ScifiTalentSyncTests {
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
 
-        Assert.Equal([(m1.Id, TalentSourceEnum.Class)], await Stored(db, sc.Id));
+        Assert.Equal([(m1.Id, TalentSource.Class)], await Stored(db, sc.Id));
     }
 
     [Fact]
@@ -755,14 +755,14 @@ public class ScifiTalentSyncTests {
         sc.SetScifiBackground(medicBg.Id);
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
-        sc.AddTalent(b1, TalentSourceEnum.Background);
+        sc.AddTalent(b1, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         sc.SetScifiClass(soldier.Id); // mismatch: pool is now the Medic class's talents
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
 
-        Assert.Equal([(s1.Id, TalentSourceEnum.Class)], await Stored(db, sc.Id));
+        Assert.Equal([(s1.Id, TalentSource.Class)], await Stored(db, sc.Id));
     }
 
     [Fact]
@@ -779,7 +779,7 @@ public class ScifiTalentSyncTests {
         sc.SetScifiBackground(merchant.Id);
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
-        sc.AddTalent(b1, TalentSourceEnum.Background);
+        sc.AddTalent(b1, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         sc.SetScifiClass(medic.Id);
@@ -787,7 +787,7 @@ public class ScifiTalentSyncTests {
         await Sync(db, sc);
 
         Assert.Equal(
-            [(m1.Id, TalentSourceEnum.Class), (b1.Id, TalentSourceEnum.Background)],
+            [(m1.Id, TalentSource.Class), (b1.Id, TalentSource.Background)],
             await Stored(db, sc.Id));
     }
 
@@ -804,14 +804,14 @@ public class ScifiTalentSyncTests {
         sc.SetScifiBackground(merchant.Id);
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
-        sc.AddTalent(shared, TalentSourceEnum.Background);
+        sc.AddTalent(shared, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         sc.SetScifiClass(trader.Id);
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
 
-        Assert.Equal([(shared.Id, TalentSourceEnum.Class)], await Stored(db, sc.Id));
+        Assert.Equal([(shared.Id, TalentSource.Class)], await Stored(db, sc.Id));
     }
 
     [Theory]
@@ -828,7 +828,7 @@ public class ScifiTalentSyncTests {
         sc.SetScifiBackground(merchant.Id);
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
-        sc.AddTalent(b1, TalentSourceEnum.Background);
+        sc.AddTalent(b1, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, (await Stored(db, sc.Id)).Count);
 
@@ -851,7 +851,7 @@ public class ScifiTalentSyncTests {
         sc.SetScifiBackground(merchant.Id);
         sc = await Load(db, sc.Id);
         await Sync(db, sc);
-        sc.AddTalent(b1, TalentSourceEnum.Background);
+        sc.AddTalent(b1, TalentSource.Background);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         var before = await Stored(db, sc.Id);
 

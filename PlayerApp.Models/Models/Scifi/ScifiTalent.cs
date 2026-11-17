@@ -38,12 +38,12 @@ public class ScifiTalent {
 public class ScifiCharacterTalent {
     public int ScifiCharacterId { get; private set; }
     public int ScifiTalentId { get; private set; }
-    public TalentSourceEnum SourceType { get; private set; }
+    public TalentSource SourceType { get; private set; }
 
     public ScifiTalent? ScifiTalent { get; private set; }
     public ScifiCharacter? ScifiCharacter { get; private set; }
 
-    public ScifiCharacterTalent(int scifiCharacterId, int scifiTalentId, TalentSourceEnum sourceType) {
+    public ScifiCharacterTalent(int scifiCharacterId, int scifiTalentId, TalentSource sourceType) {
         ScifiCharacterId = scifiCharacterId;
         ScifiTalentId = scifiTalentId;
         SourceType = sourceType;

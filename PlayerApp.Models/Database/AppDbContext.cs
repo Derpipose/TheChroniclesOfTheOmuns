@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using PlayerApp.Models.Enums;
 namespace PlayerApp.Models.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options) {
@@ -10,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Character> Characters => Set<Character>();
     public DbSet<CharacterStats> CharacterStats => Set<CharacterStats>();
     public DbSet<RaceStats> RaceStats => Set<RaceStats>();
+    public DbSet<ScifiSkill> ScifiSkills => Set<ScifiSkill>();
     public DbSet<ScifiTalent> ScifiTalents => Set<ScifiTalent>();
     public DbSet<ScifiBackground> ScifiBackgrounds => Set<ScifiBackground>();
     public DbSet<ScifiBackgroundTalent> ScifiBackgroundTalents => Set<ScifiBackgroundTalent>();
@@ -19,9 +21,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ScifiSubrace> ScifiSubraces => Set<ScifiSubrace>();
     public DbSet<ScifiCharacter> ScifiCharacters => Set<ScifiCharacter>();
     public DbSet<ScifiCharacterModifier> ScifiCharacterModifiers => Set<ScifiCharacterModifier>();
-    public DbSet<ScifiWeapon> ScifiWeapons { get; set; }
-    public DbSet<ScifiWeaponInstance> ScifiWeaponInstances { get; set; }
-    public DbSet<ScifiCharacterTalent> ScifiCharacterTalents { get; set; }
+    public DbSet<ScifiWeapon> ScifiWeapons => Set<ScifiWeapon>();
+    public DbSet<ScifiWeaponInstance> ScifiWeaponInstances => Set<ScifiWeaponInstance>();
+    public DbSet<ScifiCharacterSkill> ScifiCharacterSkills => Set<ScifiCharacterSkill>();
+    public DbSet<ScifiCharacterTalent> ScifiCharacterTalents => Set<ScifiCharacterTalent>();
 
     private static readonly JsonSerializerOptions ModifierJsonOptions = new() {
         Converters = { new JsonStringEnumConverter() }
@@ -53,6 +56,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<ScifiClassTalent>()
             .HasKey(ct => new { ct.ScifiClassId, ct.ScifiTalentId });
+
+        modelBuilder.Entity<ScifiSkill>(entity => {
+            entity.Property(s => s.StatGoverner)
+            .HasConversion<string>();
+            entity.Property(s => s.SkillType)
+            .HasConversion<string>();
+            entity.Property(s => s.SkillKind)
+            .HasConversion<string>();
+            entity.HasIndex(s => new { s.Name, s.SkillKind })
+            .IsUnique();
+        });
+
 
         modelBuilder.Entity<ScifiRace>()
             .HasOne(r => r.RaceStats)
@@ -134,6 +149,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(e => e.CriticalRange).IsRequired().HasMaxLength(10);
             entity.Property(e => e.CriticalMultiplier).IsRequired().HasMaxLength(10);
             // No HasMany(Instances) — blueprint doesn't know about instances
+        });
+
+        modelBuilder.Entity<ScifiCharacterSkill>(entity => {
+            entity.HasKey(cs => new { cs.ScifiCharacterId, cs.ScifiSkillId, cs.SourceType });
+
+            entity.HasOne(cs => cs.ScifiCharacter)
+                .WithMany(sc => sc.Skills)
+                .HasForeignKey(cs => cs.ScifiCharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(cs => cs.ScifiSkill)
+                .WithMany()
+                .HasForeignKey(cs => cs.ScifiSkillId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(cs => cs.SourceType)
+                .HasConversion<string>();
         });
 
         modelBuilder.Entity<ScifiCharacterTalent>(entity => {

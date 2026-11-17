@@ -56,8 +56,8 @@ public class ScifiTalentService(AppDbContext db) {
     public async Task SyncTalentsAsync(ScifiCharacter scifiCharacter) {
         // No talents are stored until both class and background are set
         if (scifiCharacter.ScifiClass is null || scifiCharacter.ScifiBackground is null) {
-            scifiCharacter.ClearTalentsBySource(TalentSourceEnum.Class);
-            scifiCharacter.ClearTalentsBySource(TalentSourceEnum.Background);
+            scifiCharacter.ClearTalentsBySource(TalentSource.Class);
+            scifiCharacter.ClearTalentsBySource(TalentSource.Background);
             return;
         }
 
@@ -65,16 +65,16 @@ public class ScifiTalentService(AppDbContext db) {
 
         // 1. Clear the background pick if it's no longer valid
         var currentPick = scifiCharacter.Talents
-            .FirstOrDefault(t => t.SourceType == TalentSourceEnum.Background);
+            .FirstOrDefault(t => t.SourceType == TalentSource.Background);
 
         if (currentPick is not null && !pool.Pickable.Any(t => t.Id == currentPick.ScifiTalentId))
-            scifiCharacter.ClearTalentsBySource(TalentSourceEnum.Background);
+            scifiCharacter.ClearTalentsBySource(TalentSource.Background);
 
         // 2. Remove class talents the current class doesn't grant
         var grantedIds = pool.Granted.Select(t => t.Id).ToHashSet();
 
         var staleClassTalentIds = scifiCharacter.Talents
-            .Where(t => t.SourceType == TalentSourceEnum.Class && !grantedIds.Contains(t.ScifiTalentId))
+            .Where(t => t.SourceType == TalentSource.Class && !grantedIds.Contains(t.ScifiTalentId))
             .Select(t => t.ScifiTalentId)
             .ToList();
 
@@ -84,7 +84,7 @@ public class ScifiTalentService(AppDbContext db) {
         // 3. Add granted talents the character doesn't have yet
         foreach (var talent in pool.Granted) {
             if (!scifiCharacter.Talents.Any(t => t.ScifiTalentId == talent.Id))
-                scifiCharacter.AddTalent(talent, TalentSourceEnum.Class);
+                scifiCharacter.AddTalent(talent, TalentSource.Class);
         }
     }
 }
